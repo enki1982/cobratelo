@@ -77,6 +77,20 @@ function calcularRelevancia(ayuda, perfil) {
   // Viudedad: solo si lo marcó
   if (texto.includes('viudedad') && !familia.includes('viudo')) return 0
 
+  // Vivienda — exclusiones cruzadas
+  const esAyudaAlquiler = texto.includes('alquiler') || texto.includes('arrendamiento') || texto.includes('lloguer')
+  const esAyudaCompra = texto.includes('compra') || texto.includes('adquisición') || texto.includes('hipoteca')
+  const esAyudaRehabilitacion = texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia energética')
+
+  // Si busca alquiler pero el usuario es propietario → excluir
+  if (esAyudaAlquiler && !esAyudaRehabilitacion && ['propietario','hipoteca'].includes(vivienda)) return 0
+
+  // Si busca compra/hipoteca pero el usuario ya es propietario sin querer comprar → excluir
+  if (esAyudaCompra && !texto.includes('rehabilita') && ['alquiler'].includes(vivienda)) return 0
+
+  // Si busca rehabilitación pero el usuario no es propietario → excluir
+  if (esAyudaRehabilitacion && texto.includes('propietario') && vivienda === 'alquiler') return 0
+
   // Edad mínima 65: excluir si el usuario tiene menos de 65
   const requiere65 = texto.includes('65 años') || texto.includes('mayor de 65') || texto.includes('mayores de 65') || texto.includes('65 o más')
   if (requiere65 && edadNum > 0 && edadNum < 65) return 0
