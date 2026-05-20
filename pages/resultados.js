@@ -91,6 +91,70 @@ function calcularRelevancia(ayuda, perfil) {
   // Si busca rehabilitación pero el usuario no es propietario → excluir
   if (esAyudaRehabilitacion && texto.includes('propietario') && vivienda === 'alquiler') return 0
 
+  // ── EMPLEO / SITUACIÓN LABORAL ─────────────────────────────────
+  // Tarifa plana / alta autónomos: solo si es autónomo o emprendedor
+  const soloAlta = texto.includes('tarifa plana') || texto.includes('alta autónomo') || texto.includes('cuota autónom')
+  if (soloAlta && !['autonomo','emprendedor'].includes(situacion)) return 0
+
+  // Ayudas de inserción laboral / empleo: solo si busca trabajo
+  const soloEmpleo = (texto.includes('inserción laboral') || texto.includes('búsqueda de empleo') || texto.includes('desempleado') || texto.includes('paro')) && !texto.includes('autónom')
+  if (soloEmpleo && !['desempleado','emprendedor'].includes(situacion)) return 0
+
+  // Becas y ayudas de estudios universitarios/FP: solo estudiantes o con hijos en edad escolar
+  const soloEstudios = (texto.includes('universitaria') || texto.includes('formación profesional') || texto.includes('beca mec')) && !texto.includes('hijo')
+  if (soloEstudios && situacion !== 'estudiante' && !extras.includes('estudios_hijos')) return 0
+
+  // Becas comedor / material escolar: solo con hijos en edad escolar
+  const soloEscolar = texto.includes('comedor') || texto.includes('material escolar') || texto.includes('llibres') || texto.includes('menjador')
+  if (soloEscolar && !tieneHijos && !extras.includes('estudios_hijos')) return 0
+
+  // ── VEHÍCULO ───────────────────────────────────────────────────
+  // MOVES y ayudas de vehículo: solo si tiene o quiere vehículo
+  const tieneVehiculo = (perfil.vehiculo || []).some(v => v !== 'sin_vehiculo')
+  const soloVehiculo = texto.includes('moves') || texto.includes('vehículo eléctrico') || texto.includes('plan renove') || (texto.includes('coche') && texto.includes('subvención'))
+  if (soloVehiculo && !tieneVehiculo) return 0
+
+  // ── MASCOTAS ───────────────────────────────────────────────────
+  const soloMascota = texto.includes('mascota') || texto.includes('animal de compañía') || texto.includes('veterinari') || texto.includes('chip') || texto.includes('esterilización')
+  if (soloMascota && !extras.includes('mascotas')) return 0
+
+  // ── INGRESOS ───────────────────────────────────────────────────
+  // Ayudas con límite renta bajo: excluir si ingresos altos
+  const soloRentaBaja = texto.includes('vulnerabilidad') || texto.includes('renta mínima') || texto.includes('ingreso mínimo') || texto.includes('sin recursos') || texto.includes('pobreza')
+  if (soloRentaBaja && ingresos === 'altos') return 0
+
+  // IMV y renta garantía: solo si ingresos muy bajos
+  const soloIMV = texto.includes('ingreso mínimo vital') || texto.includes('imv') || texto.includes('renta garantia')
+  if (soloIMV && ['medios','altos'].includes(ingresos)) return 0
+
+  // ── ZONA RURAL ─────────────────────────────────────────────────
+  const soloRural = texto.includes('zona rural') || texto.includes('municipio rural') || texto.includes('despoblació') || texto.includes('mundo rural')
+  if (soloRural && !especial.includes('rural')) return 0
+
+  // ── MIGRACIÓN ──────────────────────────────────────────────────
+  const soloInmigrante = texto.includes('inmigrante') || texto.includes('refugiado') || texto.includes('extranjero') || texto.includes('reagrupación familiar')
+  if (soloInmigrante && !especial.includes('inmigrante')) return 0
+
+  // ── SALUD ESPECÍFICA ───────────────────────────────────────────
+  const soloProtesis = texto.includes('prótesis') || texto.includes('audífono') || texto.includes('ortopedia') || texto.includes('silla de ruedas')
+  if (soloProtesis && !extras.includes('gafas_audifonos') && !especial.includes('discapacidad')) return 0
+
+  const soloGafas = texto.includes('óptica') || texto.includes('gafas') || (texto.includes('visión') && texto.includes('ayuda'))
+  if (soloGafas && !extras.includes('gafas_audifonos')) return 0
+
+  // ── ENERGIA / REHABILITACIÓN ────────────────────────────────────
+  const soloEnergia = (texto.includes('paneles solares') || texto.includes('aerotermia') || texto.includes('bomba de calor') || texto.includes('aislamiento térmico')) && !texto.includes('bono social')
+  if (soloEnergia && !extras.includes('energia') && vivienda !== 'rehabilitacion') return 0
+
+  // ── DIGITALIZACIÓN ─────────────────────────────────────────────
+  const soloDigital = texto.includes('kit digital') || texto.includes('digitalización') || texto.includes('transformación digital')
+  if (soloDigital && !extras.includes('negocio_digital') && !extras.includes('pyme') && situacion !== 'autonomo') return 0
+
+  // ── EMPRESA / PYME ──────────────────────────────────────────────
+  const soloPyme = texto.includes('pyme') || texto.includes('empresa') || texto.includes('sociedad limitada') || texto.includes('sociedades')
+  const usuarioEmpresarial = extras.includes('pyme') || extras.includes('negocio_digital') || situacion === 'autonomo' || situacion === 'emprendedor'
+  if (soloPyme && !usuarioEmpresarial) return 0
+
   // Edad mínima 65: excluir si el usuario tiene menos de 65
   const requiere65 = texto.includes('65 años') || texto.includes('mayor de 65') || texto.includes('mayores de 65') || texto.includes('65 o más')
   if (requiere65 && edadNum > 0 && edadNum < 65) return 0
