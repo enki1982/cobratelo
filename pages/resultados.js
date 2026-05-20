@@ -132,7 +132,6 @@ function calcularRelevancia(ayuda, perfil) {
   if (familia.includes('dependiente_cargo') && (texto.includes('dependencia') || texto.includes('cuidador'))) score += 25
 
   // Boost por vivienda
-  const vivienda = (perfil.vivienda || [])[0]
   if (vivienda === 'alquiler' && (texto.includes('alquiler') || texto.includes('arrendamiento'))) score += 25
   if (vivienda === 'rehabilitacion' && (texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia'))) score += 25
 
