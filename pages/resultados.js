@@ -75,6 +75,14 @@ function calcularRelevancia(ayuda, perfil) {
   // Viudedad: solo si lo marcó
   if (texto.includes('viudedad') && !familia.includes('viudo')) return 0
 
+  // Edad mínima 65: solo si el usuario es mayor de 65
+  const requiere65 = (texto.includes('65 años') || texto.includes('mayor de 65') || texto.includes('mayores de 65') || texto.includes('65 o más')) && !texto.includes('menor de 65')
+  if (requiere65 && edad !== 'mayor65') return 0
+
+  // Edad mínima 30 o menor: excluir si el usuario es mayor
+  const soloJoven = texto.includes('menor de 35') || texto.includes('jóvenes menores') || texto.includes('primera vivienda joven')
+  if (soloJoven && !['menor30', '30_45'].includes(edad)) return 0
+
   // Autónomo: solo si es autónomo
   const soloAutonomo = texto.includes('autónom') && !texto.includes('empleado') && !texto.includes('trabajador')
   if (soloAutonomo && situacion !== 'autonomo') return 0
