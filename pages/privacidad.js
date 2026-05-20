@@ -19,7 +19,7 @@ export default function Privacidad() {
 
           <h2>1. Responsable del tratamiento</h2>
           <p>
-            <strong>Miquel Nogueras Ferrer</strong> (Volta Grup)<br />
+            <strong>Volta Grup</strong> (Volta Grup)<br />
             Contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a>
           </p>
 
