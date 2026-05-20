@@ -22,7 +22,7 @@ export default function Legal() {
             En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la
             Información y de Comercio Electrónico (LSSI-CE), se informa que el presente sitio web
             <strong> cobratelo.es</strong> es titularidad de <strong>Volta Grup</strong>,
-            que actúa bajo la marca comercial <strong>Volta Grup</strong>.
+            
           </p>
           <p>Correo electrónico de contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a></p>
 
