@@ -258,7 +258,7 @@ export default function Resultados() {
 
       const conScore = (data || [])
         .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
-        .filter(a => a._score > 0)
+        .filter(a => a._score >= 20)
         .sort((a, b) => b._score - a._score)
 
       setAyudas(conScore)
