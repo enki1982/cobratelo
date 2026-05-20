@@ -5,7 +5,7 @@ export default function Terminos() {
   return (
     <>
       <Head>
-        <title>Términos y Condiciones — Cobratelo</title>
+        <title>Términos y Condiciones — Cóbratelo</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="min-h-screen bg-[#F7F3EC]">

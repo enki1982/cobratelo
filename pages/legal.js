@@ -5,7 +5,7 @@ export default function Legal() {
   return (
     <>
       <Head>
-        <title>Aviso Legal — Cobratelo</title>
+        <title>Aviso Legal — Cóbratelo</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="min-h-screen bg-[#F7F3EC]">

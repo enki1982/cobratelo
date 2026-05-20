@@ -5,7 +5,7 @@ export default function Cookies() {
   return (
     <>
       <Head>
-        <title>Política de Cookies — Cobratelo</title>
+        <title>Política de Cookies — Cóbratelo</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="min-h-screen bg-[#F7F3EC]">

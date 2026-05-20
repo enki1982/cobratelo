@@ -160,7 +160,7 @@ export default function Precios() {
   return (
     <>
       <Head>
-        <title>Precios — Cobratelo</title>
+        <title>Precios — Cóbratelo</title>
         <meta name="description" content="Planes para ciudadanos y gestorías. Desde 0,99€/mes." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>

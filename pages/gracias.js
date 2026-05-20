@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function Gracias() {
   return (
     <>
-      <Head><title>¡Suscripción activada! — Cobratelo</title></Head>
+      <Head><title>¡Suscripción activada! — Cóbratelo</title></Head>
       <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center px-6">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-6">🎉</div>

@@ -5,7 +5,7 @@ export default function Privacidad() {
   return (
     <>
       <Head>
-        <title>Política de Privacidad — Cobratelo</title>
+        <title>Política de Privacidad — Cóbratelo</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="min-h-screen bg-[#F7F3EC]">

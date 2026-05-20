@@ -332,7 +332,7 @@ export default function Resultados() {
   return (
     <>
       <Head>
-        <title>Tus ayudas — Cobratelo</title>
+        <title>Tus ayudas — Cóbratelo</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
