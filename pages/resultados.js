@@ -200,6 +200,25 @@ function calcularRelevancia(ayuda, perfil) {
   // Excluir si importe máximo es >1M y el usuario no tiene empresa
   if (ayuda.importe_max > 1000000 && !tieneEmpresa) return 0
 
+  // ── EXCLUSIONES POR PROVINCIA ─────────────────────────────────
+  const provincia = (perfil.provincia || [])[0]
+  if (provincia && ayuda.comunidad_autonoma) {
+    // Mapa provincia → palabras clave que indican otra provincia
+    const PROVINCIAS_EXCLUIR = {
+      'barcelona':  ['girona','tarragona','lleida','gironès','tarragonès','terres de l'ebre'],
+      'girona':     ['barcelona','tarragona','lleida','barcelonès','tarragonès'],
+      'tarragona':  ['barcelona','girona','lleida','barcelonès','gironès'],
+      'lleida':     ['barcelona','girona','tarragona','barcelonès','gironès'],
+      'madrid_prov':['toledo','guadalajara','segovia','ávila','cuenca'],
+      'valencia_c': ['alicante','castellon','castelló'],
+      'alicante':   ['valencia','castellon','castelló'],
+      'castellon':  ['valencia','alicante'],
+    }
+    const excluir = PROVINCIAS_EXCLUIR[provincia] || []
+    const textoLower = texto.toLowerCase()
+    if (excluir.some(p => textoLower.includes(p))) return 0
+  }
+
   // ── BOOSTS POSITIVOS ───────────────────────────────────────────
   const ccaa = (perfil.ccaa || [])[0]
   if (ccaa && ayuda.comunidad_autonoma) {
