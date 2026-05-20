@@ -145,11 +145,21 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-[#E0DAD0]">
-          <span className="font-display font-bold text-[#111110]">cobratelo.es</span>
-          <p className="text-xs text-[#888882] text-center">
-            Los resultados son orientativos. Consulta siempre las fuentes oficiales antes de solicitar cualquier ayuda.
-          </p>
+        <footer className="max-w-5xl mx-auto px-6 py-8 border-t border-[#E0DAD0]">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+            <span className="font-display font-bold text-[#111110]">cobratelo.es</span>
+            <p className="text-xs text-[#888882] text-center">
+              Los resultados son orientativos. Consulta siempre las fuentes oficiales.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-[#888882]">
+            <a href="/legal" className="hover:text-[#111110] transition-colors">Aviso Legal</a>
+            <a href="/privacidad" className="hover:text-[#111110] transition-colors">Privacidad</a>
+            <a href="/cookies" className="hover:text-[#111110] transition-colors">Cookies</a>
+            <a href="/terminos" className="hover:text-[#111110] transition-colors">Términos</a>
+            <a href="mailto:hola@cobratelo.es" className="hover:text-[#111110] transition-colors">hola@cobratelo.es</a>
+          </div>
+          <p className="text-xs text-[#888882] text-center mt-3">© 2026 Volta Grup · Miquel Nogueras Ferrer</p>
         </footer>
 
       </div>
