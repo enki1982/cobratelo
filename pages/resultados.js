@@ -369,9 +369,9 @@ export default function Resultados() {
               <p className="text-white/80 mb-6 max-w-sm mx-auto text-sm">
                 Accede a todas las ayudas, alertas cuando abran nuevas convocatorias y envío directo a tu gestoría.
               </p>
-              <button className="bg-white text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
-                Desbloquear por 9€/mes
-              </button>
+              <a href="/precios" className="bg-white text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
+                Ver planes desde 0,99€/mes
+              </a>
               <p className="text-white/60 text-xs mt-3">Cancela cuando quieras</p>
             </div>
           )}

@@ -57,10 +57,13 @@ export default function Home() {
           <span className="font-display text-2xl font-bold text-[#111110]">
             cobratelo<span className="text-[#1A7A4A]">.es</span>
           </span>
-          <Link href="/perfil"
-            className="bg-[#E8540A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#d14a08] transition-colors">
-            Empezar gratis
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/precios" className="text-sm text-[#555550] hover:text-[#111110] transition-colors">Precios</Link>
+            <Link href="/perfil"
+              className="bg-[#E8540A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#d14a08] transition-colors">
+              Empezar gratis
+            </Link>
+          </div>
         </nav>
 
         {/* Hero */}
