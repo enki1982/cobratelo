@@ -1,6 +1,4 @@
-import Stripe from 'stripe'
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+const Stripe = require('stripe')
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
@@ -9,6 +7,7 @@ export default async function handler(req, res) {
   if (!priceId) return res.status(400).json({ error: 'priceId requerido' })
 
   try {
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
