@@ -44,15 +44,68 @@ function calcularRelevancia(ayuda, perfil) {
   const desc = (ayuda.descripcion || '').toLowerCase()
   const texto = nombre + ' ' + desc + ' ' + tags.join(' ')
 
-  // Excluir subvenciones claramente empresariales si el usuario no tiene empresa
-  const esEmpresarial = ['empresa', 'pyme', 'sociedade', 'corporativ', 'industri', 'sectorial'].some(t => texto.includes(t))
-  const tieneEmpresa = (perfil.extras || []).some(v => ['pyme', 'negocio_digital'].includes(v)) || (perfil.situacion || []).includes('autonomo')
-  if (esEmpresarial && !tieneEmpresa) score -= 60
+  const situacion = (perfil.situacion || [])[0]
+  const edad = (perfil.edad || [])[0]
+  const familia = perfil.familia || []
+  const especial = perfil.especial || []
+  const extras = perfil.extras || []
+  const vivienda = (perfil.vivienda || [])[0]
+  const ingresos = (perfil.ingresos || [])[0]
+
+  // ── EXCLUSIONES DURAS ──────────────────────────────────────────
+  // Discapacidad: solo si el usuario la marcó
+  const requiereDiscapacidad = texto.includes('discapacidad') || texto.includes('invalidez') || texto.includes('minusvalía') || texto.includes('pnc') || texto.includes('pensión no contributiva de invalidez')
+  if (requiereDiscapacidad && !especial.includes('discapacidad')) return 0
+
+  // Dependencia: solo si el usuario la marcó
+  const requiereDependencia = texto.includes('dependencia') && !texto.includes('independencia')
+  if (requiereDependencia && !especial.includes('dependencia') && !familia.includes('dependiente_cargo')) return 0
+
+  // Hijos: excluir ayudas de hijos si no tiene hijos
+  const tieneHijos = familia.some(v => ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental'].includes(v))
+  const requiereHijos = (texto.includes('hijo') || texto.includes('nacimiento') || texto.includes('maternidad') || texto.includes('paternidad') || texto.includes('familia numerosa') || texto.includes('menor a cargo')) && !texto.includes('sin hijos')
+  if (requiereHijos && !tieneHijos) return 0
+
+  // Familia numerosa: solo si lo marcó
+  if (texto.includes('familia numerosa') && !familia.includes('familia_numerosa')) return 0
+
+  // Violencia de género: solo si lo marcó
+  if ((texto.includes('violencia de género') || texto.includes('víctima')) && !especial.includes('victima_violencia')) return 0
+
+  // Viudedad: solo si lo marcó
+  if (texto.includes('viudedad') && !familia.includes('viudo')) return 0
+
+  // Autónomo: solo si es autónomo
+  const soloAutonomo = texto.includes('autónom') && !texto.includes('empleado') && !texto.includes('trabajador')
+  if (soloAutonomo && situacion !== 'autonomo') return 0
+
+  // Desempleo/SEPE: solo si está en paro
+  const soloDesempleo = (texto.includes('desempleo') || texto.includes('sepe') || texto.includes('prestación por desempleo')) && !texto.includes('autónom')
+  if (soloDesempleo && situacion !== 'desempleado') return 0
+
+  // Pensionistas: solo si es pensionista o mayor 65
+  const soloPensionista = texto.includes('pensionista') || (texto.includes('pensión') && texto.includes('jubila'))
+  if (soloPensionista && situacion !== 'pensionista' && edad !== 'mayor65') return 0
+
+  // Becas educativas: solo estudiantes o con hijos en edad escolar
+  const soloEstudiante = (texto.includes('beca') && (texto.includes('universitaria') || texto.includes('educación')))
+  if (soloEstudiante && situacion !== 'estudiante' && !extras.includes('estudios_hijos')) return 0
+
+  // Vehículo eléctrico (MOVES): solo si lo marcó
+  if ((texto.includes('moves') || texto.includes('vehículo eléctrico')) && !extras.includes('coche_electrico') && !extras.includes('quiero_vehiculo')) return 0
+
+  // Mascotas: solo si tiene mascotas
+  if ((texto.includes('mascota') || texto.includes('animal de compañía') || texto.includes('veterinario')) && !extras.includes('mascotas')) return 0
+
+  // Empresa/pyme (sin autónomo): solo si tiene empresa
+  const esEmpresarial = ['empresa', 'pyme', 'sociedade', 'corporativ', 'industri', 'sectorial'].some(t => texto.includes(t)) && !texto.includes('autónom')
+  const tieneEmpresa = extras.some(v => ['pyme', 'negocio_digital'].includes(v)) || situacion === 'autonomo'
+  if (esEmpresarial && !tieneEmpresa) return 0
 
   // Excluir si importe máximo es >1M y el usuario no tiene empresa
-  if (ayuda.importe_max > 1000000 && !tieneEmpresa) score -= 80
+  if (ayuda.importe_max > 1000000 && !tieneEmpresa) return 0
 
-  // Boost por comunidad autónoma
+  // ── BOOSTS POSITIVOS ───────────────────────────────────────────
   const ccaa = (perfil.ccaa || [])[0]
   if (ccaa && ayuda.comunidad_autonoma) {
     if (ayuda.comunidad_autonoma === ccaa) score += 30
@@ -61,7 +114,6 @@ function calcularRelevancia(ayuda, perfil) {
   if (ayuda.ambito === 'estatal') score += 10
 
   // Boost por situación laboral
-  const situacion = (perfil.situacion || [])[0]
   if (situacion === 'autonomo' && (texto.includes('autónom') || texto.includes('autonomo'))) score += 25
   if (situacion === 'desempleado' && (texto.includes('desempleo') || texto.includes('paro') || texto.includes('sepe'))) score += 25
   if (situacion === 'pensionista' && (texto.includes('pensión') || texto.includes('pension') || texto.includes('jubila') || texto.includes('mayores'))) score += 30
@@ -69,12 +121,10 @@ function calcularRelevancia(ayuda, perfil) {
   if (situacion === 'emprendedor' && (texto.includes('emprendedor') || texto.includes('startup') || texto.includes('empresa'))) score += 20
 
   // Boost por edad
-  const edad = (perfil.edad || [])[0]
   if (edad === 'menor30' && (texto.includes('joven') || texto.includes('menor 35') || texto.includes('primera vivienda'))) score += 25
   if (edad === 'mayor65' && (texto.includes('mayor') || texto.includes('tercera edad') || texto.includes('pensión'))) score += 25
 
   // Boost por familia
-  const familia = perfil.familia || []
   if (familia.includes('hijos_menores3') && (texto.includes('nacimiento') || texto.includes('bebé') || texto.includes('maternidad') || texto.includes('paternidad'))) score += 30
   if (familia.includes('familia_numerosa') && texto.includes('numerosa')) score += 30
   if (familia.includes('monoparental') && texto.includes('monoparental')) score += 30
@@ -87,7 +137,6 @@ function calcularRelevancia(ayuda, perfil) {
   if (vivienda === 'rehabilitacion' && (texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia'))) score += 25
 
   // Boost por extras
-  const extras = perfil.extras || []
   if (extras.includes('mascotas') && (texto.includes('mascota') || texto.includes('animal') || texto.includes('veterinario'))) score += 30
   if (extras.includes('energia') && (texto.includes('energía') || texto.includes('solar') || texto.includes('termosolar') || texto.includes('rehabilita'))) score += 25
   if (extras.includes('coche_electrico') && (texto.includes('eléctrico') || texto.includes('moves') || texto.includes('vehículo'))) score += 25
@@ -95,14 +144,12 @@ function calcularRelevancia(ayuda, perfil) {
   if (extras.includes('gafas_audifonos') && (texto.includes('óptica') || texto.includes('audífono') || texto.includes('prótesis'))) score += 25
 
   // Boost por situaciones especiales
-  const especial = perfil.especial || []
   if (especial.includes('discapacidad') && (texto.includes('discapacidad') || texto.includes('minusvalía'))) score += 35
   if (especial.includes('dependencia') && texto.includes('dependencia')) score += 35
   if (especial.includes('victima_violencia') && (texto.includes('violencia') || texto.includes('género'))) score += 40
   if (especial.includes('rural') && (texto.includes('rural') || texto.includes('municipio pequeño'))) score += 25
 
   // Boost por ingresos bajos
-  const ingresos = (perfil.ingresos || [])[0]
   if (['sin_ingresos', 'bajos'].includes(ingresos) && (texto.includes('renta mínima') || texto.includes('ingreso mínimo') || texto.includes('renta baja') || texto.includes('vulnerab'))) score += 25
 
   return score
