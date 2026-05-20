@@ -45,7 +45,9 @@ function calcularRelevancia(ayuda, perfil) {
   const texto = nombre + ' ' + desc + ' ' + tags.join(' ')
 
   const situacion = (perfil.situacion || [])[0]
-  const edad = (perfil.edad || [])[0]
+  const edadRaw = (perfil.edad || [])[0]
+  const edadNum = parseInt(edadRaw) || 0
+  const edad = edadNum >= 65 ? 'mayor65' : edadNum >= 45 ? '45_65' : edadNum >= 30 ? '30_45' : edadNum > 0 ? 'menor30' : edadRaw
   const familia = perfil.familia || []
   const especial = perfil.especial || []
   const extras = perfil.extras || []
@@ -75,13 +77,20 @@ function calcularRelevancia(ayuda, perfil) {
   // Viudedad: solo si lo marcó
   if (texto.includes('viudedad') && !familia.includes('viudo')) return 0
 
-  // Edad mínima 65: solo si el usuario es mayor de 65
-  const requiere65 = (texto.includes('65 años') || texto.includes('mayor de 65') || texto.includes('mayores de 65') || texto.includes('65 o más')) && !texto.includes('menor de 65')
-  if (requiere65 && edad !== 'mayor65') return 0
+  // Edad mínima 65: excluir si el usuario tiene menos de 65
+  const requiere65 = texto.includes('65 años') || texto.includes('mayor de 65') || texto.includes('mayores de 65') || texto.includes('65 o más')
+  if (requiere65 && edadNum > 0 && edadNum < 65) return 0
+  if (requiere65 && edadNum === 0 && edad !== 'mayor65') return 0
 
-  // Edad mínima 30 o menor: excluir si el usuario es mayor
-  const soloJoven = texto.includes('menor de 35') || texto.includes('jóvenes menores') || texto.includes('primera vivienda joven')
-  if (soloJoven && !['menor30', '30_45'].includes(edad)) return 0
+  // Edad máxima 65 (IMSERSO pensión no contributiva invalidez es 18-65)
+  const requiereMenor65 = texto.includes('18-65') || texto.includes('18 a 65') || texto.includes('menores de 65')
+  if (requiereMenor65 && edadNum >= 65) return 0
+
+  // Jóvenes (< 35): excluir si mayor
+  const soloMenor35 = texto.includes('menor de 35') || texto.includes('menores de 35') || texto.includes('jóvenes hasta 35')
+  if (soloMenor35 && edadNum > 35) return 0
+
+
 
   // Autónomo: solo si es autónomo
   const soloAutonomo = texto.includes('autónom') && !texto.includes('empleado') && !texto.includes('trabajador')

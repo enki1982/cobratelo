@@ -73,14 +73,10 @@ const PASOS = [
   {
     id: 'edad',
     titulo: '¿Cuántos años tienes?',
-    subtitulo: 'La edad determina muchas ayudas',
+    subtitulo: 'Introduce tu edad exacta para un resultado más preciso',
     multi: false,
-    opciones: [
-      { value: 'menor30', label: 'Menos de 30 años', emoji: '🌱' },
-      { value: '30_45', label: 'Entre 30 y 45 años', emoji: '⚡' },
-      { value: '45_65', label: 'Entre 45 y 65 años', emoji: '🎯' },
-      { value: 'mayor65', label: 'Más de 65 años', emoji: '🌟' },
-    ],
+    tipo: 'numero',
+    opciones: [],
   },
   {
     id: 'familia',
@@ -211,6 +207,7 @@ export default function Perfil() {
   const [paso, setPaso] = useState(0)
   const [perfil, setPerfil] = useState({})
   const [seleccion, setSeleccion] = useState([])
+  const [edadExacta, setEdadExacta] = useState('')
   const [emailGestoria, setEmailGestoria] = useState('')
   const [showEmailInput, setShowEmailInput] = useState(false)
 
@@ -237,7 +234,7 @@ export default function Perfil() {
   const siguiente = () => {
     const nuevoPerfil = {
       ...perfil,
-      [pasoActual.id]: seleccion,
+      [pasoActual.id]: pasoActual.tipo === 'numero' ? [edadExacta] : seleccion,
       ...(pasoActual.id === 'gestoria' && emailGestoria ? { email_gestoria: emailGestoria } : {})
     }
     setPerfil(nuevoPerfil)
@@ -255,12 +252,17 @@ export default function Perfil() {
   const anterior = () => {
     if (paso > 0) {
       setPaso(paso - 1)
-      setSeleccion(perfil[PASOS[paso - 1].id] || [])
+      const prevPaso = PASOS[paso - 1]
+      if (prevPaso.tipo === 'numero') {
+        setEdadExacta((perfil[prevPaso.id] || [''])[0] || '')
+      } else {
+        setSeleccion(perfil[prevPaso.id] || [])
+      }
       setShowEmailInput(false)
     }
   }
 
-  const puedeAvanzar = seleccion.length > 0 && (
+  const puedeAvanzar = (pasoActual.tipo === 'numero' ? (parseInt(edadExacta) >= 1 && parseInt(edadExacta) <= 120) : seleccion.length > 0) && (
     !showEmailInput || emailGestoria.includes('@')
   )
 
@@ -291,7 +293,31 @@ export default function Perfil() {
             <p className="text-[#888882] mb-8">{pasoActual.subtitulo}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {pasoActual.tipo === 'numero' && (
+            <div className="mb-6 animate-fade-up">
+              <div className="flex items-center gap-4">
+                <input
+                  type="number"
+                  min="1"
+                  max="120"
+                  value={edadExacta}
+                  onChange={e => setEdadExacta(e.target.value)}
+                  placeholder="Ej: 58"
+                  className="w-40 text-center text-4xl font-display font-bold px-4 py-4 rounded-2xl border-2 border-[#E0DAD0] bg-white focus:outline-none focus:border-[#1A7A4A] text-[#111110] transition-colors"
+                />
+                <span className="text-2xl text-[#888882] font-medium">años</span>
+              </div>
+              {edadExacta && (
+                <p className="text-sm text-[#1A7A4A] mt-3 font-medium">
+                  {parseInt(edadExacta) < 30 ? '🌱 Menor de 30 años' :
+                   parseInt(edadExacta) < 45 ? '⚡ Entre 30 y 45 años' :
+                   parseInt(edadExacta) < 65 ? '🎯 Entre 45 y 65 años' :
+                   '🌟 Mayor de 65 años'}
+                </p>
+              )}
+            </div>
+          )}
+          {!pasoActual.tipo && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             {(pasoActual.dinamico && pasoActual.id === 'provincia'
               ? getOpcionesProvincias((perfil.ccaa || [])[0])
               : pasoActual.opciones
@@ -313,7 +339,7 @@ export default function Perfil() {
                 </button>
               )
             })}
-          </div>
+          </div>}
 
           {showEmailInput && (
             <div className="mb-6 animate-fade-up">
