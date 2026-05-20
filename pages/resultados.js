@@ -113,16 +113,24 @@ function calcularRelevancia(ayuda, perfil) {
 
   // ── 4. EXCLUSIONES DURAS POR FAMILIA ─────────────────────────
   if (!tieneHijos) {
-    if (t.includes('nacimiento') || t.includes('maternidad') || t.includes('paternidad')) return 0
+    // Embarazada SÍ ve prestación por nacimiento
+    if (!familia.includes('embarazada') && (t.includes('nacimiento') || t.includes('maternidad') || t.includes('paternidad'))) return 0
     if (t.includes('familia numerosa')) return 0
     if (t.includes('hijo a cargo') || t.includes('hijos a cargo') || t.includes('per fill')) return 0
     if (t.includes('beca comedor') || t.includes('material escolar') || t.includes('menjador escolar')) return 0
+
+  // Becas universitarias/FP: solo estudiantes o con hijos en edad escolar
+  if ((t.includes('beca mec') || t.includes('beca universitaria') || (t.includes('beca') && t.includes('universitari'))) && situacion !== 'estudiante' && !extras.includes('estudios_hijos')) return 0
+  }
+  // Fill a càrrec amb discapacitat: requiere hijo CON discapacidad
+  if ((t.includes('fill a càrrec') || t.includes('hijo a cargo')) && t.includes('discapacitat')) {
+    if (!tieneHijos || !especial.includes('discapacidad')) return 0
   }
   if (!familia.includes('familia_numerosa') && t.includes('família nombrosa')) return 0
   if (!familia.includes('viudo') && (t.includes('viudedad') || t.includes('pensió de viduïtat'))) return 0
   if (!familia.includes('monoparental') && t.includes('família monoparental')) return 0
   if (!familia.includes('dependiente_cargo') && !especial.includes('dependencia') && t.includes('cuidador no profesional')) return 0
-  if (!familia.includes('embarazada') && (t.includes('embarazo') || t.includes('gestació'))) return 0
+  if (!familia.includes('embarazada') && !tieneHijos && (t.includes('embarazo') || t.includes('gestació'))) return 0
 
   // ── 5. EXCLUSIONES DURAS POR VIVIENDA ────────────────────────
   const esAlquiler = viviendas.includes('alquiler')
@@ -165,7 +173,8 @@ function calcularRelevancia(ayuda, perfil) {
   if (!especial.includes('inmigrante') && (t.includes('reagrupació familiar') || t.includes('permiso de residencia') || t.includes('reagrupación familiar'))) return 0
 
   // ── 8. EXCLUSIONES POR VEHÍCULO ──────────────────────────────
-  if (!tieneVehiculo && (t.includes('moves') || t.includes('plan renove') || (t.includes('vehículo eléctrico') && t.includes('subvención')))) return 0
+  const esAyudaVehiculo = t.includes('moves') || t.includes('plan renove') || t.includes('vehículo eléctrico') || t.includes('vehicle elèctric')
+  if (esAyudaVehiculo && !tieneVehiculo) return 0
 
   // ── 9. EXCLUSIONES POR MASCOTAS ──────────────────────────────
   if (!extras.includes('mascotas') && (t.includes('esterilización') || t.includes('chip obligatorio') || (t.includes('veterinari') && t.includes('ajut')))) return 0
@@ -173,7 +182,7 @@ function calcularRelevancia(ayuda, perfil) {
   // ── 10. EXCLUSIONES POR EMPRESA ──────────────────────────────
   if (!tieneEmpresa) {
     if (t.includes('sociedades') || t.includes('persona jurídica') || t.includes('empresa beneficiaria')) return 0
-    if (t.includes('kit digital') && t.includes('empresa')) return 0
+    if (t.includes('kit digital')) return 0
     if (ayuda.importe_max > 500000) return 0
   }
 
