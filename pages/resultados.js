@@ -203,13 +203,48 @@ function calcularRelevancia(ayuda, perfil) {
   // Aunque una ayuda sea autonómica, si menciona explícitamente otra provincia/comarca → excluir
   if (provincia) {
     const MENCIONES_PROV = {
-      'barcelona':  ['tarragon','tarragonès','girona','gironès','lleida','lleidatà','baix camp','terra alta','priorat','ribera d\'ebre','conca de barberà','alt camp','baix penedès','montsià'],
-      'girona':     ['barcelona','barcelonès','tarragon','tarragonès','lleida','baix camp','garraf','maresme'],
-      'tarragona':  ['barcelona','barcelonès','girona','gironès','lleida','bages','osona','maresme','garraf'],
-      'lleida':     ['barcelona','barcelonès','girona','gironès','tarragona','tarragonès'],
-      'madrid_prov':['barcelona','valencia','sevilla','bilbao','málaga','girona','tarragona'],
-      'sevilla':    ['barcelona','madrid','valencia','málaga','granada','girona','tarragona'],
-      'valencia_c': ['barcelona','alacant','alicante','castellon','castelló','madrid'],
+      // Cataluña
+      'barcelona':  ['tarragon','tarragonès','girona','gironès','lleida','lleidatà','baix camp','terra alta','priorat','ribera d\'ebre','conca de barberà','alt camp','baix penedès','montsià','segarra','noguera','pallars','val d\'aran','garrigues','urgell'],
+      'girona':     ['barcelona','barcelonès','tarragon','tarragonès','lleida','baix camp','garraf','maresme','osona','bages','berguedà','solsonès'],
+      'tarragona':  ['barcelona','barcelonès','girona','gironès','lleida','bages','osona','maresme','garraf','vallès','penedès'],
+      'lleida':     ['barcelona','barcelonès','girona','gironès','tarragona','tarragonès','maresme','vallès'],
+      // Madrid
+      'madrid_prov':['barcelona','valencia','sevilla','bilbao','zaragoza','málaga','murcia','palma','alicante','córdoba','valladolid','girona','tarragona','toledo','guadalajara','segovia','ávila','cuenca'],
+      // Andalucía
+      'sevilla':    ['barcelona','madrid','valencia','málaga','granada','cádiz','jerez','huelva','córdoba','jaén','almería','girona','tarragona'],
+      'malaga':     ['barcelona','madrid','sevilla','granada','cádiz','córdoba','huelva','jaén','almería'],
+      'granada':    ['barcelona','madrid','sevilla','málaga','cádiz','córdoba','huelva','jaén','almería'],
+      'cadiz':      ['barcelona','madrid','sevilla','málaga','granada','córdoba','huelva','jaén','almería','jerez'],
+      'cordoba':    ['barcelona','madrid','sevilla','málaga','granada','cádiz','huelva','jaén','almería'],
+      'huelva':     ['barcelona','madrid','sevilla','málaga','granada','cádiz','córdoba','jaén','almería'],
+      'jaen':       ['barcelona','madrid','sevilla','málaga','granada','cádiz','córdoba','huelva','almería'],
+      'almeria':    ['barcelona','madrid','sevilla','málaga','granada','cádiz','córdoba','huelva','jaén'],
+      // Valencia
+      'valencia_c': ['barcelona','alacant','alicante','castellon','castelló','madrid','murcia','ibiza','mallorca'],
+      'alicante':   ['barcelona','valencia','castellon','castelló','madrid','murcia'],
+      'castellon':  ['barcelona','valencia','alicante','alacant','madrid','tarragona'],
+      // Galicia
+      'coruna':     ['barcelona','madrid','pontevedra','ourense','lugo','vigo'],
+      'pontevedra': ['barcelona','madrid','coruna','coruña','ourense','lugo'],
+      'ourense':    ['barcelona','madrid','coruna','coruña','pontevedra','lugo'],
+      'lugo':       ['barcelona','madrid','coruna','coruña','pontevedra','ourense'],
+      // País Vasco
+      'bilbao':     ['barcelona','madrid','donostia','san sebastián','vitoria','gasteiz','pamplona'],
+      'gipuzkoa':   ['barcelona','madrid','bilbao','bizkaia','vitoria','gasteiz'],
+      'araba':      ['barcelona','madrid','bilbao','bizkaia','donostia','pamplona'],
+      // Aragón
+      'zaragoza':   ['barcelona','madrid','huesca','teruel','pamplona','lleida'],
+      'huesca':     ['barcelona','madrid','zaragoza','teruel','lleida','pamplona'],
+      'teruel':     ['barcelona','madrid','zaragoza','huesca','castellon','valencia'],
+      // Castilla
+      'burgos':     ['barcelona','madrid','valladolid','palencia','soria','logroño'],
+      'valladolid': ['barcelona','madrid','burgos','palencia','zamora','salamanca'],
+      'toledo':     ['barcelona','madrid','ciudad real','cuenca','guadalajara','ávila'],
+      'ciudad_real':['barcelona','madrid','toledo','cuenca','albacete','badajoz'],
+      'albacete':   ['barcelona','madrid','toledo','ciudad real','cuenca','murcia','valencia'],
+      // Resto
+      'murcia':     ['barcelona','madrid','alicante','almería','albacete','granada'],
+      'otra_provincia': [],
     }
     const menciones = MENCIONES_PROV[provincia] || []
     if (menciones.some(m => t.includes(m))) return 0
