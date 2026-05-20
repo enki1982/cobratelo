@@ -199,7 +199,21 @@ function calcularRelevancia(ayuda, perfil) {
     if (t.includes('panells solars') || t.includes('paneles solares') || t.includes('aerotèrmia') || t.includes('aerotermia')) return 0
   }
 
-  // ── BOOSTS POSITIVOS ──────────────────────────────────────────
+  // ── 1b. FILTRO TEXTUAL DE PROVINCIA ───────────────────────────
+  // Aunque una ayuda sea autonómica, si menciona explícitamente otra provincia/comarca → excluir
+  if (provincia) {
+    const MENCIONES_PROV = {
+      'barcelona':  ['tarragon','tarragonès','girona','gironès','lleida','lleidatà','baix camp','terra alta','priorat','ribera d\'ebre','conca de barberà','alt camp','baix penedès','montsià'],
+      'girona':     ['barcelona','barcelonès','tarragon','tarragonès','lleida','baix camp','garraf','maresme'],
+      'tarragona':  ['barcelona','barcelonès','girona','gironès','lleida','bages','osona','maresme','garraf'],
+      'lleida':     ['barcelona','barcelonès','girona','gironès','tarragona','tarragonès'],
+      'madrid_prov':['barcelona','valencia','sevilla','bilbao','málaga','girona','tarragona'],
+      'sevilla':    ['barcelona','madrid','valencia','málaga','granada','girona','tarragona'],
+      'valencia_c': ['barcelona','alacant','alicante','castellon','castelló','madrid'],
+    }
+    const menciones = MENCIONES_PROV[provincia] || []
+    if (menciones.some(m => t.includes(m))) return 0
+  }
   // CCAA
   if (ccaa && ayuda.comunidad_autonoma === ccaa) score += 25
   if (ayuda.ambito === 'estatal') score += 5
