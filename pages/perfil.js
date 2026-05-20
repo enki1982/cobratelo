@@ -2,6 +2,59 @@ import Head from 'next/head'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 
+const PROVINCIAS = {
+  'Catalunya':  [
+    { value: 'barcelona',  label: 'Barcelona',  emoji: '🏙️' },
+    { value: 'girona',     label: 'Girona',      emoji: '🏔️' },
+    { value: 'tarragona',  label: 'Tarragona',   emoji: '🏛️' },
+    { value: 'lleida',     label: 'Lleida',      emoji: '🌾' },
+  ],
+  'Madrid':     [{ value: 'madrid', label: 'Madrid', emoji: '🏛️' }],
+  'Andalucía':  [
+    { value: 'sevilla',  label: 'Sevilla',  emoji: '💃' },
+    { value: 'malaga',   label: 'Málaga',   emoji: '☀️' },
+    { value: 'granada',  label: 'Granada',  emoji: '🏔️' },
+    { value: 'cadiz',    label: 'Cádiz',    emoji: '🌊' },
+    { value: 'cordoba',  label: 'Córdoba',  emoji: '🕌' },
+    { value: 'jaen',     label: 'Jaén',     emoji: '🫒' },
+    { value: 'almeria',  label: 'Almería',  emoji: '🏜️' },
+    { value: 'huelva',   label: 'Huelva',   emoji: '🌲' },
+  ],
+  'Valencia':   [
+    { value: 'valencia_c', label: 'Valencia',  emoji: '🌊' },
+    { value: 'alicante',   label: 'Alicante',  emoji: '☀️' },
+    { value: 'castellon',  label: 'Castellón', emoji: '🏰' },
+  ],
+  'Galicia':    [
+    { value: 'coruna',      label: 'A Coruña',   emoji: '🌊' },
+    { value: 'pontevedra',  label: 'Pontevedra', emoji: '💚' },
+    { value: 'ourense',     label: 'Ourense',    emoji: '🍷' },
+    { value: 'lugo',        label: 'Lugo',       emoji: '🏰' },
+  ],
+  'Euskadi':    [
+    { value: 'bilbao',      label: 'Vizcaya',    emoji: '🏭' },
+    { value: 'gipuzkoa',    label: 'Guipúzcoa',  emoji: '⚽' },
+    { value: 'araba',       label: 'Álava',      emoji: '🍷' },
+  ],
+  'Aragón':     [
+    { value: 'zaragoza',  label: 'Zaragoza',  emoji: '🦁' },
+    { value: 'huesca',    label: 'Huesca',    emoji: '🏔️' },
+    { value: 'teruel',    label: 'Teruel',    emoji: '🏛️' },
+  ],
+  'Castilla':   [
+    { value: 'burgos',      label: 'Burgos',      emoji: '🏰' },
+    { value: 'valladolid',  label: 'Valladolid',  emoji: '🍷' },
+    { value: 'toledo',      label: 'Toledo',      emoji: '⚔️' },
+    { value: 'ciudad_real', label: 'Ciudad Real', emoji: '🏰' },
+    { value: 'albacete',    label: 'Albacete',    emoji: '🔪' },
+  ],
+  'otra': [{ value: 'otra_provincia', label: 'Mi provincia', emoji: '📍' }],
+}
+
+function getOpcionesProvincias(ccaa) {
+  return PROVINCIAS[ccaa] || PROVINCIAS['otra']
+}
+
 const PASOS = [
   {
     id: 'situacion',
@@ -133,6 +186,14 @@ const PASOS = [
     ],
   },
   {
+    id: 'provincia',
+    titulo: '¿En qué provincia vives?',
+    subtitulo: 'Hay ayudas específicas por provincia y comarca',
+    multi: false,
+    dinamico: true,
+    opciones: [],
+  },
+  {
     id: 'gestoria',
     titulo: '¿Tienes gestoría o asesor?',
     subtitulo: 'Podemos enviarles tu informe para que te ayuden a tramitar',
@@ -231,7 +292,10 @@ export default function Perfil() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-            {pasoActual.opciones.map((op, i) => {
+            {(pasoActual.dinamico && pasoActual.id === 'provincia'
+              ? getOpcionesProvincias((perfil.ccaa || [])[0])
+              : pasoActual.opciones
+            ).map((op, i) => {
               const selected = seleccion.includes(op.value)
               return (
                 <button
