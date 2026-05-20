@@ -108,9 +108,9 @@ export default function Home() {
         <section className="border-y border-[#E0DAD0] py-8">
           <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 divide-x divide-[#E0DAD0]">
             {[{ label: 'ayudas activas', value: `${totalAyudas}+` }, ...STATS_BASE].map((s, i) => (
-              <div key={i} className="px-6 text-center">
-                <div className="font-display text-3xl font-bold text-[#1A7A4A]">{s.value}</div>
-                <div className="text-xs text-[#888882] mt-1">{s.label}</div>
+              <div key={i} className="px-2 md:px-6 text-center overflow-hidden">
+                <div className="font-display text-xl md:text-3xl font-bold text-[#1A7A4A] truncate">{s.value}</div>
+                <div className="text-xs text-[#888882] mt-1 truncate">{s.label}</div>
               </div>
             ))}
           </div>
