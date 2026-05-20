@@ -247,9 +247,14 @@ export default function Resultados() {
           <Link href="/" className="font-display text-xl font-bold text-[#111110]">
             cobratelo<span className="text-[#1A7A4A]">.es</span>
           </Link>
-          <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">
-            ← Volver al perfil
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">
+              Inicio
+            </Link>
+            <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">
+              ← Cambiar perfil
+            </Link>
+          </div>
         </nav>
 
         <div className="max-w-3xl mx-auto px-6 pb-20">
@@ -302,12 +307,15 @@ export default function Resultados() {
                 <div key={ayuda.id}
                   className={`bg-white rounded-2xl border border-[#E0DAD0] p-6 transition-all ${isBlurred ? 'relative overflow-hidden' : ''}`}>
                   {isBlurred && (
-                    <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl">
+                    <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
+                      onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
                       <span className="text-2xl mb-2">🔒</span>
                       <p className="font-semibold text-[#111110] text-sm text-center px-4">
-                        {ayudas.length - FREE_LIMIT} ayudas más bloqueadas
+                        {ayudas.length - FREE_LIMIT} ayudas más
                       </p>
-                      <p className="text-xs text-[#888882] mt-1">Desbloquea con Pro</p>
+                      <span className="mt-2 bg-[#E8540A] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                        Desbloquear →
+                      </span>
                     </div>
                   )}
 
@@ -353,7 +361,7 @@ export default function Resultados() {
 
           {/* CTA Pro */}
           {ayudas.length > FREE_LIMIT && (
-            <div className="bg-[#E8540A] rounded-3xl p-8 mt-8 text-center animate-fade-up">
+            <div id="cta-pro" className="bg-[#E8540A] rounded-3xl p-8 mt-8 text-center animate-fade-up">
               <p className="text-white/80 text-sm mb-1">{ayudas.length - FREE_LIMIT} ayudas más bloqueadas</p>
               <h2 className="font-display text-3xl font-bold text-white mb-2">
                 Cobra todo lo que te toca
