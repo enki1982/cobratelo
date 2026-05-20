@@ -66,13 +66,13 @@ function calcularRelevancia(ayuda, perfil) {
   if (['municipal','comarcal'].includes(ayuda.ambito)) {
     if (!provincia) return 0
     const EXCLUIR_PROV = {
-      'barcelona':   ['girona','tarragona','lleida','sevilla','madrid','valencia','zaragoza'],
-      'girona':      ['barcelona','tarragona','lleida','madrid'],
-      'tarragona':   ['barcelona','girona','lleida','madrid'],
-      'lleida':      ['barcelona','girona','tarragona','madrid'],
-      'madrid_prov': ['barcelona','valencia','sevilla','zaragoza'],
-      'valencia_c':  ['barcelona','alicante','castellon','madrid'],
-      'alicante':    ['barcelona','valencia','castellon'],
+      'barcelona':   ['girona','gironès','tarragon','tarragonès','tarragona','lleida','sevilla','madrid','valencia','zaragoza','baix camp','terra alta','priorat','ribera d'ebre','conca de barberà','alt camp','baix penedès'],
+      'girona':      ['barcelona','barcelonès','tarragon','tarragonès','tarragona','lleida','madrid','baix camp','garraf'],
+      'tarragona':   ['barcelona','barcelonès','girona','gironès','lleida','madrid','maresme','garraf','bages','osona'],
+      'lleida':      ['barcelona','barcelonès','girona','gironès','tarragona','tarragonès','madrid'],
+      'madrid_prov': ['barcelona','valencia','sevilla','zaragoza','bilbao','málaga'],
+      'valencia_c':  ['barcelona','alacant','alicante','castellon','castelló','madrid'],
+      'alicante':    ['barcelona','valencia','castellon','castelló'],
     }
     const excluir = EXCLUIR_PROV[provincia] || []
     if (excluir.some(p => t.includes(p))) return 0
@@ -131,7 +131,7 @@ function calcularRelevancia(ayuda, perfil) {
   const quiereRehabilitacion = viviendas.includes('rehabilitacion')
 
   // Ayudas de alquiler: solo si vive de alquiler
-  const esAyudaAlquiler = (t.includes('alquiler') || t.includes('arrendatario') || t.includes('lloguer')) && !t.includes('propietario')
+  const esAyudaAlquiler = (t.includes('alquiler') || t.includes('arrendatari') || t.includes('arrendatario') || t.includes('lloguer') || t.includes('pagament del lloguer') || t.includes('ajut al lloguer')) && !t.includes('propietari')
   if (esAyudaAlquiler && !esAlquiler) return 0
 
   // Ayudas de primer acceso/compra: solo si busca vivienda
