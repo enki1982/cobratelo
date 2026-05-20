@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
 const STATS = [
-  { label: 'ayudas activas', value: '42+' },
+  { label: 'ayudas activas', value: '66+' },
   { label: 'importe medio', value: '1.517€' },
   { label: 'categorías', value: '10' },
 ]
@@ -30,7 +30,7 @@ export default function Home() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    const target = 42
+    const target = 66
     const step = Math.ceil(target / 30)
     const timer = setInterval(() => {
       setCount(c => {
