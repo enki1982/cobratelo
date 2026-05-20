@@ -154,6 +154,7 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-[#888882]">
+            <a href="/precios" className="hover:text-[#111110] transition-colors">Precios</a>
             <a href="/legal" className="hover:text-[#111110] transition-colors">Aviso Legal</a>
             <a href="/privacidad" className="hover:text-[#111110] transition-colors">Privacidad</a>
             <a href="/cookies" className="hover:text-[#111110] transition-colors">Cookies</a>
