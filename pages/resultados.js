@@ -15,7 +15,7 @@ const TIPO_COLOR = {
 }
 
 // Importe máximo razonable para ciudadanos
-const IMPORTE_MAX_CIUDADANO = 50000
+const IMPORTE_MAX_CIUDADANO = 30000
 
 function formatImporte(min, max, desc, tipo) {
   if (tipo === 'deduccion') return desc || 'Deducción fiscal'
@@ -336,15 +336,17 @@ export default function Resultados() {
 
       const conScore = (data || [])
         .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
-        .filter(a => a._score >= 20)
+        .filter(a => a._score >= 35)
         .sort((a, b) => b._score - a._score)
+        .slice(0, 20)
 
       setAyudas(conScore)
 
-      // Total: solo prestaciones y subvenciones, no deducciones, max razonable
+      // Total: solo TOP 5 más relevantes, solo subvenciones/prestaciones directas
       const total = conScore
         .filter(a => !['deduccion','prestamo'].includes(a.tipo))
         .filter(a => a.importe_max > 0 && a.importe_max <= IMPORTE_MAX_CIUDADANO)
+        .slice(0, 5)
         .reduce((acc, a) => acc + a.importe_max, 0)
       setTotalEstimado(total)
     } catch (e) {
