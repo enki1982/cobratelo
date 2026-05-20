@@ -203,6 +203,24 @@ function calcularRelevancia(ayuda, perfil) {
 
   // ── 1b. FILTRO TEXTUAL DE PROVINCIA ───────────────────────────
   // Aunque una ayuda sea autonómica, si menciona explícitamente otra provincia/comarca → excluir
+  // Exclusión directa por organismo: Consells Comarcals y Ayuntamientos de otras provincias
+  if (provincia && ayuda.organismo) {
+    const orgNorm = normalize(ayuda.organismo)
+    const EXCL_ORG = {
+      'barcelona': ['tarragones','tarragona','girona','girones','lleida','madrid','sevilla','valencia','zaragoza','malaga','murcia','bilbao'],
+      'girona':    ['barcelona','tarragona','tarragones','lleida','madrid','sevilla'],
+      'tarragona': ['barcelona','girona','girones','lleida','madrid'],
+      'lleida':    ['barcelona','girona','tarragona','tarragones','madrid'],
+      'madrid_prov': ['barcelona','valencia','sevilla','bilbao','zaragoza','girona','tarragona'],
+      'sevilla':   ['barcelona','madrid','valencia','malaga','granada','cadiz'],
+      'malaga':    ['barcelona','madrid','sevilla','granada','cadiz','cordoba'],
+      'valencia_c':['barcelona','alicante','castellon','madrid'],
+      'alicante':  ['barcelona','valencia','castellon','madrid'],
+    }
+    const excluirOrg = EXCL_ORG[provincia] || []
+    if (excluirOrg.some(p => orgNorm.includes(p))) return 0
+  }
+
   if (provincia) {
     const MENCIONES_PROV = {
       // Cataluña
