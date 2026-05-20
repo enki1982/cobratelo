@@ -98,8 +98,8 @@ const PASOS = [
   {
     id: 'vivienda',
     titulo: '¿Cuál es tu situación de vivienda?',
-    subtitulo: 'La vivienda activa muchos tipos de ayuda',
-    multi: false,
+    subtitulo: 'Selecciona todas las que apliquen',
+    multi: true,
     opciones: [
       { value: 'alquiler', label: 'Vivo de alquiler', emoji: '🏠' },
       { value: 'propietario', label: 'Tengo vivienda en propiedad', emoji: '🏡' },

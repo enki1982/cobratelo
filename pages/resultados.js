@@ -51,7 +51,7 @@ function calcularRelevancia(ayuda, perfil) {
   const familia = perfil.familia || []
   const especial = perfil.especial || []
   const extras = perfil.extras || []
-  const vivienda = (perfil.vivienda || [])[0]
+  const viviendas = perfil.vivienda || []
   const ingresos = (perfil.ingresos || [])[0]
 
   // ── EXCLUSIONES DURAS ──────────────────────────────────────────
@@ -83,13 +83,13 @@ function calcularRelevancia(ayuda, perfil) {
   const esAyudaRehabilitacion = texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia energética')
 
   // Si busca alquiler pero el usuario es propietario → excluir
-  if (esAyudaAlquiler && !esAyudaRehabilitacion && ['propietario','hipoteca'].includes(vivienda)) return 0
+  if (esAyudaAlquiler && !esAyudaRehabilitacion && viviendas.some(v => ['propietario','hipoteca'].includes(v))) return 0
 
   // Si busca compra/hipoteca pero el usuario ya es propietario sin querer comprar → excluir
-  if (esAyudaCompra && !texto.includes('rehabilita') && ['alquiler'].includes(vivienda)) return 0
+  if (esAyudaCompra && !texto.includes('rehabilita') && viviendas.includes('alquiler') && !viviendas.some(v => ['propietario','hipoteca'].includes(v))) return 0
 
   // Si busca rehabilitación pero el usuario no es propietario → excluir
-  if (esAyudaRehabilitacion && texto.includes('propietario') && vivienda === 'alquiler') return 0
+  if (esAyudaRehabilitacion && texto.includes('propietario') && viviendas.includes('alquiler') && !viviendas.some(v => ['propietario','hipoteca'].includes(v))) return 0
 
   // ── EMPLEO / SITUACIÓN LABORAL ─────────────────────────────────
   // Tarifa plana / alta autónomos: solo si es autónomo o emprendedor
@@ -144,7 +144,7 @@ function calcularRelevancia(ayuda, perfil) {
 
   // ── ENERGIA / REHABILITACIÓN ────────────────────────────────────
   const soloEnergia = (texto.includes('paneles solares') || texto.includes('aerotermia') || texto.includes('bomba de calor') || texto.includes('aislamiento térmico')) && !texto.includes('bono social')
-  if (soloEnergia && !extras.includes('energia') && vivienda !== 'rehabilitacion') return 0
+  if (soloEnergia && !extras.includes('energia') && !viviendas.includes('rehabilitacion')) return 0
 
   // ── DIGITALIZACIÓN ─────────────────────────────────────────────
   const soloDigital = texto.includes('kit digital') || texto.includes('digitalización') || texto.includes('transformación digital')
@@ -227,8 +227,8 @@ function calcularRelevancia(ayuda, perfil) {
   if (familia.includes('dependiente_cargo') && (texto.includes('dependencia') || texto.includes('cuidador'))) score += 25
 
   // Boost por vivienda
-  if (vivienda === 'alquiler' && (texto.includes('alquiler') || texto.includes('arrendamiento'))) score += 25
-  if (vivienda === 'rehabilitacion' && (texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia'))) score += 25
+  if (viviendas.includes('alquiler') && !viviendas.some(v => ['propietario','hipoteca'].includes(v)) && (texto.includes('alquiler') || texto.includes('arrendamiento'))) score += 25
+  if (viviendas.includes('rehabilitacion') && (texto.includes('rehabilita') || texto.includes('reforma') || texto.includes('eficiencia'))) score += 25
 
   // Boost por extras
   if (extras.includes('mascotas') && (texto.includes('mascota') || texto.includes('animal') || texto.includes('veterinario'))) score += 30
