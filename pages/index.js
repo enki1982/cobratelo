@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 
-const STATS = [
-  { label: 'ayudas activas', value: '66+' },
+const STATS_BASE = [
   { label: 'importe medio', value: '1.517€' },
-  { label: 'categorías', value: '10' },
+  { label: 'categorías', value: '14' },
 ]
 
 const HOW = [
@@ -28,6 +28,7 @@ const HOW = [
 
 export default function Home() {
   const [count, setCount] = useState(0)
+  const [totalAyudas, setTotalAyudas] = useState(66)
 
   useEffect(() => {
     const target = 66
@@ -39,6 +40,12 @@ export default function Home() {
       })
     }, 40)
     return () => clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    supabase.from('ayudas').select('*', { count: 'exact', head: true })
+      .in('estado', ['abierta', 'permanente', 'pendiente'])
+      .then(({ count }) => { if (count) setTotalAyudas(count) })
   }, [])
 
   return (
@@ -71,7 +78,7 @@ export default function Home() {
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 bg-[#E8F5EE] text-[#1A7A4A] text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full animate-pulse"></span>
-              {count} ayudas públicas activas en España
+              {totalAyudas} ayudas públicas activas en España
             </span>
           </div>
 
@@ -99,7 +106,7 @@ export default function Home() {
         {/* Stats */}
         <section className="border-y border-[#E0DAD0] py-8">
           <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 divide-x divide-[#E0DAD0]">
-            {STATS.map((s, i) => (
+            {[{ label: 'ayudas activas', value: `${totalAyudas}+` }, ...STATS_BASE].map((s, i) => (
               <div key={i} className="px-6 text-center">
                 <div className="font-display text-3xl font-bold text-[#1A7A4A]">{s.value}</div>
                 <div className="text-xs text-[#888882] mt-1">{s.label}</div>

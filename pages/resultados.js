@@ -228,7 +228,7 @@ export default function Resultados() {
         <div className="text-center px-6">
           <div className="w-12 h-12 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="font-display text-xl text-[#111110]">Analizando tu perfil...</p>
-          <p className="text-sm text-[#888882] mt-2">Cruzando con {66}+ ayudas activas en España</p>
+          <p className="text-sm text-[#888882] mt-2">Buscando ayudas para tu perfil...</p>
         </div>
       </div>
     )
