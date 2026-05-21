@@ -183,6 +183,42 @@ export default function Home() {
           )}
         </section>
 
+
+        {/* Fuentes oficiales */}
+        <section className="max-w-5xl mx-auto px-6 py-12 border-t border-[#E0DAD0]">
+          <p className="text-center text-xs text-[#B0AAA0] uppercase tracking-widest font-medium mb-8">
+            Información oficial de
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+            {[
+              { nombre: 'Ministerio de Hacienda', logo: 'https://sede.agenciatributaria.gob.es/static_files/Sede/Images/logo_aeat.png', url: 'https://agenciatributaria.gob.es' },
+              { nombre: 'Seguridad Social', logo: 'https://www.seg-social.es/wps/wcm/connect/wss/f8a05e1d-dc14-4f39-b36f-b4e2cf34b461/logo_seg_social.png', url: 'https://www.seg-social.es' },
+              { nombre: 'SEPE', logo: 'https://www.sepe.es/SiteSepe/contenidos/images/logo_SEPE.png', url: 'https://www.sepe.es' },
+              { nombre: 'Red.es', logo: 'https://www.red.es/sites/default/files/logo-redes.png', url: 'https://www.red.es' },
+              { nombre: 'Ministerio de Vivienda', logo: 'https://www.mivau.gob.es/dam/es/portal/vivienda/img/logo-ministerio.png', url: 'https://www.mivau.gob.es' },
+              { nombre: 'Generalitat de Catalunya', logo: 'https://govern.cat/gov/uploads/logos/Generalitat_de_Catalunya_fons_blanc_300.png', url: 'https://govern.cat' },
+              { nombre: 'Comunidad de Madrid', logo: 'https://www.comunidad.madrid/sites/default/files/img/logo-cm.png', url: 'https://www.comunidad.madrid' },
+              { nombre: 'IMSERSO', logo: 'https://www.imserso.es/imserso_01/imagenes/logo_imserso_nuevo.jpg', url: 'https://www.imserso.es' },
+            ].map((fuente, i) => (
+              <a key={i} href={fuente.url} target="_blank" rel="noopener noreferrer"
+                className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img
+                  src={fuente.logo}
+                  alt={fuente.nombre}
+                  title={fuente.nombre}
+                  className="h-8 object-contain max-w-[120px]"
+                  onError={e => {
+                    // Si el logo no carga, mostrar el nombre en texto
+                    e.target.style.display = 'none'
+                    e.target.nextSibling.style.display = 'block'
+                  }}
+                />
+                <span style={{display:'none'}} className="text-xs text-[#888882] font-medium">{fuente.nombre}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* Footer */}
         <footer className="max-w-5xl mx-auto px-6 py-8 border-t border-[#E0DAD0]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
