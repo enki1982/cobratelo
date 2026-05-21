@@ -158,11 +158,7 @@ function calcularRelevancia(ayuda, perfil) {
   if (esAutonomo && !esEmprendedor) {
     if (/ajuda.*primera.*empresa|ayuda.*primera.*empresa|crear.*primera.*empresa|emprender.*desde.*cero|primera.*alta.*autono/.test(t)) return 0
   }
-  // Subvenciones de CONTRATACIÓN: solo si tiene empresa con empleados (pyme)
-  // Un autónomo sin trabajadores no puede contratar a nadie
-  if (!extras.includes('pyme') && !familia.some(v => false)) {
-    if (/subvencio.*contratacio|subvención.*contrataci|bonificaci.*contractaci|contractaci.*indefinida|contratacion.*indefinida|contratar.*treballador|contratar.*trabajador|incorporaci.*laboral.*empresa|ajuda.*contractar|ayuda.*contratar/.test(t)) return 0
-  }
+  // Autónomos y pymes pueden contratar — no filtrar subvenciones de contratación
 
   // DESEMPLEADO — excluir ayudas exclusivas de empleados o autónomos activos
   if (esDesempleado && !esAutonomo && !esEmpleado) {
