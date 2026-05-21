@@ -35,7 +35,14 @@ const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u03
 function calcularRelevancia(ayuda, perfil) {
   if (!perfil) return 0
 
-  const situacion = (perfil.situacion || [])[0] || ''
+  const situaciones = perfil.situacion || []
+  const situacion  = situaciones[0] || ''  // compatibilidad con lógica existente
+  const esPensionista  = situaciones.includes('pensionista')
+  const esAutonomo     = situaciones.includes('autonomo')
+  const esDesempleado  = situaciones.includes('desempleado')
+  const esEstudiante   = situaciones.includes('estudiante')
+  const esEmpleado     = situaciones.includes('empleado')
+  const esEmprendedor  = situaciones.includes('emprendedor')
   const edadNum   = parseInt((perfil.edad || [])[0]) || 0
   const familia   = perfil.familia || []
   const viviendas = perfil.vivienda || []
@@ -46,7 +53,7 @@ function calcularRelevancia(ayuda, perfil) {
   const provincia = (perfil.provincia || [])[0] || ''
 
   const tieneHijos    = familia.some(v => ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental'].includes(v))
-  const tieneEmpresa  = extras.some(v => ['pyme','negocio_digital'].includes(v)) || ['autonomo','emprendedor'].includes(situacion)
+  const tieneEmpresa  = extras.some(v => ['pyme','negocio_digital'].includes(v)) || esAutonomo || esEmprendedor
   const tieneVehiculo = (perfil.vehiculo || []).some(v => v !== 'sin_vehiculo')
   const esAlquiler    = viviendas.includes('alquiler')
   const esPropietario = viviendas.some(v => ['propietario','hipoteca'].includes(v))
@@ -95,14 +102,14 @@ function calcularRelevancia(ayuda, perfil) {
   // ════════════════════════════════════════════════════════════
 
   // Situación laboral
-  if (situacion === 'pensionista') {
-    if (/insercio|insercion laboral|emprendedor|startup|tarifa plana|alta.*autono|cuota.*autono|desempleo|sepe |erte/.test(t)) return 0
+  if (esPensionista && !esAutonomo) {
+    if (/insercio|insercion laboral|tarifa plana|alta.*autono|cuota.*autono|desempleo|sepe |erte/.test(t)) return 0
   }
-  if (situacion === 'empleado') {
+  if (esEmpleado && !esAutonomo) {
     if (/tarifa plana|alta.*autono/.test(t)) return 0
   }
-  if (situacion === 'estudiante') {
-    if (/jubilacio|jubilacion|insercio|insercion laboral/.test(t)) return 0
+  if (esEstudiante && !esEmpleado) {
+    if (/jubilacio|jubilacion/.test(t)) return 0
   }
 
   // Edad
@@ -183,12 +190,12 @@ function calcularRelevancia(ayuda, perfil) {
   // Los patrones regex ya cubren estas variantes con raíces compartidas
 
   // Situación laboral
-  if (situacion === 'pensionista' && /pensio|pension|jubila|xubila|erretiro/.test(t)) score += 40
-  if (situacion === 'autonomo' && /autono/.test(t)) score += 40
-  if (situacion === 'desempleado' && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
-  if (situacion === 'estudiante' && /beca|estudi/.test(t)) score += 40
-  if (situacion === 'emprendedor' && /emprendedor|startup|nova empresa/.test(t)) score += 35
-  if (situacion === 'empleado' && /treballador|trabajador por cuenta ajena/.test(t)) score += 35
+  if (esPensionista && /pensio|pension|jubila|xubila|erretiro/.test(t)) score += 40
+  if (esAutonomo && /autono/.test(t)) score += 40
+  if (esDesempleado && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
+  if (esEstudiante && /beca|estudi/.test(t)) score += 40
+  if (esEmprendedor && /emprendedor|startup|nova empresa/.test(t)) score += 35
+  if (esEmpleado && /treballador|trabajador por cuenta ajena/.test(t)) score += 35
 
   // Edad
   if (edadNum >= 65 && /gent gran|major|tercera edat|majors/.test(t)) score += 35

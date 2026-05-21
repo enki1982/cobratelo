@@ -109,8 +109,8 @@ const PASOS = [
   {
     id: 'situacion',
     titulo: '¿Cuál es tu situación laboral?',
-    subtitulo: 'Selecciona la que mejor te describe',
-    multi: false,
+    subtitulo: 'Selecciona todas las que apliquen',
+    multi: true,
     opciones: [
       { value: 'autonomo', label: 'Autónomo / Freelance', emoji: '💼' },
       { value: 'empleado', label: 'Empleado por cuenta ajena', emoji: '👔' },
