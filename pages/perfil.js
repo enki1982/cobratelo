@@ -112,6 +112,32 @@ const PASOS = [
     ],
   },
   {
+    id: 'alquiler_detalle',
+    titulo: '¿Cuánto pagas de alquiler al mes?',
+    subtitulo: 'Muchas ayudas tienen un tope máximo de renta',
+    multi: false,
+    condicion: (perfil) => (perfil.vivienda || []).includes('alquiler'),
+    opciones: [
+      { value: 'alquiler_menos300',  label: 'Menos de 300€/mes',        emoji: '💚' },
+      { value: 'alquiler_300_600',   label: 'Entre 300€ y 600€/mes',    emoji: '💛' },
+      { value: 'alquiler_600_900',   label: 'Entre 600€ y 900€/mes',    emoji: '🟠' },
+      { value: 'alquiler_900_1200',  label: 'Entre 900€ y 1.200€/mes',  emoji: '🔴' },
+      { value: 'alquiler_mas1200',   label: 'Más de 1.200€/mes',        emoji: '⛔' },
+    ],
+  },
+  {
+    id: 'alquiler_compartido',
+    titulo: '¿Compartes el alquiler con otras personas?',
+    subtitulo: 'Algunas ayudas aplican solo al inquilino principal',
+    multi: false,
+    condicion: (perfil) => (perfil.vivienda || []).includes('alquiler'),
+    opciones: [
+      { value: 'alquiler_solo',      label: 'No, pago el alquiler yo solo/a',          emoji: '🙋' },
+      { value: 'alquiler_pareja',    label: 'Lo comparto con mi pareja o familia',      emoji: '👫' },
+      { value: 'alquiler_compis',    label: 'Piso compartido con compañeros/as',        emoji: '🏠' },
+    ],
+  },
+  {
     id: 'ingresos',
     titulo: '¿Cuáles son tus ingresos anuales aproximados?',
     subtitulo: 'Muchas ayudas tienen límite de renta',

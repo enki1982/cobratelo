@@ -31,6 +31,11 @@ const LABELS = {
   mascotas: 'Mascotas', energia: 'Eficiencia energética', salud_cronica: 'Enfermedad crónica',
   gafas_audifonos: 'Gafas/audífonos', estudios_hijos: 'Hijos en edad escolar',
   negocio_digital: 'Digitalización negocio', pyme: 'Empresa/pyme', ninguno: 'Ninguno',
+  // Alquiler detalle
+  alquiler_menos300: '< 300€/mes', alquiler_300_600: '300–600€/mes',
+  alquiler_600_900: '600–900€/mes', alquiler_900_1200: '900–1.200€/mes',
+  alquiler_mas1200: '> 1.200€/mes',
+  alquiler_solo: 'Solo/a', alquiler_pareja: 'Con pareja/familia', alquiler_compis: 'Piso compartido',
   // Gestoría
   si_gestoria: 'Tiene gestoría', no_gestoria: 'Sin gestoría', quiero_gestoria: 'Quiere gestoría',
   // Empadronamiento
