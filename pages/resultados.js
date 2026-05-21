@@ -606,11 +606,6 @@ export default function Resultados() {
                      className="flex items-center justify-center gap-2 bg-[#1A7A4A] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#145e39] transition-colors">
                     Ver gestorías en Google Maps
                   </a>
-                  <a href={`https://wa.me/?text=${encodeURIComponent(`Hola, he encontrado ${ayudas.length} ayudas públicas que me corresponden y me gustaría que me ayudaras a tramitarlas. ¿Puedes ayudarme? Ver resumen: https://cobratelo.es/perfil`)}`}
-                     target="_blank" rel="noopener noreferrer"
-                     className="flex items-center justify-center gap-2 bg-[#F7F3EC] border border-[#E0DAD0] text-[#111110] text-sm font-semibold py-2.5 rounded-full hover:bg-[#F0EAE0] transition-colors">
-                    Enviar resumen a tu gestor por WhatsApp
-                  </a>
                 </div>
               </div>
             )
