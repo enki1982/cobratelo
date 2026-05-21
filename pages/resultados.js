@@ -193,6 +193,23 @@ function calcularRelevancia(ayuda, perfil) {
 
   // SIN VIVIENDA ESTABLE — no excluir nada, puede ver todo
 
+  // ── FILTRO DE IMPORTE DE ALQUILER ──────────────────────────
+  // Si el usuario sabe cuánto paga, excluir ayudas cuyo tope sea inferior
+  if (esAlquiler && alquilerMes !== null) {
+    // Detectar topes en el texto: "alquiler máximo Xe/mes", "renta máxima X€", etc.
+    const topeMatch = t.match(/(?:alquiler|renda|renta|arrendament|arrendamiento|lloguer).*?m[aà]x[^0-9]*(\d[\d.,]+)/i)
+                   || t.match(/m[aà]x[^0-9]*(\d[\d.,]+).*?(?:alquiler|renda|renta|lloguer)/i)
+    if (topeMatch) {
+      const tope = parseInt(topeMatch[1].replace(/[.,]/g, ''))
+      // Si el tope detectado es realista (entre 200€ y 2500€) y el usuario paga más → excluir
+      if (tope >= 200 && tope <= 2500 && alquilerMes > tope) return 0
+    }
+    // Patrones específicos conocidos: Bono Alquiler Joven (≤900€)
+    if (/bono.*joven|ajut.*jove.*llogu|bono joven alquiler/.test(t) && alquilerMes > 900) return 0
+    // Ayudas de habitación (generalmente < 600€): excluir si paga más de 900€
+    if (/habitaci[oó]n.*subvencio|ajut.*habitaci[oó]/.test(t) && alquilerMes > 900) return 0
+  }
+
   // ── EXCLUSIONES POR INGRESOS ──────────────────────────
 
   // Ingresos altos: excluir ayudas de renta mínima, bono social, vulnerabilidad
