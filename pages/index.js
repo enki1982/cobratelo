@@ -3,11 +3,64 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
+const C = {
+  bg: '#09090f',
+  surface: '#0f0f1a',
+  card: 'rgba(255,255,255,0.03)',
+  border: 'rgba(255,255,255,0.08)',
+  borderHover: 'rgba(0,232,122,0.3)',
+  green: '#00e87a',
+  greenDim: 'rgba(0,232,122,0.10)',
+  greenGlow: 'rgba(0,232,122,0.25)',
+  text: '#f0f0f5',
+  muted: 'rgba(240,240,245,0.5)',
+  red: '#ff6b6b',
+  blue: '#4a9eff',
+}
+
+const STEPS = [
+  { n: '01', icon: '🎯', title: 'Cuéntanos tu situación', desc: 'Solo checkboxes. Sin formularios. 2 minutos para completar tu perfil.' },
+  { n: '02', icon: '🔍', title: 'Analizamos tu perfil', desc: 'Cruzamos tu situación con todas las ayudas vigentes en España.' },
+  { n: '03', icon: '💰', title: 'Cobra lo tuyo', desc: 'Lista con importes, requisitos y enlace oficial de cada ayuda.' },
+]
+
+const AYUDAS_DEMO = [
+  { icon: '🏠', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', bg: 'rgba(0,232,122,0.12)' },
+  { icon: '💼', nombre: 'Cupons ACCIÓ Digitalització', org: 'Generalitat de Catalunya', importe: '3.000€', bg: 'rgba(37,99,235,0.12)' },
+  { icon: '⚡', nombre: 'Kit Digital — Presencia web', org: 'Red.es · Gobierno de España', importe: '2.000€', bg: 'rgba(124,58,237,0.12)' },
+  { icon: '📋', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
+]
+
+const FUENTES = [
+  { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: C.blue },
+  { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: C.blue },
+  { nombre: 'Seg. Social', sub: 'Ministerio de Inclusión', color: C.blue },
+  { nombre: 'Red.es', sub: 'Ministerio Digital', color: C.red },
+  { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: C.blue },
+  { nombre: 'Generalitat', sub: 'Catalunya', color: C.red },
+  { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: C.red },
+  { nombre: 'IMSERSO', sub: 'Mayores y dependencia', color: C.blue },
+  { nombre: 'ACCIÓ', sub: 'Competitivitat Empresa', color: C.red },
+  { nombre: 'Red SARA', sub: 'Administración digital', color: C.blue },
+]
+
+function HoverCard({ children, style, hoverBorder, ...props }) {
+  const [hover, setHover] = useState(false)
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{ ...style, borderColor: hover && hoverBorder ? hoverBorder : style?.borderColor }}
+      {...props}>
+      {children}
+    </div>
+  )
+}
+
 export default function Home() {
   const [tienePerfil, setTienePerfil] = useState(false)
   const [perfilGuardado, setPerfilGuardado] = useState(null)
   const [totalAyudas, setTotalAyudas] = useState(66)
-  const [mostrarBotonAyudas, setMostrarBotonAyudas] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -26,7 +79,6 @@ export default function Home() {
   const ctaHref = tienePerfil && perfilGuardado
     ? `/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`
     : '/perfil'
-  const ctaLabel = tienePerfil ? 'Ver mis ayudas →' : 'Descubrir mis ayudas →'
 
   return (
     <>
@@ -35,247 +87,173 @@ export default function Home() {
         <meta name="description" content="Descubre en 2 minutos qué ayudas, subvenciones y prestaciones del Estado te corresponden. Gratis." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <style jsx global>{`
-        .cobratelo-dark {
-          --green: #00e87a;
-          --green-dim: rgba(0,232,122,0.10);
-          --green-glow: rgba(0,232,122,0.25);
-          --border: rgba(255,255,255,0.08);
-          --muted: rgba(240,240,245,0.5);
-          --surface: #0f0f1a;
-        }
-        .syne { font-family: 'Syne', sans-serif; }
-        @keyframes cobr-pulse {
-          0%,100%{opacity:1;transform:scale(1)}
-          50%{opacity:.5;transform:scale(.8)}
-        }
-        @keyframes cobr-float {
-          0%,100%{transform:translateY(0)}
-          50%{transform:translateY(-8px)}
-        }
-        .float-anim { animation: cobr-float 4s ease-in-out infinite; }
-        .float-anim-2 { animation: cobr-float 4s ease-in-out infinite 2s; }
-      `}</style>
-
-      <div className="cobratelo-dark min-h-screen" style={{
-        background: '#09090f',
-        backgroundImage: `
-          radial-gradient(ellipse 80% 60% at 20% 0%, rgba(0,232,122,0.07) 0%, transparent 60%),
-          radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,58,237,0.09) 0%, transparent 50%),
-          radial-gradient(ellipse 50% 40% at 50% 80%, rgba(37,99,235,0.07) 0%, transparent 50%)
-        `,
-        color: '#f0f0f5',
+      <div style={{ background: C.bg, color: C.text, minHeight: '100vh', fontFamily: 'sans-serif',
+        backgroundImage: `radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 80%,rgba(37,99,235,0.07) 0%,transparent 50%)`
       }}>
 
-        {/* Nav */}
-        <nav style={{ borderBottom: '1px solid var(--border)', backdropFilter: 'blur(12px)', background: 'rgba(9,9,15,0.8)' }}
-          className="sticky top-0 z-50 px-6 py-4">
-          <div className="max-w-5xl mx-auto flex items-center justify-between">
-            <span className="syne text-xl font-bold" style={{ letterSpacing: '-0.5px' }}>
-              cóbratelo<span style={{ color: 'var(--green)' }}>.es</span>
+        {/* NAV */}
+        <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
+            <span className="font-display font-bold text-xl" style={{ letterSpacing: '-0.5px', color: C.text }}>
+              cóbratelo<span style={{ color: C.green }}>.es</span>
             </span>
-            <div className="flex items-center gap-3 md:gap-5">
-              <Link href="/precios" className="hidden sm:block text-sm" style={{ color: 'var(--muted)' }}>Precios</Link>
-              <Link href="/cuenta" className="text-sm" style={{ color: 'var(--muted)' }}>Mi cuenta</Link>
-              <Link href={ctaHref}
-                className="text-sm font-bold px-5 py-2.5 rounded-full transition-all"
-                style={{ background: 'var(--green)', color: '#000', letterSpacing: '-0.2px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }} className="hidden sm:block">Precios</Link>
+              <Link href="/cuenta" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>Mi cuenta</Link>
+              <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 14, padding: '10px 22px', borderRadius: 100, textDecoration: 'none', letterSpacing: '-0.2px' }}>
                 {tienePerfil ? 'Mis ayudas' : 'Empezar gratis'}
               </Link>
             </div>
           </div>
         </nav>
 
-        {/* Hero */}
-        <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 grid md:grid-cols-2 gap-12 items-center">
+        {/* HERO */}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '80px 24px 64px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}
+          className="!grid-cols-1 md:!grid-cols-2">
           <div>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-full mb-6"
-              style={{ background: 'var(--green-dim)', border: '1px solid rgba(0,232,122,0.25)', color: 'var(--green)' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', animation: 'cobr-pulse 2s infinite' }} />
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: `1px solid rgba(0,232,122,0.25)`, color: C.green, fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 100, marginBottom: 24 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block' }} />
               {totalAyudas}+ convocatorias activas en España
             </div>
 
-            <h1 className="syne font-bold mb-5" style={{ fontSize: 'clamp(36px,5vw,60px)', lineHeight: 1.05, letterSpacing: '-2px' }}>
-              Cobra todo lo que<br />
-              <span style={{ background: 'linear-gradient(135deg, var(--green) 0%, #00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
+              Cobra todo lo que{' '}
+              <span style={{ background: 'linear-gradient(135deg,#00e87a 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 te corresponde
               </span>
             </h1>
 
-            <p className="text-base mb-8 leading-relaxed" style={{ color: 'var(--muted)', maxWidth: 420 }}>
+            <p style={{ color: C.muted, fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
               Identifica en 2 minutos todas las ayudas, subvenciones y prestaciones públicas a las que tienes derecho. Completamente gratis.
             </p>
 
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link href={ctaHref}
-                className="font-bold text-base px-7 py-4 rounded-full transition-all"
-                style={{ background: 'var(--green)', color: '#000', boxShadow: '0 0 0 0 var(--green-glow)' }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 12px 32px var(--green-glow)'}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}>
-                {ctaLabel}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+              <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 28px', borderRadius: 100, textDecoration: 'none' }}>
+                {tienePerfil ? 'Ver mis ayudas →' : 'Descubrir mis ayudas →'}
               </Link>
-              <Link href="/precios" className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
+              <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
                 Para gestorías ↗
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="flex gap-8 mt-10 pt-8" style={{ borderTop: '1px solid var(--border)' }}>
-              {[
-                { num: `${totalAyudas}+`, lbl: 'Ayudas activas' },
-                { num: '2 min', lbl: 'Para completar' },
-                { num: '100%', lbl: 'Gratuito' },
-              ].map((s, i) => (
+            <div style={{ display: 'flex', gap: 32, marginTop: 40, paddingTop: 32, borderTop: `1px solid ${C.border}` }}>
+              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas activas' }, { num: '2 min', lbl: 'Para completar' }, { num: '100%', lbl: 'Gratuito' }].map((s, i) => (
                 <div key={i}>
-                  <div className="syne font-bold text-2xl" style={{ letterSpacing: '-1px', color: '#f0f0f5' }}>{s.num}</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{s.lbl}</div>
+                  <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{s.lbl}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Dashboard visual */}
-          <div className="relative hidden md:block">
-            <div className="rounded-2xl p-6 relative overflow-hidden float-anim"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-              {/* top glow line */}
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,var(--green),transparent)', opacity: 0.6 }} />
-
-              <div className="flex items-center justify-between mb-5">
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Tus ayudas</span>
-                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ background: 'var(--green-dim)', color: 'var(--green)' }}>
-                  {totalAyudas > 10 ? '14 encontradas' : `${totalAyudas} encontradas`}
-                </span>
+          {/* Dashboard */}
+          <div style={{ position: 'relative' }} className="hidden md:block">
+            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Tus ayudas</span>
+                <span style={{ background: C.greenDim, color: C.green, fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 100 }}>14 encontradas</span>
               </div>
-
-              {[
-                { icon: '🏠', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', c: 'rgba(0,232,122,0.12)' },
-                { icon: '💼', nombre: 'Cupons ACCIÓ Digitalització', org: 'Generalitat de Catalunya', importe: '3.000€', c: 'rgba(37,99,235,0.12)' },
-                { icon: '⚡', nombre: 'Kit Digital — Presencia web', org: 'Red.es · Gobierno de España', importe: '2.000€', c: 'rgba(124,58,237,0.12)' },
-                { icon: '📋', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', c: 'rgba(245,158,11,0.12)' },
-              ].map((a, i) => (
-                <div key={i} className="flex items-center gap-3 py-3.5" style={{ borderBottom: i < 3 ? '1px solid var(--border)' : 'none' }}>
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ background: a.c }}>{a.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold truncate" style={{ color: '#f0f0f5' }}>{a.nombre}</div>
-                    <div className="text-xs mt-0.5 truncate" style={{ color: 'var(--muted)' }}>{a.org}</div>
+              {AYUDAS_DEMO.map((a, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: i < 3 ? `1px solid ${C.border}` : 'none' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: a.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>{a.icon}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.nombre}</div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{a.org}</div>
                   </div>
-                  <div className="text-sm font-bold shrink-0" style={{ color: 'var(--green)' }}>{a.importe}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.green, flexShrink: 0 }}>{a.importe}</div>
                 </div>
               ))}
             </div>
 
-            {/* Float cards */}
-            <div className="absolute -top-5 -right-5 rounded-2xl px-5 py-4 text-center float-anim-2"
-              style={{ background: 'rgba(15,15,26,0.95)', border: '1px solid var(--border)', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
-              <div className="syne font-bold text-3xl" style={{ color: 'var(--green)', letterSpacing: '-1px' }}>14</div>
-              <div className="text-xs" style={{ color: 'var(--muted)' }}>ayudas para ti</div>
+            {/* Float top-right */}
+            <div style={{ position: 'absolute', top: -20, right: -20, background: 'rgba(15,15,26,0.95)', border: `1px solid ${C.border}`, borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+              <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>ayudas para ti</div>
             </div>
 
-            <div className="absolute -bottom-4 -left-4 rounded-2xl px-4 py-3 flex items-center gap-3"
-              style={{ background: 'rgba(15,15,26,0.95)', border: '1px solid var(--border)', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'var(--green-dim)', color: 'var(--green)' }}>✓</div>
+            {/* Float bottom-left */}
+            <div style={{ position: 'absolute', bottom: -16, left: -16, background: 'rgba(15,15,26,0.95)', border: `1px solid ${C.border}`, borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>✓</div>
               <div>
-                <div className="text-sm font-semibold" style={{ color: '#f0f0f5' }}>Perfil completado</div>
-                <div className="text-xs" style={{ color: 'var(--muted)' }}>Resultados actualizados</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
+                <div style={{ fontSize: 10, color: C.muted }}>Resultados actualizados</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Cómo funciona */}
-        <section className="max-w-5xl mx-auto px-6 py-16" style={{ borderTop: '1px solid var(--border)' }}>
-          <p className="text-center text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--green)' }}>Cómo funciona</p>
-          <h2 className="syne font-bold text-center mb-12" style={{ fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#f0f0f5' }}>
+        {/* CÓMO FUNCIONA */}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: `1px solid ${C.border}` }}>
+          <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Cómo funciona</p>
+          <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 48 }}>
             Simple, rápido y preciso
           </h2>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              { n: '01', icon: '🎯', title: 'Cuéntanos tu situación', desc: 'Solo checkboxes. Sin formularios. 2 minutos para completar tu perfil.' },
-              { n: '02', icon: '🔍', title: 'Analizamos tu perfil', desc: 'Cruzamos tu situación con todas las ayudas públicas vigentes en España.' },
-              { n: '03', icon: '💰', title: 'Cobra lo tuyo', desc: 'Lista con importes, requisitos y enlace oficial de cada ayuda. Lista para tramitar.' },
-            ].map((s, i) => (
-              <div key={i} className="rounded-2xl p-6 transition-all group"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(0,232,122,0.3)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
-                <div className="text-2xl mb-4">{s.icon}</div>
-                <div className="text-xs font-bold mb-2" style={{ color: 'var(--green)' }}>{s.n}</div>
-                <div className="syne font-bold text-base mb-2" style={{ color: '#f0f0f5', letterSpacing: '-0.3px' }}>{s.title}</div>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{s.desc}</p>
-              </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
+            {STEPS.map((s, i) => (
+              <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24, transition: 'border-color 0.2s' }}>
+                <div style={{ fontSize: 26, marginBottom: 14 }}>{s.icon}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 6 }}>{s.n}</div>
+                <div className="font-display font-bold" style={{ fontSize: 15, color: C.text, marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
+                <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{s.desc}</p>
+              </HoverCard>
             ))}
           </div>
         </section>
 
-        {/* Fuentes oficiales */}
-        <section className="max-w-5xl mx-auto px-6 py-12" style={{ borderTop: '1px solid var(--border)' }}>
-          <p className="text-center text-xs font-semibold uppercase tracking-widest mb-10" style={{ color: 'var(--muted)' }}>
+        {/* FUENTES */}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px', borderTop: `1px solid ${C.border}` }}>
+          <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.muted, marginBottom: 36 }}>
             Información extraída de fuentes oficiales
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {[
-              { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: '#4a9eff' },
-              { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: '#4a9eff' },
-              { nombre: 'Seg. Social', sub: 'Ministerio de Inclusión', color: '#4a9eff' },
-              { nombre: 'Red.es', sub: 'Ministerio Digital', color: '#ff6b6b' },
-              { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: '#4a9eff' },
-              { nombre: 'Generalitat', sub: 'Catalunya', color: '#ff6b6b' },
-              { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: '#ff6b6b' },
-              { nombre: 'IMSERSO', sub: 'Mayores y dependencia', color: '#4a9eff' },
-              { nombre: 'ACCIÓ', sub: 'Competitivitat Empresa', color: '#ff6b6b' },
-              { nombre: 'Red SARA', sub: 'Administración digital', color: '#4a9eff' },
-            ].map((f, i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5 transition-opacity duration-300 cursor-default"
-                style={{ opacity: 0.35 }}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
+            {FUENTES.map((f, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: 0.35, transition: 'opacity 0.3s', cursor: 'default' }}
                 onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
                 onMouseLeave={e => e.currentTarget.style.opacity = '0.35'}>
-                <div className="syne font-bold text-sm" style={{ color: f.color }}>{f.nombre}</div>
-                <div className="text-center leading-tight" style={{ fontSize: 10, color: 'var(--muted)', maxWidth: 90 }}>{f.sub}</div>
+                <div className="font-display font-bold" style={{ fontSize: 13, color: f.color }}>{f.nombre}</div>
+                <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>{f.sub}</div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* CTA final */}
-        <section className="max-w-5xl mx-auto px-6 py-16">
-          <div className="rounded-3xl p-12 text-center relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, rgba(0,232,122,0.08) 0%, rgba(124,58,237,0.08) 100%)', border: '1px solid rgba(0,232,122,0.2)' }}>
-            <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: 'linear-gradient(90deg,transparent,var(--green),transparent)' }} />
-            <h2 className="syne font-bold mb-4" style={{ fontSize: 'clamp(26px,3vw,44px)', letterSpacing: '-1.5px', color: '#f0f0f5' }}>
+        {/* CTA FINAL */}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 80px' }}>
+          <div style={{ background: 'linear-gradient(135deg,rgba(0,232,122,0.08) 0%,rgba(124,58,237,0.08) 100%)', border: `1px solid rgba(0,232,122,0.2)`, borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 16 }}>
               ¿Cuánto dinero te estás perdiendo?
             </h2>
-            <p className="text-base mb-8 mx-auto" style={{ color: 'var(--muted)', maxWidth: 480 }}>
-              Miles de ciudadanos no solicitan las ayudas que les corresponden simplemente porque no saben que existen. Descúbrelas en 2 minutos.
+            <p style={{ color: C.muted, fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
+              Miles de ciudadanos no solicitan las ayudas que les corresponden porque no saben que existen. Descúbrelas ahora.
             </p>
-            <Link href={ctaHref}
-              className="inline-block font-bold text-base px-8 py-4 rounded-full transition-all"
-              style={{ background: 'var(--green)', color: '#000' }}>
-              {ctaLabel} — sin tarjeta
+            <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
+              {tienePerfil ? 'Ver mis ayudas →' : 'Empezar gratis — sin tarjeta'}
             </Link>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="max-w-5xl mx-auto px-6 py-8" style={{ borderTop: '1px solid var(--border)' }}>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-            <span className="syne font-bold" style={{ color: '#f0f0f5' }}>cóbratelo.es</span>
-            <p className="text-xs text-center" style={{ color: 'var(--muted)' }}>
+        {/* FOOTER */}
+        <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', borderTop: `1px solid ${C.border}` }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <span className="font-display font-bold" style={{ color: C.text }}>cóbratelo<span style={{ color: C.green }}>.es</span></span>
+            <p style={{ color: C.muted, fontSize: 12, textAlign: 'center' }}>
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 text-xs" style={{ color: 'var(--muted)' }}>
-            <Link href="/precios" className="hover:text-white transition-colors">Precios</Link>
-            <Link href="/legal" className="hover:text-white transition-colors">Aviso Legal</Link>
-            <Link href="/privacidad" className="hover:text-white transition-colors">Privacidad</Link>
-            <Link href="/terminos" className="hover:text-white transition-colors">Términos</Link>
-            <a href="mailto:hola@cobratelo.es" className="hover:text-white transition-colors">hola@cobratelo.es</a>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, fontSize: 12, color: C.muted }}>
+              {[['Precios','/precios'],['Aviso Legal','/legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
+                <Link key={h} href={h} style={{ color: C.muted, textDecoration: 'none' }}>{l}</Link>
+              ))}
+              <a href="mailto:hola@cobratelo.es" style={{ color: C.muted, textDecoration: 'none' }}>hola@cobratelo.es</a>
+            </div>
           </div>
         </footer>
+
       </div>
     </>
   )
