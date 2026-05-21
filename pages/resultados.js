@@ -504,12 +504,6 @@ export default function Resultados() {
 
       setAyudas(conScore)
 
-      const total = conScore
-        .filter(a => !['deduccion','prestamo'].includes(a.tipo))
-        .filter(a => a.importe_max > 0 && a.importe_max <= IMPORTE_MAX_CIUDADANO)
-        .slice(0, 5)
-        .reduce((acc, a) => acc + a.importe_max, 0)
-      setTotalEstimado(total)
     } catch (e) {
       console.error(e)
     } finally {
@@ -563,18 +557,6 @@ export default function Resultados() {
               <span className="font-display text-5xl font-bold text-[#22C55E]">{ayudas.length}</span>
               <span className="text-[#888882] mb-2">ayudas encontradas</span>
             </div>
-            {totalEstimado > 0 && (
-              <>
-                <div className="h-px bg-[#333330] my-4" />
-                <p className="text-[#888882] text-sm mb-1">Importe máximo potencial (top 5)</p>
-                <span className="font-display text-3xl font-bold text-[#F7F3EC]">
-                  {totalEstimado.toLocaleString('es-ES')}€
-                </span>
-                <p className="text-[#555550] text-xs mt-1">
-                  Solo subvenciones y prestaciones directas. Las deducciones fiscales no están incluidas.
-                </p>
-              </>
-            )}
           </div>
 
           {/* Compartir por WhatsApp */}
