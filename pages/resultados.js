@@ -158,6 +158,11 @@ function calcularRelevancia(ayuda, perfil) {
   if (esAutonomo && !esEmprendedor) {
     if (/ajuda.*primera.*empresa|ayuda.*primera.*empresa|crear.*primera.*empresa|emprender.*desde.*cero|primera.*alta.*autono/.test(t)) return 0
   }
+  // Subvenciones de CONTRATACIÓN: solo si tiene empresa con empleados (pyme)
+  // Un autónomo sin trabajadores no puede contratar a nadie
+  if (!extras.includes('pyme') && !familia.some(v => false)) {
+    if (/subvencio.*contratacio|subvención.*contrataci|bonificaci.*contractaci|contractaci.*indefinida|contratacion.*indefinida|contratar.*treballador|contratar.*trabajador|incorporaci.*laboral.*empresa|ajuda.*contractar|ayuda.*contratar/.test(t)) return 0
+  }
 
   // DESEMPLEADO — excluir ayudas exclusivas de empleados o autónomos activos
   if (esDesempleado && !esAutonomo && !esEmpleado) {
@@ -669,7 +674,7 @@ export default function Resultados() {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-semibold text-[#111110] leading-snug">{ayuda.nombre}</h3>
+                      <h3 className="font-semibold text-[#111110] leading-snug" style={{wordBreak:"break-word",overflowWrap:"anywhere"}}>{ayuda.nombre}</h3>
                       <p className="text-xs text-[#888882] mt-0.5 truncate">{ayuda.organismo}</p>
                     </div>
                     <div className="text-right shrink-0 max-w-[120px] ml-2">
