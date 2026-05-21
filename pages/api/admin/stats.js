@@ -58,19 +58,37 @@ export default async function handler(req, res) {
     let billing = { hoy: 0, semana: 0, mes: 0, total: 0, suscripciones: 0 }
     try {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-      const [chargesToday, chargesWeek, chargesMonth] = await Promise.all([
-        stripe.charges.list({ created: { gte: Math.floor(hoy.getTime() / 1000) }, limit: 100 }),
-        stripe.charges.list({ created: { gte: Math.floor(hace7.getTime() / 1000) }, limit: 100 }),
-        stripe.charges.list({ created: { gte: Math.floor(hace30.getTime() / 1000) }, limit: 100 }),
-      ])
-      const sum = charges => charges.data.filter(c => c.paid && !c.refunded).reduce((a, c) => a + c.amount, 0) / 100
 
+      // Price IDs de cobratelo.es — filtrar solo estos productos
+      const COBRATELO_PRICES = [
+        process.env.NEXT_PUBLIC_STRIPE_PRICE_ALERTAS,
+        process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER,
+        process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO,
+      ].filter(Boolean)
+
+      // Suscripciones activas solo de cobratelo.es
       const subs = await stripe.subscriptions.list({ status: 'active', limit: 100 })
+      const subsCobratelo = subs.data.filter(s =>
+        s.items.data.some(item => COBRATELO_PRICES.includes(item.price.id))
+      )
+      const subsIds = new Set(subsCobratelo.map(s => s.id))
+
+      // Facturas solo de cobratelo.es (más fiable que charges para suscripciones)
+      const filtrarFacturas = invoices => invoices.data
+        .filter(inv => inv.paid && subsIds.has(inv.subscription))
+        .reduce((a, inv) => a + inv.amount_paid, 0) / 100
+
+      const [invToday, invWeek, invMonth] = await Promise.all([
+        stripe.invoices.list({ created: { gte: Math.floor(hoy.getTime() / 1000) }, limit: 100 }),
+        stripe.invoices.list({ created: { gte: Math.floor(hace7.getTime() / 1000) }, limit: 100 }),
+        stripe.invoices.list({ created: { gte: Math.floor(hace30.getTime() / 1000) }, limit: 100 }),
+      ])
+
       billing = {
-        hoy: sum(chargesToday),
-        semana: sum(chargesWeek),
-        mes: sum(chargesMonth),
-        suscripciones: subs.data.length,
+        hoy: filtrarFacturas(invToday),
+        semana: filtrarFacturas(invWeek),
+        mes: filtrarFacturas(invMonth),
+        suscripciones: subsCobratelo.length,
       }
     } catch (e) { console.error('Stripe error:', e.message) }
 
