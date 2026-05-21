@@ -688,30 +688,28 @@ El informe incluye ${ayudas.length} ayudas con los enlaces a las convocatorias o
                       </span>
                     </div>
                   )}
-                  <div className="flex items-start justify-between gap-4 mb-3">
-                    <div className="flex-1 min-w-0 overflow-hidden">
-                      <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIPO_COLOR[ayuda.tipo] || 'bg-gray-50 text-gray-700'}`}>
-                          {TIPO_LABEL[ayuda.tipo] || ayuda.tipo}
-                        </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${ayuda.estado === 'abierta' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
-                          {ayuda.estado === 'abierta' ? '● Abierta' : ayuda.estado}
-                        </span>
-                        {ayuda.ambito !== 'estatal' && ayuda.comunidad_autonoma && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
-                            {ayuda.comunidad_autonoma}
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-semibold text-[#111110] leading-snug">{ayuda.nombre}</h3>
-                      <p className="text-xs text-[#888882] mt-0.5 truncate">{ayuda.organismo}</p>
-                    </div>
-                    <div className="ayuda-importe text-right ml-2 w-28 shrink-0">
-                      <div className="font-display text-sm font-bold text-[#1A7A4A] leading-snug line-clamp-3">
-                        {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
-                      </div>
-                    </div>
-                  </div>
+                   <div className="mb-3">
+                     <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIPO_COLOR[ayuda.tipo] || 'bg-gray-50 text-gray-700'}`}>
+                         {TIPO_LABEL[ayuda.tipo] || ayuda.tipo}
+                       </span>
+                       <span className={`text-xs px-2 py-0.5 rounded-full ${ayuda.estado === 'abierta' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
+                         {ayuda.estado === 'abierta' ? '● Abierta' : ayuda.estado}
+                       </span>
+                       {ayuda.ambito !== 'estatal' && ayuda.comunidad_autonoma && (
+                         <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                           {ayuda.comunidad_autonoma}
+                         </span>
+                       )}
+                     </div>
+                     <h3 className="font-semibold text-[#111110] leading-snug mb-0.5">{ayuda.nombre}</h3>
+                     <p className="text-xs text-[#888882] mb-1">{ayuda.organismo}</p>
+                     {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo) && (
+                       <p className="font-display text-base font-bold text-[#1A7A4A]">
+                         {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
+                       </p>
+                     )}
+                   </div>
                   {ayuda.descripcion && (
                     <p className="text-sm text-[#666660] mb-4 leading-relaxed">{ayuda.descripcion}</p>
                   )}
