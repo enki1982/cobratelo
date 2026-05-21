@@ -263,51 +263,105 @@ export default function Cuenta() {
           {/* Tab: Suscripción */}
           {tab === 'pagos' && (
             <div className="space-y-4">
-              <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-semibold text-[#111110]">Plan actual</h2>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full
-                    ${plan === 'free' ? 'bg-[#F0EAE0] text-[#888882]' : 'bg-[#E8F5EE] text-[#1A7A4A]'}`}>
-                    {plan === 'free' ? 'Gratuito' : plan === 'alertas' ? 'Alertas · 0,99€/mes' : 'Pro'}
-                  </span>
+
+              {/* Plan actual */}
+              <div className="bg-white rounded-2xl border border-[#E0DAD0] overflow-hidden">
+                <div className="px-6 py-5 border-b border-[#F0EAE0]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-[#888882] uppercase tracking-wide font-medium mb-1">Plan actual</p>
+                      <p className="font-semibold text-[#111110] text-lg">
+                        {plan === 'free' ? 'Gratuito' : plan === 'alertas' ? 'Alertas' : 'Gestoría Pro'}
+                      </p>
+                    </div>
+                    <span className={`text-xs font-semibold px-3 py-1.5 rounded-full
+                      ${plan === 'free' ? 'bg-[#F0EAE0] text-[#888882]' : 'bg-[#E8F5EE] text-[#1A7A4A]'}`}>
+                      {plan === 'free' ? 'Gratis' : plan === 'alertas' ? '0,99€/mes' : '49€/mes'}
+                    </span>
+                  </div>
                 </div>
-                {plan === 'free' ? (
-                  <>
-                    <p className="text-sm text-[#888882] mb-4">Consulta puntual sin alertas automáticas.</p>
-                    <Link href="/precios"
-                      className="inline-block bg-[#E8540A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#d14a08] transition-colors">
-                      Activar alertas por 0,99€/mes →
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-sm text-[#888882] mb-4">Recibirás alertas semanales cuando abran convocatorias que aplican a tu perfil.</p>
-                    <button className="text-sm text-red-500 hover:text-red-700 transition-colors">
-                      Cancelar suscripción
+                <div className="px-6 py-4">
+                  {plan === 'free' ? (
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-[#888882]">Consulta puntual sin alertas automáticas</p>
+                      <Link href="/precios"
+                        className="text-sm font-semibold text-[#1A7A4A] hover:text-[#145e39] transition-colors whitespace-nowrap ml-4">
+                        Mejorar plan →
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-[#888882]">Alertas semanales de nuevas convocatorias</p>
+                      <button onClick={handlePortalFacturacion}
+                        className="text-sm text-[#888882] hover:text-red-500 transition-colors ml-4">
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Método de pago y facturas */}
+              <div className="bg-white rounded-2xl border border-[#E0DAD0] overflow-hidden">
+                <div className="px-6 py-5 border-b border-[#F0EAE0]">
+                  <p className="text-xs text-[#888882] uppercase tracking-wide font-medium mb-1">Facturación</p>
+                  <p className="font-semibold text-[#111110]">Métodos de pago y facturas</p>
+                </div>
+                <div className="px-6 py-4 space-y-3">
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">💳</span>
+                      <div>
+                        <p className="text-sm font-medium text-[#111110]">Método de pago</p>
+                        <p className="text-xs text-[#888882]">{plan === 'free' ? 'Sin método guardado' : 'Tarjeta guardada'}</p>
+                      </div>
+                    </div>
+                    <button onClick={handlePortalFacturacion}
+                      className="text-sm text-[#1A7A4A] font-medium hover:text-[#145e39] transition-colors">
+                      {plan === 'free' ? 'Añadir' : 'Cambiar'}
                     </button>
-                  </>
-                )}
-              </div>
-
-              <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-semibold text-[#111110]">Facturas y pagos</h2>
+                  </div>
+                  <div className="border-t border-[#F0EAE0]" />
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🧾</span>
+                      <div>
+                        <p className="text-sm font-medium text-[#111110]">Historial de facturas</p>
+                        <p className="text-xs text-[#888882]">Descarga tus facturas en PDF</p>
+                      </div>
+                    </div>
+                    <button onClick={handlePortalFacturacion}
+                      className="text-sm text-[#1A7A4A] font-medium hover:text-[#145e39] transition-colors">
+                      Ver →
+                    </button>
+                  </div>
+                  <div className="border-t border-[#F0EAE0]" />
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">📧</span>
+                      <div>
+                        <p className="text-sm font-medium text-[#111110]">Email de facturación</p>
+                        <p className="text-xs text-[#888882]">{session?.user?.email}</p>
+                      </div>
+                    </div>
+                    <button onClick={handlePortalFacturacion}
+                      className="text-sm text-[#1A7A4A] font-medium hover:text-[#145e39] transition-colors">
+                      Editar
+                    </button>
+                  </div>
                 </div>
-                <p className="text-sm text-[#888882] mb-4">Descarga tus facturas, actualiza tu método de pago o cancela tu suscripción.</p>
-                <button onClick={handlePortalFacturacion}
-                  className="inline-block bg-[#111110] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#333330] transition-colors">
-                  Gestionar facturación →
-                </button>
               </div>
 
+              {/* Gestoría */}
               <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                <h2 className="font-semibold text-[#111110] mb-3">¿Eres gestoría?</h2>
-                <p className="text-sm text-[#888882] mb-4">Accede a planes profesionales para gestionar ayudas de varios clientes.</p>
+                <h2 className="font-semibold text-[#111110] mb-1">¿Eres gestoría?</h2>
+                <p className="text-sm text-[#888882] mb-4">Planes profesionales para gestionar ayudas de varios clientes.</p>
                 <Link href="/precios"
                   className="inline-block bg-[#111110] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#333330] transition-colors">
                   Ver planes gestoría →
                 </Link>
               </div>
+
             </div>
           )}
 
