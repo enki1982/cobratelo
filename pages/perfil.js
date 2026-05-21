@@ -210,21 +210,27 @@ const PASOS = [
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
   try {
-    const r = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&countrycodes=es&format=json&limit=8&addressdetails=1&featuretype=city`,
-      { headers: { 'Accept-Language': 'es' } }
-    )
+    // Sin featuretype para incluir pueblos pequeños
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&countrycodes=es&format=json&limit=10&addressdetails=1`
+    const r = await fetch(url, { headers: { 'Accept-Language': 'es' } })
     const data = await r.json()
     return data
-      .filter(d => d.address && (d.type === 'city' || d.type === 'town' || d.type === 'village' || d.type === 'municipality' || d.class === 'place'))
+      .filter(d => d.address && (
+        d.class === 'place' ||
+        d.type === 'city' || d.type === 'town' || d.type === 'village' ||
+        d.type === 'municipality' || d.type === 'hamlet' || d.type === 'suburb'
+      ))
       .map(d => ({
-        nombre: d.address.city || d.address.town || d.address.village || d.address.municipality || d.name,
-        provincia: d.address.province || d.address.county || '',
+        nombre: d.address.city || d.address.town || d.address.village ||
+                d.address.hamlet || d.address.municipality || d.name,
+        provincia: d.address.province || d.address.county || d.address.state_district || '',
         ccaa: d.address.state || '',
-        comarca: d.address.county || '',
+        comarca: d.address.county || d.address.state_district || '',
         display: d.display_name.split(',').slice(0, 3).join(', '),
       }))
+      .filter(d => d.nombre)
       .filter((v, i, a) => a.findIndex(t => t.nombre === v.nombre && t.provincia === v.provincia) === i)
+      .slice(0, 7)
   } catch (e) {
     return []
   }

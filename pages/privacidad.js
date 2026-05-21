@@ -19,7 +19,7 @@ export default function Privacidad() {
 
           <h2>1. Responsable del tratamiento</h2>
           <p>
-            <strong>KIESBROTER SL</strong> (KIESBROTER SL)<br />
+            <strong>KIESBROTER SL (NIF: B65417107), Mataró, Barcelona</strong> (KIESBROTER SL (NIF: B65417107), Mataró, Barcelona)<br />
             Contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a>
           </p>
 
