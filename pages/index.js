@@ -162,7 +162,7 @@ export default function Home() {
             <a href="/terminos" className="hover:text-[#111110] transition-colors">Términos</a>
             <a href="mailto:hola@cobratelo.es" className="hover:text-[#111110] transition-colors">hola@cobratelo.es</a>
           </div>
-          <p className="text-xs text-[#888882] text-center mt-3">© 2026 Volta Grup</p>
+          <p className="text-xs text-[#888882] text-center mt-3">© 2026 KIESBROTER SL</p>
         </footer>
 
       </div>

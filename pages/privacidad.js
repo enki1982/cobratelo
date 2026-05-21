@@ -19,7 +19,7 @@ export default function Privacidad() {
 
           <h2>1. Responsable del tratamiento</h2>
           <p>
-            <strong>Volta Grup</strong> (Volta Grup)<br />
+            <strong>KIESBROTER SL</strong> (KIESBROTER SL)<br />
             Contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a>
           </p>
 
