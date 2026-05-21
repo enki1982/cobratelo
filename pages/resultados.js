@@ -565,7 +565,7 @@ export default function Resultados() {
             return (
               <div className="bg-[#E8F5EE] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6">
                 <div className="flex items-start gap-3 mb-3">
-                  <span className="text-2xl">🤝</span>
+                  
                   <div>
                     <p className="font-semibold text-[#111110]">Encuentra una gestoría cerca de ti</p>
                     <p className="text-sm text-[#888882] mt-0.5">
@@ -582,7 +582,7 @@ export default function Resultados() {
                   <a href={`https://wa.me/?text=${encodeURIComponent(`Hola, he encontrado ${ayudas.length} ayudas públicas que me corresponden y me gustaría que me ayudaras a tramitarlas. ¿Puedes ayudarme? Ver resumen: https://cobratelo.es/perfil`)}`}
                      target="_blank" rel="noopener noreferrer"
                      className="flex items-center justify-center gap-2 bg-[#F7F3EC] border border-[#E0DAD0] text-[#111110] text-sm font-semibold py-2.5 rounded-full hover:bg-[#F0EAE0] transition-colors">
-                    📱 Enviar resumen a tu gestor por WhatsApp
+                    Enviar resumen a tu gestor por WhatsApp
                   </a>
                 </div>
               </div>
