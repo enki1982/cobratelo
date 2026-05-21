@@ -92,6 +92,8 @@ const PASOS = [
       { value: 'divorciado', label: 'Divorciado/a o separado/a', emoji: '⚖️' },
       { value: 'dependiente_cargo', label: 'Persona mayor o dependiente a cargo', emoji: '🤝' },
       { value: 'embarazada', label: 'Embarazada o en proceso de adopción', emoji: '🤱' },
+      { value: 'casado', label: 'Casado/a o pareja de hecho', emoji: '💍' },
+      { value: 'soltero', label: 'Soltero/a', emoji: '🙋' },
       { value: 'sin_cargas', label: 'Sin cargas familiares', emoji: '✌️' },
     ],
   },
