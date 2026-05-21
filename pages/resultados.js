@@ -197,8 +197,11 @@ function calcularRelevancia(ayuda, perfil) {
   // Si el usuario sabe cuánto paga, excluir ayudas cuyo tope sea inferior
   if (esAlquiler && alquilerMes !== null) {
     // Detectar topes en el texto: "alquiler máximo Xe/mes", "renta máxima X€", etc.
-    const topeMatch = t.match(/(?:alquiler|renda|renta|arrendament|arrendamiento|lloguer).*?m[aà]x[^0-9]*(\d[\d.,]+)/i)
-                   || t.match(/m[aà]x[^0-9]*(\d[\d.,]+).*?(?:alquiler|renda|renta|lloguer)/i)
+    // Detectar topes en la descripción normalizada
+    const topeMatch = t.match(/(?:alquiler|renda|renta|arrendament|arrendamiento|lloguer)[^0-9]*(?:max|maxim|maximo|maxima)[^0-9]*(\d[\d.]*)/i)
+                   || t.match(/(?:max|maxim|maximo|maxima)[^0-9]*(\d[\d.]*)[^0-9]*(?:alquiler|renda|renta|lloguer)/i)
+                   || t.match(/renda[^0-9]*maxima[^0-9]*(\d[\d.]*)/i)
+                   || t.match(/fins a[^0-9]*(\d[\d.]*)[^0-9]*(?:mes|mensual)/i)
     if (topeMatch) {
       const tope = parseInt(topeMatch[1].replace(/\./g, '').replace(/,/g, '.'))
       // Si el tope detectado es realista (entre 200€ y 2500€) y el usuario paga más → excluir
@@ -285,8 +288,15 @@ function calcularRelevancia(ayuda, perfil) {
   // ── EXCLUSIONES POR EDAD ──────────────────────────
   // Edad
   if (edadNum > 0) {
-    if (/mayor(es)? de 65|65 anys o mes|a partir dels 65/.test(t) && edadNum < 65) return 0
+    // Mayores de 65: cubrir variantes sin "de", con +, etc.
+    if (/mayor(es)?( de)? 65|65 anys o mes|a partir dels 65|65\+|\+65|65 o mes|a partir de 65|mes de 65|65 anos o mas/.test(t) && edadNum < 65) return 0
+    // También si el texto dice explícitamente "jubilado" o "pensionista" como requisito
+    if (/dirigid[oa]s? a (jubilad|pensionist)|exclusiv[oa].*pensionist|destinat.*jubilat/.test(t) && !esPensionista) return 0
     if (/menor(es)? de 3[05]|fins a 3[05]|hasta 3[05]|joves? fins|jovens? fins/.test(t) && edadNum >= 35) return 0
+    // Garantía Juvenil / programes joves: máximo 30 años (a veces 35)
+    if (/garantia juvenil|garantía juvenil|garantia juvenil|ninis|ni estudia ni trabaja|autoocupacio jove|autoocupació jove|programa.*jove.*emprend|jóvenes emprendedor/.test(t) && edadNum > 35) return 0
+    // "Joves" o "Jóvenes" como requisito principal (no solo en el nombre del organismo)
+    if (/^(?=.*jove[ns]?)(?=.*emprend)/.test(t) && edadNum > 35) return 0
     if (/18.65|menors? de 65|fins als 65/.test(t) && edadNum >= 65) return 0
     if (/36.64|36 a 64|entre 36 i 64/.test(t) && !(edadNum >= 36 && edadNum <= 64)) return 0
   }
@@ -375,8 +385,11 @@ function calcularRelevancia(ayuda, perfil) {
   if (esEmpleado && !esAutonomo && /treballador.*compte.*ali|trabajador.*cuenta.*ajena|compte.*ali/.test(t)) score += 30
 
   // Edad
-  if (edadNum >= 65 && /gent gran|major|tercera edat|majors/.test(t)) score += 35
-  if (edadNum < 30 && /jove|joven|menors de 30|jovens/.test(t)) score += 35
+  // Boost mayores 65 solo si tiene 65+
+  if (edadNum >= 65 && /gent gran|major|tercera edat|majors|mayor.*65|65.*anys/.test(t)) score += 35
+  // Boost jóvenes solo si tiene menos de 35
+  if (edadNum < 35 && /jove|joven|garantia juvenil|programa.*jove/.test(t)) score += 35
+  // (boost jóvenes ya cubierto arriba con rango ampliado)
   if (edadNum >= 30 && edadNum < 65 && /persones.*36.64|entre 36 i 64/.test(t)) score += 40
 
   // Familia
