@@ -58,20 +58,51 @@ function getOpcionesProvincias(ccaa) {
 
 // Opciones mutuamente excluyentes por grupo
 const INCOMPATIBLES = {
-  // Estado civil — solo uno
+  // ── FAMILIA: estado civil — solo uno ──
   'soltero':    ['casado','divorciado','viudo'],
   'casado':     ['soltero','divorciado','viudo','monoparental'],
   'divorciado': ['casado','soltero','viudo'],
   'viudo':      ['casado','soltero','divorciado'],
-  // Sin cargas es incompatible con tener cargas
+  // Cargas familiares
   'sin_cargas': ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental','embarazada','dependiente_cargo'],
-  // Si tienes hijos/cargas, no puedes marcar sin cargas
-  'hijos_menores3':     ['sin_cargas'],
-  'hijos_3_18':         ['sin_cargas'],
-  'familia_numerosa':   ['sin_cargas','soltero'],
-  'monoparental':       ['casado','sin_cargas'],
-  'embarazada':         ['sin_cargas'],
-  'dependiente_cargo':  ['sin_cargas'],
+  'hijos_menores3':    ['sin_cargas'],
+  'hijos_3_18':        ['sin_cargas'],
+  'familia_numerosa':  ['sin_cargas','soltero'],
+  'monoparental':      ['casado','sin_cargas'],
+  'embarazada':        ['sin_cargas'],
+  'dependiente_cargo': ['sin_cargas'],
+
+  // ── VIVIENDA: sin vivienda ↔ tener vivienda ──
+  'sin_vivienda':    ['alquiler','propietario','hipoteca','busco_vivienda','rehabilitacion'],
+  'alquiler':        ['sin_vivienda'],
+  'propietario':     ['sin_vivienda'],
+  'hipoteca':        ['sin_vivienda'],
+  'busco_vivienda':  ['sin_vivienda'],
+  'rehabilitacion':  ['sin_vivienda'],
+
+  // ── SITUACIONES ESPECIALES: ninguna ↔ resto ──
+  'ninguna':           ['discapacidad','dependencia','victima_violencia','inmigrante','rural'],
+  'discapacidad':      ['ninguna'],
+  'dependencia':       ['ninguna'],
+  'victima_violencia': ['ninguna'],
+  'inmigrante':        ['ninguna'],
+  'rural':             ['ninguna'],
+
+  // ── VEHÍCULO: sin vehículo ↔ tener vehículo ──
+  'sin_vehiculo':    ['coche_gasolina','coche_electrico','moto'],
+  'coche_gasolina':  ['sin_vehiculo'],
+  'coche_electrico': ['sin_vehiculo'],
+  'moto':            ['sin_vehiculo'],
+
+  // ── EXTRAS: ninguno ↔ resto ──
+  'ninguno':         ['mascotas','energia','salud_cronica','gafas_audifonos','estudios_hijos','negocio_digital','pyme'],
+  'mascotas':        ['ninguno'],
+  'energia':         ['ninguno'],
+  'salud_cronica':   ['ninguno'],
+  'gafas_audifonos': ['ninguno'],
+  'estudios_hijos':  ['ninguno'],
+  'negocio_digital': ['ninguno'],
+  'pyme':            ['ninguno'],
 }
 
 const PASOS = [
