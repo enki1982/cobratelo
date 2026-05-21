@@ -611,7 +611,7 @@ export default function Resultados() {
               const isBlurred = i >= FREE_LIMIT
               return (
                 <div key={ayuda.id}
-                  className={`bg-white rounded-2xl border border-[#E0DAD0] p-6 ${isBlurred ? 'relative overflow-hidden' : ''}`}>
+                  className={`bg-white rounded-2xl border border-[#E0DAD0] p-5 overflow-hidden ${isBlurred ? 'relative' : ''}`}>
                   {isBlurred && (
                     <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -625,7 +625,7 @@ export default function Resultados() {
                     </div>
                   )}
                   <div className="flex items-start justify-between gap-4 mb-3">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1.5">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIPO_COLOR[ayuda.tipo] || 'bg-gray-50 text-gray-700'}`}>
                           {TIPO_LABEL[ayuda.tipo] || ayuda.tipo}
@@ -639,17 +639,17 @@ export default function Resultados() {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-semibold text-[#111110] leading-snug">{ayuda.nombre}</h3>
-                      <p className="text-xs text-[#888882] mt-0.5">{ayuda.organismo}</p>
+                      <h3 className="font-semibold text-[#111110] leading-snug break-words">{ayuda.nombre}</h3>
+                      <p className="text-xs text-[#888882] mt-0.5 truncate">{ayuda.organismo}</p>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 max-w-[100px]">
                       <div className="font-display text-lg font-bold text-[#1A7A4A]">
                         {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
                       </div>
                     </div>
                   </div>
                   {ayuda.descripcion && (
-                    <p className="text-sm text-[#666660] mb-4 leading-relaxed">{ayuda.descripcion}</p>
+                    <p className="text-sm text-[#666660] mb-4 leading-relaxed break-words">{ayuda.descripcion}</p>
                   )}
                   {ayuda.url_oficial && !isBlurred && (
                     <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
