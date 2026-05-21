@@ -210,26 +210,37 @@ const PASOS = [
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
   try {
-    // Sin featuretype para incluir pueblos pequeños
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&countrycodes=es&format=json&limit=10&addressdetails=1`
-    const r = await fetch(url, { headers: { 'Accept-Language': 'es' } })
+    // Búsqueda amplia sin filtro de tipo — incluye municipios pequeños, aldeas, barrios
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=12&addressdetails=1&accept-language=es`
+    const r = await fetch(url, {
+      headers: {
+        'Accept-Language': 'es',
+        'User-Agent': 'Cobratelo.es/1.0 (hola@cobratelo.es)'
+      }
+    })
     const data = await r.json()
     return data
-      .filter(d => d.address && (
-        d.class === 'place' ||
-        d.type === 'city' || d.type === 'town' || d.type === 'village' ||
-        d.type === 'municipality' || d.type === 'hamlet' || d.type === 'suburb'
-      ))
+      .filter(d => {
+        if (!d.address) return false
+        // Excluir resultados que no sean lugares habitados (carreteras, edificios, etc.)
+        const excluir = ['road','motorway','path','cycleway','footway','building','house','shop','amenity','tourism']
+        if (excluir.includes(d.type)) return false
+        // Solo España
+        if (d.address.country_code && d.address.country_code !== 'es') return false
+        return true
+      })
       .map(d => ({
-        nombre: d.address.city || d.address.town || d.address.village ||
-                d.address.hamlet || d.address.municipality || d.name,
-        provincia: d.address.province || d.address.county || d.address.state_district || '',
+        nombre: d.address.municipality || d.address.city || d.address.town ||
+                d.address.village || d.address.hamlet || d.address.suburb || d.name,
+        provincia: d.address.province || d.address.county || '',
         ccaa: d.address.state || '',
         comarca: d.address.county || d.address.state_district || '',
         display: d.display_name.split(',').slice(0, 3).join(', '),
       }))
-      .filter(d => d.nombre)
-      .filter((v, i, a) => a.findIndex(t => t.nombre === v.nombre && t.provincia === v.provincia) === i)
+      .filter(d => d.nombre && d.nombre.length > 0)
+      .filter((v, i, a) => a.findIndex(t =>
+        t.nombre.toLowerCase() === v.nombre.toLowerCase() && t.provincia === v.provincia
+      ) === i)
       .slice(0, 7)
   } catch (e) {
     return []
