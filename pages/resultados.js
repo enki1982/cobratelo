@@ -552,7 +552,7 @@ export default function Resultados() {
               href={`https://wa.me/?text=${encodeURIComponent(`He encontrado ${ayudas.length} ayudas públicas que me corresponden en Cóbratelo.es\n\nVer mis ayudas: https://cobratelo.es/perfil`)}`}
               target="_blank" rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#1ebe5a] transition-colors">
-              <span>📱</span> Compartir por WhatsApp
+              Compartir por WhatsApp
             </a>
           </div>
 
@@ -577,7 +577,7 @@ export default function Resultados() {
                   <a href={`https://www.google.com/maps/search/${busqueda}`}
                      target="_blank" rel="noopener noreferrer"
                      className="flex items-center justify-center gap-2 bg-[#1A7A4A] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#145e39] transition-colors">
-                    🗺️ Ver gestorías en Google Maps
+                    Ver gestorías en Google Maps
                   </a>
                   <a href={`https://wa.me/?text=${encodeURIComponent(`Hola, he encontrado ${ayudas.length} ayudas públicas que me corresponden y me gustaría que me ayudaras a tramitarlas. ¿Puedes ayudarme? Ver resumen: https://cobratelo.es/perfil`)}`}
                      target="_blank" rel="noopener noreferrer"
