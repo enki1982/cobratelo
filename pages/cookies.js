@@ -11,7 +11,7 @@ export default function Cookies() {
       <div className="min-h-screen bg-[#F7F3EC]">
         <nav className="px-6 py-5 max-w-3xl mx-auto">
           <Link href="/" className="font-display text-xl font-bold text-[#111110]">
-            cobratelo<span className="text-[#1A7A4A]">.es</span>
+            cóbratelo<span className="text-[#1A7A4A]">.es</span>
           </Link>
         </nav>
         <div className="max-w-3xl mx-auto px-6 pb-20 prose prose-sm">

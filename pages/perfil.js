@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 const PROVINCIAS = {
@@ -277,9 +278,9 @@ export default function Perfil() {
 
       <div className="min-h-screen bg-[#F7F3EC] flex flex-col">
         <div className="px-6 py-5 flex items-center justify-between max-w-2xl mx-auto w-full">
-          <span className="font-display text-xl font-bold text-[#111110]">
-            cobratelo<span className="text-[#1A7A4A]">.es</span>
-          </span>
+          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
+            cóbratelo<span className="text-[#1A7A4A]">.es</span>
+          </Link>
           <span className="text-sm text-[#888882]">{paso + 1} / {PASOS.length}</span>
         </div>
 
