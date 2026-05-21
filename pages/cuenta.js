@@ -256,6 +256,16 @@ export default function Cuenta() {
             <div>
               {perfilData ? (
                 <>
+                  {/* CTA principal: Ver ayudas */}
+                  <Link
+                    href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilData))}`}
+                    className="flex items-center justify-between w-full bg-[#111110] text-[#F7F3EC] rounded-2xl px-6 py-5 mb-5 hover:bg-[#333330] transition-colors group">
+                    <div>
+                      <p className="font-semibold text-lg">Ver mis ayudas</p>
+                      <p className="text-sm text-[#888882] mt-0.5">Basadas en tu perfil actualizado</p>
+                    </div>
+                    <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
                   <p className="text-xs text-[#888882] mb-3 uppercase tracking-wide font-medium">Toca cualquier campo para editarlo</p>
                   <div className="bg-white rounded-2xl border border-[#E0DAD0] overflow-hidden">
                     {SECCIONES_PERFIL.filter(s => !s.condicion || s.condicion(perfilData)).map((sec, i, arr) => {

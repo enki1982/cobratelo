@@ -27,6 +27,21 @@ const HOW = [
 ]
 
 export default function Home() {
+  const [sesionActiva, setSesionActiva] = useState(false)
+  const [tienePerfil, setTienePerfil] = useState(false)
+  const [perfilGuardado, setPerfilGuardado] = useState(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      setSesionActiva(true)
+      const { data } = await supabase.from('usuarios').select('perfil').eq('id', session.user.id).single()
+      if (data?.perfil && Object.keys(data.perfil).length > 0) {
+        setTienePerfil(true)
+        setPerfilGuardado(data.perfil)
+      }
+    })
+  }, [])
   const [count, setCount] = useState(0)
   const [totalAyudas, setTotalAyudas] = useState(66)
 
@@ -96,11 +111,19 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
-            <Link href="/perfil"
-              className="bg-[#111110] text-[#F7F3EC] text-base font-semibold px-8 py-4 rounded-full hover:bg-[#333330] transition-colors inline-flex items-center gap-2">
-              Descubre lo tuyo
-              <span className="text-[#22C55E]">→</span>
-            </Link>
+            {tienePerfil && perfilGuardado ? (
+              <Link href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`}
+                className="bg-[#1A7A4A] text-[#F7F3EC] text-base font-semibold px-8 py-4 rounded-full hover:bg-[#145e39] transition-colors inline-flex items-center gap-2">
+                Ver mis ayudas
+                <span>→</span>
+              </Link>
+            ) : (
+              <Link href="/perfil"
+                className="bg-[#111110] text-[#F7F3EC] text-base font-semibold px-8 py-4 rounded-full hover:bg-[#333330] transition-colors inline-flex items-center gap-2">
+                Descubre lo tuyo
+                <span className="text-[#22C55E]">→</span>
+              </Link>
+            )}
             <span className="text-sm text-[#888882] self-center">Gratis · Sin registro · 2 minutos</span>
           </div>
         </section>
@@ -140,10 +163,18 @@ export default function Home() {
           <p className="text-[#888882] mb-8 max-w-md mx-auto">
             El importe medio entre nuestras ayudas es de 1.517€. Descubre las que te corresponden.
           </p>
-          <Link href="/perfil"
-            className="bg-[#E8540A] text-white font-semibold px-8 py-4 rounded-full inline-block hover:bg-[#d14a08] transition-colors">
-            Empezar ahora — es gratis
-          </Link>
+          {tienePerfil && perfilGuardado ? (
+            <Link href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`}
+              className="bg-[#1A7A4A] text-white font-semibold px-8 py-4 rounded-full inline-block hover:bg-[#145e39] transition-colors">
+              Ver mis ayudas →
+            </Link>
+          ) : (
+            <Link href="/perfil"
+              className="bg-[#E8540A] text-white font-semibold px-8 py-4 rounded-full inline-block hover:bg-[#d14a08] transition-colors">
+              Empezar ahora — es gratis
+            </Link>
+          )}
+          )}
         </section>
 
         {/* Footer */}
