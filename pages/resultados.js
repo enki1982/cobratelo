@@ -117,24 +117,69 @@ function calcularRelevancia(ayuda, perfil) {
   // BLOQUE 2: EXCLUSIONES DURAS (retornan 0 si no aplica)
   // ════════════════════════════════════════════════════════════
 
-  // Situación laboral
-  if (esPensionista && !esAutonomo) {
-    if (/insercio|insercion laboral|tarifa plana|alta.*autono|cuota.*autono|desempleo|sepe |erte/.test(t)) return 0
-    // Ya es pensionista: excluir ayudas de SOLICITAR/TRAMITAR la jubilación o pensión contributiva
-    if (/solicitar.*jubilac|tramitar.*jubilac|acceder.*jubilac|solicitud.*pension|como.*jubilarse|alta.*jubilac|solicitar.*pension.*jubila|pedir.*jubila|acces.*jubilaci/.test(t)) return 0
-    // Ni ayudas de desempleo/paro
-    if (/subsidio.*desempleo|prestacion.*desempleo|paro.*mayores|desempleo.*mayores/.test(t) && !esDesempleado) return 0
+  // ── EXCLUSIONES POR SITUACIÓN LABORAL ──────────────────────────
+
+  // PENSIONISTA/JUBILADO — ya tiene su pensión
+  if (esPensionista) {
+    // Excluir: solicitar/tramitar jubilación o pensión (ya la tiene)
+    if (/solicitar.*jubilac|tramitar.*jubilac|acceder.*jubilac|como.*jubilarse|pedir.*jubila|acces.*jubilaci|solicitud.*pension.*jubila|dar.*(se|se).*alta.*jubil/.test(t)) return 0
+    // Excluir: inserción laboral, empleo, paro (no aplica)
+    if (/insercio|insercion laboral|tarifa plana.*autono|alta.*autono|cuota.*autono|subsidio.*desempleo|prestacion.*desempleo|sepe |erte |paro.*mayores|desempleo.*mayores/.test(t)) return 0
+    // Excluir: becas educativas para el propio usuario (sí pueden tener hijos)
+    if (/beca mec|beca universitaria|beca.*educacio|beca.*estudis/.test(t) && !extras.includes('estudios_hijos')) return 0
   }
-  // Si es pensionista Y viudo/a: probablemente ya tiene pensión de viudedad, excluir "solicitar viudedad"
+
+  // PENSIONISTA + VIUDO/A — probablemente ya tiene pensión de viudedad
   if (esPensionista && familia.includes('viudo')) {
-    if (/solicitar.*viudedat|solicitar.*viudedad|tramitar.*viudedad|acceder.*viudedad|pension.*viudedad.*solicitu|alta.*viudedad/.test(t)) return 0
+    if (/solicitar.*viudedat|solicitar.*viudedad|tramitar.*viudedad|acceder.*viudedad|pension.*viudedad.*solicitu|alta.*viudedad|com.*accedir.*viudedat/.test(t)) return 0
   }
+
+  // EMPLEADO (cuenta ajena, no autónomo)
   if (esEmpleado && !esAutonomo) {
-    if (/tarifa plana|alta.*autono/.test(t)) return 0
+    if (/tarifa plana.*autono|alta.*autono|cuota.*autono/.test(t)) return 0
+    if (/subsidio.*desempleo|prestacion.*desempleo/.test(t) && !esDesempleado) return 0
   }
-  if (esEstudiante && !esEmpleado) {
-    if (/jubilacio|jubilacion/.test(t)) return 0
+
+  // AUTÓNOMO EN ACTIVO — ya tiene empresa, excluir ayudas de "empezar"
+  if (esAutonomo && !esEmprendedor) {
+    if (/ajuda.*primera.*empresa|ayuda.*primera.*empresa|crear.*primera.*empresa|emprender.*desde.*cero|primera.*alta.*autono/.test(t)) return 0
   }
+
+  // DESEMPLEADO — excluir ayudas exclusivas de empleados o autónomos activos
+  if (esDesempleado && !esAutonomo && !esEmpleado) {
+    if (/tarifa plana|cuota.*autono.*reducida|bonificacion.*cuota.*autono/.test(t)) return 0
+  }
+
+  // ESTUDIANTE — excluir jubilación, pensiones contributivas
+  if (esEstudiante && !esEmpleado && !esPensionista) {
+    if (/jubilacio|jubilacion|pension.*contributiva|pension.*vejez/.test(t)) return 0
+  }
+
+  // EMPRENDEDOR (quiere crear empresa, no tiene aún)
+  if (esEmprendedor && !esAutonomo) {
+    // Puede ver ayudas de emprender, pero no las de "empresa consolidada" grandes importes
+    if ((ayuda.importe_max || 0) > 200000 && !tieneEmpresa) return 0
+  }
+
+  // ── EXCLUSIONES POR SITUACIÓN FAMILIAR ──────────────────────────
+
+  // SOLTERO/A sin pareja — excluir ayudas exclusivas de familia numerosa o cónyuge
+  if (familia.includes('soltero') && !familia.includes('casado')) {
+    if (/benefici.*conyuge|conyuge.*beneficiari|parella.*estable.*obligatori/.test(t)) return 0
+  }
+
+  // VIUDO/A — no excluir nada extra por ahora, puede ver ayudas para viudas
+
+  // ── EXCLUSIONES POR VIVIENDA ──────────────────────────
+
+  // PROPIETARIO — excluir ayudas de acceso a primera vivienda
+  if (esPropietario && !quiereComprar) {
+    if (/primer acces|primer acceso|primera habitatge|primera vivienda|comprar.*primera/.test(t)) return 0
+  }
+
+  // SIN VIVIENDA ESTABLE — no excluir nada, puede ver todo
+
+  // ── EXCLUSIONES POR INGRESOS ──────────────────────────
 
   // Edad
   if (edadNum > 0) {
@@ -214,15 +259,20 @@ function calcularRelevancia(ayuda, perfil) {
   // Los patrones regex ya cubren estas variantes con raíces compartidas
 
   // Situación laboral
-  // Pensionista: boost solo si es ayuda DE pensionistas (complemento, tarjeta, descuento, etc.)
-  // No boostar si habla de SOLICITAR/TRAMITAR la pensión
-  if (esPensionista && /pensio|pension|jubila|xubila|erretiro/.test(t)) {
-    if (!/solicitar|tramitar|como.*jubil|pedir.*jubil|acceder.*pension|alta.*jubil/.test(t)) score += 40
+  // Pensionista: boost si es ayuda PARA pensionistas (complementos, descuentos, servicios)
+  if (esPensionista && /pensio|pension|jubila|xubila|erretiro|gent gran|tercera edat|majors de 65/.test(t)) {
+    if (!/solicitar|tramitar|como.*jubil|pedir.*jubil|acceder.*pension|alta.*jubil|primera.*pension/.test(t)) score += 40
   }
-  // Boost para viuda pensionista: complemento viudedad, mejora, bonificación
+  // Viuda pensionista: complemento/mejora viudedad
   if (esPensionista && familia.includes('viudo') && /viudedat|viudedad|viuvez|alarguntzapen/.test(t)) {
-    if (!/solicitar|tramitar|alta.*viude/.test(t)) score += 35
+    if (!/solicitar|tramitar|alta.*viude|primer.*viude/.test(t)) score += 35
   }
+  // Empleado: ayudas para trabajadores cuenta ajena
+  if (esEmpleado && !esAutonomo && /treballador|trabajador.*compte.*alie|treballador.*compte.*alie|trabajador.*cuenta.*ajena/.test(t)) score += 30
+  // Autónomo: ayudas específicas para autónomos
+  if (esAutonomo && /autono|compte.*propi|cuenta.*propia|trabajador.*independiente/.test(t)) score += 40
+  // Emprendedor: ayudas para emprender/crear empresa
+  if (esEmprendedor && /emprendedor|startup|nova empresa|nueva empresa|crear.*empresa|primera.*empresa|emprenedoria/.test(t)) score += 40
   if (esAutonomo && /autono/.test(t)) score += 40
   if (esDesempleado && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
   if (esEstudiante && /beca|estudi/.test(t)) score += 40
