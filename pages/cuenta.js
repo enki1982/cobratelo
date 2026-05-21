@@ -145,6 +145,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
 
 export default function Cuenta() {
   const router = useRouter()
+  const [mostrarBotonAyudas, setMostrarBotonAyudas] = useState(false)
   const { perfil: perfilParam } = router.query
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -191,6 +192,7 @@ export default function Cuenta() {
     if (!error) {
       setPerfilData(nuevoPerfil)
       setEditandoPueblo(null)
+      setMostrarBotonAyudas(true)
     }
     setGuardando(false)
   }
@@ -266,6 +268,23 @@ export default function Cuenta() {
               </button>
             ))}
           </div>
+
+          {/* Banner de ayudas actualizadas */}
+          {mostrarBotonAyudas && perfilData && (
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-3rem)] max-w-lg">
+              <div className="bg-[#111110] text-white rounded-2xl px-5 py-4 flex items-center justify-between gap-4 shadow-xl">
+                <div>
+                  <p className="font-semibold text-sm">Perfil actualizado</p>
+                  <p className="text-xs text-white/60 mt-0.5">Ver ayudas con los nuevos datos</p>
+                </div>
+                <Link
+                  href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilData))}`}
+                  className="bg-[#1A7A4A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#145e39] transition-colors whitespace-nowrap shrink-0">
+                  Ver mis ayudas →
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* Tab: Mi perfil */}
           {tab === 'perfil' && (
