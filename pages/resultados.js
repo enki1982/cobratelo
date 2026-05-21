@@ -120,13 +120,13 @@ function calcularRelevancia(ayuda, perfil) {
   }
   if (!familia.includes('embarazada') && !familia.includes('hijos_menores3') && /maternit|paternit|naix|nacimiento/.test(t)) return 0
   if (!familia.includes('familia_numerosa') && /familia nombrosa|familia numerosa/.test(t)) return 0
-  if (!familia.includes('viudo') && /viudedat|viudedad/.test(t)) return 0
+  if (!familia.includes('viudo') && /viudedat|viudedad|viuvez|alarguntzapen/.test(t)) return 0
   if (!familia.includes('monoparental') && /monoparental/.test(t)) return 0
   if ((!familia.includes('dependiente_cargo') && !especial.includes('dependencia')) && /cuidador no professional|cuidador no profesional/.test(t)) return 0
   if ((!tieneHijos || !especial.includes('discapacidad')) && /fill a carrec.*discapacitat|hijo a cargo.*discapacidad/.test(t)) return 0
 
   // Vivienda
-  const esAyAlquiler = /alquiler|arrendatari|lloguer|ajut al lloguer/.test(t) && !/propietari/.test(t)
+  const esAyAlquiler = /alquiler|arrendatari|lloguer|ajut al lloguer|aluger|alugueiro|alokairu|alokairua/.test(t) && !/propietari/.test(t)
   if (esAyAlquiler && !esAlquiler) return 0
   if (/primer acces|primer acceso|primera habitatge|primera vivienda/.test(t) && !quiereComprar) return 0
   if (/rehabilitac|reforma energet/.test(t) && !esPropietario && !quiereRehabilitacion) return 0
@@ -137,7 +137,7 @@ function calcularRelevancia(ayuda, perfil) {
 
   // Situaciones especiales
   if (!especial.includes('discapacidad') && /certificat.*discapacitat|certificado.*discapacidad|pnc.*invalidesa|pnc.*invalidez|protesi|protesis|audiofon|audifon/.test(t)) return 0
-  if (!especial.includes('dependencia') && !familia.includes('dependiente_cargo') && /grau.*dependencia|grado.*dependencia|situacio.*dependencia|saad/.test(t)) return 0
+  if (!especial.includes('dependencia') && !familia.includes('dependiente_cargo') && /grau.*dependencia|grado.*dependencia|situacio.*dependencia|saad|mendekotasuna/.test(t)) return 0
   if (!especial.includes('victima_violencia') && /violencia.*genere|violencia.*genero/.test(t)) return 0
   if (!especial.includes('rural') && /zona rural|despoblacio|municipio rural/.test(t)) return 0
   if (!especial.includes('inmigrante') && /reagrupacio familiar|reagrupacion familiar|permis.*residencia/.test(t)) return 0
@@ -175,10 +175,17 @@ function calcularRelevancia(ayuda, perfil) {
   // Sin match positivo explícito = no aparece.
   // ════════════════════════════════════════════════════════════
 
+  // Variantes lingüísticas adicionales en el texto normalizado:
+  // Gallego: xubilacion, desemprego, vivenda, aluger, familia, discapacidade
+  // Euskera: erretiro, langabezia, etxebizitza, alokairu, familia, desgaitasuna
+  // Valenciano: (comparte con catalán en gran medida)
+  // Asturiano: xubilacion, desemplegu, vivienda
+  // Los patrones regex ya cubren estas variantes con raíces compartidas
+
   // Situación laboral
-  if (situacion === 'pensionista' && /pensio|pension|jubila/.test(t)) score += 40
+  if (situacion === 'pensionista' && /pensio|pension|jubila|xubila|erretiro/.test(t)) score += 40
   if (situacion === 'autonomo' && /autono/.test(t)) score += 40
-  if (situacion === 'desempleado' && /desempleo|atur|paro|sepe/.test(t)) score += 40
+  if (situacion === 'desempleado' && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
   if (situacion === 'estudiante' && /beca|estudi/.test(t)) score += 40
   if (situacion === 'emprendedor' && /emprendedor|startup|nova empresa/.test(t)) score += 35
   if (situacion === 'empleado' && /treballador|trabajador por cuenta ajena/.test(t)) score += 35
@@ -189,7 +196,7 @@ function calcularRelevancia(ayuda, perfil) {
   if (edadNum >= 30 && edadNum < 65 && /persones.*36.64|entre 36 i 64/.test(t)) score += 40
 
   // Familia
-  if (tieneHijos && /fill|hijo|familia/.test(t)) score += 25
+  if (tieneHijos && /fill|hijo|familia|seme.alaba|fillos|fillo/.test(t)) score += 25
   if (familia.includes('familia_numerosa') && /nombrosa|numerosa/.test(t)) score += 40
   if (familia.includes('monoparental') && /monoparental/.test(t)) score += 40
   if (familia.includes('viudo') && /viudedad|viudedat/.test(t)) score += 40
@@ -198,15 +205,15 @@ function calcularRelevancia(ayuda, perfil) {
   if (familia.includes('dependiente_cargo') && /dependencia|cuidador/.test(t)) score += 35
 
   // Vivienda
-  if (esAlquiler && /lloguer|alquiler/.test(t)) score += 35
+  if (esAlquiler && /lloguer|alquiler|aluger|alokairu|alugueiro/.test(t)) score += 35
   if (quiereComprar && /primer acces|primera vivienda|compra.*vivienda/.test(t)) score += 35
-  if (quiereRehabilitacion && /rehabilita/.test(t)) score += 35
+  if (quiereRehabilitacion && /rehabilita|birgaikuntza/.test(t)) score += 35
 
   // Ingresos bajos
   if (['sin_ingresos','bajos'].includes(ingresos) && /vulnerab|renda baixa|renta baja|imv|minima/.test(t)) score += 30
 
   // Situaciones especiales
-  if (especial.includes('discapacidad') && /discapacitat|discapacidad/.test(t)) score += 40
+  if (especial.includes('discapacidad') && /discapacitat|discapacidad|discapacidade|desgaitasuna/.test(t)) score += 40
   if (especial.includes('dependencia') && /dependencia/.test(t)) score += 40
   if (especial.includes('victima_violencia') && /violencia/.test(t)) score += 40
   if (especial.includes('rural') && /rural|despoblacio/.test(t)) score += 35
