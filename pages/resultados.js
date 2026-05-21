@@ -320,6 +320,7 @@ export default function Resultados() {
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">Inicio</Link>
+            <Link href="/cuenta" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">Mi cuenta</Link>
             <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">← Cambiar perfil</Link>
           </div>
         </nav>
@@ -425,8 +426,9 @@ export default function Resultados() {
               <p className="text-white/80 mb-6 max-w-sm mx-auto text-sm">
                 Accede a todas las ayudas, alertas semanales y envío directo a tu gestoría.
               </p>
-              <a href="/precios" className="bg-white text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
-                Ver planes desde 0,99€/mes
+              <a href={`/login?redirect=/precios&perfil=${encodeURIComponent(JSON.stringify(perfil))}`}
+                className="bg-white text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
+                Guardar y desbloquear →
               </a>
               <p className="text-white/60 text-xs mt-3">Cancela cuando quieras</p>
             </div>
