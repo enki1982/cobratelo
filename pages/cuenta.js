@@ -134,6 +134,21 @@ export default function Cuenta() {
     router.push('/')
   }
 
+  const handlePortalFacturacion = async () => {
+    try {
+      const res = await fetch('/api/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: session.user.id, email: session.user.email })
+      })
+      const { url, error } = await res.json()
+      if (error) throw new Error(error)
+      window.location.href = url
+    } catch (e) {
+      alert('Error al abrir el portal de facturación. Inténtalo de nuevo.')
+    }
+  }
+
   const handleCambiarPassword = async (e) => {
     e.preventDefault()
     if (nuevaPassword.length < 6) { setPasswordMsg('Mínimo 6 caracteres.'); return }
@@ -254,6 +269,17 @@ export default function Cuenta() {
                     </button>
                   </>
                 )}
+              </div>
+
+              <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="font-semibold text-[#111110]">Facturas y pagos</h2>
+                </div>
+                <p className="text-sm text-[#888882] mb-4">Descarga tus facturas, actualiza tu método de pago o cancela tu suscripción.</p>
+                <button onClick={handlePortalFacturacion}
+                  className="inline-block bg-[#111110] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#333330] transition-colors">
+                  Gestionar facturación →
+                </button>
               </div>
 
               <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
