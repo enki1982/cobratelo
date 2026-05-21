@@ -16,13 +16,14 @@ const TIPO_COLOR = {
 const IMPORTE_MAX_CIUDADANO = 30000
 
 function formatImporte(min, max, desc, tipo) {
-  if (tipo === 'deduccion') return desc || 'Deducción fiscal'
+  if (tipo === 'deduccion') return desc && desc.length <= 40 ? desc : 'Deducción fiscal'
   if (max > 0 && max <= IMPORTE_MAX_CIUDADANO) {
     if (min > 0 && min !== max) return `${min.toLocaleString('es-ES')}€ – ${max.toLocaleString('es-ES')}€`
     if (min === max && min > 0) return `${min.toLocaleString('es-ES')}€`
     return `Hasta ${max.toLocaleString('es-ES')}€`
   }
-  return desc || 'Variable'
+  if (desc && desc.length <= 40) return desc
+  return 'Variable'
 }
 
 // Normaliza texto quitando acentos y pasando a minúsculas
@@ -705,8 +706,8 @@ El informe incluye ${ayudas.length} ayudas con los enlaces a las convocatorias o
                       <h3 className="font-semibold text-[#111110] leading-snug">{ayuda.nombre}</h3>
                       <p className="text-xs text-[#888882] mt-0.5 truncate">{ayuda.organismo}</p>
                     </div>
-                    <div className="ayuda-importe text-right ml-2">
-                      <div className="font-display text-lg font-bold text-[#1A7A4A]">
+                    <div className="ayuda-importe text-right ml-2 w-28 shrink-0">
+                      <div className="font-display text-sm font-bold text-[#1A7A4A] leading-snug line-clamp-3">
                         {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
                       </div>
                     </div>
