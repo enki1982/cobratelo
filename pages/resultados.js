@@ -120,6 +120,10 @@ function calcularRelevancia(ayuda, perfil) {
   // Situación laboral
   if (esPensionista && !esAutonomo) {
     if (/insercio|insercion laboral|tarifa plana|alta.*autono|cuota.*autono|desempleo|sepe |erte/.test(t)) return 0
+    // Si ya es pensionista, no le mostramos ayudas de SOLICITAR la jubilación/pensión
+    if (/solicitar.*jubilac|tramitar.*jubilac|acceder.*jubilac|solicitud.*pension|como.*jubilarse|alta.*jubilac|solicitar.*pension.*jubila|pedir.*jubila/.test(t)) return 0
+    // Ni ayudas de desempleo/paro cuando es pensionista
+    if (/subsidio.*desempleo|prestacion.*desempleo|paro.*mayores|desempleo.*mayores/.test(t) && !esDesempleado) return 0
   }
   if (esEmpleado && !esAutonomo) {
     if (/tarifa plana|alta.*autono/.test(t)) return 0
@@ -206,7 +210,11 @@ function calcularRelevancia(ayuda, perfil) {
   // Los patrones regex ya cubren estas variantes con raíces compartidas
 
   // Situación laboral
-  if (esPensionista && /pensio|pension|jubila|xubila|erretiro/.test(t)) score += 40
+  // Pensionista: boost solo si es ayuda DE pensionistas (complemento, tarjeta, descuento, etc.)
+  // No boostar si habla de SOLICITAR/TRAMITAR la pensión
+  if (esPensionista && /pensio|pension|jubila|xubila|erretiro/.test(t)) {
+    if (!/solicitar|tramitar|como.*jubil|pedir.*jubil|acceder.*pension|alta.*jubil/.test(t)) score += 40
+  }
   if (esAutonomo && /autono/.test(t)) score += 40
   if (esDesempleado && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
   if (esEstudiante && /beca|estudi/.test(t)) score += 40
