@@ -120,10 +120,14 @@ function calcularRelevancia(ayuda, perfil) {
   // Situación laboral
   if (esPensionista && !esAutonomo) {
     if (/insercio|insercion laboral|tarifa plana|alta.*autono|cuota.*autono|desempleo|sepe |erte/.test(t)) return 0
-    // Si ya es pensionista, no le mostramos ayudas de SOLICITAR la jubilación/pensión
-    if (/solicitar.*jubilac|tramitar.*jubilac|acceder.*jubilac|solicitud.*pension|como.*jubilarse|alta.*jubilac|solicitar.*pension.*jubila|pedir.*jubila/.test(t)) return 0
-    // Ni ayudas de desempleo/paro cuando es pensionista
+    // Ya es pensionista: excluir ayudas de SOLICITAR/TRAMITAR la jubilación o pensión contributiva
+    if (/solicitar.*jubilac|tramitar.*jubilac|acceder.*jubilac|solicitud.*pension|como.*jubilarse|alta.*jubilac|solicitar.*pension.*jubila|pedir.*jubila|acces.*jubilaci/.test(t)) return 0
+    // Ni ayudas de desempleo/paro
     if (/subsidio.*desempleo|prestacion.*desempleo|paro.*mayores|desempleo.*mayores/.test(t) && !esDesempleado) return 0
+  }
+  // Si es pensionista Y viudo/a: probablemente ya tiene pensión de viudedad, excluir "solicitar viudedad"
+  if (esPensionista && familia.includes('viudo')) {
+    if (/solicitar.*viudedat|solicitar.*viudedad|tramitar.*viudedad|acceder.*viudedad|pension.*viudedad.*solicitu|alta.*viudedad/.test(t)) return 0
   }
   if (esEmpleado && !esAutonomo) {
     if (/tarifa plana|alta.*autono/.test(t)) return 0
@@ -214,6 +218,10 @@ function calcularRelevancia(ayuda, perfil) {
   // No boostar si habla de SOLICITAR/TRAMITAR la pensión
   if (esPensionista && /pensio|pension|jubila|xubila|erretiro/.test(t)) {
     if (!/solicitar|tramitar|como.*jubil|pedir.*jubil|acceder.*pension|alta.*jubil/.test(t)) score += 40
+  }
+  // Boost para viuda pensionista: complemento viudedad, mejora, bonificación
+  if (esPensionista && familia.includes('viudo') && /viudedat|viudedad|viuvez|alarguntzapen/.test(t)) {
+    if (!/solicitar|tramitar|alta.*viude/.test(t)) score += 35
   }
   if (esAutonomo && /autono/.test(t)) score += 40
   if (esDesempleado && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
