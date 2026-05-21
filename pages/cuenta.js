@@ -152,6 +152,8 @@ export default function Cuenta() {
   const [plan, setPlan] = useState('free')
   const [tab, setTab] = useState('perfil')
   const [editando, setEditando] = useState(null) // id de sección editando
+  const [editandoFecha, setEditandoFecha] = useState(false)
+  const [editandoPueblo, setEditandoPueblo] = useState(null) // null | 'pueblo' | 'pueblo_empadron'
   const [guardando, setGuardando] = useState(false)
   const [cambiandoPassword, setCambiandoPassword] = useState(false)
   const [nuevaPassword, setNuevaPassword] = useState('')
@@ -178,6 +180,20 @@ export default function Cuenta() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => { if (!s) router.push('/login') })
     return () => subscription.unsubscribe()
   }, [router.isReady])
+
+  const handleGuardarPueblo = async (campoId, camposPerfil) => {
+    setGuardando(true)
+    const nuevoPerfil = { ...perfilData, ...camposPerfil }
+    const { error } = await supabase.from('usuarios').upsert({
+      id: session.user.id, email: session.user.email,
+      perfil: nuevoPerfil, updated_at: new Date().toISOString()
+    }, { onConflict: 'id' })
+    if (!error) {
+      setPerfilData(nuevoPerfil)
+      setEditandoPueblo(null)
+    }
+    setGuardando(false)
+  }
 
   const handleGuardarSeccion = async (id, valor) => {
     setGuardando(true)
@@ -271,10 +287,16 @@ export default function Cuenta() {
                     {SECCIONES_PERFIL.filter(s => !s.condicion || s.condicion(perfilData)).map((sec, i, arr) => {
                       const valor = perfilData[sec.id]
                       const tieneOpciones = !!OPCIONES_SECCION[sec.id]
-                      const esEditable = tieneOpciones
+                      const esFecha = sec.tipo === 'fecha'
+                      const esPueblo = sec.tipo === 'pueblo'
+                      const esEditable = tieneOpciones || esFecha || esPueblo
                       return (
                         <button key={sec.id} disabled={!esEditable}
-                          onClick={() => esEditable && setEditando(sec.id)}
+                          onClick={() => {
+                            if (esFecha) setEditandoFecha(true)
+                            else if (esPueblo) setEditandoPueblo(sec.id)
+                            else if (tieneOpciones) setEditando(sec.id)
+                          }}
                           className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors
                             ${i > 0 ? 'border-t border-[#F0EAE0]' : ''}
                             ${esEditable ? 'hover:bg-[#F7F3EC] cursor-pointer' : 'cursor-default'}`}>
@@ -424,6 +446,26 @@ export default function Cuenta() {
           )}
         </div>
       </div>
+
+      {/* Modal fecha de nacimiento */}
+      {editandoFecha && (
+        <ModalFecha
+          valor={perfilData?.nacimiento}
+          onGuardar={handleGuardarSeccion}
+          onCerrar={() => setEditandoFecha(false)}
+        />
+      )}
+
+      {/* Modal pueblo */}
+      {editandoPueblo && (
+        <ModalPueblo
+          campoId={editandoPueblo}
+          titulo={editandoPueblo === 'pueblo' ? '¿En qué población vives?' : '¿En qué población estás empadronado/a?'}
+          valor={perfilData?.[editandoPueblo]}
+          onGuardar={handleGuardarPueblo}
+          onCerrar={() => setEditandoPueblo(null)}
+        />
+      )}
 
       {/* Modal edición inline */}
       {editando && seccionEditando && OPCIONES_SECCION[editando] && (
