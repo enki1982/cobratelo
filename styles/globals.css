@@ -57,3 +57,24 @@ body {
 .delay-300 { animation-delay: 0.3s; opacity: 0; }
 .delay-400 { animation-delay: 0.4s; opacity: 0; }
 .delay-500 { animation-delay: 0.5s; opacity: 0; }
+
+/* Cards de resultados — evitar que textos largos rompan el layout */
+.ayuda-card {
+  min-width: 0;
+  overflow: hidden;
+}
+.ayuda-card h3 {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.ayuda-card p {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.ayuda-importe {
+  flex-shrink: 0;
+  max-width: 110px;
+  word-break: break-word;
+}

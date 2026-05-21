@@ -642,7 +642,7 @@ export default function Resultados() {
               const isBlurred = i >= FREE_LIMIT
               return (
                 <div key={ayuda.id}
-                  className={`bg-white rounded-2xl border border-[#E0DAD0] p-5 ${isBlurred ? 'relative overflow-hidden' : ''}`}>
+                  className={`ayuda-card bg-white rounded-2xl border border-[#E0DAD0] p-5 ${isBlurred ? 'relative overflow-hidden' : ''}`}>
                   {isBlurred && (
                     <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -670,10 +670,10 @@ export default function Resultados() {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-semibold text-[#111110] leading-snug" style={{wordBreak:"break-word",overflowWrap:"anywhere"}}>{ayuda.nombre}</h3>
+                      <h3 className="font-semibold text-[#111110] leading-snug">{ayuda.nombre}</h3>
                       <p className="text-xs text-[#888882] mt-0.5 truncate">{ayuda.organismo}</p>
                     </div>
-                    <div className="text-right shrink-0 max-w-[120px] ml-2">
+                    <div className="ayuda-importe text-right ml-2">
                       <div className="font-display text-lg font-bold text-[#1A7A4A]">
                         {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
                       </div>
