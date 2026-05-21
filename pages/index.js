@@ -81,7 +81,7 @@ export default function Home() {
           </span>
           <div className="flex items-center gap-2 md:gap-4">
             <Link href="/precios" className="hidden sm:block text-sm text-[#555550] hover:text-[#111110] transition-colors">Precios</Link>
-            <Link href="/cuenta" className="hidden sm:block text-sm text-[#555550] hover:text-[#111110] transition-colors">Mi cuenta</Link>
+            <Link href="/cuenta" className="text-sm text-[#555550] hover:text-[#111110] transition-colors">Mi cuenta</Link>
             {tienePerfil && perfilGuardado ? (
                <Link href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`}
                  className="bg-[#1A7A4A] text-white text-sm font-semibold px-4 py-2 md:px-5 md:py-2.5 rounded-full hover:bg-[#145e39] transition-colors">
