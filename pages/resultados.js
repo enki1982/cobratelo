@@ -200,7 +200,7 @@ function calcularRelevancia(ayuda, perfil) {
     const topeMatch = t.match(/(?:alquiler|renda|renta|arrendament|arrendamiento|lloguer).*?m[aà]x[^0-9]*(\d[\d.,]+)/i)
                    || t.match(/m[aà]x[^0-9]*(\d[\d.,]+).*?(?:alquiler|renda|renta|lloguer)/i)
     if (topeMatch) {
-      const tope = parseInt(topeMatch[1].replace(/[.,]/g, ''))
+      const tope = parseInt(topeMatch[1].replace(/\./g, '').replace(/,/g, '.'))
       // Si el tope detectado es realista (entre 200€ y 2500€) y el usuario paga más → excluir
       if (tope >= 200 && tope <= 2500 && alquilerMes > tope) return 0
     }
