@@ -56,6 +56,24 @@ function getOpcionesProvincias(ccaa) {
   return PROVINCIAS[ccaa] || PROVINCIAS['otra']
 }
 
+// Opciones mutuamente excluyentes por grupo
+const INCOMPATIBLES = {
+  // Estado civil — solo uno
+  'soltero':    ['casado','divorciado','viudo'],
+  'casado':     ['soltero','divorciado','viudo','monoparental'],
+  'divorciado': ['casado','soltero','viudo'],
+  'viudo':      ['casado','soltero','divorciado'],
+  // Sin cargas es incompatible con tener cargas
+  'sin_cargas': ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental','embarazada','dependiente_cargo'],
+  // Si tienes hijos/cargas, no puedes marcar sin cargas
+  'hijos_menores3':     ['sin_cargas'],
+  'hijos_3_18':         ['sin_cargas'],
+  'familia_numerosa':   ['sin_cargas','soltero'],
+  'monoparental':       ['casado','sin_cargas'],
+  'embarazada':         ['sin_cargas'],
+  'dependiente_cargo':  ['sin_cargas'],
+}
+
 const PASOS = [
   {
     id: 'situacion',
@@ -220,9 +238,15 @@ export default function Perfil() {
 
   const toggleOpcion = (value) => {
     if (pasoActual.multi) {
-      setSeleccion(prev =>
-        prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-      )
+      setSeleccion(prev => {
+        if (prev.includes(value)) return prev.filter(v => v !== value)
+        // Eliminar opciones incompatibles
+        const incompatibles = INCOMPATIBLES[value] || []
+        const sinIncompatibles = prev.filter(v => !incompatibles.includes(v))
+        // También eliminar este valor de las incompatibilidades de otros ya seleccionados
+        const filtrado = sinIncompatibles.filter(v => !(INCOMPATIBLES[v] || []).includes(value))
+        return [...filtrado, value]
+      })
     } else {
       setSeleccion([value])
       if (pasoActual.id === 'gestoria' && value === 'si_gestoria') {
