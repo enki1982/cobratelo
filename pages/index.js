@@ -184,37 +184,35 @@ export default function Home() {
         </section>
 
 
+        </section>
+
+
         {/* Fuentes oficiales */}
         <section className="max-w-5xl mx-auto px-6 py-12 border-t border-[#E0DAD0]">
-          <p className="text-center text-xs text-[#B0AAA0] uppercase tracking-widest font-medium mb-8">
-            Información oficial de
+          <p className="text-center text-xs text-[#B0AAA0] uppercase tracking-widest font-medium mb-10">
+            Información extraída de fuentes oficiales
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
             {[
-              { nombre: 'Ministerio de Hacienda', logo: 'https://sede.agenciatributaria.gob.es/static_files/Sede/Images/logo_aeat.png', url: 'https://agenciatributaria.gob.es' },
-              { nombre: 'Seguridad Social', logo: 'https://www.seg-social.es/wps/wcm/connect/wss/f8a05e1d-dc14-4f39-b36f-b4e2cf34b461/logo_seg_social.png', url: 'https://www.seg-social.es' },
-              { nombre: 'SEPE', logo: 'https://www.sepe.es/SiteSepe/contenidos/images/logo_SEPE.png', url: 'https://www.sepe.es' },
-              { nombre: 'Red.es', logo: 'https://www.red.es/sites/default/files/logo-redes.png', url: 'https://www.red.es' },
-              { nombre: 'Ministerio de Vivienda', logo: 'https://www.mivau.gob.es/dam/es/portal/vivienda/img/logo-ministerio.png', url: 'https://www.mivau.gob.es' },
-              { nombre: 'Generalitat de Catalunya', logo: 'https://govern.cat/gov/uploads/logos/Generalitat_de_Catalunya_fons_blanc_300.png', url: 'https://govern.cat' },
-              { nombre: 'Comunidad de Madrid', logo: 'https://www.comunidad.madrid/sites/default/files/img/logo-cm.png', url: 'https://www.comunidad.madrid' },
-              { nombre: 'IMSERSO', logo: 'https://www.imserso.es/imserso_01/imagenes/logo_imserso_nuevo.jpg', url: 'https://www.imserso.es' },
-            ].map((fuente, i) => (
-              <a key={i} href={fuente.url} target="_blank" rel="noopener noreferrer"
-                className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-                <img
-                  src={fuente.logo}
-                  alt={fuente.nombre}
-                  title={fuente.nombre}
-                  className="h-8 object-contain max-w-[120px]"
-                  onError={e => {
-                    // Si el logo no carga, mostrar el nombre en texto
-                    e.target.style.display = 'none'
-                    e.target.nextSibling.style.display = 'block'
-                  }}
-                />
-                <span style={{display:'none'}} className="text-xs text-[#888882] font-medium">{fuente.nombre}</span>
-              </a>
+              { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: '#003087' },
+              { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: '#0055A5' },
+              { nombre: 'Seg. Social', sub: 'Ministerio de Inclusion', color: '#005B9E' },
+              { nombre: 'Red.es', sub: 'Ministerio de Transformacion', color: '#E30613' },
+              { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: '#1B4F72' },
+              { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E' },
+              { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: '#E3000F' },
+              { nombre: 'IMSERSO', sub: 'Seg. Social · Mayores', color: '#005B9E' },
+              { nombre: 'ICREA', sub: 'Institut Catala Recerca', color: '#003366' },
+              { nombre: 'ACCIÓ', sub: 'Agencia Competitivitat', color: '#E30613' },
+            ].map((f, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-90 transition-opacity duration-300 cursor-default">
+                <div className="font-display font-bold text-base tracking-tight" style={{ color: f.color }}>
+                  {f.nombre}
+                </div>
+                <div className="text-[10px] text-[#B0AAA0] text-center leading-tight max-w-[90px]">
+                  {f.sub}
+                </div>
+              </div>
             ))}
           </div>
         </section>
