@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { C, bgMesh, navStyle } from '../lib/theme'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -567,11 +568,11 @@ export default function Resultados() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center">
+      <div className="min-h-screen bg-[#09090f] flex items-center justify-center">
         <div className="text-center px-6">
           <div className="w-12 h-12 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="font-display text-xl text-[#111110]">Analizando tu perfil...</p>
-          <p className="text-sm text-[#888882] mt-2">Buscando ayudas para tu situación específica</p>
+          <p className="font-display text-xl text-[#f0f0f5]">Analizando tu perfil...</p>
+          <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Buscando ayudas para tu situación específica</p>
         </div>
       </div>
     )
@@ -584,24 +585,24 @@ export default function Resultados() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen bg-[#F7F3EC]">
+      <div style={bgMesh}>
         <nav className="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110] shrink-0">
+          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5] shrink-0">
             cóbratelo<span className="text-[#1A7A4A]">.es</span>
           </Link>
           <div className="flex items-center gap-3 ml-4 overflow-hidden">
-            <Link href="/" className="hidden sm:block text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">Inicio</Link>
-            <Link href="/cuenta" className="text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">Mi cuenta</Link>
-            <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">← Perfil</Link>
+            <Link href="/" className="hidden sm:block text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">Inicio</Link>
+            <Link href="/cuenta" className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">Mi cuenta</Link>
+            <Link href="/perfil" className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">← Perfil</Link>
           </div>
         </nav>
 
         <div className="max-w-3xl mx-auto px-6 pb-20">
-          <div className="bg-[#111110] rounded-3xl p-8 mb-6">
-            <p className="text-[#888882] text-sm mb-2">Ayudas que encajan con tu perfil</p>
+          <div className="bg-[#0f0f1a] rounded-3xl p-8 mb-6">
+            <p className="text-[rgba(240,240,245,0.5)] text-sm mb-2">Ayudas que encajan con tu perfil</p>
             <div className="flex items-end gap-4 mb-4">
               <span className="font-display text-5xl font-bold text-[#22C55E]">{ayudas.length}</span>
-              <span className="text-[#888882] mb-2">ayudas encontradas</span>
+              <span className="text-[rgba(240,240,245,0.5)] mb-2">ayudas encontradas</span>
             </div>
           </div>
 
@@ -614,12 +615,12 @@ export default function Resultados() {
             const provincia = puebloObj.provincia || ''
             const busqueda = encodeURIComponent(`gestoría asesoría fiscal ${pueblo} ${provincia}`.trim())
             return (
-              <div className="bg-[#E8F5EE] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6">
+              <div className="bg-[rgba(0,232,122,0.1)] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6">
                 <div className="flex items-start gap-3 mb-3">
                   
                   <div>
-                    <p className="font-semibold text-[#111110]">Encuentra una gestoría cerca de ti</p>
-                    <p className="text-sm text-[#888882] mt-0.5">
+                    <p className="font-semibold text-[#f0f0f5]">Encuentra una gestoría cerca de ti</p>
+                    <p className="text-sm text-[rgba(240,240,245,0.5)] mt-0.5">
                       {pueblo ? `Gestorías en ${pueblo} y alrededores` : 'Tramitar estas ayudas con un gestor aumenta mucho las posibilidades de éxito'}
                     </p>
                   </div>
@@ -636,10 +637,10 @@ export default function Resultados() {
           })()}
 
           {perfil?.email_gestoria && (
-            <div className="bg-[#E8F5EE] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
+            <div className="bg-[rgba(0,232,122,0.1)] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
               <div>
-                <p className="font-semibold text-[#111110] text-sm">Enviar informe a tu gestoría</p>
-                <p className="text-xs text-[#888882] mt-0.5">{perfil.email_gestoria}</p>
+                <p className="font-semibold text-[#f0f0f5] text-sm">Enviar informe a tu gestoría</p>
+                <p className="text-xs text-[rgba(240,240,245,0.5)] mt-0.5">{perfil.email_gestoria}</p>
               </div>
               {emailEnviado ? (
                 <span className="text-[#1A7A4A] font-semibold text-sm">✓ Enviado</span>
@@ -658,12 +659,12 @@ export default function Resultados() {
               const isBlurred = i >= limit
               return (
                 <div key={ayuda.id}
-                  className={`ayuda-card bg-white rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[#E0DAD0]'}`}>
+                  className={`ayuda-card bg-[#0f0f1a] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
                   {isBlurred && (
-                    <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
+                    <div className="absolute inset-0 backdrop-blur-sm bg-[#0f0f1a]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
                       <span className="text-2xl mb-2">🔒</span>
-                      <p className="font-semibold text-[#111110] text-sm text-center px-4">
+                      <p className="font-semibold text-[#f0f0f5] text-sm text-center px-4">
                         {ayudas.length - FREE_LIMIT} ayudas más
                       </p>
                       <span className="mt-2 bg-[#E8540A] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
@@ -685,8 +686,8 @@ export default function Resultados() {
                          </span>
                        )}
                      </div>
-                     <h3 className="font-semibold text-[#111110] leading-snug mb-0.5">{ayuda.nombre}</h3>
-                     <p className="text-xs text-[#888882] mb-1">{ayuda.organismo}</p>
+                     <h3 className="font-semibold text-[#f0f0f5] leading-snug mb-0.5">{ayuda.nombre}</h3>
+                     <p className="text-xs text-[rgba(240,240,245,0.5)] mb-1">{ayuda.organismo}</p>
                      {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo) && (
                        <p className="font-display text-base font-bold text-[#1A7A4A]">
                          {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
@@ -694,7 +695,7 @@ export default function Resultados() {
                      )}
                    </div>
                   {ayuda.descripcion && (
-                    <p className="text-sm text-[#666660] mb-4 leading-relaxed">{ayuda.descripcion}</p>
+                    <p className="text-sm text-[rgba(240,240,245,0.6)] mb-4 leading-relaxed">{ayuda.descripcion}</p>
                   )}
                   {ayuda.url_oficial && !isBlurred && (
                     <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
@@ -715,19 +716,19 @@ export default function Resultados() {
                 Accede a todas las ayudas, alertas semanales y envío directo a tu gestoría.
               </p>
               <a href={`/login?redirect=/precios&perfil=${encodeURIComponent(JSON.stringify(perfil))}`}
-                className="bg-white text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
+                className="bg-[#0f0f1a] text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
                 Guardar y desbloquear →
               </a>
-              <p className="text-white/60 text-xs mt-3">Cancela cuando quieras</p>
+              <p className="text-[rgba(240,240,245,0.5)] text-xs mt-3">Cancela cuando quieras</p>
             </div>
           )}
 
           {ayudas.length === 0 && (
             <div className="text-center py-12">
               <p className="text-4xl mb-4">🔍</p>
-              <p className="font-semibold text-[#111110]">No hemos encontrado ayudas específicas para tu perfil</p>
-              <p className="text-sm text-[#888882] mt-2">Prueba a revisar tu perfil o ampliar las categorías.</p>
-              <Link href="/perfil" className="inline-block mt-4 bg-[#111110] text-[#F7F3EC] px-6 py-3 rounded-full font-semibold text-sm">
+              <p className="font-semibold text-[#f0f0f5]">No hemos encontrado ayudas específicas para tu perfil</p>
+              <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Prueba a revisar tu perfil o ampliar las categorías.</p>
+              <Link href="/perfil" className="inline-block mt-4 bg-[#0f0f1a] text-[#f0f0f5] px-6 py-3 rounded-full font-semibold text-sm">
                 Revisar mi perfil
               </Link>
             </div>
@@ -742,35 +743,35 @@ export default function Resultados() {
       {/* Modal enviar al gestor */}
       {modalGestor && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-          <div className="bg-white rounded-3xl w-full max-w-md">
-            <div className="px-6 py-5 border-b border-[#F0EAE0] flex items-center justify-between">
-              <h3 className="font-semibold text-[#111110]">Enviar al gestor</h3>
-              <button onClick={() => setModalGestor(false)} className="text-[#888882] hover:text-[#111110] text-xl">✕</button>
+          <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
+            <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
+              <h3 className="font-semibold text-[#f0f0f5]">Enviar al gestor</h3>
+              <button onClick={() => setModalGestor(false)} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-xs text-[#888882] font-medium uppercase tracking-wide block mb-1.5">Tu nombre (opcional)</label>
+                <label className="text-xs text-[rgba(240,240,245,0.5)] font-medium uppercase tracking-wide block mb-1.5">Tu nombre (opcional)</label>
                 <input type="text" value={nombreCliente} onChange={e => setNombreCliente(e.target.value)}
                   placeholder="Ej: Paco García"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-[#E0DAD0] focus:outline-none focus:border-[#1A7A4A] text-[#111110] transition-colors" />
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
               </div>
               <div>
-                <label className="text-xs text-[#888882] font-medium uppercase tracking-wide block mb-1.5">Email del gestor</label>
+                <label className="text-xs text-[rgba(240,240,245,0.5)] font-medium uppercase tracking-wide block mb-1.5">Email del gestor</label>
                 <input type="email" value={emailGestor} onChange={e => setEmailGestor(e.target.value)}
                   placeholder="gestor@gestoría.es"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-[#E0DAD0] focus:outline-none focus:border-[#1A7A4A] text-[#111110] transition-colors" />
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
               </div>
-              <p className="text-xs text-[#888882]">
+              <p className="text-xs text-[rgba(240,240,245,0.5)]">
                 Le enviaremos el listado de tus {ayudas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.
               </p>
             </div>
             <div className="px-6 pb-6 flex gap-3">
               <button onClick={() => setModalGestor(false)}
-                className="flex-1 py-3 rounded-full border border-[#E0DAD0] text-[#888882] text-sm">
+                className="flex-1 py-3 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] text-sm">
                 Cancelar
               </button>
               <button onClick={enviarAlGestor} disabled={!emailGestor || enviandoGestor}
-                className="flex-1 py-3 rounded-full bg-[#111110] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
+                className="flex-1 py-3 rounded-full bg-[#0f0f1a] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
                 {enviandoGestor ? 'Enviando...' : 'Enviar →'}
               </button>
             </div>

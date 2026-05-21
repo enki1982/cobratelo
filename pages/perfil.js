@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { C, bgMesh, navStyle } from '../lib/theme'
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
@@ -315,8 +316,8 @@ function PuebloInput({ value, onChange, onSelect }) {
         value={query}
         onChange={handleChange}
         placeholder="Escribe tu pueblo o ciudad..."
-        className={`w-full px-4 py-4 rounded-2xl border-2 text-[#111110] font-medium text-lg focus:outline-none transition-colors
-          ${seleccionado ? 'border-[#1A7A4A] bg-[#E8F5EE]' : 'border-[#E0DAD0] bg-white focus:border-[#1A7A4A]'}`}
+        className={`w-full px-4 py-4 rounded-2xl border-2 text-[#f0f0f5] font-medium text-lg focus:outline-none transition-colors
+          ${seleccionado ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:border-[#1A7A4A]'}`}
       />
       {buscando && (
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -327,12 +328,12 @@ function PuebloInput({ value, onChange, onSelect }) {
         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] text-xl font-bold">✓</div>
       )}
       {sugerencias.length > 0 && !seleccionado && (
-        <div className="absolute z-20 w-full mt-2 bg-white border border-[#E0DAD0] rounded-2xl shadow-lg overflow-hidden">
+        <div className="absolute z-20 w-full mt-2 bg-[#0f0f1a] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
           {sugerencias.map((mun, i) => (
             <button key={i} onClick={() => handleSelect(mun)}
-              className="w-full text-left px-4 py-3 hover:bg-[#F7F3EC] transition-colors border-b border-[#F0EAE0] last:border-0">
-              <span className="font-semibold text-[#111110]">{mun.nombre}</span>
-              <span className="text-sm text-[#888882] ml-2">{mun.provincia}{mun.comarca && mun.comarca !== mun.provincia ? ` · ${mun.comarca}` : ''}</span>
+              className="w-full text-left px-4 py-3 hover:bg-[#0f0f1a] transition-colors border-b border-[rgba(255,255,255,0.06)] last:border-0">
+              <span className="font-semibold text-[#f0f0f5]">{mun.nombre}</span>
+              <span className="text-sm text-[rgba(240,240,245,0.5)] ml-2">{mun.provincia}{mun.comarca && mun.comarca !== mun.provincia ? ` · ${mun.comarca}` : ''}</span>
             </button>
           ))}
         </div>
@@ -489,12 +490,12 @@ export default function Perfil() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen bg-[#F7F3EC] flex flex-col">
+      <div className="min-h-screen bg-[#0f0f1a] flex flex-col">
         <div className="px-6 py-5 flex items-center justify-between max-w-2xl mx-auto w-full">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
+          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5]">
             cóbratelo<span className="text-[#1A7A4A]">.es</span>
           </Link>
-          <span className="text-sm text-[#888882]">{paso + 1} / {pasosFiltrados.length}</span>
+          <span className="text-sm text-[rgba(240,240,245,0.5)]">{paso + 1} / {pasosFiltrados.length}</span>
         </div>
 
         <div className="h-1 bg-[#E0DAD0] w-full">
@@ -502,10 +503,10 @@ export default function Perfil() {
         </div>
 
         <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full px-6 py-10">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-[#111110] mb-2">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-[#f0f0f5] mb-2">
             {pasoActual.titulo}
           </h1>
-          <p className="text-[#888882] mb-8">{pasoActual.subtitulo}</p>
+          <p className="text-[rgba(240,240,245,0.5)] mb-8">{pasoActual.subtitulo}</p>
 
           {/* Input fecha nacimiento */}
           {pasoActual.tipo === 'fecha' && (
@@ -516,7 +517,7 @@ export default function Perfil() {
                 onChange={e => setFechaNac(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 min={fechaMinNac.toISOString().split('T')[0]}
-                className="w-full px-4 py-4 rounded-2xl border-2 border-[#E0DAD0] bg-white focus:outline-none focus:border-[#1A7A4A] text-[#111110] font-medium text-lg transition-colors"
+                className="w-full px-4 py-4 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] font-medium text-lg transition-colors"
               />
               {fechaNac && (
                 <p className="text-sm text-[#1A7A4A] mt-2 font-medium">
@@ -536,11 +537,11 @@ export default function Perfil() {
                 onSelect={(mun) => setPueblo(mun)}
               />
               {pueblo && (
-                <div className="mt-3 p-3 bg-[#E8F5EE] rounded-xl text-sm">
+                <div className="mt-3 p-3 bg-[rgba(0,232,122,0.1)] rounded-xl text-sm">
                   <span className="font-medium text-[#1A7A4A]">{pueblo.ccaa}</span>
-                  <span className="text-[#888882]"> · {pueblo.provincia}</span>
+                  <span className="text-[rgba(240,240,245,0.5)]"> · {pueblo.provincia}</span>
                   {pueblo.comarca && pueblo.comarca !== pueblo.provincia && (
-                    <span className="text-[#888882]"> · {pueblo.comarca}</span>
+                    <span className="text-[rgba(240,240,245,0.5)]"> · {pueblo.comarca}</span>
                   )}
                 </div>
               )}
@@ -556,8 +557,8 @@ export default function Perfil() {
                   <button key={op.value} onClick={() => toggleOpcion(op.value)}
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
-                        ? 'border-[#1A7A4A] bg-[#E8F5EE] text-[#111110]'
-                        : 'border-[#E0DAD0] bg-white text-[#111110] hover:border-[#C0BAB0]'
+                        ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)] text-[#f0f0f5]'
+                        : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
@@ -577,8 +578,8 @@ export default function Perfil() {
                   <button key={op.value} onClick={() => toggleOpcion(op.value)}
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
-                        ? 'border-[#1A7A4A] bg-[#E8F5EE] text-[#111110]'
-                        : 'border-[#E0DAD0] bg-white text-[#111110] hover:border-[#C0BAB0]'
+                        ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)] text-[#f0f0f5]'
+                        : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
@@ -592,11 +593,11 @@ export default function Perfil() {
           {/* Email gestoría */}
           {showEmailInput && (
             <div className="mb-6">
-              <label className="block text-sm font-medium text-[#111110] mb-2">Email de tu gestoría</label>
+              <label className="block text-sm font-medium text-[#f0f0f5] mb-2">Email de tu gestoría</label>
               <input type="email" value={emailGestoria} onChange={e => setEmailGestoria(e.target.value)}
                 placeholder="gestor@ejemplo.com"
-                className="w-full px-4 py-3 rounded-2xl border-2 border-[#E0DAD0] bg-white focus:outline-none focus:border-[#1A7A4A] text-[#111110] font-medium transition-colors" />
-              <p className="text-xs text-[#888882] mt-2">Les enviaremos tu informe para que tramiten las ayudas por ti.</p>
+                className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] font-medium transition-colors" />
+              <p className="text-xs text-[rgba(240,240,245,0.5)] mt-2">Les enviaremos tu informe para que tramiten las ayudas por ti.</p>
             </div>
           )}
 
@@ -604,7 +605,7 @@ export default function Perfil() {
           <div className="flex gap-3 mt-auto">
             {paso > 0 && (
               <button onClick={anterior}
-                className="px-6 py-3.5 rounded-full border border-[#E0DAD0] text-[#888882] font-medium hover:border-[#C0BAB0] transition-colors">
+                className="px-6 py-3.5 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] font-medium hover:border-[#C0BAB0] transition-colors">
                 ← Atrás
               </button>
             )}
