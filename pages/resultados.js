@@ -467,11 +467,12 @@ function calcularRelevancia(ayuda, perfil) {
   return score
 }
 
-const FREE_LIMIT = 3
+const FREE_LIMIT = 3 // usado solo como fallback
 
 export default function Resultados() {
   const router = useRouter()
   const [ayudas, setAyudas] = useState([])
+  const [userPlan, setUserPlan] = useState('free')
   const [loading, setLoading] = useState(true)
   const [perfil, setPerfil] = useState(null)
   const [totalEstimado, setTotalEstimado] = useState(0)
@@ -483,6 +484,15 @@ export default function Resultados() {
   const [envioGestorOk, setEnvioGestorOk] = useState(false)
   const [enviandoGestor, setEnviandoGestor] = useState(false)
 
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user?.id) {
+        const { data } = await supabase.from('usuarios').select('plan').eq('id', session.user.id).single()
+        if (data?.plan) setUserPlan(data.plan)
+      }
+    })
+  }, [])
 
   useEffect(() => {
     if (!router.isReady) return
@@ -630,7 +640,8 @@ export default function Resultados() {
 
           <div className="space-y-4">
             {ayudas.map((ayuda, i) => {
-              const isBlurred = i >= FREE_LIMIT
+              const limit = (userPlan && userPlan !== 'free') ? 9999 : FREE_LIMIT
+              const isBlurred = i >= limit
               return (
                 <div key={ayuda.id}
                   className={`ayuda-card bg-white rounded-2xl border border-[#E0DAD0] p-5 ${isBlurred ? 'relative overflow-hidden' : ''}`}>
@@ -682,7 +693,7 @@ export default function Resultados() {
             })}
           </div>
 
-          {ayudas.length > FREE_LIMIT && (
+          {ayudas.length > FREE_LIMIT && userPlan === 'free' && (
             <div id="cta-pro" className="bg-[#E8540A] rounded-3xl p-8 mt-8 text-center">
               <p className="text-white/80 text-sm mb-1">{ayudas.length - FREE_LIMIT} ayudas más bloqueadas</p>
               <h2 className="font-display text-3xl font-bold text-white mb-2">Cobra todo lo que te toca</h2>
