@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
+import { supabase } from '../lib/supabase'
 
 // ── INCOMPATIBILIDADES ───────────────────────────────────────────────────────
 const INCOMPATIBLES = {
@@ -394,7 +395,7 @@ export default function Perfil() {
     return seleccion
   }
 
-  const siguiente = () => {
+  const siguiente = async () => {
     const valor = getValorPaso()
     const nuevoPerfil = {
       ...perfil,
@@ -421,6 +422,18 @@ export default function Perfil() {
     // (pendiente: consultar API INE para población < 5000)
 
     if (esUltimoPaso) {
+      // Guardar en Supabase si el usuario está logado
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user?.id) {
+          await supabase.from('usuarios').upsert({
+            id: session.user.id,
+            email: session.user.email,
+            perfil: nuevoPerfil,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'id' })
+        }
+      } catch (e) { console.error('Error guardando perfil:', e) }
       const encoded = encodeURIComponent(JSON.stringify(nuevoPerfil))
       router.push(`/resultados?perfil=${encoded}`)
     } else {
