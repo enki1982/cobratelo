@@ -473,6 +473,7 @@ export default function Resultados() {
   const router = useRouter()
   const [ayudas, setAyudas] = useState([])
   const [userPlan, setUserPlan] = useState('free')
+  const [ayudasNuevas, setAyudasNuevas] = useState(new Set())
   const [loading, setLoading] = useState(true)
   const [perfil, setPerfil] = useState(null)
   const [totalEstimado, setTotalEstimado] = useState(0)
@@ -520,6 +521,19 @@ export default function Resultados() {
         .slice(0, 20)
 
       setAyudas(conScore)
+
+      // Detectar ayudas nuevas vs las ya vistas
+      const storageKey = 'cobratelo_ayudas_vistas'
+      try {
+        const vistasRaw = localStorage.getItem(storageKey)
+        const vistasAntes = vistasRaw ? new Set(JSON.parse(vistasRaw)) : null
+        if (vistasAntes && vistasAntes.size > 0) {
+          const nuevas = new Set(conScore.map(a => a.id).filter(id => !vistasAntes.has(id)))
+          setAyudasNuevas(nuevas)
+        }
+        // Guardar las actuales como "vistas"
+        localStorage.setItem(storageKey, JSON.stringify(conScore.map(a => a.id)))
+      } catch {}
 
     } catch (e) {
       console.error(e)
@@ -644,7 +658,7 @@ export default function Resultados() {
               const isBlurred = i >= limit
               return (
                 <div key={ayuda.id}
-                  className={`ayuda-card bg-white rounded-2xl border border-[#E0DAD0] p-5 ${isBlurred ? 'relative overflow-hidden' : ''}`}>
+                  className={`ayuda-card bg-white rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[#E0DAD0]'}`}>
                   {isBlurred && (
                     <div className="absolute inset-0 backdrop-blur-sm bg-white/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
