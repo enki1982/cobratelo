@@ -477,6 +477,11 @@ export default function Resultados() {
   const [totalEstimado, setTotalEstimado] = useState(0)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const [enviando, setEnviando] = useState(false)
+  const [modalGestor, setModalGestor] = useState(false)
+  const [emailGestor, setEmailGestor] = useState('')
+  const [nombreCliente, setNombreCliente] = useState('')
+  const [envioGestorOk, setEnvioGestorOk] = useState(false)
+  const [enviandoGestor, setEnviandoGestor] = useState(false)
 
 
   useEffect(() => {
@@ -511,6 +516,21 @@ export default function Resultados() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const enviarAlGestor = async () => {
+    if (!emailGestor) return
+    setEnviandoGestor(true)
+    try {
+      const res = await fetch('/api/enviar-gestor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailGestor, nombreCliente, ayudas, perfil })
+      })
+      if (res.ok) { setEnvioGestorOk(true); setModalGestor(false) }
+      else alert('Error al enviar. Inténtalo de nuevo.')
+    } catch { alert('Error al enviar.') }
+    finally { setEnviandoGestor(false) }
   }
 
   const enviarAGestoria = async () => {
@@ -698,6 +718,46 @@ export default function Resultados() {
           </p>
         </div>
       </div>
+    <>
+      {/* Modal enviar al gestor */}
+      {modalGestor && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-md">
+            <div className="px-6 py-5 border-b border-[#F0EAE0] flex items-center justify-between">
+              <h3 className="font-semibold text-[#111110]">Enviar al gestor</h3>
+              <button onClick={() => setModalGestor(false)} className="text-[#888882] hover:text-[#111110] text-xl">✕</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-xs text-[#888882] font-medium uppercase tracking-wide block mb-1.5">Tu nombre (opcional)</label>
+                <input type="text" value={nombreCliente} onChange={e => setNombreCliente(e.target.value)}
+                  placeholder="Ej: Paco García"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[#E0DAD0] focus:outline-none focus:border-[#1A7A4A] text-[#111110] transition-colors" />
+              </div>
+              <div>
+                <label className="text-xs text-[#888882] font-medium uppercase tracking-wide block mb-1.5">Email del gestor</label>
+                <input type="email" value={emailGestor} onChange={e => setEmailGestor(e.target.value)}
+                  placeholder="gestor@gestoría.es"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[#E0DAD0] focus:outline-none focus:border-[#1A7A4A] text-[#111110] transition-colors" />
+              </div>
+              <p className="text-xs text-[#888882]">
+                Le enviaremos el listado de tus {ayudas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.
+              </p>
+            </div>
+            <div className="px-6 pb-6 flex gap-3">
+              <button onClick={() => setModalGestor(false)}
+                className="flex-1 py-3 rounded-full border border-[#E0DAD0] text-[#888882] text-sm">
+                Cancelar
+              </button>
+              <button onClick={enviarAlGestor} disabled={!emailGestor || enviandoGestor}
+                className="flex-1 py-3 rounded-full bg-[#111110] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
+                {enviandoGestor ? 'Enviando...' : 'Enviar →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
     </>
   )
 }
