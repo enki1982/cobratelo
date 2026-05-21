@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 
@@ -90,6 +90,175 @@ function ValorPerfil({ id, valor, tipo }) {
     catch { return <span className="text-[#111110] text-sm">{valor[0]}</span> }
   }
   return <span className="text-[#111110] text-sm">{valor.map(v => LABELS[v] || v).join(', ')}</span>
+}
+
+// Búsqueda de municipios
+async function buscarMunicipio(query) {
+  if (query.length < 2) return []
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=8&addressdetails=1&accept-language=es`
+    const r = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'Cobratelo.es/1.0' } })
+    const data = await r.json()
+    return data
+      .filter(d => d.address && !['road','motorway','building','shop','amenity'].includes(d.type))
+      .filter(d => !d.address.country_code || d.address.country_code === 'es')
+      .map(d => ({
+        nombre: d.address.municipality || d.address.city || d.address.town || d.address.village || d.address.hamlet || d.name,
+        provincia: d.address.province || d.address.county || '',
+        ccaa: d.address.state || '',
+        comarca: d.address.county || d.address.state_district || '',
+      }))
+      .filter(d => d.nombre)
+      .filter((v, i, a) => a.findIndex(t => t.nombre.toLowerCase() === v.nombre.toLowerCase() && t.provincia === v.provincia) === i)
+      .slice(0, 6)
+  } catch { return [] }
+}
+
+// Modal fecha de nacimiento
+function ModalFecha({ valor, onGuardar, onCerrar }) {
+  const hoy = new Date()
+  const minDate = new Date(); minDate.setFullYear(hoy.getFullYear() - 120)
+  const [fecha, setFecha] = useState((valor || [])[0] || '')
+
+  const edad = fecha ? (() => {
+    const nac = new Date(fecha)
+    let e = hoy.getFullYear() - nac.getFullYear()
+    if (hoy.getMonth() < nac.getMonth() || (hoy.getMonth() === nac.getMonth() && hoy.getDate() < nac.getDate())) e--
+    return e
+  })() : null
+
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white rounded-3xl w-full max-w-md">
+        <div className="px-6 py-5 border-b border-[#F0EAE0] flex items-center justify-between">
+          <h3 className="font-semibold text-[#111110]">Fecha de nacimiento</h3>
+          <button onClick={onCerrar} className="text-[#888882] hover:text-[#111110] text-xl">✕</button>
+        </div>
+        <div className="p-6">
+          <input
+            type="date"
+            value={fecha}
+            onChange={e => setFecha(e.target.value)}
+            max={hoy.toISOString().split('T')[0]}
+            min={minDate.toISOString().split('T')[0]}
+            className="w-full px-4 py-3.5 rounded-2xl border-2 border-[#E0DAD0] bg-white focus:outline-none focus:border-[#1A7A4A] text-[#111110] text-lg transition-colors"
+          />
+          {fecha && edad !== null && edad >= 0 && (
+            <p className="text-sm text-[#1A7A4A] mt-2 font-medium">{edad} años</p>
+          )}
+        </div>
+        <div className="px-6 pb-6 flex gap-3">
+          <button onClick={onCerrar} className="flex-1 py-3 rounded-full border border-[#E0DAD0] text-[#888882] text-sm">Cancelar</button>
+          <button onClick={() => onGuardar('nacimiento', [fecha])} disabled={!fecha || !edad || edad < 0 || edad > 120}
+            className="flex-1 py-3 rounded-full bg-[#111110] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Modal pueblo con autocompletado
+function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
+  const [query, setQuery] = useState(() => {
+    try { const m = JSON.parse((valor || [])[0]); return m.nombre || '' } catch { return '' }
+  })
+  const [sugerencias, setSugerencias] = useState([])
+  const [buscando, setBuscando] = useState(false)
+  const [seleccionado, setSeleccionado] = useState(null)
+  const timerRef = useRef(null)
+
+  const handleChange = (e) => {
+    const q = e.target.value
+    setQuery(q)
+    setSeleccionado(null)
+    clearTimeout(timerRef.current)
+    if (q.length >= 2) {
+      setBuscando(true)
+      timerRef.current = setTimeout(async () => {
+        const res = await buscarMunicipio(q)
+        setSugerencias(res)
+        setBuscando(false)
+      }, 400)
+    } else {
+      setSugerencias([])
+      setBuscando(false)
+    }
+  }
+
+  const handleSelect = (mun) => {
+    setQuery(mun.nombre)
+    setSugerencias([])
+    setSeleccionado(mun)
+  }
+
+  const handleGuardar = () => {
+    onGuardar(campoId, {
+      [campoId]: [JSON.stringify(seleccionado)],
+      ...(campoId === 'pueblo' ? {
+        ccaa: [seleccionado.ccaa],
+        provincia: [seleccionado.provincia],
+        comarca: [seleccionado.comarca],
+      } : {
+        ccaa_empadron: [seleccionado.ccaa],
+        provincia_empadron: [seleccionado.provincia],
+        comarca_empadron: [seleccionado.comarca],
+      })
+    })
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white rounded-3xl w-full max-w-md">
+        <div className="px-6 py-5 border-b border-[#F0EAE0] flex items-center justify-between">
+          <h3 className="font-semibold text-[#111110]">{titulo}</h3>
+          <button onClick={onCerrar} className="text-[#888882] hover:text-[#111110] text-xl">✕</button>
+        </div>
+        <div className="p-6">
+          <div className="relative">
+            <input
+              type="text"
+              value={query}
+              onChange={handleChange}
+              placeholder="Escribe tu pueblo o ciudad..."
+              className={`w-full px-4 py-3.5 rounded-2xl border-2 text-[#111110] font-medium focus:outline-none transition-colors
+                ${seleccionado ? 'border-[#1A7A4A] bg-[#E8F5EE]' : 'border-[#E0DAD0] bg-white focus:border-[#1A7A4A]'}`}
+            />
+            {buscando && <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />}
+            {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] font-bold">✓</div>}
+            {sugerencias.length > 0 && !seleccionado && (
+              <div className="absolute z-20 w-full mt-2 bg-white border border-[#E0DAD0] rounded-2xl shadow-lg overflow-hidden">
+                {sugerencias.map((mun, i) => (
+                  <button key={i} onClick={() => handleSelect(mun)}
+                    className="w-full text-left px-4 py-3 hover:bg-[#F7F3EC] border-b border-[#F0EAE0] last:border-0">
+                    <span className="font-semibold text-[#111110]">{mun.nombre}</span>
+                    <span className="text-sm text-[#888882] ml-2">{mun.provincia}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {seleccionado && (
+            <div className="mt-3 p-3 bg-[#E8F5EE] rounded-xl text-sm">
+              <span className="font-medium text-[#1A7A4A]">{seleccionado.ccaa}</span>
+              <span className="text-[#888882]"> · {seleccionado.provincia}</span>
+              {seleccionado.comarca && seleccionado.comarca !== seleccionado.provincia && (
+                <span className="text-[#888882]"> · {seleccionado.comarca}</span>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="px-6 pb-6 flex gap-3">
+          <button onClick={onCerrar} className="flex-1 py-3 rounded-full border border-[#E0DAD0] text-[#888882] text-sm">Cancelar</button>
+          <button onClick={handleGuardar} disabled={!seleccionado}
+            className="flex-1 py-3 rounded-full bg-[#111110] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // Modal de edición inline para una sección
