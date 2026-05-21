@@ -477,8 +477,7 @@ export default function Resultados() {
   const [totalEstimado, setTotalEstimado] = useState(0)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const [enviando, setEnviando] = useState(false)
-  const [tokenInforme, setTokenInforme] = useState(null)
-  const [generandoInforme, setGenerandoInforme] = useState(false)
+
 
   useEffect(() => {
     if (!router.isReady) return
@@ -512,56 +511,6 @@ export default function Resultados() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const generarInforme = async (nombreCliente = '') => {
-    if (tokenInforme) return tokenInforme
-    setGenerandoInforme(true)
-    try {
-      const token = Math.random().toString(36).substring(2, 10)
-      const { error } = await supabase.from('informes').insert({
-        token,
-        perfil,
-        ayudas: ayudas.map(a => ({
-          nombre: a.nombre, organismo: a.organismo, tipo: a.tipo,
-          estado: a.estado, importe_max: a.importe_max, importe_min: a.importe_min,
-          descripcion: a.descripcion, url_oficial: a.url_oficial
-        })),
-        nombre_cliente: nombreCliente,
-      })
-      if (!error) { setTokenInforme(token); return token }
-    } catch (e) { console.error(e) }
-    finally { setGenerandoInforme(false) }
-    return null
-  }
-
-  const compartirWhatsApp = async () => {
-    const token = await generarInforme()
-    if (!token) return
-    const url = `https://cobratelo.es/informe/${token}`
-    const top3 = ayudas.slice(0, 3).map(a =>
-      `• ${a.nombre}${a.importe_max > 0 ? ` (hasta ${a.importe_max.toLocaleString('es-ES')}€)` : ''}`
-    ).join('
-')
-    const msg = `He encontrado ${ayudas.length} ayudas públicas que me corresponden:
-
-${top3}
-
-Informe completo:
-${url}`
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
-  }
-
-  const compartirGestor = async () => {
-    const token = await generarInforme()
-    if (!token) return
-    const url = `https://cobratelo.es/informe/${token}`
-    const msg = `Hola, te comparto el informe con las ayudas públicas que me corresponden para que puedas tramitarlas:
-
-${url}
-
-El informe incluye ${ayudas.length} ayudas con los enlaces a las convocatorias oficiales.`
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
   const enviarAGestoria = async () => {
@@ -612,13 +561,7 @@ El informe incluye ${ayudas.length} ayudas con los enlaces a las convocatorias o
             </div>
           </div>
 
-          {/* Compartir */}
-          <div className="flex gap-3 mb-6">
-            <button onClick={compartirWhatsApp} disabled={generandoInforme}
-              className="flex-1 bg-[#25D366] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#1ebe5a] transition-colors disabled:opacity-60">
-              {generandoInforme ? 'Generando...' : 'Compartir por WhatsApp'}
-            </button>
-          </div>
+
 
           {/* Bloque gestoría — si quiere una */}
           {(perfil?.gestoria || [])[0] === 'quiero_gestoria' && (() => {
