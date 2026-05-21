@@ -7,12 +7,12 @@ export default async function handler(req, res) {
   if (!emailGestor || !ayudas?.length) return res.status(400).json({ error: 'Faltan datos' })
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.forwardemail.net',
+    host: process.env.SMTP_HOST,
     port: 465,
     secure: true,
     auth: {
-      user: 'hola@cobratelo.es',
-      pass: '483710476c4be08a667bb5e1',
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     },
   })
 
