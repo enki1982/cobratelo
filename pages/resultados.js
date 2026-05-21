@@ -60,7 +60,21 @@ function calcularRelevancia(ayuda, perfil) {
 
   const tieneHijos    = familia.some(v => ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental'].includes(v))
   const tieneEmpresa  = extras.some(v => ['pyme','negocio_digital'].includes(v)) || esAutonomo || esEmprendedor
-  const tieneVehiculo = (perfil.vehiculo || []).some(v => v !== 'sin_vehiculo')
+  const tieneVehiculo  = (perfil.vehiculo || []).some(v => v !== 'sin_vehiculo')
+  const vehiculos      = perfil.vehiculo || []
+  const tieneGasolina  = vehiculos.includes('coche_gasolina')
+  const tieneElectrico = vehiculos.includes('coche_electrico')
+  const quiereVehiculo = vehiculos.includes('quiero_vehiculo')
+  const alquilerDetalle   = (perfil.alquiler_detalle || [])[0] || ''
+  const alquilerMes       = alquilerDetalle === 'alquiler_menos300' ? 250
+                          : alquilerDetalle === 'alquiler_300_600'  ? 450
+                          : alquilerDetalle === 'alquiler_600_900'  ? 750
+                          : alquilerDetalle === 'alquiler_900_1200' ? 1050
+                          : alquilerDetalle === 'alquiler_mas1200'  ? 1400 : null
+  const alquilerCompartido = (perfil.alquiler_compartido || [])[0] || ''
+  const esPisoCompartido   = alquilerCompartido === 'alquiler_compis'
+  const tieneHipoteca      = viviendas.includes('hipoteca')
+  const inmigrante         = especial.includes('inmigrante')
   // Rural: marcado explícitamente O pueblo detectado como pequeño
   const esRural = especial.includes('rural')
   const esAlquiler    = viviendas.includes('alquiler')
@@ -181,6 +195,77 @@ function calcularRelevancia(ayuda, perfil) {
 
   // ── EXCLUSIONES POR INGRESOS ──────────────────────────
 
+  // Ingresos altos: excluir ayudas de renta mínima, bono social, vulnerabilidad
+  if (ingresos === 'altos') {
+    if (/bono social|bo social|ajut emergencia|vulnerabilitat|vulnerabilidad|sense recursos|sin recursos|exclusio social|exclusion social|renda garantida|renta garantizada|pirmi|risga|rmi |b-minc/.test(t)) return 0
+  }
+  if (['medios','altos'].includes(ingresos)) {
+    if (/ingres minim vital|ingreso minimo vital|imv |renda minima|renta minima/.test(t)) return 0
+    if (/pobreza energetica|pobresa energetica|tarifa social gas|bono termico/.test(t)) return 0
+  }
+  // Ingresos medios/altos: excluir PNC (pensiones no contributivas)
+  if (['medios','altos'].includes(ingresos)) {
+    if (/pnc |pension no contributiva|pensio no contributiva/.test(t)) return 0
+  }
+
+  // Bono social eléctrico: requiere ingresos bajos
+  if (/bono social electr|bo social electric/.test(t) && !['sin_ingresos','bajos'].includes(ingresos)) return 0
+
+  // ── EXCLUSIONES POR VIVIENDA ADICIONALES ──────────────────────────
+
+  // Si tiene hipoteca: no excluir nada — puede ver ayudas hipoteca
+  // Si es propietario SIN hipoteca: excluir ayudas específicas de hipoteca
+  if (esPropietario && !tieneHipoteca) {
+    if (/subvencio.*hipoteca|ayuda.*hipoteca|moratoria.*hipoteca|deduccion.*hipoteca/.test(t)) return 0
+  }
+
+  // Bono Alquiler Joven: < 35 años, alquiler, renta ≤ 900€
+  if (/bono.*alquiler.*joven|bono joven alquiler|ajut.*lloguer.*jove/.test(t)) {
+    if (!esAlquiler) return 0
+    if (edadNum > 0 && edadNum > 35) return 0
+    if (alquilerMes !== null && alquilerMes > 900) return 0
+  }
+
+  // ── EXCLUSIONES POR VEHÍCULO ──────────────────────────
+
+  // MOVES: solo si tiene o quiere vehículo eléctrico/híbrido
+  if (/moves iii|moves3|pla moves|plan moves/.test(t) && !tieneElectrico && !quiereVehiculo) return 0
+  // Plan Renove gasolina/diésel: solo si tiene coche de combustión
+  if (/renove.*gasoil|renove.*diesel|renove.*gasolina|pla renove.*combusti/.test(t) && !tieneGasolina) return 0
+
+  // ── EXCLUSIONES POR SITUACIÓN ESPECIAL ──────────────────────────
+
+  // Violencia de género: excluir si no marcado (ya existe pero reforzamos)
+  if (!especial.includes('victima_violencia') && /violencia.*genere|violencia.*genero|victima.*violencia|víctima.*violencia/.test(t)) return 0
+  // Inmigrante/extranjero: arraigo, permiso residencia
+  if (!inmigrante && /arraigo social|arraigo laboral|permis.*residencia|permiso.*residencia|reagrupacion|reagrupacio/.test(t)) return 0
+  // Discapacidad específica: PNC invalidez solo si tiene discapacidad sin pensión contributiva
+  if (/pnc.*invalidesa|pnc.*invalidez|pension.*invalidez.*no.*contributiva/.test(t)) {
+    if (!especial.includes('discapacidad')) return 0
+    if (esPensionista) return 0  // ya tiene pensión contributiva
+  }
+
+  // ── EXCLUSIONES POR HIJOS ──────────────────────────
+
+  // Guardería/escuela 0-3: solo si tiene hijos < 3 años
+  if (/escola bressol|guarderia|escuela infantil|primer cicle.*educac|0.3 anys|0 a 3 anos/.test(t)) {
+    if (!familia.includes('hijos_menores3') && !familia.includes('embarazada')) return 0
+  }
+  // Cheque bebé / bono nacimiento: solo si tiene hijos < 3 o embarazada
+  if (/xec nadal|cheque bebe|bono nacimiento|ajut nasciment|ayuda.*nacimiento.*bebe/.test(t)) {
+    if (!familia.includes('hijos_menores3') && !familia.includes('embarazada')) return 0
+  }
+  // Beca comedor: hijos en edad escolar
+  if (/beca.*comedor|ajut.*menjador|beca menjador/.test(t)) {
+    if (!familia.includes('hijos_3_18') && !familia.includes('hijos_menores3')) return 0
+  }
+  // Deducción maternidad IRPF: requiere hijo < 3 años Y estar trabajando
+  if (/deduccion.*maternidad|deduccio.*maternitat/.test(t)) {
+    if (!familia.includes('hijos_menores3')) return 0
+    if (!esEmpleado && !esAutonomo) return 0
+  }
+
+  // ── EXCLUSIONES POR EDAD ──────────────────────────
   // Edad
   if (edadNum > 0) {
     if (/mayor(es)? de 65|65 anys o mes|a partir dels 65/.test(t) && edadNum < 65) return 0
@@ -258,26 +343,19 @@ function calcularRelevancia(ayuda, perfil) {
   // Asturiano: xubilacion, desemplegu, vivienda
   // Los patrones regex ya cubren estas variantes con raíces compartidas
 
-  // Situación laboral
-  // Pensionista: boost si es ayuda PARA pensionistas (complementos, descuentos, servicios)
+  // ── BOOSTS POR SITUACIÓN LABORAL ──────────────────────────
+  // Pensionista: complementos, descuentos, servicios sociales (NO tramitaciones)
   if (esPensionista && /pensio|pension|jubila|xubila|erretiro|gent gran|tercera edat|majors de 65/.test(t)) {
     if (!/solicitar|tramitar|como.*jubil|pedir.*jubil|acceder.*pension|alta.*jubil|primera.*pension/.test(t)) score += 40
   }
-  // Viuda pensionista: complemento/mejora viudedad
   if (esPensionista && familia.includes('viudo') && /viudedat|viudedad|viuvez|alarguntzapen/.test(t)) {
     if (!/solicitar|tramitar|alta.*viude|primer.*viude/.test(t)) score += 35
   }
-  // Empleado: ayudas para trabajadores cuenta ajena
-  if (esEmpleado && !esAutonomo && /treballador|trabajador.*compte.*alie|treballador.*compte.*alie|trabajador.*cuenta.*ajena/.test(t)) score += 30
-  // Autónomo: ayudas específicas para autónomos
   if (esAutonomo && /autono|compte.*propi|cuenta.*propia|trabajador.*independiente/.test(t)) score += 40
-  // Emprendedor: ayudas para emprender/crear empresa
-  if (esEmprendedor && /emprendedor|startup|nova empresa|nueva empresa|crear.*empresa|primera.*empresa|emprenedoria/.test(t)) score += 40
-  if (esAutonomo && /autono/.test(t)) score += 40
   if (esDesempleado && /desempleo|atur|paro|sepe|desemprego|langabezia|desemplegu/.test(t)) score += 40
   if (esEstudiante && /beca|estudi/.test(t)) score += 40
-  if (esEmprendedor && /emprendedor|startup|nova empresa/.test(t)) score += 35
-  if (esEmpleado && /treballador|trabajador por cuenta ajena/.test(t)) score += 35
+  if (esEmprendedor && /emprendedor|startup|nova empresa|nueva empresa|crear.*empresa|primera.*empresa|emprenedoria/.test(t)) score += 40
+  if (esEmpleado && !esAutonomo && /treballador.*compte.*ali|trabajador.*cuenta.*ajena|compte.*ali/.test(t)) score += 30
 
   // Edad
   if (edadNum >= 65 && /gent gran|major|tercera edat|majors/.test(t)) score += 35
@@ -314,12 +392,45 @@ function calcularRelevancia(ayuda, perfil) {
   if (tieneEmpresa && /autono|kit digital|digitalitzacio/.test(t)) score += 30
   if (extras.includes('gafas_audifonos') && /optica|gafes|audiofon/.test(t)) score += 35
 
+  // ── BOOSTS ADICIONALES ──────────────────────────
+
+  // Alquiler: boost extra si Bono Alquiler Joven y cumple requisitos
+  if (esAlquiler && edadNum > 0 && edadNum <= 35 && alquilerMes !== null && alquilerMes <= 900) {
+    if (/bono.*joven|bono joven|ajut.*jove/.test(t)) score += 20
+  }
+
+  // Ingresos bajos/sin ingresos: boost para IMV, renta mínima, bono social
+  if (['sin_ingresos','bajos'].includes(ingresos)) {
+    if (/ingres minim vital|ingreso minimo vital|imv |renda minima|renta minima|pirmi|risga|rmi /.test(t)) score += 40
+    if (/bono social|bo social/.test(t)) score += 30
+    if (/pobreza energetica|pobresa energetica|tarifa social/.test(t)) score += 30
+  }
+
+  // Vehículo eléctrico/híbrido
+  if ((tieneElectrico || quiereVehiculo) && /moves|vehicle electric|vehiculo electrico|electri/.test(t)) score += 35
+  // Coche de combustión para renovación
+  if (tieneGasolina && /renove|pla renove|plan renove/.test(t)) score += 30
+
+  // Guardería / primer ciclo: hijos < 3 años
+  if (familia.includes('hijos_menores3') && /escola bressol|guarderia|escuela infantil|0.3 anys/.test(t)) score += 35
+  // Becas comedor: hijos escolares
+  if ((familia.includes('hijos_3_18') || familia.includes('hijos_menores3')) && /comedor|menjador/.test(t)) score += 35
+
+  // Discapacidad + dependencia: ya boostea, pero añadir variantes
+  if (especial.includes('discapacidad') && /discapacitat|discapacidad|discapacidade|desgaitasuna|diversitat funcional/.test(t)) score += 40
+  if (especial.includes('dependencia') && /dependencia|saad|dependentzia/.test(t)) score += 40
+  if (especial.includes('victima_violencia') && /violencia.*genere|violencia.*genero|victima/.test(t)) score += 40
+  if (especial.includes('rural') && /rural|despoblacio|despoblamiento/.test(t)) score += 35
+  if (inmigrante && /integracio|integracion|acollida|acogida|arrelament|arraigo/.test(t)) score += 35
+
+  // Hipoteca: deducción, ayudas específicos
+  if (tieneHipoteca && /hipoteca|deduccion.*hipotec|subvencio.*hipotec/.test(t)) score += 35
+
   // CCAA/Provincia match explícito (bonus adicional)
   if (ccaa && ayuda.comunidad_autonoma === ccaa) score += 15
   if (['municipal','comarcal'].includes(ayuda.ambito) && provincia) score += 10
 
-  // Bono social: aplica a ingresos bajos o vulnerables
-  if (/bono social|bo social/.test(t) && ['sin_ingresos','bajos'].includes(ingresos)) score += 30
+  // (bono social ya cubierto en boosts adicionales arriba)
 
   return score
 }
