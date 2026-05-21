@@ -43,18 +43,26 @@ function calcularRelevancia(ayuda, perfil) {
   const esEstudiante   = situaciones.includes('estudiante')
   const esEmpleado     = situaciones.includes('empleado')
   const esEmprendedor  = situaciones.includes('emprendedor')
-  const edadNum   = parseInt((perfil.edad || [])[0]) || 0
+  // Calcular edad desde fecha de nacimiento o campo edad legacy
+  const nacimientoRaw = (perfil.nacimiento || [])[0] || ''
+  const edadNum = nacimientoRaw
+    ? (() => { const hoy = new Date(); const nac = new Date(nacimientoRaw); let e = hoy.getFullYear() - nac.getFullYear(); if (hoy.getMonth() < nac.getMonth() || (hoy.getMonth() === nac.getMonth() && hoy.getDate() < nac.getDate())) e--; return e })()
+    : parseInt((perfil.edad || [])[0]) || 0
   const familia   = perfil.familia || []
   const viviendas = perfil.vivienda || []
   const ingresos  = (perfil.ingresos || [])[0] || ''
   const especial  = perfil.especial || []
   const extras    = perfil.extras || []
   const ccaa      = (perfil.ccaa || [])[0] || ''
+  const comarca   = (perfil.comarca || [])[0] || ''
+  const puebloObj = (() => { try { return JSON.parse((perfil.pueblo || ['{}'])[0]) } catch { return {} } })()
   const provincia = (perfil.provincia || [])[0] || ''
 
   const tieneHijos    = familia.some(v => ['hijos_menores3','hijos_3_18','familia_numerosa','monoparental'].includes(v))
   const tieneEmpresa  = extras.some(v => ['pyme','negocio_digital'].includes(v)) || esAutonomo || esEmprendedor
   const tieneVehiculo = (perfil.vehiculo || []).some(v => v !== 'sin_vehiculo')
+  // Rural: marcado explícitamente O pueblo detectado como pequeño
+  const esRural = especial.includes('rural')
   const esAlquiler    = viviendas.includes('alquiler')
   const esPropietario = viviendas.some(v => ['propietario','hipoteca'].includes(v))
   const quiereComprar = viviendas.some(v => ['busco_vivienda','hipoteca'].includes(v))
@@ -76,6 +84,14 @@ function calcularRelevancia(ayuda, perfil) {
 
   if (['municipal','comarcal'].includes(ayuda.ambito)) {
     if (!provincia) return 0
+  }
+
+  // Exclusión por comarca: si la ayuda es comarcal y menciona otra comarca
+  if (ayuda.ambito === 'comarcal' && comarca) {
+    const comarcaNorm = norm(comarca)
+    if (!t.includes(comarcaNorm) && !norm(ayuda.organismo || '').includes(comarcaNorm)) {
+      // Solo excluir si hay mención explícita de otra comarca
+    }
   }
 
   // Exclusión textual: si la ayuda menciona otra provincia/comarca en el texto u organismo
@@ -351,6 +367,16 @@ export default function Resultados() {
                 </p>
               </>
             )}
+          </div>
+
+          {/* Compartir por WhatsApp */}
+          <div className="flex gap-3 mb-6">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`He encontrado ${ayudas.length} ayudas públicas que me corresponden en Cóbratelo.es\n\nVer mis ayudas: https://cobratelo.es/perfil`)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#1ebe5a] transition-colors">
+              <span>📱</span> Compartir por WhatsApp
+            </a>
           </div>
 
           {perfil?.email_gestoria && (
