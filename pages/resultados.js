@@ -585,14 +585,14 @@ export default function Resultados() {
       </Head>
 
       <div className="min-h-screen bg-[#F7F3EC]">
-        <nav className="px-6 py-5 flex items-center justify-between max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
+        <nav className="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
+          <Link href="/" className="font-display text-xl font-bold text-[#111110] shrink-0">
             cóbratelo<span className="text-[#1A7A4A]">.es</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">Inicio</Link>
-            <Link href="/cuenta" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">Mi cuenta</Link>
-            <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors">← Cambiar perfil</Link>
+          <div className="flex items-center gap-3 ml-4 overflow-hidden">
+            <Link href="/" className="hidden sm:block text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">Inicio</Link>
+            <Link href="/cuenta" className="text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">Mi cuenta</Link>
+            <Link href="/perfil" className="text-sm text-[#888882] hover:text-[#111110] transition-colors whitespace-nowrap">← Perfil</Link>
           </div>
         </nav>
 
