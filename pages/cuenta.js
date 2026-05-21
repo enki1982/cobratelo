@@ -88,6 +88,9 @@ export default function Cuenta() {
   const [cambiandoPassword, setCambiandoPassword] = useState(false)
   const [nuevaPassword, setNuevaPassword] = useState('')
   const [passwordMsg, setPasswordMsg] = useState('')
+  const [eliminando, setEliminando] = useState(false)
+  const [confirmEliminar, setConfirmEliminar] = useState(false)
+  const [confirmText, setConfirmText] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -132,6 +135,21 @@ export default function Cuenta() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/')
+  }
+
+  const handleEliminarCuenta = async () => {
+    if (confirmText !== 'ELIMINAR') return
+    setEliminando(true)
+    try {
+      // Borrar datos del usuario en Supabase
+      await supabase.from('usuarios').delete().eq('id', session.user.id)
+      // Cerrar sesión
+      await supabase.auth.signOut()
+      router.push('/?eliminado=1')
+    } catch (e) {
+      setEliminando(false)
+      alert('Error al eliminar la cuenta. Escríbenos a hola@cobratelo.es')
+    }
   }
 
   const handlePortalFacturacion = async () => {
@@ -340,10 +358,39 @@ export default function Cuenta() {
               <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
                 <h2 className="font-semibold text-[#111110] mb-3">Eliminar cuenta</h2>
                 <p className="text-sm text-[#888882] mb-4">Si eliminas tu cuenta se borrarán todos tus datos permanentemente.</p>
-                <a href="mailto:hola@cobratelo.es?subject=Solicitud eliminación de cuenta"
-                  className="text-sm text-red-500 hover:text-red-700 transition-colors underline">
-                  Solicitar eliminación de cuenta
-                </a>
+                {!confirmEliminar ? (
+                  <button onClick={() => setConfirmEliminar(true)}
+                    className="text-sm text-red-500 hover:text-red-700 transition-colors font-medium">
+                    Eliminar mi cuenta
+                  </button>
+                ) : (
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-2xl">
+                    <p className="text-sm font-semibold text-red-700 mb-2">¿Estás seguro?</p>
+                    <p className="text-xs text-red-600 mb-3">
+                      Se eliminarán todos tus datos permanentemente. Escribe <strong>ELIMINAR</strong> para confirmar.
+                    </p>
+                    <input
+                      type="text"
+                      value={confirmText}
+                      onChange={e => setConfirmText(e.target.value)}
+                      placeholder="Escribe ELIMINAR"
+                      className="w-full px-3 py-2 rounded-xl border border-red-300 text-sm mb-3 focus:outline-none focus:border-red-500"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleEliminarCuenta}
+                        disabled={confirmText !== 'ELIMINAR' || eliminando}
+                        className="bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-red-700 disabled:opacity-40 transition-colors">
+                        {eliminando ? 'Eliminando...' : 'Eliminar definitivamente'}
+                      </button>
+                      <button
+                        onClick={() => { setConfirmEliminar(false); setConfirmText('') }}
+                        className="text-sm text-[#888882] px-4 py-2 rounded-full border border-[#E0DAD0]">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button onClick={handleLogout}
