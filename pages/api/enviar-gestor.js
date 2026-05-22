@@ -7,14 +7,24 @@ export default async function handler(req, res) {
   if (!emailGestor || !ayudas?.length) return res.status(400).json({ error: 'Faltan datos' })
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: 465,
-    secure: true,
+    host: process.env.SMTP_HOST || 'smtp.forwardemail.net',
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    tls: { rejectUnauthorized: false },
   })
+
+  // Verificar conexión
+  try {
+    await transporter.verify()
+  } catch (verifyErr) {
+    console.error('SMTP verify failed:', verifyErr.message)
+    return res.status(500).json({ error: 'Error de conexión SMTP', detail: verifyErr.message })
+  }
 
   const nombre = nombreCliente || 'Su cliente'
   const nAyudas = ayudas.length

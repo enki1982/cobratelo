@@ -18,7 +18,10 @@ export default function Login() {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) setError(error.message)
-    else router.push('/')
+    else {
+      const returnUrl = router.query.return
+      router.push(returnUrl ? decodeURIComponent(returnUrl) : '/')
+    }
     setLoading(false)
   }
 
@@ -26,7 +29,10 @@ export default function Login() {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signUp({ email, password })
     if (error) setError(error.message)
-    else setMsg('Revisa tu email para confirmar tu cuenta.')
+    else {
+      const returnUrl = router.query.return
+      setMsg(`Revisa tu email para confirmar tu cuenta.${returnUrl ? ' Una vez confirmada volverás a tus resultados.' : ''}`)
+    }
     setLoading(false)
   }
 
