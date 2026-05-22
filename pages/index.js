@@ -205,6 +205,7 @@ export default function Home() {
               </HoverCard>
             ))}
           </div>
+          </div>
         </section>
 
         {/* FUENTES */}
@@ -280,7 +281,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
           </div>
           </div>
         </section>
