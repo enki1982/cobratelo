@@ -200,7 +200,7 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
               <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: '#ffffff', border: '1px solid #E0DAD0', borderRadius: 16, padding: 24, transition: 'border-color 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#1A7A4A', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#2D6A4F', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
                 <div className="font-display font-bold" style={{ fontSize: 15, color: '#111110', marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
                 <p style={{ fontSize: 13, color: '#666660', lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
@@ -229,7 +229,7 @@ export default function Home() {
         <section style={{ maxWidth: 1024, margin: '0 auto', background: '#F7F3EC', padding: '64px 24px', borderTop: '1px solid #E0DAD0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#1A7A4A', marginBottom: 12 }}>Para gestorías y despachos</p>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Para gestorías y despachos</p>
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1 }}>
                 Multiplica tu cartera.<br />Sin trabajo extra.
               </h2>
@@ -245,14 +245,14 @@ export default function Home() {
                 ))}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <Link href="/precios?tab=gestoria" style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
+                <Link href="/precios?tab=gestoria" style={{ background: '#2D6A4F', color: '#fff', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
                   Probar 7 días gratis →
                 </Link>
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
             <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#1A7A4A', opacity: 0.15 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2D6A4F', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
                 { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente' },
@@ -294,7 +294,7 @@ export default function Home() {
         {/* FOOTER */}
         <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', borderTop: '1px solid #E0DAD0', background: '#F7F3EC' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#1A7A4A' }}>.es</span></span>
+            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#2D6A4F' }}>.es</span></span>
             <p style={{ color: '#888882', fontSize: 12, textAlign: 'center' }}>
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
