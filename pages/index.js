@@ -151,7 +151,7 @@ export default function Home() {
           </div>
 
           {/* Dashboard */}
-          <div style={{ position: 'relative' }} className="hidden md:block">
+          <div style={{ position: 'relative', filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.6)) drop-shadow(0 0 1px rgba(0,232,122,0.6))' }} className="hidden md:block">
             <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -249,7 +249,7 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
-            <div style={{ background: '#161b27', border: '2px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', boxShadow: '0 2px 0 rgba(255,255,255,0.1), 0 4px 0 rgba(255,255,255,0.06), 0 6px 0 rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.4)' }}>
+            <div style={{ background: '#161b27', border: '2px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', filter: 'drop-shadow(0 12px 40px rgba(0,0,0,0.5)) drop-shadow(2px 2px 0 rgba(255,255,255,0.08))' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2D6A4F', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
