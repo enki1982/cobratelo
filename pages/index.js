@@ -190,7 +190,8 @@ export default function Home() {
         </div>{/* FIN BLOQUE OSCURO */}
 
         {/* CÓMO FUNCIONA */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', background: '#F7F3EC', color: '#111110', padding: '64px 24px', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Cómo funciona</p>
           <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
             Simple, rápido y preciso
@@ -207,7 +208,8 @@ export default function Home() {
         </section>
 
         {/* FUENTES */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', background: '#F7F3EC', color: '#111110', padding: '48px 24px', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.muted, marginBottom: 36 }}>
             Información extraída de fuentes oficiales
           </p>
@@ -221,10 +223,12 @@ export default function Home() {
               </div>
             ))}
           </div>
+          </div>
         </section>
 
         {/* GESTORÍAS */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', background: '#F7F3EC', color: '#111110', padding: '64px 24px', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Para gestorías y despachos</p>
@@ -270,6 +274,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
           </div>
         </section>
 
