@@ -32,16 +32,14 @@ const AYUDAS_DEMO = [
 ]
 
 const FUENTES = [
-  { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: '#003087' },
-  { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: '#0055A5' },
-  { nombre: 'Seg. Social', sub: 'Ministerio de Inclusión', color: '#004899' },
-  { nombre: 'Red.es', sub: 'Ministerio Digital', color: '#CC0000' },
-  { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: '#1B4F72' },
-  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E' },
-  { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: '#E3000F' },
-  { nombre: 'IMSERSO', sub: 'Mayores y dependencia', color: '#004899' },
-  { nombre: 'ACCIÓ', sub: 'Competitivitat Empresa', color: '#C9222E' },
-  { nombre: 'Red SARA', sub: 'Administración digital', color: '#2D4A6A' },
+  { alt: 'Agencia Tributaria', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Agencia_Tributaria.svg/200px-Agencia_Tributaria.svg.png' },
+  { alt: 'SEPE', src: 'https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_SEPE.svg' },
+  { alt: 'Seguridad Social', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logotipo_del_Ministerio_de_Inclusi%C3%B3n%2C_Seguridad_Social_y_Migraciones.svg/300px-Logotipo_del_Ministerio_de_Inclusi%C3%B3n%2C_Seguridad_Social_y_Migraciones.svg.png' },
+  { alt: 'Red.es', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Logo_de_Red.es.svg/200px-Logo_de_Red.es.svg.png' },
+  { alt: 'Ministerio de Vivienda', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Logotipo_Ministerio_de_Vivienda_y_Agenda_Urbana.svg/300px-Logotipo_Ministerio_de_Vivienda_y_Agenda_Urbana.svg.png' },
+  { alt: 'Generalitat de Catalunya', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Generalitat_de_Catalunya_escut.svg/120px-Generalitat_de_Catalunya_escut.svg.png' },
+  { alt: 'Comunidad de Madrid', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Logotipo_de_la_Comunidad_de_Madrid.svg/300px-Logotipo_de_la_Comunidad_de_Madrid.svg.png' },
+  { alt: 'Gobierno de España', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logotipo_del_Gobierno_de_Espa%C3%B1a.svg/300px-Logotipo_del_Gobierno_de_Espa%C3%B1a.svg.png' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
@@ -157,8 +155,8 @@ export default function Home() {
             <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Tus ayudas</span>
-                <span style={{ background: C.greenDim, color: C.green, fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 100 }}>14 encontradas</span>
+                <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Ejemplo de resultado</span>
+                <span style={{ background: C.greenDim, color: C.green, fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 100 }}>Datos de muestra</span>
               </div>
               {AYUDAS_DEMO.map((a, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: i < 3 ? `1px solid ${C.border}` : 'none' }}>
@@ -215,11 +213,13 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
             {FUENTES.map((f, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'default', padding: '8px 14px', borderRadius: 10, border: '1px solid #E0DAD0', background: '#fff', transition: 'all 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = f.color; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#E0DAD0'; e.currentTarget.style.boxShadow = 'none' }}>
-                <div className="font-display font-bold" style={{ fontSize: 13, color: f.color }}>{f.nombre}</div>
-                <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>{f.sub}</div>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 20px', borderRadius: 12, border: '1px solid #E0DAD0', background: '#fff', transition: 'all 0.2s', opacity: 0.75 }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)' }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '0.75'; e.currentTarget.style.boxShadow = 'none' }}>
+                <img src={f.src} alt={f.alt} title={f.alt}
+                  style={{ height: 32, width: 'auto', maxWidth: 120, objectFit: 'contain' }}
+                  onError={e => { e.currentTarget.style.display='none'; e.currentTarget.insertAdjacentHTML('afterend', `<span style="font-size:11px;font-weight:700;color:#555">${f.alt}</span>`) }}
+                />
               </div>
             ))}
           </div>
