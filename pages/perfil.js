@@ -517,7 +517,7 @@ export default function Perfil() {
                 onChange={e => setFechaNac(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 min={fechaMinNac.toISOString().split('T')[0]}
-                className="w-full px-4 py-4 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] font-medium text-lg transition-colors"
+                className="w-full max-w-full px-4 py-4 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] font-medium text-lg transition-colors" style={{ boxSizing: "border-box", WebkitAppearance: "none" }}
               />
               {fechaNac && (
                 <p className="text-sm text-[#1A7A4A] mt-2 font-medium">

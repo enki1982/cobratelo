@@ -336,6 +336,12 @@ function calcularRelevancia(ayuda, perfil) {
   // Vehículo
   if (!tieneVehiculo && /moves|plan renove|vehicle electric|vehiculo electrico/.test(t)) return 0
 
+  // Ayudas de vehículo para autónomos/pymes — excluir si es solo empleado sin empresa
+  if (esEmpleado && !esAutonomo && !esEmprendedor && !tieneEmpresa) {
+    if (/autónomos.*pymes|pymes.*autónomos|autónomo.*empresa|empresa.*autónomo/.test(t)) return 0
+    if (/menos.*10.*empleados|empresa.*empleados|negocio.*electrico|pymes.*electri/.test(t)) return 0
+  }
+
   // Mascotas
   if (!extras.includes('mascotas') && /mascota|esterilitzacio|esterilizacion|xip.*obligatori|chip.*obligatorio/.test(t)) return 0
 
