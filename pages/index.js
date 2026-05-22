@@ -33,7 +33,7 @@ const AYUDAS_DEMO = [
 
 const FUENTES = [
   { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087' },
-  { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5' },
+  { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5', src: '/SEPE.svg' },
   { nombre: 'Seg-Social', sub: 'Inclusión y Seguridad', color: '#004899', border: '#004899' },
   { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', border: '#CC0000' },
   { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72' },
@@ -215,11 +215,17 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
             {FUENTES.map((f, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '14px 18px', borderRadius: 12, border: `1px solid ${f.border}22`, background: '#fff', transition: 'all 0.2s', opacity: 0.7, minWidth: 110, cursor: 'default' }}
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 16px' : '14px 18px', borderRadius: 12, border: `1px solid ${f.border}22`, background: '#fff', transition: 'all 0.2s', opacity: 0.7, minWidth: 110, cursor: 'default' }}
                 onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = f.color; e.currentTarget.style.boxShadow = `0 4px 16px ${f.color}22` }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; e.currentTarget.style.borderColor = `${f.border}22`; e.currentTarget.style.boxShadow = 'none' }}>
-                <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
-                <span style={{ fontSize: 9, color: '#999', marginTop: 4, textAlign: 'center', letterSpacing: '0.2px', maxWidth: 90, lineHeight: 1.3 }}>{f.sub}</span>
+                {f.src ? (
+                  <img src={f.src} alt={f.nombre} title={f.sub} style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain' }} />
+                ) : (
+                  <>
+                    <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
+                    <span style={{ fontSize: 9, color: '#999', marginTop: 4, textAlign: 'center', letterSpacing: '0.2px', maxWidth: 90, lineHeight: 1.3 }}>{f.sub}</span>
+                  </>
+                )}
               </div>
             ))}
           </div>
