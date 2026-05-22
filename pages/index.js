@@ -32,14 +32,14 @@ const AYUDAS_DEMO = [
 ]
 
 const FUENTES = [
-  { alt: 'Agencia Tributaria', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Agencia_Tributaria.svg/200px-Agencia_Tributaria.svg.png' },
-  { alt: 'SEPE', src: 'https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_SEPE.svg' },
-  { alt: 'Seguridad Social', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logotipo_del_Ministerio_de_Inclusi%C3%B3n%2C_Seguridad_Social_y_Migraciones.svg/300px-Logotipo_del_Ministerio_de_Inclusi%C3%B3n%2C_Seguridad_Social_y_Migraciones.svg.png' },
-  { alt: 'Red.es', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Logo_de_Red.es.svg/200px-Logo_de_Red.es.svg.png' },
-  { alt: 'Ministerio de Vivienda', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Logotipo_Ministerio_de_Vivienda_y_Agenda_Urbana.svg/300px-Logotipo_Ministerio_de_Vivienda_y_Agenda_Urbana.svg.png' },
-  { alt: 'Generalitat de Catalunya', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Generalitat_de_Catalunya_escut.svg/120px-Generalitat_de_Catalunya_escut.svg.png' },
-  { alt: 'Comunidad de Madrid', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Logotipo_de_la_Comunidad_de_Madrid.svg/300px-Logotipo_de_la_Comunidad_de_Madrid.svg.png' },
-  { alt: 'Gobierno de España', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logotipo_del_Gobierno_de_Espa%C3%B1a.svg/300px-Logotipo_del_Gobierno_de_Espa%C3%B1a.svg.png' },
+  { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087' },
+  { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5' },
+  { nombre: 'Seg-Social', sub: 'Inclusión y Seguridad', color: '#004899', border: '#004899' },
+  { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', border: '#CC0000' },
+  { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72' },
+  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E' },
+  { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B' },
+  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
@@ -213,13 +213,11 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
             {FUENTES.map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 20px', borderRadius: 12, border: '1px solid #E0DAD0', background: '#fff', transition: 'all 0.2s', opacity: 0.75 }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)' }}
-                onMouseLeave={e => { e.currentTarget.style.opacity = '0.75'; e.currentTarget.style.boxShadow = 'none' }}>
-                <img src={f.src} alt={f.alt} title={f.alt}
-                  style={{ height: 32, width: 'auto', maxWidth: 120, objectFit: 'contain' }}
-                  onError={e => { e.currentTarget.style.display='none'; e.currentTarget.insertAdjacentHTML('afterend', `<span style="font-size:11px;font-weight:700;color:#555">${f.alt}</span>`) }}
-                />
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '14px 18px', borderRadius: 12, border: `1px solid ${f.border}22`, background: '#fff', transition: 'all 0.2s', opacity: 0.7, minWidth: 110, cursor: 'default' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = f.color; e.currentTarget.style.boxShadow = `0 4px 16px ${f.color}22` }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; e.currentTarget.style.borderColor = `${f.border}22`; e.currentTarget.style.boxShadow = 'none' }}>
+                <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
+                <span style={{ fontSize: 9, color: '#999', marginTop: 4, textAlign: 'center', letterSpacing: '0.2px', maxWidth: 90, lineHeight: 1.3 }}>{f.sub}</span>
               </div>
             ))}
           </div>
@@ -230,7 +228,7 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Para gestorías y despachos</p>
-              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1 }}>
+              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
                 Multiplica tu cartera.<br />Sin trabajo extra.
               </h2>
               <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
