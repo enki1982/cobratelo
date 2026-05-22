@@ -249,7 +249,7 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
-            <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ background: '#161b27', border: '2px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', boxShadow: '0 2px 0 rgba(255,255,255,0.1), 0 4px 0 rgba(255,255,255,0.06), 0 6px 0 rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.4)' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2D6A4F', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
@@ -258,10 +258,10 @@ export default function Home() {
                 { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente' },
                 { nombre: 'Ruiz Pérez, C.', ayudas: 3, importe: '4.100€', estado: 'En proceso' },
               ].map((c, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? '1px solid #F0EAE0' : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111110' }}>{c.nombre}</div>
-                    <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f5' }}>{c.nombre}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(240,240,245,0.5)', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
                   </div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
                     background: c.estado === 'Tramitado' ? 'rgba(0,232,122,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
