@@ -64,12 +64,12 @@ const PASOS = [
     subtitulo: 'Selecciona todas las que apliquen',
     multi: true,
     opciones: [
-      { value: 'empleado',    label: 'Empleado/a por cuenta ajena', emoji: '👔' },
-      { value: 'autonomo',    label: 'Autónomo/a o freelance',      emoji: '💼' },
-      { value: 'desempleado', label: 'En paro / Buscando trabajo',  emoji: '🔍' },
-      { value: 'pensionista', label: 'Pensionista / Jubilado/a',    emoji: '🏖️' },
-      { value: 'estudiante',  label: 'Estudiante',                  emoji: '📚' },
-      { value: 'emprendedor', label: 'Quiero emprender / crear empresa', emoji: '🚀' },
+      { value: 'empleado',    label: 'Empleado/a por cuenta ajena', emoji: '' },
+      { value: 'autonomo',    label: 'Autónomo/a o freelance',      emoji: '' },
+      { value: 'desempleado', label: 'En paro / Buscando trabajo',  emoji: '' },
+      { value: 'pensionista', label: 'Pensionista / Jubilado/a',    emoji: '️' },
+      { value: 'estudiante',  label: 'Estudiante',                  emoji: '' },
+      { value: 'emprendedor', label: 'Quiero emprender / crear empresa', emoji: '' },
     ],
   },
   {
@@ -86,17 +86,17 @@ const PASOS = [
     subtitulo: 'Selecciona todas las que apliquen',
     multi: true,
     opciones: [
-      { value: 'soltero',           label: 'Soltero/a',                         emoji: '🙋' },
-      { value: 'casado',            label: 'Casado/a o pareja de hecho',        emoji: '💍' },
-      { value: 'divorciado',        label: 'Divorciado/a o separado/a',         emoji: '⚖️' },
-      { value: 'viudo',             label: 'Viudo/a',                           emoji: '🕊️' },
-      { value: 'hijos_menores3',    label: 'Hijos menores de 3 años',           emoji: '👶' },
-      { value: 'hijos_3_18',        label: 'Hijos entre 3 y 18 años',           emoji: '🧒' },
-      { value: 'familia_numerosa',  label: 'Familia numerosa (3+ hijos)',        emoji: '👨‍👩‍👧‍👦' },
-      { value: 'monoparental',      label: 'Familia monoparental',              emoji: '💪' },
-      { value: 'embarazada',        label: 'Embarazada o en proceso de adopción', emoji: '🤱' },
-      { value: 'dependiente_cargo', label: 'Persona mayor o dependiente a cargo', emoji: '🤝' },
-      { value: 'sin_cargas',        label: 'Sin cargas familiares',             emoji: '✌️' },
+      { value: 'soltero',           label: 'Soltero/a',                         emoji: '' },
+      { value: 'casado',            label: 'Casado/a o pareja de hecho',        emoji: '' },
+      { value: 'divorciado',        label: 'Divorciado/a o separado/a',         emoji: '️' },
+      { value: 'viudo',             label: 'Viudo/a',                           emoji: '️' },
+      { value: 'hijos_menores3',    label: 'Hijos menores de 3 años',           emoji: '' },
+      { value: 'hijos_3_18',        label: 'Hijos entre 3 y 18 años',           emoji: '' },
+      { value: 'familia_numerosa',  label: 'Familia numerosa (3+ hijos)',        emoji: '‍‍‍' },
+      { value: 'monoparental',      label: 'Familia monoparental',              emoji: '' },
+      { value: 'embarazada',        label: 'Embarazada o en proceso de adopción', emoji: '' },
+      { value: 'dependiente_cargo', label: 'Persona mayor o dependiente a cargo', emoji: '' },
+      { value: 'sin_cargas',        label: 'Sin cargas familiares',             emoji: '️' },
     ],
   },
   {
@@ -105,12 +105,12 @@ const PASOS = [
     subtitulo: 'Selecciona todas las que apliquen',
     multi: true,
     opciones: [
-      { value: 'alquiler',      label: 'Vivo de alquiler',                     emoji: '🏠' },
-      { value: 'propietario',   label: 'Tengo vivienda en propiedad',          emoji: '🏡' },
-      { value: 'hipoteca',      label: 'Tengo hipoteca',                       emoji: '🏦' },
-      { value: 'busco_vivienda',label: 'Busco vivienda o quiero comprar',      emoji: '🔑' },
-      { value: 'rehabilitacion',label: 'Quiero rehabilitar o reformar',        emoji: '🔨' },
-      { value: 'sin_vivienda',  label: 'Sin vivienda estable',                 emoji: '⚠️' },
+      { value: 'alquiler',      label: 'Vivo de alquiler',                     emoji: '' },
+      { value: 'propietario',   label: 'Tengo vivienda en propiedad',          emoji: '' },
+      { value: 'hipoteca',      label: 'Tengo hipoteca',                       emoji: '' },
+      { value: 'busco_vivienda',label: 'Busco vivienda o quiero comprar',      emoji: '' },
+      { value: 'rehabilitacion',label: 'Quiero rehabilitar o reformar',        emoji: '' },
+      { value: 'sin_vivienda',  label: 'Sin vivienda estable',                 emoji: '️' },
     ],
   },
   {
@@ -120,11 +120,11 @@ const PASOS = [
     multi: false,
     condicion: (perfil) => (perfil.vivienda || []).includes('alquiler'),
     opciones: [
-      { value: 'alquiler_menos300',  label: 'Menos de 300€/mes',        emoji: '💚' },
-      { value: 'alquiler_300_600',   label: 'Entre 300€ y 600€/mes',    emoji: '💛' },
-      { value: 'alquiler_600_900',   label: 'Entre 600€ y 900€/mes',    emoji: '🟠' },
-      { value: 'alquiler_900_1200',  label: 'Entre 900€ y 1.200€/mes',  emoji: '🔴' },
-      { value: 'alquiler_mas1200',   label: 'Más de 1.200€/mes',        emoji: '⛔' },
+      { value: 'alquiler_menos300',  label: 'Menos de 300€/mes',        emoji: '' },
+      { value: 'alquiler_300_600',   label: 'Entre 300€ y 600€/mes',    emoji: '' },
+      { value: 'alquiler_600_900',   label: 'Entre 600€ y 900€/mes',    emoji: '' },
+      { value: 'alquiler_900_1200',  label: 'Entre 900€ y 1.200€/mes',  emoji: '' },
+      { value: 'alquiler_mas1200',   label: 'Más de 1.200€/mes',        emoji: '' },
     ],
   },
   {
@@ -134,9 +134,9 @@ const PASOS = [
     multi: false,
     condicion: (perfil) => (perfil.vivienda || []).includes('alquiler'),
     opciones: [
-      { value: 'alquiler_solo',      label: 'No, pago el alquiler yo solo/a',          emoji: '🙋' },
-      { value: 'alquiler_pareja',    label: 'Lo comparto con mi pareja o familia',      emoji: '👫' },
-      { value: 'alquiler_compis',    label: 'Piso compartido con compañeros/as',        emoji: '🏠' },
+      { value: 'alquiler_solo',      label: 'No, pago el alquiler yo solo/a',          emoji: '' },
+      { value: 'alquiler_pareja',    label: 'Lo comparto con mi pareja o familia',      emoji: '' },
+      { value: 'alquiler_compis',    label: 'Piso compartido con compañeros/as',        emoji: '' },
     ],
   },
   {
@@ -145,10 +145,10 @@ const PASOS = [
     subtitulo: 'Muchas ayudas tienen límite de renta',
     multi: false,
     opciones: [
-      { value: 'sin_ingresos', label: 'Sin ingresos o muy bajos (< 8.000€)',    emoji: '📉' },
-      { value: 'bajos',        label: 'Entre 8.000€ y 15.000€',                emoji: '💰' },
-      { value: 'medios',       label: 'Entre 15.000€ y 30.000€',               emoji: '💰💰' },
-      { value: 'altos',        label: 'Más de 30.000€',                        emoji: '💰💰💰' },
+      { value: 'sin_ingresos', label: 'Sin ingresos o muy bajos (< 8.000€)',    emoji: '' },
+      { value: 'bajos',        label: 'Entre 8.000€ y 15.000€',                emoji: '' },
+      { value: 'medios',       label: 'Entre 15.000€ y 30.000€',               emoji: '' },
+      { value: 'altos',        label: 'Más de 30.000€',                        emoji: '' },
     ],
   },
   {
@@ -157,11 +157,11 @@ const PASOS = [
     subtitulo: 'Selecciona todas las que apliquen',
     multi: true,
     opciones: [
-      { value: 'discapacidad',     label: 'Tengo certificado de discapacidad', emoji: '♿' },
-      { value: 'dependencia',      label: 'Tengo reconocida dependencia',      emoji: '🤲' },
-      { value: 'victima_violencia',label: 'Víctima de violencia de género',    emoji: '🛡️' },
-      { value: 'inmigrante',       label: 'Soy inmigrante o refugiado',        emoji: '🌍' },
-      { value: 'ninguna',          label: 'Ninguna de las anteriores',         emoji: '✅' },
+      { value: 'discapacidad',     label: 'Tengo certificado de discapacidad', emoji: '' },
+      { value: 'dependencia',      label: 'Tengo reconocida dependencia',      emoji: '' },
+      { value: 'victima_violencia',label: 'Víctima de violencia de género',    emoji: '️' },
+      { value: 'inmigrante',       label: 'Soy inmigrante o refugiado',        emoji: '' },
+      { value: 'ninguna',          label: 'Ninguna de las anteriores',         emoji: '' },
     ],
   },
   {
@@ -170,11 +170,11 @@ const PASOS = [
     subtitulo: 'Hay ayudas para compra, renovación y combustible',
     multi: true,
     opciones: [
-      { value: 'coche_gasolina',  label: 'Tengo coche de gasolina o diésel',       emoji: '🚗' },
-      { value: 'coche_electrico', label: 'Tengo o quiero coche eléctrico/híbrido', emoji: '⚡' },
-      { value: 'moto',            label: 'Tengo moto',                             emoji: '🏍️' },
-      { value: 'quiero_vehiculo', label: 'Quiero comprar un vehículo nuevo',        emoji: '🛒' },
-      { value: 'sin_vehiculo',    label: 'No tengo ni necesito vehículo',           emoji: '🚶' },
+      { value: 'coche_gasolina',  label: 'Tengo coche de gasolina o diésel',       emoji: '' },
+      { value: 'coche_electrico', label: 'Tengo o quiero coche eléctrico/híbrido', emoji: '' },
+      { value: 'moto',            label: 'Tengo moto',                             emoji: '️' },
+      { value: 'quiero_vehiculo', label: 'Quiero comprar un vehículo nuevo',        emoji: '' },
+      { value: 'sin_vehiculo',    label: 'No tengo ni necesito vehículo',           emoji: '' },
     ],
   },
   {
@@ -184,14 +184,14 @@ const PASOS = [
     multi: true,
     tipo: 'extras_filtrado',
     opciones: [
-      { value: 'mascotas',        label: 'Tengo mascotas (perro, gato...)',              emoji: '🐾', excluir_si: [] },
-      { value: 'energia',         label: 'Quiero mejorar la eficiencia energética',      emoji: '☀️', excluir_si: [] },
-      { value: 'salud_cronica',   label: 'Tengo enfermedad crónica o uso medicación',    emoji: '💊', excluir_si: [] },
-      { value: 'gafas_audifonos', label: 'Necesito gafas, audífonos o prótesis',         emoji: '👓', excluir_si: [] },
-      { value: 'estudios_hijos',  label: 'Tengo hijos en edad escolar o universitaria',  emoji: '🎓', excluir_si: [] },
-      { value: 'negocio_digital', label: 'Tengo negocio y quiero digitalizarlo',         emoji: '💻', excluir_si: ['desempleado'] },
-      { value: 'pyme',            label: 'Tengo empresa o pyme',                         emoji: '🏢', excluir_si: ['desempleado'] },
-      { value: 'ninguno',         label: 'Nada de lo anterior',                          emoji: '✅', excluir_si: [] },
+      { value: 'mascotas',        label: 'Tengo mascotas (perro, gato...)',              emoji: '', excluir_si: [] },
+      { value: 'energia',         label: 'Quiero mejorar la eficiencia energética',      emoji: '️', excluir_si: [] },
+      { value: 'salud_cronica',   label: 'Tengo enfermedad crónica o uso medicación',    emoji: '', excluir_si: [] },
+      { value: 'gafas_audifonos', label: 'Necesito gafas, audífonos o prótesis',         emoji: '', excluir_si: [] },
+      { value: 'estudios_hijos',  label: 'Tengo hijos en edad escolar o universitaria',  emoji: '', excluir_si: [] },
+      { value: 'negocio_digital', label: 'Tengo negocio y quiero digitalizarlo',         emoji: '', excluir_si: ['desempleado'] },
+      { value: 'pyme',            label: 'Tengo empresa o pyme',                         emoji: '', excluir_si: ['desempleado'] },
+      { value: 'ninguno',         label: 'Nada de lo anterior',                          emoji: '', excluir_si: [] },
     ],
   },
   {
@@ -208,8 +208,8 @@ const PASOS = [
     subtitulo: 'El empadronamiento determina qué ayudas municipales puedes solicitar',
     multi: false,
     opciones: [
-      { value: 'empadronado_si',  label: 'Sí, estoy empadronado/a aquí',          emoji: '✅' },
-      { value: 'empadronado_no',  label: 'No, estoy empadronado/a en otro lugar', emoji: '📍' },
+      { value: 'empadronado_si',  label: 'Sí, estoy empadronado/a aquí',          emoji: '' },
+      { value: 'empadronado_no',  label: 'No, estoy empadronado/a en otro lugar', emoji: '' },
     ],
   },
   {
@@ -227,9 +227,9 @@ const PASOS = [
     subtitulo: 'Podemos enviarles tu informe para que te ayuden a tramitar',
     multi: false,
     opciones: [
-      { value: 'si_gestoria',     label: 'Sí, tengo gestoría',                      emoji: '📋' },
-      { value: 'no_gestoria',     label: 'No tengo gestoría',                       emoji: '🙋' },
-      { value: 'quiero_gestoria', label: 'No tengo pero me interesaría una',        emoji: '🤝' },
+      { value: 'si_gestoria',     label: 'Sí, tengo gestoría',                      emoji: '' },
+      { value: 'no_gestoria',     label: 'No tengo gestoría',                       emoji: '' },
+      { value: 'quiero_gestoria', label: 'No tengo pero me interesaría una',        emoji: '' },
     ],
   },
 ]
@@ -325,7 +325,7 @@ function PuebloInput({ value, onChange, onSelect }) {
         </div>
       )}
       {seleccionado && (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] text-xl font-bold">✓</div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] text-xl font-bold"></div>
       )}
       {sugerencias.length > 0 && !seleccionado && (
         <div className="absolute z-20 w-full mt-2 bg-[#0f0f1a] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
@@ -522,7 +522,7 @@ export default function Perfil() {
               {fechaNac && (
                 <p className="text-sm text-[#1A7A4A] mt-2 font-medium">
                   {calcularEdad(fechaNac)} años
-                  {calcularEdad(fechaNac) >= 65 ? ' 🌟' : calcularEdad(fechaNac) < 30 ? ' 🌱' : ''}
+                  {calcularEdad(fechaNac) >= 65 ? ' ' : calcularEdad(fechaNac) < 30 ? ' ' : ''}
                 </p>
               )}
             </div>
@@ -562,7 +562,7 @@ export default function Perfil() {
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
-                    {selected && <span className="text-[#1A7A4A] font-bold text-lg">✓</span>}
+                    {selected && <span className="text-[#1A7A4A] font-bold text-lg"></span>}
                   </button>
                 )
               })}
@@ -583,7 +583,7 @@ export default function Perfil() {
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
-                    {selected && <span className="text-[#1A7A4A] font-bold text-lg">✓</span>}
+                    {selected && <span className="text-[#1A7A4A] font-bold text-lg"></span>}
                   </button>
                 )
               })}

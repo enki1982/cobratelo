@@ -643,7 +643,7 @@ export default function Resultados() {
                 <p className="text-xs text-[rgba(240,240,245,0.5)] mt-0.5">{perfil.email_gestoria}</p>
               </div>
               {emailEnviado ? (
-                <span className="text-[#1A7A4A] font-semibold text-sm">✓ Enviado</span>
+                <span className="text-[#1A7A4A] font-semibold text-sm"> Enviado</span>
               ) : (
                 <button onClick={enviarAGestoria} disabled={enviando}
                   className="bg-[#1A7A4A] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#145e39] transition-colors disabled:opacity-60">
@@ -663,7 +663,7 @@ export default function Resultados() {
                   {isBlurred && (
                     <div className="absolute inset-0 backdrop-blur-sm bg-[#0f0f1a]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
-                      <span className="text-2xl mb-2">🔒</span>
+                      <span className="text-2xl mb-2"></span>
                       <p className="font-semibold text-[#f0f0f5] text-sm text-center px-4">
                         {ayudas.length - FREE_LIMIT} ayudas más
                       </p>
@@ -725,7 +725,7 @@ export default function Resultados() {
 
           {ayudas.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-4xl mb-4">🔍</p>
+              <p className="text-4xl mb-4"></p>
               <p className="font-semibold text-[#f0f0f5]">No hemos encontrado ayudas específicas para tu perfil</p>
               <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Prueba a revisar tu perfil o ampliar las categorías.</p>
               <Link href="/perfil" className="inline-block mt-4 bg-[#0f0f1a] text-[#f0f0f5] px-6 py-3 rounded-full font-semibold text-sm">
@@ -746,7 +746,7 @@ export default function Resultados() {
           <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
             <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
               <h3 className="font-semibold text-[#f0f0f5]">Enviar al gestor</h3>
-              <button onClick={() => setModalGestor(false)} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl">✕</button>
+              <button onClick={() => setModalGestor(false)} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
             </div>
             <div className="p-6 space-y-4">
               <div>

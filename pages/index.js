@@ -19,16 +19,16 @@ const C = {
 }
 
 const STEPS = [
-  { n: '01', icon: '🎯', title: 'Cuéntanos tu situación', desc: 'Solo checkboxes. Sin formularios. 2 minutos para completar tu perfil.' },
-  { n: '02', icon: '🔍', title: 'Analizamos tu perfil', desc: 'Cruzamos tu situación con todas las ayudas vigentes en España.' },
-  { n: '03', icon: '💰', title: 'Cobra lo tuyo', desc: 'Lista con importes, requisitos y enlace oficial de cada ayuda.' },
+  { n: '01', title: 'Cuéntanos tu situación', desc: 'Solo checkboxes. Sin formularios. 2 minutos para completar tu perfil.' },
+  { n: '02', title: 'Analizamos tu perfil', desc: 'Cruzamos tu situación con todas las ayudas vigentes en España.' },
+  { n: '03', title: 'Cobra lo tuyo', desc: 'Lista con importes, requisitos y enlace oficial de cada ayuda.' },
 ]
 
 const AYUDAS_DEMO = [
-  { icon: '🏠', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', bg: 'rgba(0,232,122,0.12)' },
-  { icon: '💼', nombre: 'Cupons ACCIÓ Digitalització', org: 'Generalitat de Catalunya', importe: '3.000€', bg: 'rgba(37,99,235,0.12)' },
-  { icon: '⚡', nombre: 'Kit Digital — Presencia web', org: 'Red.es · Gobierno de España', importe: '2.000€', bg: 'rgba(124,58,237,0.12)' },
-  { icon: '📋', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
+  { icon: 'V', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', bg: 'rgba(0,232,122,0.12)' },
+  { icon: 'D', nombre: 'Cupons ACCIÓ Digitalització', org: 'Generalitat de Catalunya', importe: '3.000€', bg: 'rgba(37,99,235,0.12)' },
+  { icon: 'K', nombre: 'Kit Digital — Presencia web', org: 'Red.es · Gobierno de España', importe: '2.000€', bg: 'rgba(124,58,237,0.12)' },
+  { icon: 'P', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
 ]
 
 const FUENTES = [
@@ -115,7 +115,6 @@ export default function Home() {
           <div>
             {/* Badge */}
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: `1px solid rgba(0,232,122,0.25)`, color: C.green, fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 100, marginBottom: 24 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block' }} />
               {totalAyudas}+ convocatorias activas en España
             </div>
 
@@ -196,8 +195,7 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
               <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24, transition: 'border-color 0.2s' }}>
-                <div style={{ fontSize: 26, marginBottom: 14 }}>{s.icon}</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 6 }}>{s.n}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
                 <div className="font-display font-bold" style={{ fontSize: 15, color: C.text, marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
                 <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
@@ -219,6 +217,56 @@ export default function Home() {
                 <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>{f.sub}</div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* GESTORÍAS */}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: `1px solid ${C.border}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Para gestorías y despachos</p>
+              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 16, lineHeight: 1.1 }}>
+                Multiplica tu cartera.<br />Sin trabajo extra.
+              </h2>
+              <p style={{ color: C.muted, fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+                Identifica automáticamente las ayudas de cada cliente. Genera el informe en segundos. Tú firmas y tramitas.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
+                {['Hasta 10 clientes en el plan Básico (49€/mes)','Clientes ilimitados en el plan Pro (99€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: C.muted }}>
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}>✓</div>
+                    {f}
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <Link href="/precios?tab=gestoria" style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
+                  Probar 7 días gratis →
+                </Link>
+                <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
+              </div>
+            </div>
+            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.5 }} />
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: C.muted, marginBottom: 20 }}>Panel de gestión</p>
+              {[
+                { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente' },
+                { nombre: 'López Sánchez, M.', ayudas: 5, importe: '7.200€', estado: 'Tramitado' },
+                { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente' },
+                { nombre: 'Ruiz Pérez, C.', ayudas: 3, importe: '4.100€', estado: 'En proceso' },
+              ].map((c, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? `1px solid ${C.border}` : 'none' }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{c.nombre}</div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
+                    background: c.estado === 'Tramitado' ? 'rgba(0,232,122,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
+                    color: c.estado === 'Tramitado' ? C.green : c.estado === 'En proceso' ? '#60a5fa' : '#f59e0b'
+                  }}>{c.estado}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

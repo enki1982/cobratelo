@@ -22,43 +22,43 @@ const LABELS = {
 // Opciones para edición inline — igual que perfil.js
 const OPCIONES_SECCION = {
   situacion: { multi: true, opts: [
-    {v:'empleado',l:'Empleado/a',e:'👔'},{v:'autonomo',l:'Autónomo/a',e:'💼'},{v:'desempleado',l:'En paro',e:'🔍'},
-    {v:'pensionista',l:'Pensionista',e:'🏖️'},{v:'estudiante',l:'Estudiante',e:'📚'},{v:'emprendedor',l:'Quiero emprender',e:'🚀'},
+    {v:'empleado',l:'Empleado/a',e:''},{v:'autonomo',l:'Autónomo/a',e:''},{v:'desempleado',l:'En paro',e:''},
+    {v:'pensionista',l:'Pensionista',e:'️'},{v:'estudiante',l:'Estudiante',e:''},{v:'emprendedor',l:'Quiero emprender',e:''},
   ]},
   familia: { multi: true, opts: [
-    {v:'soltero',l:'Soltero/a',e:'🙋'},{v:'casado',l:'Casado/a o pareja',e:'💍'},{v:'divorciado',l:'Divorciado/a',e:'⚖️'},{v:'viudo',l:'Viudo/a',e:'🕊️'},
-    {v:'hijos_menores3',l:'Hijos < 3 años',e:'👶'},{v:'hijos_3_18',l:'Hijos 3-18 años',e:'🧒'},{v:'familia_numerosa',l:'Familia numerosa',e:'👨‍👩‍👧‍👦'},
-    {v:'monoparental',l:'Monoparental',e:'💪'},{v:'embarazada',l:'Embarazada/adopción',e:'🤱'},{v:'dependiente_cargo',l:'Dependiente a cargo',e:'🤝'},{v:'sin_cargas',l:'Sin cargas',e:'✌️'},
+    {v:'soltero',l:'Soltero/a',e:''},{v:'casado',l:'Casado/a o pareja',e:''},{v:'divorciado',l:'Divorciado/a',e:'️'},{v:'viudo',l:'Viudo/a',e:'️'},
+    {v:'hijos_menores3',l:'Hijos < 3 años',e:''},{v:'hijos_3_18',l:'Hijos 3-18 años',e:''},{v:'familia_numerosa',l:'Familia numerosa',e:'‍‍‍'},
+    {v:'monoparental',l:'Monoparental',e:''},{v:'embarazada',l:'Embarazada/adopción',e:''},{v:'dependiente_cargo',l:'Dependiente a cargo',e:''},{v:'sin_cargas',l:'Sin cargas',e:'️'},
   ]},
   vivienda: { multi: true, opts: [
-    {v:'alquiler',l:'Vivo de alquiler',e:'🏠'},{v:'propietario',l:'Propiedad',e:'🏡'},{v:'hipoteca',l:'Hipoteca',e:'🏦'},
-    {v:'busco_vivienda',l:'Buscando vivienda',e:'🔑'},{v:'rehabilitacion',l:'Quiero reformar',e:'🔨'},{v:'sin_vivienda',l:'Sin vivienda',e:'⚠️'},
+    {v:'alquiler',l:'Vivo de alquiler',e:''},{v:'propietario',l:'Propiedad',e:''},{v:'hipoteca',l:'Hipoteca',e:''},
+    {v:'busco_vivienda',l:'Buscando vivienda',e:''},{v:'rehabilitacion',l:'Quiero reformar',e:''},{v:'sin_vivienda',l:'Sin vivienda',e:'️'},
   ]},
   alquiler_detalle: { multi: false, condicion: p => (p.vivienda||[]).includes('alquiler'), opts: [
-    {v:'alquiler_menos300',l:'< 300€/mes',e:'💚'},{v:'alquiler_300_600',l:'300–600€/mes',e:'💛'},
-    {v:'alquiler_600_900',l:'600–900€/mes',e:'🟠'},{v:'alquiler_900_1200',l:'900–1.200€/mes',e:'🔴'},{v:'alquiler_mas1200',l:'> 1.200€/mes',e:'⛔'},
+    {v:'alquiler_menos300',l:'< 300€/mes',e:''},{v:'alquiler_300_600',l:'300–600€/mes',e:''},
+    {v:'alquiler_600_900',l:'600–900€/mes',e:''},{v:'alquiler_900_1200',l:'900–1.200€/mes',e:''},{v:'alquiler_mas1200',l:'> 1.200€/mes',e:''},
   ]},
   alquiler_compartido: { multi: false, condicion: p => (p.vivienda||[]).includes('alquiler'), opts: [
-    {v:'alquiler_solo',l:'Solo/a',e:'🙋'},{v:'alquiler_pareja',l:'Con pareja/familia',e:'👫'},{v:'alquiler_compis',l:'Piso compartido',e:'🏠'},
+    {v:'alquiler_solo',l:'Solo/a',e:''},{v:'alquiler_pareja',l:'Con pareja/familia',e:''},{v:'alquiler_compis',l:'Piso compartido',e:''},
   ]},
   ingresos: { multi: false, opts: [
-    {v:'sin_ingresos',l:'< 8.000€/año',e:'📉'},{v:'bajos',l:'8.000–15.000€',e:'💰'},{v:'medios',l:'15.000–30.000€',e:'💰💰'},{v:'altos',l:'> 30.000€',e:'💰💰💰'},
+    {v:'sin_ingresos',l:'< 8.000€/año',e:''},{v:'bajos',l:'8.000–15.000€',e:''},{v:'medios',l:'15.000–30.000€',e:''},{v:'altos',l:'> 30.000€',e:''},
   ]},
   especial: { multi: true, opts: [
-    {v:'discapacidad',l:'Discapacidad',e:'♿'},{v:'dependencia',l:'Dependencia',e:'🤲'},{v:'victima_violencia',l:'Víctima violencia',e:'🛡️'},{v:'inmigrante',l:'Inmigrante/refugiado',e:'🌍'},{v:'ninguna',l:'Ninguna',e:'✅'},
+    {v:'discapacidad',l:'Discapacidad',e:''},{v:'dependencia',l:'Dependencia',e:''},{v:'victima_violencia',l:'Víctima violencia',e:'️'},{v:'inmigrante',l:'Inmigrante/refugiado',e:''},{v:'ninguna',l:'Ninguna',e:''},
   ]},
   vehiculo: { multi: true, opts: [
-    {v:'coche_gasolina',l:'Coche gasolina/diésel',e:'🚗'},{v:'coche_electrico',l:'Coche eléctrico/híbrido',e:'⚡'},{v:'moto',l:'Moto',e:'🏍️'},{v:'quiero_vehiculo',l:'Quiero vehículo',e:'🛒'},{v:'sin_vehiculo',l:'No tengo',e:'🚶'},
+    {v:'coche_gasolina',l:'Coche gasolina/diésel',e:''},{v:'coche_electrico',l:'Coche eléctrico/híbrido',e:''},{v:'moto',l:'Moto',e:'️'},{v:'quiero_vehiculo',l:'Quiero vehículo',e:''},{v:'sin_vehiculo',l:'No tengo',e:''},
   ]},
   extras: { multi: true, opts: [
-    {v:'mascotas',l:'Mascotas',e:'🐾'},{v:'energia',l:'Eficiencia energética',e:'☀️'},{v:'salud_cronica',l:'Enfermedad crónica',e:'💊'},
-    {v:'gafas_audifonos',l:'Gafas/audífonos',e:'👓'},{v:'estudios_hijos',l:'Hijos en edad escolar',e:'🎓'},{v:'negocio_digital',l:'Digitalizar negocio',e:'💻'},{v:'pyme',l:'Empresa/pyme',e:'🏢'},{v:'ninguno',l:'Ninguno',e:'✅'},
+    {v:'mascotas',l:'Mascotas',e:''},{v:'energia',l:'Eficiencia energética',e:'️'},{v:'salud_cronica',l:'Enfermedad crónica',e:''},
+    {v:'gafas_audifonos',l:'Gafas/audífonos',e:''},{v:'estudios_hijos',l:'Hijos en edad escolar',e:''},{v:'negocio_digital',l:'Digitalizar negocio',e:''},{v:'pyme',l:'Empresa/pyme',e:''},{v:'ninguno',l:'Ninguno',e:''},
   ]},
   empadronamiento: { multi: false, opts: [
-    {v:'empadronado_si',l:'Sí, aquí',e:'✅'},{v:'empadronado_no',l:'No, en otro lugar',e:'📍'},
+    {v:'empadronado_si',l:'Sí, aquí',e:''},{v:'empadronado_no',l:'No, en otro lugar',e:''},
   ]},
   gestoria: { multi: false, opts: [
-    {v:'si_gestoria',l:'Sí tengo gestoría',e:'📋'},{v:'no_gestoria',l:'No tengo',e:'🙋'},{v:'quiero_gestoria',l:'Me interesaría una',e:'🤝'},
+    {v:'si_gestoria',l:'Sí tengo gestoría',e:''},{v:'no_gestoria',l:'No tengo',e:''},{v:'quiero_gestoria',l:'Me interesaría una',e:''},
   ]},
 }
 
@@ -133,7 +133,7 @@ function ModalFecha({ valor, onGuardar, onCerrar }) {
       <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
         <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
           <h3 className="font-semibold text-[#f0f0f5]">Fecha de nacimiento</h3>
-          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl">✕</button>
+          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
         </div>
         <div className="p-6">
           <input
@@ -214,7 +214,7 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
       <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
         <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
           <h3 className="font-semibold text-[#f0f0f5]">{titulo}</h3>
-          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl">✕</button>
+          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
         </div>
         <div className="p-6">
           <div className="relative">
@@ -227,7 +227,7 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
                 ${seleccionado ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:border-[#1A7A4A]'}`}
             />
             {buscando && <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />}
-            {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] font-bold">✓</div>}
+            {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] font-bold"></div>}
             {sugerencias.length > 0 && !seleccionado && (
               <div className="absolute z-20 w-full mt-2 bg-[#0f0f1a] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
                 {sugerencias.map((mun, i) => (
@@ -282,7 +282,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
       <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md max-h-[80vh] overflow-y-auto">
         <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between sticky top-0 bg-[#0f0f1a] rounded-t-3xl">
           <h3 className="font-semibold text-[#f0f0f5]">{seccion.label}</h3>
-          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl">✕</button>
+          <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
         </div>
         <div className="p-5 grid grid-cols-1 gap-2">
           {config.opts.map(op => {
@@ -293,7 +293,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
                   ${active ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] hover:border-[#C0BAB0]'}`}>
                 <span className="text-xl">{op.e}</span>
                 <span className="font-medium text-sm flex-1">{op.l}</span>
-                {active && <span className="text-[#1A7A4A] font-bold">✓</span>}
+                {active && <span className="text-[#1A7A4A] font-bold"></span>}
               </button>
             )
           })}
@@ -385,7 +385,7 @@ export default function Cuenta() {
     if (nuevaPassword.length < 6) { setPasswordMsg('Mínimo 6 caracteres.'); return }
     const { error } = await supabase.auth.updateUser({ password: nuevaPassword })
     if (error) setPasswordMsg('Error: ' + error.message)
-    else { setPasswordMsg('Contraseña actualizada. ✓'); setNuevaPassword(''); setCambiandoPassword(false) }
+    else { setPasswordMsg('Contraseña actualizada. '); setNuevaPassword(''); setCambiandoPassword(false) }
   }
 
   const handleEliminarCuenta = async () => {
@@ -494,7 +494,7 @@ export default function Cuenta() {
                             <ValorPerfil id={sec.id} valor={valor} tipo={sec.tipo} />
                           </div>
                           {esEditable && (
-                            <span className="text-[#C0BAB0] text-sm ml-3 shrink-0">✏️</span>
+                            <span className="text-[#C0BAB0] text-sm ml-3 shrink-0">️</span>
                           )}
                         </button>
                       )
@@ -550,9 +550,9 @@ export default function Cuenta() {
                 </div>
                 <div className="px-6 py-2">
                   {[
-                    {icon:'💳',label:'Método de pago',sub:plan==='free'?'Sin método guardado':'Tarjeta guardada',btn:plan==='free'?'Añadir':'Cambiar'},
-                    {icon:'🧾',label:'Historial de facturas',sub:'Descarga tus facturas en PDF',btn:'Ver →'},
-                    {icon:'📧',label:'Email de facturación',sub:session?.user?.email,btn:'Editar'},
+                    {icon:'',label:'Método de pago',sub:plan==='free'?'Sin método guardado':'Tarjeta guardada',btn:plan==='free'?'Añadir':'Cambiar'},
+                    {icon:'',label:'Historial de facturas',sub:'Descarga tus facturas en PDF',btn:'Ver →'},
+                    {icon:'',label:'Email de facturación',sub:session?.user?.email,btn:'Editar'},
                   ].map((row,i) => (
                     <div key={i} className={`flex items-center justify-between py-4 ${i>0?'border-t border-[rgba(255,255,255,0.06)]':''}`}>
                       <div className="flex items-center gap-3">

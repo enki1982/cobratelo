@@ -62,7 +62,7 @@ function PlanCard({ plan }) {
       <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {plan.features.map((f, i) => (
           <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: C.muted }}>
-            <span style={{ color: C.green, marginTop: 1, flexShrink: 0 }}>✓</span>{f}
+            <span style={{ color: C.green, marginTop: 1, flexShrink: 0 }}></span>{f}
           </li>
         ))}
       </ul>
