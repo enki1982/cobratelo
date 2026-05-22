@@ -568,7 +568,7 @@ export default function Resultados() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
         <div className="text-center px-6">
           <div className="w-12 h-12 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="font-display text-xl text-[#f0f0f5]">Analizando tu perfil...</p>
@@ -598,7 +598,7 @@ export default function Resultados() {
         </nav>
 
         <div className="max-w-3xl mx-auto px-6 pb-20">
-          <div className="bg-[#0f0f1a] rounded-3xl p-8 mb-6">
+          <div className="bg-[#161b27] rounded-3xl p-8 mb-6">
             <p className="text-[rgba(240,240,245,0.5)] text-sm mb-2">Ayudas que encajan con tu perfil</p>
             <div className="flex items-end gap-4 mb-4">
               <span className="font-display text-5xl font-bold text-[#22C55E]">{ayudas.length}</span>
@@ -659,9 +659,9 @@ export default function Resultados() {
               const isBlurred = i >= limit
               return (
                 <div key={ayuda.id}
-                  className={`ayuda-card bg-[#0f0f1a] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
+                  className={`ayuda-card bg-[#161b27] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
                   {isBlurred && (
-                    <div className="absolute inset-0 backdrop-blur-sm bg-[#0f0f1a]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
+                    <div className="absolute inset-0 backdrop-blur-sm bg-[#161b27]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
                       <span className="text-2xl mb-2"></span>
                       <p className="font-semibold text-[#f0f0f5] text-sm text-center px-4">
@@ -716,7 +716,7 @@ export default function Resultados() {
                 Accede a todas las ayudas, alertas semanales y envío directo a tu gestoría.
               </p>
               <a href={`/login?redirect=/precios&perfil=${encodeURIComponent(JSON.stringify(perfil))}`}
-                className="bg-[#0f0f1a] text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
+                className="bg-[#161b27] text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
                 Guardar y desbloquear →
               </a>
               <p className="text-[rgba(240,240,245,0.5)] text-xs mt-3">Cancela cuando quieras</p>
@@ -728,7 +728,7 @@ export default function Resultados() {
               <p className="text-4xl mb-4"></p>
               <p className="font-semibold text-[#f0f0f5]">No hemos encontrado ayudas específicas para tu perfil</p>
               <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Prueba a revisar tu perfil o ampliar las categorías.</p>
-              <Link href="/perfil" className="inline-block mt-4 bg-[#0f0f1a] text-[#f0f0f5] px-6 py-3 rounded-full font-semibold text-sm">
+              <Link href="/perfil" className="inline-block mt-4 bg-[#161b27] text-[#f0f0f5] px-6 py-3 rounded-full font-semibold text-sm">
                 Revisar mi perfil
               </Link>
             </div>
@@ -743,7 +743,7 @@ export default function Resultados() {
       {/* Modal enviar al gestor */}
       {modalGestor && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-          <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
+          <div className="bg-[#161b27] rounded-3xl w-full max-w-md">
             <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
               <h3 className="font-semibold text-[#f0f0f5]">Enviar al gestor</h3>
               <button onClick={() => setModalGestor(false)} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
@@ -771,7 +771,7 @@ export default function Resultados() {
                 Cancelar
               </button>
               <button onClick={enviarAlGestor} disabled={!emailGestor || enviandoGestor}
-                className="flex-1 py-3 rounded-full bg-[#0f0f1a] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
+                className="flex-1 py-3 rounded-full bg-[#161b27] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
                 {enviandoGestor ? 'Enviando...' : 'Enviar →'}
               </button>
             </div>

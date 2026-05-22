@@ -94,7 +94,7 @@ export default function Home() {
       }}>
 
         {/* NAV */}
-        <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
+        <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
             <span className="font-display font-bold text-xl" style={{ letterSpacing: '-0.5px', color: C.text }}>
               cóbratelo<span style={{ color: C.green }}>.es</span>
@@ -151,7 +151,7 @@ export default function Home() {
 
           {/* Dashboard */}
           <div style={{ position: 'relative' }} className="hidden md:block">
-            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Tus ayudas</span>
@@ -170,13 +170,13 @@ export default function Home() {
             </div>
 
             {/* Float top-right */}
-            <div style={{ position: 'absolute', top: -20, right: -20, background: 'rgba(15,15,26,0.95)', border: `1px solid ${C.border}`, borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <div style={{ position: 'absolute', top: -20, right: -20, background: 'rgba(22,27,39,0.95)', border: `1px solid ${C.border}`, borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
               <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>ayudas para ti</div>
             </div>
 
             {/* Float bottom-left */}
-            <div style={{ position: 'absolute', bottom: -16, left: -16, background: 'rgba(15,15,26,0.95)', border: `1px solid ${C.border}`, borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <div style={{ position: 'absolute', bottom: -16, left: -16, background: 'rgba(22,27,39,0.95)', border: `1px solid ${C.border}`, borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>✓</div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
@@ -246,7 +246,7 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
-            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.5 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: C.muted, marginBottom: 20 }}>Panel de gestión</p>
               {[

@@ -130,7 +130,7 @@ function ModalFecha({ valor, onGuardar, onCerrar }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
+      <div className="bg-[#161b27] rounded-3xl w-full max-w-md">
         <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
           <h3 className="font-semibold text-[#f0f0f5]">Fecha de nacimiento</h3>
           <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
@@ -142,7 +142,7 @@ function ModalFecha({ valor, onGuardar, onCerrar }) {
             onChange={e => setFecha(e.target.value)}
             max={hoy.toISOString().split('T')[0]}
             min={minDate.toISOString().split('T')[0]}
-            className="w-full px-4 py-3.5 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] text-lg transition-colors"
+            className="w-full px-4 py-3.5 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] text-lg transition-colors"
           />
           {fecha && edad !== null && edad >= 0 && (
             <p className="text-sm text-[#1A7A4A] mt-2 font-medium">{edad} años</p>
@@ -211,7 +211,7 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md">
+      <div className="bg-[#161b27] rounded-3xl w-full max-w-md">
         <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
           <h3 className="font-semibold text-[#f0f0f5]">{titulo}</h3>
           <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
@@ -224,15 +224,15 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
               onChange={handleChange}
               placeholder="Escribe tu pueblo o ciudad..."
               className={`w-full px-4 py-3.5 rounded-2xl border-2 text-[#f0f0f5] font-medium focus:outline-none transition-colors
-                ${seleccionado ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:border-[#1A7A4A]'}`}
+                ${seleccionado ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:border-[#1A7A4A]'}`}
             />
             {buscando && <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />}
             {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] font-bold"></div>}
             {sugerencias.length > 0 && !seleccionado && (
-              <div className="absolute z-20 w-full mt-2 bg-[#0f0f1a] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
+              <div className="absolute z-20 w-full mt-2 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
                 {sugerencias.map((mun, i) => (
                   <button key={i} onClick={() => handleSelect(mun)}
-                    className="w-full text-left px-4 py-3 hover:bg-[#09090f] border-b border-[rgba(255,255,255,0.06)] last:border-0">
+                    className="w-full text-left px-4 py-3 hover:bg-[#0d1117] border-b border-[rgba(255,255,255,0.06)] last:border-0">
                     <span className="font-semibold text-[#f0f0f5]">{mun.nombre}</span>
                     <span className="text-sm text-[rgba(240,240,245,0.5)] ml-2">{mun.provincia}</span>
                   </button>
@@ -279,8 +279,8 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-[#0f0f1a] rounded-3xl w-full max-w-md max-h-[80vh] overflow-y-auto">
-        <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between sticky top-0 bg-[#0f0f1a] rounded-t-3xl">
+      <div className="bg-[#161b27] rounded-3xl w-full max-w-md max-h-[80vh] overflow-y-auto">
+        <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between sticky top-0 bg-[#161b27] rounded-t-3xl">
           <h3 className="font-semibold text-[#f0f0f5]">{seccion.label}</h3>
           <button onClick={onCerrar} className="text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] text-xl"></button>
         </div>
@@ -290,7 +290,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
             return (
               <button key={op.v} onClick={() => toggle(op.v)}
                 className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left transition-all
-                  ${active ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] hover:border-[#C0BAB0]'}`}>
+                  ${active ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] hover:border-[#C0BAB0]'}`}>
                 <span className="text-xl">{op.e}</span>
                 <span className="font-medium text-sm flex-1">{op.l}</span>
                 {active && <span className="text-[#1A7A4A] font-bold"></span>}
@@ -298,7 +298,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
             )
           })}
         </div>
-        <div className="px-5 pb-5 flex gap-3 sticky bottom-0 bg-[#0f0f1a] rounded-b-3xl pt-2 border-t border-[rgba(255,255,255,0.06)]">
+        <div className="px-5 pb-5 flex gap-3 sticky bottom-0 bg-[#161b27] rounded-b-3xl pt-2 border-t border-[rgba(255,255,255,0.06)]">
           <button onClick={onCerrar}
             className="flex-1 py-3 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] text-sm font-medium">
             Cancelar
@@ -410,7 +410,7 @@ export default function Cuenta() {
   const seccionEditando = SECCIONES_PERFIL.find(s => s.id === editando)
 
   if (loading) return (
-    <div className="min-h-screen bg-[#09090f] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />
     </div>
   )
@@ -430,7 +430,7 @@ export default function Cuenta() {
           </h1>
           <p className="text-[rgba(240,240,245,0.5)] mb-6">{session?.user?.email}</p>
 
-          <div className="flex gap-1 bg-[#0f0f1a] border border-[rgba(255,255,255,0.08)] rounded-full p-1 mb-8 w-fit">
+          <div className="flex gap-1 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-full p-1 mb-8 w-fit">
             {[{id:'perfil',label:'Mi perfil'},{id:'pagos',label:'Suscripción'},{id:'cuenta',label:'Cuenta'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#f0f0f5] text-white' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
@@ -472,7 +472,7 @@ export default function Cuenta() {
                     <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
                   <p className="text-xs text-[rgba(240,240,245,0.5)] mb-3 uppercase tracking-wide font-medium">Toca cualquier campo para editarlo</p>
-                  <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
+                  <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
                     {SECCIONES_PERFIL.filter(s => !s.condicion || s.condicion(perfilData)).map((sec, i, arr) => {
                       const valor = perfilData[sec.id]
                       const tieneOpciones = !!OPCIONES_SECCION[sec.id]
@@ -488,7 +488,7 @@ export default function Cuenta() {
                           }}
                           className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors
                             ${i > 0 ? 'border-t border-[rgba(255,255,255,0.06)]' : ''}
-                            ${esEditable ? 'hover:bg-[#09090f] cursor-pointer' : 'cursor-default'}`}>
+                            ${esEditable ? 'hover:bg-[#0d1117] cursor-pointer' : 'cursor-default'}`}>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs text-[rgba(240,240,245,0.5)] mb-0.5">{sec.label}</p>
                             <ValorPerfil id={sec.id} valor={valor} tipo={sec.tipo} />
@@ -503,7 +503,7 @@ export default function Cuenta() {
                   <p className="text-xs text-[#B0AAA0] mt-3">Los cambios se guardan al instante.</p>
                 </>
               ) : (
-                <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] p-8 text-center">
+                <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] p-8 text-center">
                   <p className="text-[rgba(240,240,245,0.5)] mb-4">Aún no has completado tu perfil.</p>
                   <Link href="/perfil" className="inline-block bg-[#E8540A] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#d14a08] transition-colors">
                     Completar perfil →
@@ -516,7 +516,7 @@ export default function Cuenta() {
           {/* Tab: Suscripción */}
           {tab === 'pagos' && (
             <div className="space-y-4">
-              <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
+              <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
                 <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)]">
                   <div className="flex items-center justify-between">
                     <div>
@@ -543,7 +543,7 @@ export default function Cuenta() {
                 </div>
               </div>
 
-              <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
+              <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
                 <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)]">
                   <p className="text-xs text-[rgba(240,240,245,0.5)] uppercase tracking-wide font-medium mb-1">Facturación</p>
                   <p className="font-semibold text-[#f0f0f5]">Métodos de pago y facturas</p>
@@ -568,7 +568,7 @@ export default function Cuenta() {
                 </div>
               </div>
 
-              <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
+              <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
                 <h2 className="font-semibold text-[#f0f0f5] mb-1">¿Eres gestoría?</h2>
                 <p className="text-sm text-[rgba(240,240,245,0.5)] mb-4">Planes profesionales para gestionar ayudas de varios clientes.</p>
                 <Link href="/precios" className="inline-block bg-[#f0f0f5] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">Ver planes gestoría →</Link>
@@ -579,7 +579,7 @@ export default function Cuenta() {
           {/* Tab: Cuenta */}
           {tab === 'cuenta' && (
             <div className="space-y-4">
-              <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
+              <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
                 <h2 className="font-semibold text-[#f0f0f5] mb-4">Datos de acceso</h2>
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center text-sm">
@@ -596,7 +596,7 @@ export default function Cuenta() {
                 ) : (
                   <form onSubmit={handleCambiarPassword} className="mt-4 space-y-3">
                     <input type="password" value={nuevaPassword} onChange={e => setNuevaPassword(e.target.value)} placeholder="Nueva contraseña (mín. 6 caracteres)"
-                      className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#0f0f1a] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
+                      className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
                     {passwordMsg && <p className={`text-sm ${passwordMsg.includes('Error')?'text-red-600':'text-[#1A7A4A]'}`}>{passwordMsg}</p>}
                     <div className="flex gap-2">
                       <button type="submit" className="bg-[#f0f0f5] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">Guardar</button>
@@ -606,7 +606,7 @@ export default function Cuenta() {
                 )}
               </div>
 
-              <div className="bg-[#0f0f1a] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
+              <div className="bg-[#161b27] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
                 <h2 className="font-semibold text-[#f0f0f5] mb-3">Eliminar cuenta</h2>
                 <p className="text-sm text-[rgba(240,240,245,0.5)] mb-4">Se borrarán todos tus datos permanentemente.</p>
                 {!confirmEliminar ? (
