@@ -93,6 +93,9 @@ export default function Home() {
         backgroundImage: `radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 80%,rgba(37,99,235,0.07) 0%,transparent 50%)`
       }}>
 
+        {/* BLOQUE OSCURO: Nav + Hero */}
+        <div style={{ background: '#0d1117', backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%)', color: '#f0f0f5' }}>
+
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
@@ -125,7 +128,7 @@ export default function Home() {
               </span>
             </h1>
 
-            <p style={{ color: C.muted, fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+            <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
               Identifica en 2 minutos todas las ayudas, subvenciones y prestaciones públicas a las que tienes derecho. Completamente gratis.
             </p>
 
@@ -143,7 +146,7 @@ export default function Home() {
               {[{ num: `${totalAyudas}+`, lbl: 'Ayudas activas' }, { num: '2 min', lbl: 'Para completar' }, { num: '100%', lbl: 'Gratuito' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{s.lbl}</div>
+                  <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -162,7 +165,7 @@ export default function Home() {
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: a.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>{a.icon}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.nombre}</div>
-                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{a.org}</div>
+                    <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{a.org}</div>
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: C.green, flexShrink: 0 }}>{a.importe}</div>
                 </div>
@@ -172,7 +175,7 @@ export default function Home() {
             {/* Float top-right */}
             <div style={{ position: 'absolute', top: -20, right: -20, background: 'rgba(22,27,39,0.95)', border: `1px solid ${C.border}`, borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
-              <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>ayudas para ti</div>
+              <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>ayudas para ti</div>
             </div>
 
             {/* Float bottom-left */}
@@ -186,25 +189,27 @@ export default function Home() {
           </div>
         </section>
 
+        </div>{/* FIN BLOQUE OSCURO */}
+
         {/* CÓMO FUNCIONA */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: `1px solid ${C.border}` }}>
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: '1px solid #E0DAD0' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Cómo funciona</p>
-          <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 48 }}>
+          <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
             Simple, rápido y preciso
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
-              <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24, transition: 'border-color 0.2s' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
-                <div className="font-display font-bold" style={{ fontSize: 15, color: C.text, marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
-                <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{s.desc}</p>
+              <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: '#ffffff', border: '1px solid #E0DAD0', borderRadius: 16, padding: 24, transition: 'border-color 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#1A7A4A', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
+                <div className="font-display font-bold" style={{ fontSize: 15, color: '#111110', marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
+                <p style={{ fontSize: 13, color: '#666660', lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
             ))}
           </div>
         </section>
 
         {/* FUENTES */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px', borderTop: `1px solid ${C.border}` }}>
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px', borderTop: '1px solid #E0DAD0' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.muted, marginBottom: 36 }}>
             Información extraída de fuentes oficiales
           </p>
@@ -221,19 +226,19 @@ export default function Home() {
         </section>
 
         {/* GESTORÍAS */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: `1px solid ${C.border}` }}>
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px', borderTop: '1px solid #E0DAD0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Para gestorías y despachos</p>
-              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 16, lineHeight: 1.1 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#1A7A4A', marginBottom: 12 }}>Para gestorías y despachos</p>
+              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1 }}>
                 Multiplica tu cartera.<br />Sin trabajo extra.
               </h2>
-              <p style={{ color: C.muted, fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+              <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
                 Identifica automáticamente las ayudas de cada cliente. Genera el informe en segundos. Tú firmas y tramitas.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
                 {['Hasta 10 clientes en el plan Básico (49€/mes)','Clientes ilimitados en el plan Pro (99€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: C.muted }}>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
                     <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}>✓</div>
                     {f}
                   </div>
@@ -247,18 +252,18 @@ export default function Home() {
               </div>
             </div>
             <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.5 }} />
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: C.muted, marginBottom: 20 }}>Panel de gestión</p>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#1A7A4A', opacity: 0.15 }} />
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
                 { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente' },
                 { nombre: 'López Sánchez, M.', ayudas: 5, importe: '7.200€', estado: 'Tramitado' },
                 { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente' },
                 { nombre: 'Ruiz Pérez, C.', ayudas: 3, importe: '4.100€', estado: 'En proceso' },
               ].map((c, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? `1px solid ${C.border}` : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? '1px solid #F0EAE0' : 'none' }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{c.nombre}</div>
-                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111110' }}>{c.nombre}</div>
+                    <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
                   </div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
                     background: c.estado === 'Tramitado' ? 'rgba(0,232,122,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
@@ -272,12 +277,12 @@ export default function Home() {
 
         {/* CTA FINAL */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 80px' }}>
-          <div style={{ background: 'linear-gradient(135deg,rgba(0,232,122,0.08) 0%,rgba(124,58,237,0.08) 100%)', border: `1px solid rgba(0,232,122,0.2)`, borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ background: '#111110', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
-            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: C.text, marginBottom: 16 }}>
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#f0f0f5', marginBottom: 16 }}>
               ¿Cuánto dinero te estás perdiendo?
             </h2>
-            <p style={{ color: C.muted, fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
+            <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
               Miles de ciudadanos no solicitan las ayudas que les corresponden porque no saben que existen. Descúbrelas ahora.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
@@ -287,17 +292,17 @@ export default function Home() {
         </section>
 
         {/* FOOTER */}
-        <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', borderTop: `1px solid ${C.border}` }}>
+        <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', borderTop: '1px solid #E0DAD0' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <span className="font-display font-bold" style={{ color: C.text }}>cóbratelo<span style={{ color: C.green }}>.es</span></span>
-            <p style={{ color: C.muted, fontSize: 12, textAlign: 'center' }}>
+            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#1A7A4A' }}>.es</span></span>
+            <p style={{ color: '#888882', fontSize: 12, textAlign: 'center' }}>
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, fontSize: 12, color: C.muted }}>
               {[['Precios','/precios'],['Aviso Legal','/legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
-                <Link key={h} href={h} style={{ color: C.muted, textDecoration: 'none' }}>{l}</Link>
+                <Link key={h} href={h} style={{ color: '#888882', textDecoration: 'none' }}>{l}</Link>
               ))}
-              <a href="mailto:hola@cobratelo.es" style={{ color: C.muted, textDecoration: 'none' }}>hola@cobratelo.es</a>
+              <a href="mailto:hola@cobratelo.es" style={{ color: '#888882', textDecoration: 'none' }}>hola@cobratelo.es</a>
             </div>
           </div>
         </footer>
