@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
+import { FloatingCard, FloatingScene } from '../components/FloatingCard'
 import { supabase } from '../lib/supabase'
 
 const C = {
@@ -260,7 +262,7 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
-            <div style={{ background: '#161b27', border: '2px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', filter: 'drop-shadow(0 12px 40px rgba(0,0,0,0.5)) drop-shadow(2px 2px 0 rgba(255,255,255,0.08))' }}>
+            <FloatingCard depth={1.5} glowColor="rgba(45,106,79,0.2)" style={{ background: '#161b27', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2D6A4F', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
@@ -280,7 +282,7 @@ export default function Home() {
                   }}>{c.estado}</span>
                 </div>
               ))}
-            </div>
+            </FloatingCard>
           </div>
           </div>
         </section>
