@@ -153,8 +153,11 @@ export default function Home() {
           </div>
 
           {/* Dashboard */}
-          <div style={{ position: 'relative', filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.6)) drop-shadow(0 0 1px rgba(0,232,122,0.6))' }} className="hidden md:block">
-            <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
+          <FloatingScene style={{ position: 'relative' }} className="hidden md:block">
+            {/* Glow ambiental de fondo */}
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(0,232,122,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+
+            <FloatingCard depth={2} glowColor="rgba(0,232,122,0.22)" style={{ background: '#161b27', border: '1px solid rgba(0,232,122,0.3)', borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden', zIndex: 1 }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Ejemplo de resultado</span>
@@ -170,23 +173,23 @@ export default function Home() {
                   <div style={{ fontSize: 14, fontWeight: 700, color: C.green, flexShrink: 0 }}>{a.importe}</div>
                 </div>
               ))}
-            </div>
+            </FloatingCard>
 
             {/* Float top-right */}
-            <div style={{ position: 'absolute', top: -20, right: -20, background: 'rgba(22,27,39,0.95)', border: `1px solid ${C.border}`, borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <FloatingCard depth={3} glowColor="rgba(0,232,122,0.3)" style={{ position: 'absolute', top: -20, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(0,232,122,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
               <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>ayudas para ti</div>
-            </div>
+            </FloatingCard>
 
             {/* Float bottom-left */}
-            <div style={{ position: 'absolute', bottom: -16, left: -16, background: 'rgba(22,27,39,0.95)', border: `1px solid ${C.border}`, borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(16px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <FloatingCard depth={2} glowColor="rgba(0,232,122,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>✓</div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
                 <div style={{ fontSize: 10, color: C.muted }}>Resultados actualizados</div>
               </div>
-            </div>
-          </div>
+            </FloatingCard>
+          </FloatingScene>
         </section>
 
         </div>{/* FIN BLOQUE OSCURO */}
