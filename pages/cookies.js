@@ -1,66 +1,36 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { C, bgMesh, navStyle } from '../lib/theme'
 
 export default function Cookies() {
   return (
     <>
-      <Head>
-        <title>Política de Cookies — Cóbratelo</title>
-        <meta name="robots" content="noindex" />
-      </Head>
-      <div className="min-h-screen bg-[#F7F3EC]">
-        <nav className="px-6 py-5 max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
-            cóbratelo<span className="text-[#1A7A4A]">.es</span>
-          </Link>
+      <Head><title>Política de Cookies — Cóbratelo.es</title><meta name="viewport" content="width=device-width,initial-scale=1" /></Head>
+      <div style={bgMesh}>
+        <nav style={navStyle}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', height: 60, padding: '0' }}>
+            <Link href="/" className="font-display font-bold text-xl" style={{ color: C.text, textDecoration: 'none', letterSpacing: '-0.5px' }}>
+              cóbratelo<span style={{ color: C.green }}>.es</span>
+            </Link>
+          </div>
         </nav>
-        <div className="max-w-3xl mx-auto px-6 pb-20 prose prose-sm">
-          <h1 className="font-display text-4xl font-bold text-[#111110] mb-8">Política de Cookies</h1>
-
-          <h2>¿Qué son las cookies?</h2>
-          <p>
-            Las cookies son pequeños archivos de texto que los sitios web almacenan en el navegador
-            del usuario para recordar preferencias o gestionar sesiones.
-          </p>
-
-          <h2>Cookies que utilizamos</h2>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-[#E0DAD0]">
-                <th className="p-2 text-left">Cookie</th>
-                <th className="p-2 text-left">Tipo</th>
-                <th className="p-2 text-left">Finalidad</th>
-                <th className="p-2 text-left">Duración</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-[#E0DAD0]">
-                <td className="p-2">__stripe_*</td>
-                <td className="p-2">Terceros</td>
-                <td className="p-2">Gestión de pagos seguros (Stripe)</td>
-                <td className="p-2">Sesión</td>
-              </tr>
-              <tr className="border-b border-[#E0DAD0]">
-                <td className="p-2">sb-* (Supabase)</td>
-                <td className="p-2">Técnica</td>
-                <td className="p-2">Gestión de sesión de usuario</td>
-                <td className="p-2">7 días</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <p className="mt-4">
-            Cobratelo.es <strong>no utiliza cookies de seguimiento, publicidad ni análisis</strong>.
-            No compartimos datos de navegación con terceros para fines publicitarios.
-          </p>
-
-          <h2>Cómo desactivar las cookies</h2>
-          <p>
-            Puedes configurar tu navegador para rechazar o eliminar cookies. Ten en cuenta que
-            desactivar las cookies técnicas puede afectar al funcionamiento del servicio de pago.
-          </p>
-
-          <p className="text-xs text-[#888882] mt-8">Última actualización: mayo 2026</p>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '60px 24px 80px' }}>
+          <h1 className="font-display font-bold" style={{ fontSize: 36, letterSpacing: '-1.5px', color: C.text, marginBottom: 8 }}>Política de Cookies</h1>
+          <p style={{ color: C.muted, fontSize: 13, marginBottom: 40 }}>Última actualización: mayo 2026</p>
+          {[
+            { t: '¿Qué son las cookies?', c: 'Las cookies son pequeños archivos de texto que los sitios web almacenan en tu dispositivo cuando los visitas. Permiten que el sitio recuerde información sobre tu visita.' },
+            { t: '¿Qué cookies usamos?', c: 'Cóbratelo.es utiliza únicamente cookies técnicas estrictamente necesarias para el funcionamiento de la web: cookies de sesión de autenticación (Supabase) y preferencias de consentimiento. No usamos cookies de publicidad ni de rastreo de terceros.' },
+            { t: 'Cookies de sesión', c: 'Cuando inicias sesión, almacenamos un token de autenticación en tu navegador mediante localStorage. Este token es necesario para mantenerte identificado. Se elimina al cerrar sesión.' },
+            { t: 'Cookies de preferencias', c: 'Guardamos tu decisión sobre el consentimiento de cookies (aceptar/rechazar) en localStorage con la clave "cobratelo_cookies". Esto evita que el banner aparezca en cada visita.' },
+            { t: '¿Cómo gestionar las cookies?', c: 'Puedes eliminar las cookies desde la configuración de tu navegador en cualquier momento. También puedes revocar tu consentimiento borrando el dato "cobratelo_cookies" de localStorage.' },
+            { t: 'Contacto', c: 'Para cualquier consulta sobre nuestra política de cookies: hola@cobratelo.es — KIESBROTER SL (NIF: B65417107), Mataró, Barcelona.' },
+          ].map((s, i) => (
+            <div key={i} style={{ marginBottom: 32 }}>
+              <h2 className="font-display font-bold" style={{ fontSize: 18, color: C.text, marginBottom: 8, letterSpacing: '-0.3px' }}>{s.t}</h2>
+              <p style={{ color: C.muted, fontSize: 14, lineHeight: 1.7 }}>{s.c}</p>
+            </div>
+          ))}
+          <Link href="/" style={{ color: C.green, fontSize: 14, textDecoration: 'none' }}>← Volver al inicio</Link>
         </div>
       </div>
     </>
