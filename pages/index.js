@@ -32,16 +32,16 @@ const AYUDAS_DEMO = [
 ]
 
 const FUENTES = [
-  { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: C.blue },
-  { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: C.blue },
-  { nombre: 'Seg. Social', sub: 'Ministerio de Inclusión', color: C.blue },
-  { nombre: 'Red.es', sub: 'Ministerio Digital', color: C.red },
-  { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: C.blue },
-  { nombre: 'Generalitat', sub: 'Catalunya', color: C.red },
-  { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: C.red },
-  { nombre: 'IMSERSO', sub: 'Mayores y dependencia', color: C.blue },
-  { nombre: 'ACCIÓ', sub: 'Competitivitat Empresa', color: C.red },
-  { nombre: 'Red SARA', sub: 'Administración digital', color: C.blue },
+  { nombre: 'A.E.A.T.', sub: 'Agencia Tributaria', color: '#003087' },
+  { nombre: 'SEPE', sub: 'Servicio Público Empleo', color: '#0055A5' },
+  { nombre: 'Seg. Social', sub: 'Ministerio de Inclusión', color: '#004899' },
+  { nombre: 'Red.es', sub: 'Ministerio Digital', color: '#CC0000' },
+  { nombre: 'MIVAU', sub: 'Ministerio de Vivienda', color: '#1B4F72' },
+  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E' },
+  { nombre: 'C. Madrid', sub: 'Comunidad de Madrid', color: '#E3000F' },
+  { nombre: 'IMSERSO', sub: 'Mayores y dependencia', color: '#004899' },
+  { nombre: 'ACCIÓ', sub: 'Competitivitat Empresa', color: '#C9222E' },
+  { nombre: 'Red SARA', sub: 'Administración digital', color: '#2D4A6A' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
@@ -215,9 +215,9 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
             {FUENTES.map((f, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: 0.35, transition: 'opacity 0.3s', cursor: 'default' }}
-                onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-                onMouseLeave={e => e.currentTarget.style.opacity = '0.35'}>
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'default', padding: '8px 14px', borderRadius: 10, border: '1px solid #E0DAD0', background: '#fff', transition: 'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = f.color; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#E0DAD0'; e.currentTarget.style.boxShadow = 'none' }}>
                 <div className="font-display font-bold" style={{ fontSize: 13, color: f.color }}>{f.nombre}</div>
                 <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>{f.sub}</div>
               </div>
