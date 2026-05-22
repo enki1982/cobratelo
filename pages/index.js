@@ -32,14 +32,14 @@ const AYUDAS_DEMO = [
 ]
 
 const FUENTES = [
-  { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087' },
+  { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087', src: '/Agencia_Tributaria.svg' },
   { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5', src: '/SEPE.svg' },
-  { nombre: 'Seg-Social', sub: 'Inclusión y Seguridad', color: '#004899', border: '#004899' },
-  { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', border: '#CC0000' },
-  { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72' },
-  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E' },
-  { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B' },
-  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B' },
+  { nombre: 'Seg-Social', sub: 'Seguridad Social', color: '#004899', border: '#004899', src: '/Logo_TGSS (1).svg' },
+  { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', border: '#CC0000', src: '/Logo_Red.es.svg' },
+  { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72', src: '/Logotipo_del_Ministerio_de_Vivienda_y_Agenda_Urbana.svg' },
+  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E', src: '/Logotipo_de_la_Generalitat_de_Catalunya.svg' },
+  { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B', src: '/Logotipo_del_Gobierno_de_la_Comunidad_de_Madrid.svg' },
+  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B', src: '/Logotipo_del_Gobierno_de_España.svg' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
