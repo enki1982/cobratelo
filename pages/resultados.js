@@ -579,33 +579,7 @@ export default function Resultados() {
     setEnviando(false)
   }
 
-  // Sin sesión — mostrar registro obligatorio
-  if (sessionChecked && sinSesion) {
-    const returnUrl = typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''
-    return (
-      <div style={{ ...bgMesh, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24 }}>
-        <div style={{ background: '#161b27', border: '1px solid rgba(0,232,122,0.25)', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', textAlign: 'center' }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(0,232,122,0.1)', border: '1px solid rgba(0,232,122,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, margin: '0 auto 24px' }}>🔒</div>
-          <h2 className="font-display font-bold" style={{ fontSize: 24, color: '#f0f0f5', letterSpacing: '-0.5px', marginBottom: 12 }}>
-            Crea tu cuenta gratuita
-          </h2>
-          <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>
-            Para ver tus ayudas personalizadas necesitas una cuenta. Es gratis y solo tarda 30 segundos.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <Link href={`/login?return=${returnUrl}`}
-              style={{ background: '#00e87a', color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 0', borderRadius: 100, textDecoration: 'none', display: 'block' }}>
-              Crear cuenta gratis →
-            </Link>
-            <Link href={`/login?return=${returnUrl}`}
-              style={{ background: 'transparent', color: 'rgba(240,240,245,0.5)', fontSize: 14, padding: '10px 0', borderRadius: 100, textDecoration: 'none', display: 'block', border: '1px solid rgba(255,255,255,0.1)' }}>
-              Ya tengo cuenta — Entrar
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // Registro obligatorio desactivado temporalmente hasta fix SMTP
 
   if (loading) {
     return (
