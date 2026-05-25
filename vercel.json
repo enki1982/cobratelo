@@ -1,3 +1,8 @@
 {
-  "framework": "nextjs"
+  "crons": [
+    {
+      "path": "/api/alertas-lunes",
+      "schedule": "0 8 * * 1"
+    }
+  ]
 }
