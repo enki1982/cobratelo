@@ -129,7 +129,7 @@ export default function Home() {
             </h1>
 
             <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
-              Analizamos tu perfil, cruzamos tu situación con todas las convocatorias activas en España y te llevamos directamente al trámite oficial. Sin burocracia. Sin búsquedas. Completamente gratis.
+              Hay plataformas con 77.000 ayudas donde buscar. Nosotros hacemos algo diferente: analizamos tu situación y te decimos exactamente a cuáles tienes derecho. En 2 minutos. Gratis.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -143,7 +143,7 @@ export default function Home() {
 
             {/* Stats */}
             <div style={{ display: 'flex', gap: 32, marginTop: 40, paddingTop: 32, borderTop: `1px solid ${C.border}` }}>
-              {[{ num: `${totalAyudas}+`, lbl: 'Convocatorias activas' }, { num: '2 min', lbl: 'Para analizar tu caso' }, { num: '0€', lbl: 'Para ciudadanos' }].map((s, i) => (
+              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '2 min', lbl: 'Análisis completo' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
                   <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{s.lbl}</div>
@@ -199,7 +199,7 @@ export default function Home() {
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Cómo funciona</p>
           <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
-            Nosotros hacemos el trabajo. Tú cobras.
+            Sin buscar. Sin perderse. Sin burocracia.
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
@@ -251,7 +251,7 @@ export default function Home() {
                 Detectamos automáticamente todas las ayudas de cada cliente. Informe listo en segundos. Tú lo presentas y cobras la gestión.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
-                {['Hasta 50 clientes en el plan Starter (149€/mes)','Clientes ilimitados en el plan Pro (399€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
+                {['Detecta ayudas de todos tus clientes automáticamente','Informe personalizado listo para presentar','Alertas cuando aparecen nuevas ayudas para cada cliente','Starter hasta 50 clientes · Pro ilimitado'].map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
                     <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}>✓</div>
                     {f}
@@ -295,10 +295,10 @@ export default function Home() {
           <div style={{ background: '#111110', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#f0f0f5', marginBottom: 16 }}>
-              Puede que tengas dinero esperándote y no lo sepas
+              La mayoría de ayudas no se piden porque nadie sabe que existen
             </h2>
             <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
-              El 80% de las ayudas públicas no se solicitan por desconocimiento. Analizamos tu caso en 2 minutos y te decimos exactamente a cuánto tienes derecho.
+              No hay que buscar entre miles de subvenciones ni entender la burocracia. En 2 minutos te decimos exactamente qué puedes cobrar tú, con enlace directo a cada trámite.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
               {tienePerfil ? 'Ver mis ayudas →' : 'Empezar gratis — sin tarjeta'}
