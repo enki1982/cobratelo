@@ -129,7 +129,7 @@ export default function Home() {
             </h1>
 
             <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
-              Hay plataformas con 77.000 ayudas donde buscar. Nosotros hacemos algo diferente: analizamos tu situación y te decimos exactamente a cuáles tienes derecho. En 2 minutos. Gratis.
+              Analizamos tu perfil y te decimos exactamente qué ayudas públicas puedes cobrar tú. Sin buscar. Sin burocracia. Sin perderte en portales. En 2 minutos. Gratis.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
