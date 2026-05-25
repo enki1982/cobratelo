@@ -344,6 +344,7 @@ function PuebloInput({ value, onChange, onSelect }) {
 
 export default function Perfil() {
   const router = useRouter()
+  const isOnboarding = router.query.onboarding === 'true'
   const [paso, setPaso] = useState(0)
   const [perfil, setPerfil] = useState({})
   const [seleccion, setSeleccion] = useState([])
