@@ -544,6 +544,10 @@ export default function Resultados() {
         if (vistasAntes && vistasAntes.size > 0) {
           const nuevas = new Set(conScore.map(a => a.id).filter(id => !vistasAntes.has(id)))
           setAyudasNuevas(nuevas)
+          window.cobratelo_track?.('results_viewed', {
+            total_ayudas: conScore.length,
+            ayudas_nuevas: nuevas.size,
+          })
         }
         // Guardar las actuales como "vistas"
         localStorage.setItem(storageKey, JSON.stringify(conScore.map(a => a.id)))
@@ -740,7 +744,7 @@ export default function Resultados() {
                   )}
                   {!isBlurred && (
                     ayuda.url_oficial
-                      ? <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
+                      ? <a href={ayuda.url_oficial} target="_blank" onClick={() => window.cobratelo_track?.("convocatoria_click", { ayuda: ayuda.nombre, organismo: ayuda.organismo })} rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1A7A4A] hover:text-[#145e39] transition-colors">
                           Ver convocatoria oficial →
                         </a>

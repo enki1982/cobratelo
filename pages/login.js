@@ -24,7 +24,10 @@ export default function Login() {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithOtp({ email })
     if (error) setError(error.message)
-    else setMsg('Te hemos enviado un enlace a tu email. Haz clic en él para entrar — sin contraseña.')
+    else {
+      setMsg('Te hemos enviado un enlace a tu email. Haz clic en él para entrar — sin contraseña.')
+      window.cobratelo_track?.('magic_link_sent', { method: 'email' })
+    }
     setLoading(false)
   }
 
@@ -42,6 +45,7 @@ export default function Login() {
     if (error) {
       setError(error.message)
     } else {
+      window.cobratelo_track?.('sign_up', { method: 'email' })
       // Enviar email de bienvenida en background (no bloquea)
       fetch('/api/bienvenida', {
         method: 'POST',
