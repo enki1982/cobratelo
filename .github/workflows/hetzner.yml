@@ -1,0 +1,29 @@
+name: Hetzner Command
+
+on:
+  repository_dispatch:
+    types: [hetzner-command]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Comando a ejecutar en Hetzner'
+        required: true
+        default: 'python3 agent.py backfill'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ejecutar comando en Hetzner
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.224.184.13
+          username: root
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /root/ayuda-es-agent
+            export $(grep -v '^#' .env | xargs)
+            COMMAND="${{ github.event.client_payload.command || inputs.command }}"
+            echo "▶ Ejecutando: $COMMAND"
+            eval "$COMMAND"
+          command_timeout: 30m
