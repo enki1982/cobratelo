@@ -183,7 +183,7 @@ export default function Home() {
 
             {/* Float bottom-left */}
             <FloatingCard depth={2} glowColor="rgba(0,232,122,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
-              <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>✓</div>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}><svg width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4L3.5 6.5L9 1' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'/></svg></div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
                 <div style={{ fontSize: 10, color: C.muted }}>Resultados actualizados</div>
@@ -255,7 +255,7 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
                 {['Detecta ayudas de todos tus clientes automáticamente','Informe personalizado listo para presentar','Alertas cuando aparecen nuevas ayudas para cada cliente','Starter hasta 50 clientes · Pro ilimitado'].map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}>✓</div>
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}><svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{display:'block'}}><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
                     {f}
                   </div>
                 ))}
