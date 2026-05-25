@@ -1,1 +1,1 @@
-curl -s https://raw.githubusercontent.com/enki1982/cobratelo/main/hetzner-agent/control.py -o /root/ayuda-es-agent/control.py && pip3 install requests --break-system-packages -q && echo "✅ control.py instalado" && cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 agent.py backfill
