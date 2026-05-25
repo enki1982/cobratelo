@@ -194,6 +194,32 @@ export default function Home() {
 
         </div>{/* FIN BLOQUE OSCURO */}
 
+        {/* CASO REAL */}
+        <section style={{ background: '#111110', borderTop: '1px solid rgba(255,255,255,0.06)', width: '100%' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 20, textAlign: 'center' }}>
+              EJEMPLO REAL
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+              {[
+                { perfil: 'Autónomo · Barcelona · 38 años', resultado: '11 ayudas detectadas', importe: '12.400€', detalle: 'Kit Digital, Cuota cero autónomos, Bono Alquiler Joven, ACCIÓ digitalización...' },
+                { perfil: 'Familia numerosa · Madrid · 3 hijos', resultado: '8 ayudas detectadas', importe: '6.800€', detalle: 'Becas comedor, ayuda libros, bonificación transporte, ayuda guardería...' },
+                { perfil: 'Pyme · Sevilla · 6 empleados', resultado: '14 ayudas detectadas', importe: '28.500€', detalle: 'Bonificaciones SS, Kit Digital, FEDER, subvención Junta Andalucía...' },
+              ].map((c, i) => (
+                <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '24px 20px' }}>
+                  <p style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>{c.perfil}</p>
+                  <p style={{ fontSize: 28, fontWeight: 800, color: C.green, marginBottom: 4 }}>{c.importe}</p>
+                  <p style={{ fontSize: 13, color: C.text, fontWeight: 600, marginBottom: 8 }}>{c.resultado}</p>
+                  <p style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>{c.detalle}</p>
+                </div>
+              ))}
+            </div>
+            <p style={{ textAlign: 'center', fontSize: 12, color: C.muted, marginTop: 20 }}>
+              Los importes son orientativos y dependen de cada convocatoria y situación particular.
+            </p>
+          </div>
+        </section>
+
         {/* CÓMO FUNCIONA */}
         <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
@@ -250,7 +276,7 @@ export default function Home() {
                 Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
               <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
-                Detectamos automáticamente todas las ayudas de cada cliente. Informe listo en segundos. Tú lo presentas y cobras la gestión.
+                Cada cliente tuyo tiene ayudas que no conoce. Cóbratelo las detecta, genera el informe y tú cobras la gestión — sin buscar, sin burocracia, sin trabajo extra.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
                 {['Detecta ayudas de todos tus clientes automáticamente','Informe personalizado listo para presentar','Alertas cuando aparecen nuevas ayudas para cada cliente','Starter hasta 50 clientes · Pro ilimitado'].map((f, i) => (
