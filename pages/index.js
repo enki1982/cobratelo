@@ -129,7 +129,7 @@ export default function Home() {
             </h1>
 
             <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
-              Identifica en 2 minutos todas las ayudas, subvenciones y prestaciones públicas a las que tienes derecho. Completamente gratis.
+              Analizamos tu perfil, cruzamos tu situación con todas las convocatorias activas en España y te llevamos directamente al trámite oficial. Sin burocracia. Sin búsquedas. Completamente gratis.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -143,7 +143,7 @@ export default function Home() {
 
             {/* Stats */}
             <div style={{ display: 'flex', gap: 32, marginTop: 40, paddingTop: 32, borderTop: `1px solid ${C.border}` }}>
-              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas activas' }, { num: '2 min', lbl: 'Para completar' }, { num: '100%', lbl: 'Gratuito' }].map((s, i) => (
+              {[{ num: `${totalAyudas}+`, lbl: 'Convocatorias activas' }, { num: '2 min', lbl: 'Para analizar tu caso' }, { num: '0€', lbl: 'Para ciudadanos' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
                   <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{s.lbl}</div>
@@ -199,7 +199,7 @@ export default function Home() {
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Cómo funciona</p>
           <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
-            Simple, rápido y preciso
+            Nosotros hacemos el trabajo. Tú cobras.
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
@@ -245,10 +245,10 @@ export default function Home() {
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Para gestorías y despachos</p>
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
-                Multiplica tu cartera.<br />Sin trabajo extra.
+                Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
               <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
-                Identifica automáticamente las ayudas de cada cliente. Genera el informe en segundos. Tú firmas y tramitas.
+                Detectamos automáticamente todas las ayudas de cada cliente. Informe listo en segundos. Tú lo presentas y cobras la gestión.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
                 {['Hasta 50 clientes en el plan Starter (149€/mes)','Clientes ilimitados en el plan Pro (399€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
@@ -295,10 +295,10 @@ export default function Home() {
           <div style={{ background: '#111110', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#f0f0f5', marginBottom: 16 }}>
-              ¿Cuánto dinero te estás perdiendo?
+              Puede que tengas dinero esperándote y no lo sepas
             </h2>
             <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
-              Miles de ciudadanos no solicitan las ayudas que les corresponden porque no saben que existen. Descúbrelas ahora.
+              El 80% de las ayudas públicas no se solicitan por desconocimiento. Analizamos tu caso en 2 minutos y te decimos exactamente a cuánto tienes derecho.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
               {tienePerfil ? 'Ver mis ayudas →' : 'Empezar gratis — sin tarjeta'}
