@@ -122,9 +122,9 @@ export default function Home() {
             </div>
 
             <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
-              Cobra todo lo que{' '}
+              ¿Qué ayudas{' '}
               <span style={{ background: 'linear-gradient(135deg,#00e87a 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                te corresponde
+                puedes cobrar tú?
               </span>
             </h1>
 
@@ -134,7 +134,7 @@ export default function Home() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
               <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 28px', borderRadius: 100, textDecoration: 'none' }}>
-                {tienePerfil ? 'Ver mis ayudas →' : 'Descubrir mis ayudas →'}
+                {tienePerfil ? 'Ver mis ayudas →' : 'Analizar mi caso gratis →'}
               </Link>
               <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
                 Para gestorías ↗
@@ -301,7 +301,7 @@ export default function Home() {
               No hay que buscar entre miles de subvenciones ni entender la burocracia. En 2 minutos te decimos exactamente qué puedes cobrar tú, con enlace directo a cada trámite.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
-              {tienePerfil ? 'Ver mis ayudas →' : 'Empezar gratis — sin tarjeta'}
+              {tienePerfil ? 'Ver mis ayudas →' : 'Ver qué ayudas me corresponden →'}
             </Link>
           </div>
         </section>
