@@ -1,1 +1,4 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
+# Programar backfill para las 3am de esta noche
+(crontab -l 2>/dev/null | grep -v 'backfill_noche'; echo "0 3 * * * cd /root/ayuda-es-agent && export \$(grep -v '^#' .env | xargs) && python3 agent.py backfill >> /var/log/backfill_noche.log 2>&1") | crontab -
+echo "✅ Backfill programado para las 3:00am"
+crontab -l | grep -E "backfill|agent"
