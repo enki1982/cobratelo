@@ -1,1 +1,2 @@
 curl -s https://raw.githubusercontent.com/enki1982/cobratelo/main/hetzner-agent/stripe_archive.py -o /tmp/stripe_archive.py && python3 /tmp/stripe_archive.py
+# stripe archive v2 - basic auth fix
