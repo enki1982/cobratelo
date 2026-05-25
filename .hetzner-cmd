@@ -1,1 +1,1 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && SK=$(cat /root/.ark/v.txt | grep -A1 "\[STRIPE\]" | grep -v "\[STRIPE\]" | head -1 | cut -d'=' -f2 | tr -d ' ') && echo "SK encontrado: ${SK:0:12}..." && curl -s "https://api.stripe.com/v1/prices?limit=20&active=true" -u "$SK:" | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f\"{p['id']} | {p.get('unit_amount',0)//100}EUR | {p.get('nickname','?')}\") for p in d.get('data',[])]"
+python3 /root/ayuda-es-agent/stripe_archive.py
