@@ -738,11 +738,15 @@ export default function Resultados() {
                   {ayuda.descripcion && (
                     <p className="text-sm text-[rgba(240,240,245,0.6)] mb-4 leading-relaxed">{ayuda.descripcion}</p>
                   )}
-                  {ayuda.url_oficial && !isBlurred && (
-                    <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1A7A4A] hover:text-[#145e39] transition-colors">
-                      Ver convocatoria oficial →
-                    </a>
+                  {!isBlurred && (
+                    ayuda.url_oficial
+                      ? <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1A7A4A] hover:text-[#145e39] transition-colors">
+                          Ver convocatoria oficial →
+                        </a>
+                      : <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}>
+                          Enlace en verificación
+                        </span>
                   )}
                 </div>
               )
