@@ -251,7 +251,7 @@ export default function Home() {
                 Identifica automáticamente las ayudas de cada cliente. Genera el informe en segundos. Tú firmas y tramitas.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
-                {['Hasta 10 clientes en el plan Básico (49€/mes)','Clientes ilimitados en el plan Pro (99€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
+                {['Hasta 50 clientes en el plan Starter (149€/mes)','Clientes ilimitados en el plan Pro (399€/mes)','Informes detallados listos para tramitar','Alertas automáticas de nuevas convocatorias'].map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
                     <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}>✓</div>
                     {f}

@@ -12,19 +12,19 @@ const PLANES_CIUDADANO = [{
 
 const PLANES_GESTORIA = [
   {
-    id: 'basico', nombre: 'Básico', precio: '49€', periodo: 'mes',
-    desc: 'Para despachos que quieren empezar a ofrecer ayudas a sus clientes',
-    features: ['Hasta 10 clientes activos','Identificación automática por cliente','Informe detallado por cliente','Alertas de nuevas convocatorias','Soporte por email'],
+    id: 'basico', nombre: 'Básico', precio: '149€', periodo: 'mes',
+    desc: 'Para despachos que gestionan hasta 50 clientes',
+    features: ['Hasta 50 clientes activos','Identificación automática por cliente','Informe detallado por cliente','Alertas de nuevas convocatorias','Soporte por email'],
     cta: 'Empezar Básico', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER, destacado: false,
   },
   {
-    id: 'pro', nombre: 'Pro', precio: '99€', periodo: 'mes',
-    desc: 'Para gestorías en crecimiento con carteras amplias',
+    id: 'pro', nombre: 'Pro', precio: '399€', periodo: 'mes',
+    desc: 'Para gestorías medianas y grandes sin límite de clientes',
     features: ['Clientes ilimitados','Todo lo del plan Básico','Panel multi-cliente','Exportación masiva de informes','Alertas personalizadas por cliente','Soporte prioritario'],
     cta: 'Empezar Pro', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO, destacado: true,
   },
   {
-    id: 'enterprise', nombre: 'Enterprise', precio: '199€', periodo: 'mes',
+    id: 'enterprise', nombre: 'Enterprise', precio: '799€', periodo: 'mes',
     desc: 'Para grandes despachos con integración completa',
     features: ['Todo lo del plan Pro','Integración sede electrónica','Formularios pre-rellenados','API acceso a datos','Marca blanca','Account manager'],
     cta: 'Contactar', href: 'mailto:hola@cobratelo.es', destacado: false, badge: 'Próximamente',
