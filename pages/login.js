@@ -39,8 +39,17 @@ export default function Login() {
   const handleRegistro = async () => {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signUp({ email, password })
-    if (error) setError(error.message)
-    else redirect()
+    if (error) {
+      setError(error.message)
+    } else {
+      // Enviar email de bienvenida en background (no bloquea)
+      fetch('/api/bienvenida', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      }).catch(() => {}) // silenciar errores — no es crítico
+      redirect()
+    }
     setLoading(false)
   }
 
