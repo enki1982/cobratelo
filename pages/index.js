@@ -94,7 +94,7 @@ export default function Home() {
       }}>
 
         {/* BLOQUE OSCURO: Nav + Hero */}
-        <div style={{ background: '#030303', color: '#f0f0f5', backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%)', color: '#f0f0f5' }}>
+        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(0,232,122,0.22) 0%, rgba(0,232,122,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #030303', color: '#f0f0f5', color: '#f0f0f5' }}>
 
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
@@ -222,7 +222,7 @@ export default function Home() {
             <div style={{ position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to right, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
               <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to left, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              <div style={{ display: 'flex', gap: 16, width: 'max-content', animation: 'marquee 28s linear infinite' }}>
+              <div className='marquee-track' style={{ display: 'flex', gap: 16, width: 'max-content' }}>
                 {[...FUENTES, ...FUENTES].map((f, i) => (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 20px' : '12px 20px', borderRadius: 12, border: '1px solid #E0DAD0', background: '#fff', minWidth: 110, flexShrink: 0 }}>
                     {f.src ? (
