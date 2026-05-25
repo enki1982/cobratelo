@@ -124,3 +124,37 @@ textarea {
   /* CTA final — padding más compacto */
   .cta-final { padding: 48px 24px !important; }
 }
+
+/* ─── Legal hover tooltip ─────────────────────────────────── */
+.legal-hover-wrap {
+  position: relative;
+  display: inline-block;
+}
+.legal-trigger {
+  font-size: 11px;
+  color: #b0aaa0;
+  cursor: default;
+  border-bottom: 1px dashed #b0aaa0;
+  padding-bottom: 1px;
+}
+.legal-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #e0dad0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 12px;
+  color: #444;
+  line-height: 1.7;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 100;
+  text-align: left;
+}
+.legal-hover-wrap:hover .legal-tooltip {
+  display: block;
+}

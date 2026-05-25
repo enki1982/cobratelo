@@ -5,72 +5,90 @@ export default function Privacidad() {
   return (
     <>
       <Head>
-        <title>Política de Privacidad — Cóbratelo</title>
+        <title>Política de Privacidad — Cóbratelo.es</title>
         <meta name="robots" content="noindex" />
       </Head>
-      <div className="min-h-screen bg-[#F7F3EC]">
-        <nav className="px-6 py-5 max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
-            cóbratelo<span className="text-[#1A7A4A]">.es</span>
+      <div style={{ background: '#f7f3ec', minHeight: '100vh', padding: '0 0 64px' }}>
+        <nav style={{ background: '#111110', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
+          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
+            cóbratelo<span style={{ color: '#00e87a' }}>.es</span>
           </Link>
         </nav>
-        <div className="max-w-3xl mx-auto px-6 pb-20 prose prose-sm">
-          <h1 className="font-display text-4xl font-bold text-[#111110] mb-8">Política de Privacidad</h1>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#111110', marginBottom: 8 }}>Política de Privacidad</h1>
+          <p style={{ color: '#888', marginBottom: 40 }}>Última actualización: mayo 2026</p>
 
-          <h2>1. Responsable del tratamiento</h2>
-          <p>
-            <strong>KIESBROTER SL (NIF: B65417107), Mataró, Barcelona</strong> (KIESBROTER SL (NIF: B65417107), Mataró, Barcelona)<br />
-            Contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a>
-          </p>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>1. Responsable del tratamiento</h2>
+            <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
+              <li><strong>Responsable:</strong> Miquel Nogueras Camero</li>
+              <li><strong>NIF:</strong> 77609795K</li>
+              <li><strong>Email:</strong> <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a></li>
+            </ul>
+          </section>
 
-          <h2>2. Datos que recogemos</h2>
-          <p>Recogemos únicamente los datos que el usuario proporciona voluntariamente:</p>
-          <ul>
-            <li><strong>Perfil de uso:</strong> situación laboral, edad, composición familiar, vivienda e ingresos aproximados, necesarios para calcular las ayudas aplicables. Estos datos no son datos personales identificativos.</li>
-            <li><strong>Correo electrónico:</strong> cuando el usuario se suscribe al plan de alertas o facilita el email de su gestoría, con su consentimiento expreso.</li>
-            <li><strong>Datos de pago:</strong> gestionados íntegramente por Stripe. Cobratelo.es no almacena datos de tarjeta.</li>
-          </ul>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>2. Datos que recogemos</h2>
+            <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
+              <li><strong>Datos de registro:</strong> dirección de email para crear y gestionar tu cuenta.</li>
+              <li><strong>Datos de perfil:</strong> información sobre tu situación personal y profesional que facilitas voluntariamente para recibir resultados personalizados (edad, situación laboral, comunidad autónoma, ingresos aproximados, etc.).</li>
+              <li><strong>Datos de uso:</strong> páginas visitadas, interacciones con el servicio, con fines de mejora y análisis agregado.</li>
+              <li><strong>Datos de facturación:</strong> en el caso de suscripciones de pago, gestionados exclusivamente a través de Stripe. Cóbratelo.es no almacena datos bancarios ni de tarjeta.</li>
+            </ul>
+          </section>
 
-          <h2>3. Finalidad del tratamiento</h2>
-          <ul>
-            <li>Calcular y mostrar las ayudas públicas aplicables al perfil del usuario.</li>
-            <li>Enviar alertas semanales de nuevas convocatorias (solo usuarios suscritos).</li>
-            <li>Gestionar la relación comercial derivada de la suscripción.</li>
-          </ul>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>3. Finalidad y base legal</h2>
+            <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
+              <li><strong>Prestación del servicio</strong> — base legal: ejecución de contrato (Art. 6.1.b RGPD)</li>
+              <li><strong>Envío de alertas y comunicaciones sobre ayudas</strong> — base legal: consentimiento (Art. 6.1.a RGPD)</li>
+              <li><strong>Mejora del servicio y análisis estadístico</strong> — base legal: interés legítimo (Art. 6.1.f RGPD)</li>
+              <li><strong>Cumplimiento de obligaciones legales</strong> — base legal: obligación legal (Art. 6.1.c RGPD)</li>
+            </ul>
+          </section>
 
-          <h2>4. Base jurídica</h2>
-          <p>
-            El tratamiento se basa en el consentimiento del usuario (Art. 6.1.a RGPD) y en la
-            ejecución del contrato de servicio (Art. 6.1.b RGPD).
-          </p>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>4. Conservación de datos</h2>
+            <p style={{ color: '#444', lineHeight: 1.7 }}>
+              Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación de la cuenta, los datos se eliminan en un plazo máximo de 30 días, salvo aquellos que deban conservarse por obligación legal (hasta 6 años para datos fiscales).
+            </p>
+          </section>
 
-          <h2>5. Conservación de datos</h2>
-          <p>
-            Los datos de perfil (anónimos) se conservan durante el uso del servicio. Los datos de
-            email se conservan mientras el usuario mantenga la suscripción activa o hasta que
-            solicite su eliminación.
-          </p>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>5. Terceros que acceden a tus datos</h2>
+            <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
+              <li><strong>Supabase</strong> — base de datos y autenticación (servidores en UE)</li>
+              <li><strong>Stripe</strong> — procesamiento de pagos (certificado PCI-DSS)</li>
+              <li><strong>Vercel</strong> — infraestructura web</li>
+              <li><strong>Forward Email</strong> — envío de correos transaccionales</li>
+            </ul>
+            <p style={{ color: '#444', lineHeight: 1.7, marginTop: 12 }}>
+              Todos los proveedores cuentan con garantías adecuadas de protección de datos conforme al RGPD.
+            </p>
+          </section>
 
-          <h2>6. Derechos del usuario</h2>
-          <p>
-            El usuario puede ejercer sus derechos de acceso, rectificación, supresión, oposición,
-            portabilidad y limitación del tratamiento escribiendo a{' '}
-            <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a>.
-          </p>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>6. Tus derechos</h2>
+            <p style={{ color: '#444', lineHeight: 1.7 }}>
+              Puedes ejercer los derechos de acceso, rectificación, supresión, portabilidad, limitación u oposición al tratamiento enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a> con el asunto "Derechos RGPD" y una copia de tu documento de identidad.
+            </p>
+            <p style={{ color: '#444', lineHeight: 1.7, marginTop: 12 }}>
+              Si consideras que tus derechos no han sido atendidos, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener" style={{ color: '#2d6a4f' }}>aepd.es</a>).
+            </p>
+          </section>
 
-          <h2>7. Transferencias internacionales</h2>
-          <p>
-            Los datos pueden ser procesados por proveedores ubicados fuera de la UE (Supabase,
-            Stripe, Anthropic, Vercel), todos bajo garantías adecuadas conforme al RGPD.
-          </p>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>7. Cookies</h2>
+            <p style={{ color: '#444', lineHeight: 1.7 }}>
+              Utilizamos cookies estrictamente necesarias para el funcionamiento del servicio (sesión de usuario). No utilizamos cookies de publicidad ni de seguimiento de terceros sin consentimiento previo.
+            </p>
+          </section>
 
-          <h2>8. Reclamaciones</h2>
-          <p>
-            Si considera que sus derechos han sido vulnerados, puede presentar una reclamación ante
-            la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">aepd.es</a>).
-          </p>
-
-          <p className="text-xs text-[#888882] mt-8">Última actualización: mayo 2026</p>
+          <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0dad0', display: 'flex', gap: 24 }}>
+            <Link href="/aviso-legal" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Aviso Legal</Link>
+            <Link href="/terminos" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Términos de Uso</Link>
+            <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>← Volver al inicio</Link>
+          </div>
         </div>
       </div>
     </>

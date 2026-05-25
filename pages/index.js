@@ -316,10 +316,18 @@ export default function Home() {
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, fontSize: 12, color: C.muted }}>
-              {[['Precios','/precios'],['Aviso Legal','/legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
+              {[['Precios','/precios'],['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
                 <Link key={h} href={h} style={{ color: '#888882', textDecoration: 'none' }}>{l}</Link>
               ))}
               <a href="mailto:hola@cobratelo.es" style={{ color: '#888882', textDecoration: 'none' }}>hola@cobratelo.es</a>
+            </div>
+            <div className="legal-hover-wrap">
+              <span className="legal-trigger">Información del titular</span>
+              <div className="legal-tooltip">
+                <strong>Miquel Nogueras Camero</strong><br/>
+                NIF 77609795K · Carrer del Roser, 21 · 08185 Lliçà de Vall (Barcelona)<br/>
+                <a href="mailto:hola@cobratelo.es" style={{color:'#2d6a4f'}}>hola@cobratelo.es</a>
+              </div>
             </div>
           </div>
         </footer>
