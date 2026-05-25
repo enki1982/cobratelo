@@ -1,29 +1,56 @@
 name: Hetzner Command
 
 on:
-  repository_dispatch:
-    types: [hetzner-command]
+  push:
+    paths:
+      - '.hetzner-cmd'
   workflow_dispatch:
     inputs:
       command:
         description: 'Comando a ejecutar en Hetzner'
         required: true
-        default: 'python3 agent.py backfill'
+        default: 'echo OK'
 
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      HETZNER_API_TOKEN: ${{ secrets.HETZNER_API_TOKEN }}
+      FORWARD_EMAIL_API: ${{ secrets.FORWARD_EMAIL_API }}
+
     steps:
-      - name: Ejecutar comando en Hetzner
+      - uses: actions/checkout@v4
+
+      - name: Leer comando
+        id: cmd
+        run: |
+          if [ -f .hetzner-cmd ]; then
+            CMD=$(cat .hetzner-cmd)
+          else
+            CMD="${{ inputs.command }}"
+          fi
+          echo "command<<EOF" >> $GITHUB_OUTPUT
+          echo "$CMD" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Ejecutar en Hetzner
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: 46.224.184.13
           username: root
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          envs: VERCEL_TOKEN,HETZNER_API_TOKEN,FORWARD_EMAIL_API
           script: |
             cd /root/ayuda-es-agent
-            export $(grep -v '^#' .env | xargs)
-            COMMAND="${{ github.event.client_payload.command || inputs.command }}"
-            echo "▶ Ejecutando: $COMMAND"
-            eval "$COMMAND"
+            set -a; source .env 2>/dev/null; set +a
+            export VERCEL_TOKEN="$VERCEL_TOKEN"
+            export HETZNER_API_TOKEN="$HETZNER_API_TOKEN"
+            export FORWARD_EMAIL_API="$FORWARD_EMAIL_API"
+            CMD='${{ steps.cmd.outputs.command }}'
+            echo "▶ $(date '+%H:%M:%S') — $CMD"
+            echo "---"
+            eval "$CMD"
+            echo "---"
+            echo "✅ Completado"
           command_timeout: 30m
