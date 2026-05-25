@@ -137,7 +137,7 @@ export default function Home() {
                 {tienePerfil ? 'Ver mis ayudas →' : 'Analizar mi caso gratis →'}
               </Link>
               <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
-                Para gestorías ↗
+                Para gestorías →
               </Link>
             </div>
 
