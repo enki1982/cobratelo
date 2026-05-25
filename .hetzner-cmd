@@ -1,6 +1,1 @@
-for ID in price_1TZAIyRcjgMq3SnypaEC0HA7 price_1TZAIeRcjgMq3SnykxHk4jpU price_1TZAIJRcjgMq3SnyxE6pbqDd price_1TYOilRcjgMq3SnyIqNXpar7; do
-  RESP=$(curl -s -X POST "https://api.stripe.com/v1/prices/$ID" \
-    -u "$STRIPE_API_KEY:" \
-    -d "active=false")
-  echo "$ID: $(echo $RESP | python3 -c 'import sys,json; d=json.load(sys.stdin); print("OK active="+str(d.get("active","?"))) if "active" in d else print("ERR: "+d.get("error",{}).get("message","?"))')"
-done
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
