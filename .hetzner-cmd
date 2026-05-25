@@ -1,1 +1,1 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 agent.py backfill
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stripe_productos
