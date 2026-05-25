@@ -10,6 +10,8 @@ const PRICE_TO_PLAN = {
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_ALERTAS]: 'alertas',
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER]: 'starter',
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO]: 'pro',
+  'price_1TatI9RcjgMq3SnyPhsdIxYC': 'starter',
+  'price_1TatJ8RcjgMq3Sny71IyZJGr': 'pro',
 }
 
 export default async function handler(req, res) {

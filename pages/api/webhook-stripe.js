@@ -13,9 +13,13 @@ const supabaseAdmin = createClient(
 )
 
 const PRICE_TO_PLAN = {
+  // Env vars
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_ALERTAS]: 'alertas',
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER]: 'starter',
   [process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO]: 'pro',
+  // Price IDs directos (nuevos productos 149€/399€)
+  'price_1TatI9RcjgMq3SnyPhsdIxYC': 'starter',
+  'price_1TatJ8RcjgMq3Sny71IyZJGr': 'pro',
 }
 
 async function activarPlan(userId, plan) {
