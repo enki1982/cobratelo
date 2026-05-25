@@ -1,1 +1,1 @@
-echo ready
+cat /root/ayuda-es-agent/.env
