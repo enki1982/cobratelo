@@ -94,7 +94,7 @@ export default function Home() {
       }}>
 
         {/* BLOQUE OSCURO: Nav + Hero */}
-        <div style={{ background: '#0d1117', color: '#f0f0f5', backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%)', color: '#f0f0f5' }}>
+        <div style={{ background: '#030303', color: '#f0f0f5', backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%)', color: '#f0f0f5' }}>
 
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
@@ -209,32 +209,35 @@ export default function Home() {
                 <p style={{ fontSize: 13, color: '#666660', lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
             ))}
+            </div>
           </div>
           </div>
         </section>
 
-        {/* FUENTES */}
-        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px' }}>
-          <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.muted, marginBottom: 36 }}>
-            Información extraída de fuentes oficiales
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 32 }}>
-            {FUENTES.map((f, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 16px' : '14px 18px', borderRadius: 12, border: `1px solid ${f.border}22`, background: '#fff', transition: 'all 0.2s', opacity: 0.7, minWidth: 110, cursor: 'default' }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = f.color; e.currentTarget.style.boxShadow = `0 4px 16px ${f.color}22` }}
-                onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; e.currentTarget.style.borderColor = `${f.border}22`; e.currentTarget.style.boxShadow = 'none' }}>
-                {f.src ? (
-                  <img src={f.src} alt={f.nombre} title={f.sub} style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain' }} />
-                ) : (
-                  <>
-                    <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
-                    <span style={{ fontSize: 9, color: '#999', marginTop: 4, textAlign: 'center', letterSpacing: '0.2px', maxWidth: 90, lineHeight: 1.3 }}>{f.sub}</span>
-                  </>
-                )}
+        {/* FUENTES — Marquee horizontal */}
+        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%', overflow: 'hidden' }}>
+          <div style={{ padding: '36px 0' }}>
+            <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#888882', marginBottom: 24 }}>
+              FUENTES OFICIALES VERIFICADAS · ACTUALIZACIÓN CONTINUA
+            </p>
+            <div style={{ position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to right, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to left, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ display: 'flex', gap: 16, width: 'max-content', animation: 'marquee 28s linear infinite' }}>
+                {[...FUENTES, ...FUENTES].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 20px' : '12px 20px', borderRadius: 12, border: '1px solid #E0DAD0', background: '#fff', minWidth: 110, flexShrink: 0 }}>
+                    {f.src ? (
+                      <img src={f.src} alt={f.nombre} style={{ height: 32, width: 'auto', maxWidth: 130, objectFit: 'contain' }} />
+                    ) : (
+                      <>
+                        <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
+                        <span style={{ fontSize: 9, color: '#999', marginTop: 3, letterSpacing: '0.2px' }}>{f.sub}</span>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
           </div>
         </section>
 

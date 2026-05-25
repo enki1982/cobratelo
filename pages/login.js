@@ -198,7 +198,7 @@ export default function Login() {
             {/* MENSAJE ENVIADO */}
             {msg && (
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 40, marginBottom: 16 }}>📬</div>
+                
                 <h2 className="font-display font-bold" style={{ fontSize: 20, color: C.text, marginBottom: 12 }}>Revisa tu email</h2>
                 <p style={{ color: C.muted, fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>{msg}</p>
                 <button onClick={() => { setMsg(null); setError(null) }}

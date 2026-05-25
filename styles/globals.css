@@ -91,3 +91,9 @@ textarea {
 
 /* Selección de texto */
 ::selection { background: rgba(0,232,122,0.25); color: #f0f0f5; }
+
+/* Marquee animation */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
