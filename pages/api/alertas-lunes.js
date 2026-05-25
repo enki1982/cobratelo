@@ -41,21 +41,17 @@ export default async function handler(req, res) {
     const perfilesMap = {}
     usuariosDB?.forEach(u => { perfilesMap[u.id] = u })
 
-    // 2. Obtener ayudas nuevas (añadidas en los últimos 7 días)
-    const hace7dias = new Date()
-    hace7dias.setDate(hace7dias.getDate() - 7)
-
-    const { data: ayudasNuevas } = await supabaseAdmin
+    // 2. Obtener TODAS las ayudas activas
+    const { data: todasAyudas } = await supabaseAdmin
       .from('ayudas')
       .select('*')
-      .gte('created_at', hace7dias.toISOString())
       .order('created_at', { ascending: false })
 
-    if (!ayudasNuevas?.length) {
-      return res.json({ ok: true, mensaje: 'No hay ayudas nuevas esta semana', enviados: 0 })
+    if (!todasAyudas?.length) {
+      return res.json({ ok: true, mensaje: 'No hay ayudas en la BD', enviados: 0 })
     }
 
-    // 3. Para cada usuario con perfil completo, filtrar ayudas relevantes y enviar
+    // 3. Para cada usuario, comparar con los IDs que ya ha recibido
     let enviados = 0
     const errores = []
 
@@ -64,21 +60,30 @@ export default async function handler(req, res) {
       const dbUser = perfilesMap[user.id]
       if (!dbUser?.perfil || Object.keys(dbUser.perfil).length === 0) continue
 
-      // Filtrar ayudas nuevas que aplican a este usuario
-      const relevantes = ayudasNuevas.filter(a => aplicaAlUsuario(a, dbUser.perfil))
-      if (!relevantes.length) continue
+      // IDs que el usuario ya recibió en alertas anteriores
+      const yaVistos = new Set(dbUser.ayudas_alertadas || [])
+
+      // Ayudas que aplican al usuario y que NO ha recibido antes
+      const nuevasParaEste = todasAyudas.filter(a =>
+        !yaVistos.has(a.id) && aplicaAlUsuario(a, dbUser.perfil)
+      )
+
+      if (!nuevasParaEste.length) continue
 
       try {
-        await enviarAlerta(user.email, relevantes)
+        await enviarAlerta(user.email, nuevasParaEste)
         enviados++
 
-        // Actualizar fecha última alerta
+        // Guardar los IDs enviados para no repetirlos
+        const todosIds = [...yaVistos, ...nuevasParaEste.map(a => a.id)]
         await supabaseAdmin
           .from('usuarios')
-          .update({ alertas_enviadas: new Date().toISOString() })
+          .update({
+            alertas_enviadas: new Date().toISOString(),
+            ayudas_alertadas: todosIds,
+          })
           .eq('id', user.id)
 
-        // Pequeña pausa para no saturar SMTP
         await new Promise(r => setTimeout(r, 300))
       } catch (e) {
         errores.push({ email: user.email, error: e.message })
