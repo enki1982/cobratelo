@@ -1,4 +1,16 @@
-const Stripe = require('stripe')
+import Stripe from 'stripe'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+)
+
+const PRICE_TO_PLAN = {
+  [process.env.NEXT_PUBLIC_STRIPE_PRICE_ALERTAS]: 'alertas',
+  [process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER]: 'starter',
+  [process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO]: 'pro',
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
@@ -6,8 +18,22 @@ export default async function handler(req, res) {
   const { priceId } = req.query
   if (!priceId) return res.status(400).json({ error: 'priceId requerido' })
 
+  // Obtener usuario actual
+  const token = req.headers.authorization?.replace('Bearer ', '') ||
+    req.cookies?.['sb-access-token']
+
+  let userId = null
+  let userEmail = null
+  if (token) {
+    const { data: { user } } = await supabaseAdmin.auth.getUser(token)
+    userId = user?.id
+    userEmail = user?.email
+  }
+
   try {
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+    const plan = PRICE_TO_PLAN[priceId] || 'unknown'
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -15,6 +41,17 @@ export default async function handler(req, res) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/gracias?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/precios`,
       locale: 'es',
+      customer_email: userEmail || undefined,
+      metadata: {
+        supabase_user_id: userId || '',
+        plan,
+      },
+      subscription_data: {
+        metadata: {
+          supabase_user_id: userId || '',
+          plan,
+        },
+      },
     })
     res.redirect(303, session.url)
   } catch (err) {
