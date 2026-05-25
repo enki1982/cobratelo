@@ -491,6 +491,14 @@ export default function Perfil() {
       </Head>
 
       <div className="min-h-screen bg-[#161b27] flex flex-col">
+      {/* Banner onboarding */}
+      {isOnboarding && (
+        <div style={{ background: 'rgba(0,232,122,0.08)', borderBottom: '1px solid rgba(0,232,122,0.2)', padding: '12px 24px', textAlign: 'center' }}>
+          <p style={{ margin: 0, fontSize: 14, color: '#00e87a', fontWeight: 600 }}>
+            Bienvenido/a — Cuéntanos tu situación y descubrimos tus ayudas en 2 minutos
+          </p>
+        </div>
+      )}
         <div className="px-6 py-5 flex items-center justify-between max-w-2xl mx-auto w-full">
           <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5]">
             cóbratelo<span className="text-[#1A7A4A]">.es</span>

@@ -47,8 +47,9 @@ export default function Login() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
-      }).catch(() => {}) // silenciar errores — no es crítico
-      redirect()
+      }).catch(() => {})
+      // Tras registro, ir al cuestionario directamente
+      router.push(returnUrl ? decodeURIComponent(returnUrl) : '/perfil?onboarding=true')
     }
     setLoading(false)
   }
