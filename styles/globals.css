@@ -104,3 +104,23 @@ textarea {
 .marquee-track:hover {
   animation-play-state: paused;
 }
+
+/* ─── Mobile fixes ────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Hero — ocultar dashboard ejemplo en móvil */
+  .hero-dashboard { display: none !important; }
+
+  /* Hero — quitar position relative que deja espacio vacío */
+  .hero-content-wrapper { position: static !important; }
+
+  /* Nav — solo logo y CTA principal */
+  .nav-precios { display: none !important; }
+
+  /* Stats — 3 columnas compactas */
+  .stats-row { gap: 16px !important; }
+
+  /* Pasos — apilados verticalmente (ya lo son, OK) */
+
+  /* CTA final — padding más compacto */
+  .cta-final { padding: 48px 24px !important; }
+}
