@@ -10,10 +10,10 @@ const C = {
   surface: '#0f0f1a',
   card: 'rgba(255,255,255,0.03)',
   border: 'rgba(255,255,255,0.08)',
-  borderHover: 'rgba(0,232,122,0.3)',
-  green: '#00e87a',
-  greenDim: 'rgba(0,232,122,0.10)',
-  greenGlow: 'rgba(0,232,122,0.25)',
+  borderHover: 'rgba(255,131,0,0.3)',
+  green: '#FF8300',
+  greenDim: 'rgba(255,131,0,0.10)',
+  greenGlow: 'rgba(255,131,0,0.25)',
   text: '#f0f0f5',
   muted: 'rgba(240,240,245,0.5)',
   red: '#ff6b6b',
@@ -27,7 +27,7 @@ const STEPS = [
 ]
 
 const AYUDAS_DEMO = [
-  { icon: 'V', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', bg: 'rgba(0,232,122,0.12)' },
+  { icon: 'V', nombre: 'Bono Alquiler Joven 2026', org: 'Ministerio de Vivienda', importe: '2.400€', bg: 'rgba(255,131,0,0.12)' },
   { icon: 'D', nombre: 'Cupons ACCIÓ Digitalització', org: 'Generalitat de Catalunya', importe: '3.000€', bg: 'rgba(37,99,235,0.12)' },
   { icon: 'K', nombre: 'Kit Digital — Presencia web', org: 'Red.es · Gobierno de España', importe: '2.000€', bg: 'rgba(124,58,237,0.12)' },
   { icon: 'P', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
@@ -90,11 +90,11 @@ export default function Home() {
       </Head>
 
       <div style={{ background: C.bg, color: C.text, minHeight: '100vh', fontFamily: 'sans-serif',
-        backgroundImage: `radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,232,122,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 80%,rgba(37,99,235,0.07) 0%,transparent 50%)`
+        backgroundImage: `radial-gradient(ellipse 80% 60% at 20% 0%,rgba(255,131,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(124,58,237,0.09) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 80%,rgba(37,99,235,0.07) 0%,transparent 50%)`
       }}>
 
         {/* BLOQUE OSCURO: Nav + Hero */}
-        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(0,232,122,0.22) 0%, rgba(0,232,122,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #030303', color: '#f0f0f5', color: '#f0f0f5' }}>
+        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #030303', color: '#f0f0f5', color: '#f0f0f5' }}>
 
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
@@ -117,13 +117,13 @@ export default function Home() {
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
             {/* Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: `1px solid rgba(0,232,122,0.25)`, color: C.green, fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 100, marginBottom: 24 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: `1px solid rgba(255,131,0,0.25)`, color: C.green, fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 100, marginBottom: 24 }}>
               {totalAyudas}+ convocatorias activas en España
             </div>
 
             <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
               ¿Qué ayudas{' '}
-              <span style={{ background: 'linear-gradient(135deg,#00e87a 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              <span style={{ background: 'linear-gradient(135deg,#FF8300 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 puedes cobrar tú?
               </span>
             </h1>
@@ -155,9 +155,9 @@ export default function Home() {
           {/* Dashboard */}
           <FloatingScene style={{ position: 'relative' }} className="hidden md:block">
             {/* Glow ambiental de fondo */}
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(0,232,122,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(255,131,0,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
-            <FloatingCard depth={2} glowColor="rgba(0,232,122,0.22)" style={{ background: '#161b27', border: '1px solid rgba(0,232,122,0.3)', borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden', zIndex: 1 }}>
+            <FloatingCard depth={2} glowColor="rgba(255,131,0,0.22)" style={{ background: '#161b27', border: '1px solid rgba(255,131,0,0.3)', borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden', zIndex: 1 }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Ejemplo de resultado</span>
@@ -176,13 +176,13 @@ export default function Home() {
             </FloatingCard>
 
             {/* Float top-right */}
-            <FloatingCard depth={3} glowColor="rgba(0,232,122,0.3)" style={{ position: 'absolute', top: -20, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(0,232,122,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 2 }}>
+            <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: -20, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
               <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>ayudas para ti</div>
             </FloatingCard>
 
             {/* Float bottom-left */}
-            <FloatingCard depth={2} glowColor="rgba(0,232,122,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
+            <FloatingCard depth={2} glowColor="rgba(255,131,0,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}><svg width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4L3.5 6.5L9 1' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'/></svg></div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
@@ -223,14 +223,14 @@ export default function Home() {
         {/* CÓMO FUNCIONA */}
         <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
-          <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Cómo funciona</p>
+          <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Cómo funciona</p>
           <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
             Sin buscar. Sin perderse. Sin burocracia.
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
               <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: '#ffffff', border: '1px solid #E0DAD0', borderRadius: 16, padding: 24, transition: 'border-color 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#2D6A4F', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#cc5500', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
                 <div className="font-display font-bold" style={{ fontSize: 15, color: '#111110', marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
                 <p style={{ fontSize: 13, color: '#666660', lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
@@ -271,7 +271,7 @@ export default function Home() {
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#2D6A4F', marginBottom: 12 }}>Para gestorías y despachos</p>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Para gestorías y despachos</p>
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
                 Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
@@ -281,20 +281,20 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
                 {['Detecta ayudas de todos tus clientes automáticamente','Informe personalizado listo para presentar','Alertas cuando aparecen nuevas ayudas para cada cliente','Starter hasta 50 clientes · Pro ilimitado'].map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(0,232,122,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}><svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{display:'block'}}><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(255,131,0,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}><svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{display:'block'}}><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
                     {f}
                   </div>
                 ))}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <Link href="/precios?tab=gestoria" style={{ background: '#2D6A4F', color: '#fff', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
+                <Link href="/precios?tab=gestoria" style={{ background: '#cc5500', color: '#fff', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
                   Probar 7 días gratis →
                 </Link>
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
             <FloatingCard depth={1.5} glowColor="rgba(45,106,79,0.2)" style={{ background: '#161b27', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2D6A4F', opacity: 0.15 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#cc5500', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
                 { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente' },
@@ -308,7 +308,7 @@ export default function Home() {
                     <div style={{ fontSize: 11, color: 'rgba(240,240,245,0.5)', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
                   </div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
-                    background: c.estado === 'Tramitado' ? 'rgba(0,232,122,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
+                    background: c.estado === 'Tramitado' ? 'rgba(255,131,0,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
                     color: c.estado === 'Tramitado' ? C.green : c.estado === 'En proceso' ? '#60a5fa' : '#f59e0b'
                   }}>{c.estado}</span>
                 </div>
@@ -337,7 +337,7 @@ export default function Home() {
         {/* FOOTER */}
         <footer style={{ background: '#F7F3EC', borderTop: '1px solid #E0DAD0', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#2D6A4F' }}>.es</span></span>
+            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#cc5500' }}>.es</span></span>
             <p style={{ color: '#888882', fontSize: 12, textAlign: 'center' }}>
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
@@ -352,7 +352,7 @@ export default function Home() {
               <div className="legal-tooltip">
                 <strong>Miquel Nogueras Camero</strong><br/>
                 NIF 77609795K · Carrer del Roser, 21 · 08185 Lliçà de Vall (Barcelona)<br/>
-                <a href="mailto:hola@cobratelo.es" style={{color:'#2d6a4f'}}>hola@cobratelo.es</a>
+                <a href="mailto:hola@cobratelo.es" style={{color:'#cc5500'}}>hola@cobratelo.es</a>
               </div>
             </div>
           </div>

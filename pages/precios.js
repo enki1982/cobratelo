@@ -46,8 +46,8 @@ function PlanCard({ plan }) {
   }
   return (
     <div style={{
-      background: plan.destacado ? 'rgba(0,232,122,0.06)' : C.surface,
-      border: `2px solid ${plan.destacado ? 'rgba(0,232,122,0.4)' : C.border}`,
+      background: plan.destacado ? 'rgba(255,131,0,0.06)' : C.surface,
+      border: `2px solid ${plan.destacado ? 'rgba(255,131,0,0.4)' : C.border}`,
       borderRadius: 20, padding: 28, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden',
     }}>
       {plan.destacado && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />}
@@ -93,7 +93,7 @@ export default function Precios() {
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Precios</p>
           <h1 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(32px,5vw,56px)', letterSpacing: '-2px', color: C.text, marginBottom: 14 }}>
             Gratis para ciudadanos.<br />
-            <span style={{ background: 'linear-gradient(135deg,#00e87a 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: 'linear-gradient(135deg,#FF8300 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Poderoso para gestorías.
             </span>
           </h1>

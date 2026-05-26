@@ -11,7 +11,7 @@ export default function AvisoLegal() {
       <div style={{ background: '#f7f3ec', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#111110', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
-            cóbratelo<span style={{ color: '#00e87a' }}>.es</span>
+            cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
           </Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
@@ -27,7 +27,7 @@ export default function AvisoLegal() {
               <li><strong>Titular:</strong> Miquel Nogueras Camero</li>
               <li><strong>NIF:</strong> 77609795K</li>
               <li><strong>Domicilio:</strong> Carrer del Roser, 21 — 08185 Lliçà de Vall (Barcelona)</li>
-              <li><strong>Email de contacto:</strong> <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a></li>
+              <li><strong>Email de contacto:</strong> <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a></li>
               <li><strong>Sitio web:</strong> cobratelo.es</li>
             </ul>
           </section>
@@ -67,8 +67,8 @@ export default function AvisoLegal() {
           </section>
 
           <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0dad0', display: 'flex', gap: 24 }}>
-            <Link href="/privacidad" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Política de Privacidad</Link>
-            <Link href="/terminos" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Términos de Uso</Link>
+            <Link href="/privacidad" style={{ color: '#cc5500', textDecoration: 'none' }}>Política de Privacidad</Link>
+            <Link href="/terminos" style={{ color: '#cc5500', textDecoration: 'none' }}>Términos de Uso</Link>
             <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>← Volver al inicio</Link>
           </div>
         </div>

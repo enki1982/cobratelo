@@ -33,7 +33,7 @@ export default async function handler(req, res) {
             <!-- Header -->
             <div style="background:#111110;padding:28px 32px">
               <p style="margin:0;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px">
-                cóbratelo<span style="color:#00e87a">.es</span>
+                cóbratelo<span style="color:#FF8300">.es</span>
               </p>
             </div>
 
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
                   ['03', 'Cobra lo que te corresponde', 'Enlace directo a cada convocatoria oficial, listo para tramitar.'],
                 ].map(([n, t, d]) => `
                   <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start">
-                    <span style="background:#f0faf5;color:#2d6a4f;font-weight:800;font-size:12px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:28px;text-align:center">${n}</span>
+                    <span style="background:#f0faf5;color:#cc5500;font-weight:800;font-size:12px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:28px;text-align:center">${n}</span>
                     <div>
                       <p style="margin:0 0 2px;font-weight:700;font-size:14px;color:#111110">${t}</p>
                       <p style="margin:0;font-size:13px;color:#888882">${d}</p>
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
             <!-- Footer -->
             <div style="background:#f7f3ec;padding:20px 32px;border-top:1px solid #e0dad0">
               <p style="margin:0;font-size:12px;color:#b0aaa0;line-height:1.6">
-                Cóbratelo.es · <a href="mailto:hola@cobratelo.es" style="color:#2d6a4f;text-decoration:none">hola@cobratelo.es</a><br>
+                Cóbratelo.es · <a href="mailto:hola@cobratelo.es" style="color:#cc5500;text-decoration:none">hola@cobratelo.es</a><br>
                 Los resultados son orientativos. Consulta siempre las fuentes oficiales.
               </p>
             </div>

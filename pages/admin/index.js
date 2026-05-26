@@ -53,7 +53,7 @@ export default function Admin() {
 
   if (loading) return (
     <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -76,13 +76,13 @@ export default function Admin() {
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/" className="font-display font-bold text-lg">
-                cóbratelo<span className="text-[#1A7A4A]">.es</span>
+                cóbratelo<span className="text-[#cc5500]">.es</span>
               </Link>
               <span className="text-white/30">/</span>
               <span className="text-white/70 text-sm">Admin</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#1A7A4A] animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[#cc5500] animate-pulse" />
               <span className="text-xs text-white/50">Live</span>
             </div>
           </div>
@@ -105,9 +105,9 @@ export default function Admin() {
               {/* Stats principales */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Stat label="Usuarios totales" value={stats.total} sub={`+${stats.hoy} hoy`} />
-                <Stat label="Esta semana" value={`+${stats.semana}`} sub="nuevos registros" color="#1A7A4A" />
+                <Stat label="Esta semana" value={`+${stats.semana}`} sub="nuevos registros" color="#cc5500" />
                 <Stat label="Este mes" value={`+${stats.mes}`} sub="nuevos registros" />
-                <Stat label="Planes activos" value={stats.billing.suscripciones} sub="suscripciones Stripe" color="#1A7A4A" />
+                <Stat label="Planes activos" value={stats.billing.suscripciones} sub="suscripciones Stripe" color="#cc5500" />
               </div>
 
               {/* Distribución planes */}
@@ -119,7 +119,7 @@ export default function Admin() {
                       <div key={plan} className="flex items-center gap-3">
                         <span className={`text-xs font-medium px-2.5 py-1 rounded-full w-20 text-center ${PLAN_COLOR[plan]}`}>{plan}</span>
                         <div className="flex-1 bg-[#F0EAE0] rounded-full h-2">
-                          <div className="bg-[#1A7A4A] h-2 rounded-full transition-all"
+                          <div className="bg-[#cc5500] h-2 rounded-full transition-all"
                             style={{ width: stats.total ? `${(count/stats.total)*100}%` : '0%' }} />
                         </div>
                         <span className="text-sm font-semibold text-[#111110] w-8 text-right">{count}</span>
@@ -133,7 +133,7 @@ export default function Admin() {
                   <h2 className="font-semibold text-[#111110] mb-4">Tipo de usuario</h2>
                   <div className="space-y-3">
                     {[
-                      { label: 'Particulares', value: stats.particulares, color: '#1A7A4A' },
+                      { label: 'Particulares', value: stats.particulares, color: '#cc5500' },
                       { label: 'Con gestoría', value: stats.gestores, color: '#3B82F6' },
                       { label: 'Buscan gestoría', value: stats.quieren_gestor, color: '#F59E0B' },
                     ].map(item => (
@@ -162,7 +162,7 @@ export default function Admin() {
                           {fecha}: {count} registros
                         </div>
                         <div className="w-full rounded-t transition-all hover:opacity-80"
-                          style={{ height: `${(count/maxDia)*100}%`, minHeight: count > 0 ? '4px' : '1px', backgroundColor: count > 0 ? '#1A7A4A' : '#E0DAD0' }} />
+                          style={{ height: `${(count/maxDia)*100}%`, minHeight: count > 0 ? '4px' : '1px', backgroundColor: count > 0 ? '#cc5500' : '#E0DAD0' }} />
                         {label && <span className="text-[9px] text-[#B0AAA0] rotate-0 whitespace-nowrap">{label}</span>}
                       </div>
                     )
@@ -179,9 +179,9 @@ export default function Admin() {
               <div className="flex gap-3 flex-wrap">
                 <input type="text" value={busqueda} onChange={e => setBusqueda(e.target.value)}
                   placeholder="Buscar por email, localidad, situación..."
-                  className="flex-1 min-w-64 px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white focus:outline-none focus:border-[#1A7A4A] text-sm transition-colors" />
+                  className="flex-1 min-w-64 px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white focus:outline-none focus:border-[#cc5500] text-sm transition-colors" />
                 <select value={filtroPlan} onChange={e => setFiltroPlan(e.target.value)}
-                  className="px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white text-sm focus:outline-none focus:border-[#1A7A4A]">
+                  className="px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white text-sm focus:outline-none focus:border-[#cc5500]">
                   <option value="">Todos los planes</option>
                   <option value="free">Free</option>
                   <option value="alertas">Alertas</option>
@@ -244,13 +244,13 @@ export default function Admin() {
           {tab === 'facturacion' && stats && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Stat label="Facturación hoy" value={`${stats.billing.hoy.toFixed(2)}€`} color="#1A7A4A" />
-                <Stat label="Facturación 7 días" value={`${stats.billing.semana.toFixed(2)}€`} color="#1A7A4A" />
-                <Stat label="Facturación 30 días" value={`${stats.billing.mes.toFixed(2)}€`} color="#1A7A4A" />
+                <Stat label="Facturación hoy" value={`${stats.billing.hoy.toFixed(2)}€`} color="#cc5500" />
+                <Stat label="Facturación 7 días" value={`${stats.billing.semana.toFixed(2)}€`} color="#cc5500" />
+                <Stat label="Facturación 30 días" value={`${stats.billing.mes.toFixed(2)}€`} color="#cc5500" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Stat label="Suscripciones activas" value={stats.billing.suscripciones} sub="en Stripe" />
-                <Stat label="MRR estimado" value={`${(stats.planes.alertas * 0.99 + stats.planes.pro * 49).toFixed(2)}€`} sub="basado en planes activos" color="#1A7A4A" />
+                <Stat label="MRR estimado" value={`${(stats.planes.alertas * 0.99 + stats.planes.pro * 49).toFixed(2)}€`} sub="basado en planes activos" color="#cc5500" />
               </div>
               <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
                 <h2 className="font-semibold text-[#111110] mb-2">Desglose por plan</h2>
@@ -265,20 +265,20 @@ export default function Admin() {
                       <span className="text-sm text-[#555550]">{row.plan}</span>
                       <div className="flex gap-6 text-sm">
                         <span className="text-[#888882]">{row.count} usuarios</span>
-                        <span className="font-semibold text-[#1A7A4A]">{(row.count * row.precio).toFixed(2)}€/mes</span>
+                        <span className="font-semibold text-[#cc5500]">{(row.count * row.precio).toFixed(2)}€/mes</span>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 pt-4 border-t border-[#E0DAD0] flex justify-between">
                   <span className="font-semibold text-[#111110]">MRR total estimado</span>
-                  <span className="font-display text-xl font-bold text-[#1A7A4A]">
+                  <span className="font-display text-xl font-bold text-[#cc5500]">
                     {(stats.planes.alertas * 0.99 + stats.planes.starter * 9.99 + stats.planes.pro * 49).toFixed(2)}€
                   </span>
                 </div>
               </div>
               <div className="bg-[#F0EAE0] rounded-2xl p-4 text-sm text-[#888882]">
-                Para la facturación real con detalles de cada cobro, facturas y gestión de suscripciones → <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" className="text-[#1A7A4A] underline">Stripe Dashboard →</a>
+                Para la facturación real con detalles de cada cobro, facturas y gestión de suscripciones → <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" className="text-[#cc5500] underline">Stripe Dashboard →</a>
               </div>
             </div>
           )}

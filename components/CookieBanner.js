@@ -44,7 +44,7 @@ export default function CookieBanner() {
       <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, margin: 0, maxWidth: 600, lineHeight: 1.6 }}>
         Usamos cookies de análisis (Google Analytics) para mejorar el servicio. 
         Consulta nuestra{' '}
-        <Link href="/privacidad" style={{ color: '#00e87a', textDecoration: 'none' }}>
+        <Link href="/privacidad" style={{ color: '#FF8300', textDecoration: 'none' }}>
           política de privacidad
         </Link>.
       </p>
@@ -57,7 +57,7 @@ export default function CookieBanner() {
           Rechazar
         </button>
         <button onClick={accept} style={{
-          background: '#00e87a', border: 'none',
+          background: '#FF8300', border: 'none',
           color: '#030303', padding: '8px 20px', borderRadius: 8,
           cursor: 'pointer', fontSize: 13, fontWeight: 700,
         }}>

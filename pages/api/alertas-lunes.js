@@ -140,9 +140,9 @@ async function enviarAlerta(email, ayudas) {
           <p style="margin:0 0 8px;font-size:12px;color:#888882">${a.organismo || ''}</p>
           <p style="margin:0;font-size:13px;color:#555550;line-height:1.5">${(a.descripcion || '').substring(0, 120)}${a.descripcion?.length > 120 ? '...' : ''}</p>
         </div>
-        ${a.importe_max ? `<span style="background:#f0faf5;color:#2d6a4f;font-weight:800;font-size:14px;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0">${a.importe_max.toLocaleString('es-ES')}€</span>` : ''}
+        ${a.importe_max ? `<span style="background:#f0faf5;color:#cc5500;font-weight:800;font-size:14px;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0">${a.importe_max.toLocaleString('es-ES')}€</span>` : ''}
       </div>
-      ${a.url ? `<a href="${a.url}" style="display:inline-block;margin-top:10px;font-size:12px;color:#2d6a4f;text-decoration:none;font-weight:600">Ver convocatoria oficial →</a>` : ''}
+      ${a.url ? `<a href="${a.url}" style="display:inline-block;margin-top:10px;font-size:12px;color:#cc5500;text-decoration:none;font-weight:600">Ver convocatoria oficial →</a>` : ''}
     </div>
   `).join('')
 
@@ -160,8 +160,8 @@ async function enviarAlerta(email, ayudas) {
         <div style="max-width:520px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08)">
 
           <div style="background:#111110;padding:24px 32px;display:flex;justify-content:space-between;align-items:center">
-            <p style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px">cóbratelo<span style="color:#00e87a">.es</span></p>
-            <span style="background:rgba(0,232,122,0.15);color:#00e87a;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid rgba(0,232,122,0.3)">NOVEDADES DE LA SEMANA</span>
+            <p style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px">cóbratelo<span style="color:#FF8300">.es</span></p>
+            <span style="background:rgba(255,131,0,0.15);color:#FF8300;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid rgba(255,131,0,0.3)">NOVEDADES DE LA SEMANA</span>
           </div>
 
           <div style="padding:28px 32px">
@@ -181,7 +181,7 @@ async function enviarAlerta(email, ayudas) {
 
           <div style="background:#f7f3ec;padding:16px 32px;border-top:1px solid #e0dad0">
             <p style="margin:0;font-size:11px;color:#b0aaa0;line-height:1.6">
-              Cóbratelo.es · <a href="mailto:hola@cobratelo.es" style="color:#2d6a4f;text-decoration:none">hola@cobratelo.es</a><br>
+              Cóbratelo.es · <a href="mailto:hola@cobratelo.es" style="color:#cc5500;text-decoration:none">hola@cobratelo.es</a><br>
               Recibes esto porque tienes alertas activas. <a href="https://cobratelo.es/cuenta" style="color:#b0aaa0">Gestionar preferencias</a>
             </p>
           </div>

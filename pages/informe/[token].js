@@ -42,7 +42,7 @@ export default function Informe() {
 
   if (loading) return (
     <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -50,7 +50,7 @@ export default function Informe() {
     <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center px-6">
       <div className="text-center">
         <p className="text-[#888882] mb-4">Este informe no existe o ha expirado.</p>
-        <Link href="/" className="text-[#1A7A4A] underline">Ir a Cóbratelo.es</Link>
+        <Link href="/" className="text-[#cc5500] underline">Ir a Cóbratelo.es</Link>
       </div>
     </div>
   )
@@ -70,7 +70,7 @@ export default function Informe() {
         <div className="bg-[#111110] text-white px-6 py-8">
           <div className="max-w-2xl mx-auto">
             <Link href="/" className="font-display text-xl font-bold text-white mb-5 block">
-              cóbratelo<span className="text-[#1A7A4A]">.es</span>
+              cóbratelo<span className="text-[#cc5500]">.es</span>
             </Link>
             <h1 className="font-display text-3xl font-bold mb-1">Informe de ayudas públicas</h1>
             {nombre_cliente && <p className="text-white/70">Cliente: <span className="text-white font-medium">{nombre_cliente}</span></p>}
@@ -92,8 +92,8 @@ export default function Informe() {
           </div>
 
           {/* Resumen */}
-          <div className="bg-[#E8F5EE] border border-[#1A7A4A]/20 rounded-2xl p-5 flex items-center gap-4">
-            <div className="font-display text-4xl font-bold text-[#1A7A4A]">{ayudas.length}</div>
+          <div className="bg-[#E8F5EE] border border-[#cc5500]/20 rounded-2xl p-5 flex items-center gap-4">
+            <div className="font-display text-4xl font-bold text-[#cc5500]">{ayudas.length}</div>
             <div>
               <p className="font-semibold text-[#111110]">ayudas identificadas</p>
               <p className="text-sm text-[#888882]">Listas para tramitar</p>
@@ -116,14 +116,14 @@ export default function Informe() {
                 </div>
                 {a.importe_max > 0 && (
                   <div className="shrink-0 text-right">
-                    <p className="font-bold text-[#1A7A4A]">Hasta {a.importe_max.toLocaleString('es-ES')}€</p>
+                    <p className="font-bold text-[#cc5500]">Hasta {a.importe_max.toLocaleString('es-ES')}€</p>
                   </div>
                 )}
               </div>
               {a.descripcion && <p className="text-sm text-[#666660] mb-3 leading-relaxed">{a.descripcion}</p>}
               {a.url_oficial && (
                 <a href={a.url_oficial} target="_blank" rel="noopener noreferrer"
-                  className="text-sm font-medium text-[#1A7A4A] hover:text-[#145e39] transition-colors">
+                  className="text-sm font-medium text-[#cc5500] hover:text-[#aa4400] transition-colors">
                   Ver convocatoria oficial →
                 </a>
               )}

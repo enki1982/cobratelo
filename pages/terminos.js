@@ -11,7 +11,7 @@ export default function Terminos() {
       <div style={{ background: '#f7f3ec', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#111110', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
-            cóbratelo<span style={{ color: '#00e87a' }}>.es</span>
+            cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
           </Link>
         </nav>
 
@@ -58,7 +58,7 @@ export default function Terminos() {
               Las suscripciones de pago se renuevan automáticamente cada mes en la fecha de contratación. El pago se procesa a través de Stripe, plataforma certificada PCI-DSS. Cóbratelo.es no almacena datos de tarjeta bancaria.
             </p>
             <p style={{ color: '#444', lineHeight: 1.7, marginTop: 12 }}>
-              El usuario puede cancelar su suscripción en cualquier momento desde su panel de cuenta o enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a>. La cancelación tiene efecto al finalizar el período ya facturado. No se realizan devoluciones de períodos ya abonados, salvo error imputable al servicio.
+              El usuario puede cancelar su suscripción en cualquier momento desde su panel de cuenta o enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a>. La cancelación tiene efecto al finalizar el período ya facturado. No se realizan devoluciones de períodos ya abonados, salvo error imputable al servicio.
             </p>
           </section>
 
@@ -97,13 +97,13 @@ export default function Terminos() {
           <section style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>9. Contacto</h2>
             <p style={{ color: '#444', lineHeight: 1.7 }}>
-              Para cualquier consulta sobre estos términos puedes contactar en <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a>.
+              Para cualquier consulta sobre estos términos puedes contactar en <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a>.
             </p>
           </section>
 
           <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0dad0', display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-            <Link href="/aviso-legal" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Aviso Legal</Link>
-            <Link href="/privacidad" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Política de Privacidad</Link>
+            <Link href="/aviso-legal" style={{ color: '#cc5500', textDecoration: 'none' }}>Aviso Legal</Link>
+            <Link href="/privacidad" style={{ color: '#cc5500', textDecoration: 'none' }}>Política de Privacidad</Link>
             <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>← Volver al inicio</Link>
           </div>
         </div>

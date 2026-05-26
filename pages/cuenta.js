@@ -142,10 +142,10 @@ function ModalFecha({ valor, onGuardar, onCerrar }) {
             onChange={e => setFecha(e.target.value)}
             max={hoy.toISOString().split('T')[0]}
             min={minDate.toISOString().split('T')[0]}
-            className="w-full px-4 py-3.5 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] text-lg transition-colors"
+            className="w-full px-4 py-3.5 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] text-lg transition-colors"
           />
           {fecha && edad !== null && edad >= 0 && (
-            <p className="text-sm text-[#1A7A4A] mt-2 font-medium">{edad} años</p>
+            <p className="text-sm text-[#cc5500] mt-2 font-medium">{edad} años</p>
           )}
         </div>
         <div className="px-6 pb-6 flex gap-3">
@@ -224,10 +224,10 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
               onChange={handleChange}
               placeholder="Escribe tu pueblo o ciudad..."
               className={`w-full px-4 py-3.5 rounded-2xl border-2 text-[#f0f0f5] font-medium focus:outline-none transition-colors
-                ${seleccionado ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:border-[#1A7A4A]'}`}
+                ${seleccionado ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:border-[#cc5500]'}`}
             />
-            {buscando && <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />}
-            {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1A7A4A] font-bold"></div>}
+            {buscando && <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-[#cc5500] border-t-transparent rounded-full animate-spin" />}
+            {seleccionado && <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#cc5500] font-bold"></div>}
             {sugerencias.length > 0 && !seleccionado && (
               <div className="absolute z-20 w-full mt-2 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
                 {sugerencias.map((mun, i) => (
@@ -241,8 +241,8 @@ function ModalPueblo({ campoId, titulo, valor, onGuardar, onCerrar }) {
             )}
           </div>
           {seleccionado && (
-            <div className="mt-3 p-3 bg-[rgba(0,232,122,0.1)] rounded-xl text-sm">
-              <span className="font-medium text-[#1A7A4A]">{seleccionado.ccaa}</span>
+            <div className="mt-3 p-3 bg-[rgba(255,131,0,0.1)] rounded-xl text-sm">
+              <span className="font-medium text-[#cc5500]">{seleccionado.ccaa}</span>
               <span className="text-[rgba(240,240,245,0.5)]"> · {seleccionado.provincia}</span>
               {seleccionado.comarca && seleccionado.comarca !== seleccionado.provincia && (
                 <span className="text-[rgba(240,240,245,0.5)]"> · {seleccionado.comarca}</span>
@@ -290,10 +290,10 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
             return (
               <button key={op.v} onClick={() => toggle(op.v)}
                 className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left transition-all
-                  ${active ? 'border-[#1A7A4A] bg-[rgba(0,232,122,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] hover:border-[#C0BAB0]'}`}>
+                  ${active ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] hover:border-[#C0BAB0]'}`}>
                 <span className="text-xl">{op.e}</span>
                 <span className="font-medium text-sm flex-1">{op.l}</span>
-                {active && <span className="text-[#1A7A4A] font-bold"></span>}
+                {active && <span className="text-[#cc5500] font-bold"></span>}
               </button>
             )
           })}
@@ -411,7 +411,7 @@ export default function Cuenta() {
 
   if (loading) return (
     <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -420,7 +420,7 @@ export default function Cuenta() {
       <Head><title>Mi cuenta — Cóbratelo</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
       <div style={bgMesh}>
         <nav className="px-6 py-5 flex items-center justify-between max-w-2xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5]">cóbratelo<span className="text-[#1A7A4A]">.es</span></Link>
+          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5]">cóbratelo<span className="text-[#cc5500]">.es</span></Link>
           <button onClick={handleLogout} className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors">Cerrar sesión</button>
         </nav>
 
@@ -433,7 +433,7 @@ export default function Cuenta() {
           <div className="flex gap-1 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-full p-1 mb-8 w-fit">
             {[{id:'perfil',label:'Mi perfil'},{id:'pagos',label:'Suscripción'},{id:'cuenta',label:'Cuenta'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#00e87a] text-[#030303]' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#FF8300] text-[#030303]' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
                 {t.label}
               </button>
             ))}
@@ -449,7 +449,7 @@ export default function Cuenta() {
                 </div>
                 <Link
                   href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilData))}`}
-                  className="bg-[#1A7A4A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#145e39] transition-colors whitespace-nowrap shrink-0">
+                  className="bg-[#cc5500] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#aa4400] transition-colors whitespace-nowrap shrink-0">
                   Ver mis ayudas →
                 </Link>
               </div>
@@ -523,7 +523,7 @@ export default function Cuenta() {
                       <p className="text-xs text-[rgba(240,240,245,0.5)] uppercase tracking-wide font-medium mb-1">Plan actual</p>
                       <p className="font-semibold text-[#f0f0f5] text-lg">{plan === 'free' ? 'Gratuito' : plan === 'alertas' ? 'Alertas' : 'Gestoría Pro'}</p>
                     </div>
-                    <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${plan === 'free' ? 'bg-[rgba(255,255,255,0.05)] text-[rgba(240,240,245,0.5)]' : 'bg-[rgba(0,232,122,0.1)] text-[#1A7A4A]'}`}>
+                    <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${plan === 'free' ? 'bg-[rgba(255,255,255,0.05)] text-[rgba(240,240,245,0.5)]' : 'bg-[rgba(255,131,0,0.1)] text-[#cc5500]'}`}>
                       {plan === 'free' ? 'Gratis' : plan === 'starter' ? '149€/mes' : plan === 'pro' ? '399€/mes' : '149€/mes'}
                     </span>
                   </div>
@@ -532,7 +532,7 @@ export default function Cuenta() {
                   {plan === 'free' ? (
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-[rgba(240,240,245,0.5)]">Sin alertas automáticas</p>
-                      <Link href="/precios" className="text-sm font-semibold text-[#1A7A4A] hover:text-[#145e39] transition-colors ml-4">Mejorar →</Link>
+                      <Link href="/precios" className="text-sm font-semibold text-[#cc5500] hover:text-[#aa4400] transition-colors ml-4">Mejorar →</Link>
                     </div>
                   ) : (
                     <div className="flex items-center justify-between">
@@ -562,7 +562,7 @@ export default function Cuenta() {
                           <p className="text-xs text-[rgba(240,240,245,0.5)]">{row.sub}</p>
                         </div>
                       </div>
-                      <button onClick={handlePortalFacturacion} className="text-sm text-[#1A7A4A] font-medium hover:text-[#145e39] transition-colors ml-4">{row.btn}</button>
+                      <button onClick={handlePortalFacturacion} className="text-sm text-[#cc5500] font-medium hover:text-[#aa4400] transition-colors ml-4">{row.btn}</button>
                     </div>
                   ))}
                 </div>
@@ -592,12 +592,12 @@ export default function Cuenta() {
                   </div>
                 </div>
                 {!cambiandoPassword ? (
-                  <button onClick={() => setCambiandoPassword(true)} className="text-sm text-[#1A7A4A] font-medium underline">Cambiar contraseña</button>
+                  <button onClick={() => setCambiandoPassword(true)} className="text-sm text-[#cc5500] font-medium underline">Cambiar contraseña</button>
                 ) : (
                   <form onSubmit={handleCambiarPassword} className="mt-4 space-y-3">
                     <input type="password" value={nuevaPassword} onChange={e => setNuevaPassword(e.target.value)} placeholder="Nueva contraseña (mín. 6 caracteres)"
-                      className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
-                    {passwordMsg && <p className={`text-sm ${passwordMsg.includes('Error')?'text-red-600':'text-[#1A7A4A]'}`}>{passwordMsg}</p>}
+                      className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] transition-colors" />
+                    {passwordMsg && <p className={`text-sm ${passwordMsg.includes('Error')?'text-red-600':'text-[#cc5500]'}`}>{passwordMsg}</p>}
                     <div className="flex gap-2">
                       <button type="submit" className="bg-[#f0f0f5] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">Guardar</button>
                       <button type="button" onClick={()=>{setCambiandoPassword(false);setPasswordMsg('')}} className="text-sm text-[rgba(240,240,245,0.5)] px-5 py-2.5 rounded-full border border-[rgba(255,255,255,0.08)]">Cancelar</button>

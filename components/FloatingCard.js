@@ -6,7 +6,7 @@ const GLOW_SPRING = { stiffness: 120, damping: 20 }
 
 export function FloatingCard({
   children, style, depth = 1,
-  glowColor = 'rgba(0,232,122,0.2)',
+  glowColor = 'rgba(255,131,0,0.2)',
   className = ''
 }) {
   const ref = useRef(null)

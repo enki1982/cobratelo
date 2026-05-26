@@ -588,8 +588,8 @@ export default function Resultados() {
     const returnUrl = typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''
     return (
       <div style={{ background: '#0d1117', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <div style={{ background: '#161b27', border: '1px solid rgba(0,232,122,0.25)', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', textAlign: 'center' }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(0,232,122,0.1)', border: '1px solid rgba(0,232,122,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, margin: '0 auto 24px' }}>🔒</div>
+        <div style={{ background: '#161b27', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', textAlign: 'center' }}>
+          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, margin: '0 auto 24px' }}>🔒</div>
           <h2 className="font-display font-bold" style={{ fontSize: 24, color: '#f0f0f5', letterSpacing: '-0.5px', marginBottom: 12 }}>
             Crea tu cuenta gratuita
           </h2>
@@ -598,7 +598,7 @@ export default function Resultados() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <Link href={'/login?return=' + returnUrl}
-              style={{ background: '#00e87a', color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 0', borderRadius: 100, textDecoration: 'none', display: 'block' }}>
+              style={{ background: '#FF8300', color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 0', borderRadius: 100, textDecoration: 'none', display: 'block' }}>
               Crear cuenta gratis →
             </Link>
             <Link href={'/login?return=' + returnUrl}
@@ -615,7 +615,7 @@ export default function Resultados() {
     return (
       <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
         <div className="text-center px-6">
-          <div className="w-12 h-12 border-4 border-[#1A7A4A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="font-display text-xl text-[#f0f0f5]">Analizando tu perfil...</p>
           <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Buscando ayudas para tu situación específica</p>
         </div>
@@ -633,7 +633,7 @@ export default function Resultados() {
       <div style={bgMesh}>
         <nav className="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
           <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5] shrink-0">
-            cóbratelo<span className="text-[#1A7A4A]">.es</span>
+            cóbratelo<span className="text-[#cc5500]">.es</span>
           </Link>
           <div className="flex items-center gap-3 ml-4 overflow-hidden">
             <Link href="/" className="hidden sm:block text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">Inicio</Link>
@@ -660,7 +660,7 @@ export default function Resultados() {
             const provincia = puebloObj.provincia || ''
             const busqueda = encodeURIComponent(`gestoría asesoría fiscal ${pueblo} ${provincia}`.trim())
             return (
-              <div className="bg-[rgba(0,232,122,0.1)] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6">
+              <div className="bg-[rgba(255,131,0,0.1)] border border-[#cc5500]/20 rounded-2xl p-5 mb-6">
                 <div className="flex items-start gap-3 mb-3">
                   
                   <div>
@@ -673,7 +673,7 @@ export default function Resultados() {
                 <div className="flex flex-col gap-2">
                   <a href={`https://www.google.com/maps/search/${busqueda}`}
                      target="_blank" rel="noopener noreferrer"
-                     className="flex items-center justify-center gap-2 bg-[#1A7A4A] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#145e39] transition-colors">
+                     className="flex items-center justify-center gap-2 bg-[#cc5500] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#aa4400] transition-colors">
                     Ver gestorías en Google Maps
                   </a>
                 </div>
@@ -682,16 +682,16 @@ export default function Resultados() {
           })()}
 
           {perfil?.email_gestoria && (
-            <div className="bg-[rgba(0,232,122,0.1)] border border-[#1A7A4A]/20 rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
+            <div className="bg-[rgba(255,131,0,0.1)] border border-[#cc5500]/20 rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-[#f0f0f5] text-sm">Enviar informe a tu gestoría</p>
                 <p className="text-xs text-[rgba(240,240,245,0.5)] mt-0.5">{perfil.email_gestoria}</p>
               </div>
               {emailEnviado ? (
-                <span className="text-[#1A7A4A] font-semibold text-sm"> Enviado</span>
+                <span className="text-[#cc5500] font-semibold text-sm"> Enviado</span>
               ) : (
                 <button onClick={enviarAGestoria} disabled={enviando}
-                  className="bg-[#1A7A4A] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#145e39] transition-colors disabled:opacity-60">
+                  className="bg-[#cc5500] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#aa4400] transition-colors disabled:opacity-60">
                   {enviando ? 'Enviando...' : 'Enviar →'}
                 </button>
               )}
@@ -704,7 +704,7 @@ export default function Resultados() {
               const isBlurred = i >= limit
               return (
                 <div key={ayuda.id}
-                  className={`ayuda-card bg-[#161b27] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#1A7A4A] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
+                  className={`ayuda-card bg-[#161b27] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#cc5500] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
                   {isBlurred && (
                     <div className="absolute inset-0 backdrop-blur-sm bg-[#161b27]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
                       onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -734,7 +734,7 @@ export default function Resultados() {
                      <h3 className="font-semibold text-[#f0f0f5] leading-snug mb-0.5">{ayuda.nombre}</h3>
                      <p className="text-xs text-[rgba(240,240,245,0.5)] mb-1">{ayuda.organismo}</p>
                      {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo) && (
-                       <p className="font-display text-base font-bold text-[#1A7A4A]">
+                       <p className="font-display text-base font-bold text-[#cc5500]">
                          {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
                        </p>
                      )}
@@ -745,7 +745,7 @@ export default function Resultados() {
                   {!isBlurred && (
                     ayuda.url_oficial
                       ? <a href={ayuda.url_oficial} target="_blank" onClick={() => window.cobratelo_track?.("convocatoria_click", { ayuda: ayuda.nombre, organismo: ayuda.organismo })} rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1A7A4A] hover:text-[#145e39] transition-colors">
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#cc5500] hover:text-[#aa4400] transition-colors">
                           Ver convocatoria oficial →
                         </a>
                       : <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}>
@@ -802,13 +802,13 @@ export default function Resultados() {
                 <label className="text-xs text-[rgba(240,240,245,0.5)] font-medium uppercase tracking-wide block mb-1.5">Tu nombre (opcional)</label>
                 <input type="text" value={nombreCliente} onChange={e => setNombreCliente(e.target.value)}
                   placeholder="Ej: Paco García"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] transition-colors" />
               </div>
               <div>
                 <label className="text-xs text-[rgba(240,240,245,0.5)] font-medium uppercase tracking-wide block mb-1.5">Email del gestor</label>
                 <input type="email" value={emailGestor} onChange={e => setEmailGestor(e.target.value)}
                   placeholder="gestor@gestoría.es"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#1A7A4A] text-[#f0f0f5] transition-colors" />
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] transition-colors" />
               </div>
               <p className="text-xs text-[rgba(240,240,245,0.5)]">
                 Le enviaremos el listado de tus {ayudas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.

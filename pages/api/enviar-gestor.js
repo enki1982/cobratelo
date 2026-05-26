@@ -34,9 +34,9 @@ export default async function handler(req, res) {
       <td style="padding:10px 0;border-bottom:1px solid #f0ead0;">
         <div style="font-weight:600;color:#111110;font-size:14px;">${i + 1}. ${a.nombre}</div>
         <div style="color:#888882;font-size:12px;margin-top:2px;">${a.organismo}</div>
-        ${a.importe_max > 0 ? `<div style="color:#1a7a4a;font-weight:700;font-size:13px;margin-top:3px;">Hasta ${a.importe_max.toLocaleString('es-ES')}€</div>` : ''}
+        ${a.importe_max > 0 ? `<div style="color:#cc5500;font-weight:700;font-size:13px;margin-top:3px;">Hasta ${a.importe_max.toLocaleString('es-ES')}€</div>` : ''}
         ${a.descripcion ? `<div style="color:#666660;font-size:12px;margin-top:4px;">${a.descripcion}</div>` : ''}
-        ${a.url_oficial ? `<div style="margin-top:5px;"><a href="${a.url_oficial}" style="color:#1a7a4a;font-size:12px;">Ver convocatoria oficial →</a></div>` : ''}
+        ${a.url_oficial ? `<div style="margin-top:5px;"><a href="${a.url_oficial}" style="color:#cc5500;font-size:12px;">Ver convocatoria oficial →</a></div>` : ''}
       </td>
     </tr>
   `).join('')
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     <!-- Header -->
     <div style="background:#111110;padding:32px 40px;">
       <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">
-        cóbratelo<span style="color:#1a7a4a;">.es</span>
+        cóbratelo<span style="color:#cc5500;">.es</span>
       </div>
       <div style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:4px;">Ayudas públicas personalizadas</div>
     </div>
@@ -94,7 +94,7 @@ export default async function handler(req, res) {
           Si trabaja con particulares o autónomos, Cóbratelo.es puede ser una herramienta
           muy útil para detectar oportunidades para sus clientes antes de que caduquen.
         </p>
-        <a href="https://cobratelo.es/precios" style="display:inline-block;background:#1a7a4a;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:50px;">
+        <a href="https://cobratelo.es/precios" style="display:inline-block;background:#cc5500;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:50px;">
           Ver planes para gestorías →
         </a>
       </div>

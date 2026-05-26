@@ -11,7 +11,7 @@ export default function Privacidad() {
       <div style={{ background: '#f7f3ec', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#111110', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
-            cóbratelo<span style={{ color: '#00e87a' }}>.es</span>
+            cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
           </Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
@@ -23,7 +23,7 @@ export default function Privacidad() {
             <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
               <li><strong>Responsable:</strong> Miquel Nogueras Camero</li>
               <li><strong>NIF:</strong> 77609795K</li>
-              <li><strong>Email:</strong> <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a></li>
+              <li><strong>Email:</strong> <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a></li>
             </ul>
           </section>
 
@@ -70,10 +70,10 @@ export default function Privacidad() {
           <section style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>6. Tus derechos</h2>
             <p style={{ color: '#444', lineHeight: 1.7 }}>
-              Puedes ejercer los derechos de acceso, rectificación, supresión, portabilidad, limitación u oposición al tratamiento enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#2d6a4f' }}>hola@cobratelo.es</a> con el asunto "Derechos RGPD" y una copia de tu documento de identidad.
+              Puedes ejercer los derechos de acceso, rectificación, supresión, portabilidad, limitación u oposición al tratamiento enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a> con el asunto "Derechos RGPD" y una copia de tu documento de identidad.
             </p>
             <p style={{ color: '#444', lineHeight: 1.7, marginTop: 12 }}>
-              Si consideras que tus derechos no han sido atendidos, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener" style={{ color: '#2d6a4f' }}>aepd.es</a>).
+              Si consideras que tus derechos no han sido atendidos, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener" style={{ color: '#cc5500' }}>aepd.es</a>).
             </p>
           </section>
 
@@ -85,8 +85,8 @@ export default function Privacidad() {
           </section>
 
           <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0dad0', display: 'flex', gap: 24 }}>
-            <Link href="/aviso-legal" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Aviso Legal</Link>
-            <Link href="/terminos" style={{ color: '#2d6a4f', textDecoration: 'none' }}>Términos de Uso</Link>
+            <Link href="/aviso-legal" style={{ color: '#cc5500', textDecoration: 'none' }}>Aviso Legal</Link>
+            <Link href="/terminos" style={{ color: '#cc5500', textDecoration: 'none' }}>Términos de Uso</Link>
             <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>← Volver al inicio</Link>
           </div>
         </div>
