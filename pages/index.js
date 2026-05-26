@@ -41,7 +41,7 @@ const FUENTES = [
   { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72', src: '/Vivienda.png' },
   { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E', src: '/Logotipo_de_la_Generalitat_de_Catalunya.svg' },
   { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B', src: '/Logotipo_del_Gobierno_de_la_Comunidad_de_Madrid.svg' },
-  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B', src: '/GobiernoEspana.png' },
+  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B', src: '/Logotipo_del_Gobierno_de_España.svg' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
@@ -122,10 +122,10 @@ export default function Home() {
             </div>
 
             <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
-              ¿Qué ayudas puedes <span style={{ color: '#FFF5EB' }}>cobrar tú?</span>
+              ¿Qué ayudas puedes<br/>cobrar tú?
             </h1>
 
-            <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+            <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
               Analizamos tu perfil y te decimos exactamente qué ayudas públicas puedes cobrar tú. Sin buscar. Sin burocracia. Sin perderte en portales. En 2 minutos. Gratis.
             </p>
 
@@ -272,7 +272,7 @@ export default function Home() {
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
                 Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
-              <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+              <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
                 Cada cliente tuyo tiene ayudas que no conoce. Cóbratelo las detecta, genera el informe y tú cobras la gestión — sin buscar, sin burocracia, sin trabajo extra.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
