@@ -432,7 +432,6 @@ export default function Home() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <p style={{ color: 'rgba(255,245,235,0.25)', fontSize: 12 }}>© 2026 Cóbratelo.es · Los resultados son orientativos. Consulta siempre las fuentes oficiales.</p>
             </div>
-            </div>
           </div>
         </footer>
 
