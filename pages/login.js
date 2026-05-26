@@ -58,6 +58,15 @@ export default function Login() {
     setLoading(false)
   }
 
+
+  const handleGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: typeof window !== 'undefined' ? window.location.origin + (returnUrl || '/resultados') : '/resultados' }
+    })
+    if (error) console.error(error)
+  }
+
   return (
     <>
       <Head><title>Acceder — Cóbratelo.es</title><meta name="viewport" content="width=device-width,initial-scale=1" /></Head>
