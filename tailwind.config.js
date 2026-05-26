@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         display: ['Fraunces', 'Georgia', 'serif'],
-        body: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         brand: {

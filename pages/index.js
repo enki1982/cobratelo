@@ -117,15 +117,15 @@ export default function Home() {
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
             {/* Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.2)', color: 'rgba(255,245,235,0.7)', fontSize: 11, fontWeight: 600, padding: '5px 14px', borderRadius: 100, marginBottom: 24, letterSpacing: '0.5px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid rgba(255,245,235,0.15)', color: 'rgba(255,245,235,0.5)', fontSize: 11, fontWeight: 500, padding: '5px 14px', borderRadius: 100, marginBottom: 28, letterSpacing: '1px' }}>
               {totalAyudas}+ convocatorias activas en España
             </div>
 
-            <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
+            <h1 className="font-display font-bold" style={{ fontSize: 'clamp(38px,5vw,62px)', lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 24, color: C.text }}>
               ¿Qué ayudas puedes<br/>cobrar tú?
             </h1>
 
-            <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+            <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.75, marginBottom: 40, maxWidth: 440 }}>
               Analizamos tu perfil y te decimos exactamente qué ayudas públicas puedes cobrar tú. Sin buscar. Sin burocracia. Sin perderte en portales. En 2 minutos. Gratis.
             </p>
 
@@ -219,7 +219,7 @@ export default function Home() {
 
 
         {/* ── PANEL DE RESULTADOS ── */}
-        <section style={{ background: '#fff', width: '100%', padding: '80px 0' }}>
+        <section style={{ background: '#fff', width: '100%', padding: '96px 0' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px' }}>
             <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2px', color: '#FF8300', marginBottom: 12, textAlign: 'center' }}>ASÍ SE VEN TUS RESULTADOS</p>
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(26px,3.5vw,40px)', color: '#1a0d00', letterSpacing: '-1px', marginBottom: 8, textAlign: 'center' }}>
@@ -339,7 +339,7 @@ export default function Home() {
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
                 Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
-              <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
+              <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.75, marginBottom: 40, maxWidth: 440 }}>
                 Cada cliente tuyo tiene ayudas que no conoce. Cóbratelo las detecta, genera el informe y tú cobras la gestión — sin buscar, sin burocracia, sin trabajo extra.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
@@ -384,9 +384,9 @@ export default function Home() {
 
         {/* CTA FINAL */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 48px' }}>
-          <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '48px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '72px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
-            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#FFF5EB', marginBottom: 16 }}>
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,40px)', letterSpacing: '-1px', color: '#FFF5EB', marginBottom: 20, fontWeight: 700 }}>
               La mayoría de ayudas no se piden porque nadie sabe que existen
             </h2>
             <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
@@ -411,19 +411,19 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>PRODUCTO</p>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>PRODUCTO</p>
                 {[['Cómo funciona', '/'], ['Para gestorías', '/precios'], ['Precios', '/precios']].map(([l,h]) => (
                   <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
                 ))}
               </div>
               <div>
-                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>LEGAL</p>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>LEGAL</p>
                 {[['Aviso Legal', '/aviso-legal'], ['Privacidad', '/privacidad'], ['Términos', '/terminos']].map(([l,h]) => (
                   <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
                 ))}
               </div>
               <div>
-                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>CONTACTO</p>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>CONTACTO</p>
                 <a href="mailto:hola@cobratelo.es" style={{ color: '#FF8300', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>hola@cobratelo.es</a>
                 <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 12, lineHeight: 1.6 }}>Respondemos en menos de 24h en días laborables.</p>
               </div>
