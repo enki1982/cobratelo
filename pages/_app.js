@@ -17,6 +17,10 @@ export default function App({ Component, pageProps }) {
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+              // Consent mode: denegado por defecto
+              gtag('consent', 'default', {
+                analytics_storage: localStorage.getItem('cookie_consent') === 'accepted' ? 'granted' : 'denied'
+              });
               gtag('js', new Date());
               gtag('config', '${GA_ID}', {
                 page_path: window.location.pathname,
