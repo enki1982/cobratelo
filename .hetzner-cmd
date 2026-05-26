@@ -1,14 +1,58 @@
-echo "=== TODOS LOS PY DEL BOT ==="
-find /opt/bot -name "*.py" 2>/dev/null | sort
+echo "=== LEYENDO CONTEXTO LÍNEAS 407-460 ==="
+sed -n '400,460p' /opt/bot/auto_trader_bot_v1/core/execution.py
 
 echo ""
-echo "=== GREP EN TODOS ==="
-grep -rn "normalized_qty\|free_base\|step_size\|insufficient" /opt/bot/ 2>/dev/null | grep "\.py:" | grep -v ".pyc"
+echo "=== APLICANDO FIX ==="
+python3 << 'PYEOF'
+path = '/opt/bot/auto_trader_bot_v1/core/execution.py'
+with open(path) as f:
+    code = f.read()
+
+# El fix: después del tolerance check, si free_base < normalized_qty_f,
+# usar free_base floored al step_size en lugar de normalized_qty
+# Buscar el bloque exacto después de la tolerancia
+
+old = """        tolerance = max(normalized_qty_f * 0.001, 1e-12)
+        if free_base + tolerance < normalized_qty_f:"""
+
+new = """        tolerance = max(normalized_qty_f * 0.001, 1e-12)
+        # FIX: si free_base < normalized_qty (por fees de la compra), capamos al balance real
+        if 0 < free_base < normalized_qty_f:
+            import math
+            # Floor a 5 decimales (step_size de BTC/USDC en Binance = 0.00001)
+            adjusted = math.floor(free_base * 100000) / 100000
+            if adjusted > 0 and adjusted != normalized_qty_f:
+                import logging
+                logging.getLogger(__name__).warning(
+                    "FEE_ADJUST SELL qty capped: %s -> %s (free_base=%s)",
+                    normalized_qty_f, adjusted, free_base
+                )
+                from decimal import Decimal
+                normalized_qty = Decimal(str(adjusted))
+                normalized_qty_f = float(normalized_qty)
+        if free_base + tolerance < normalized_qty_f:"""
+
+if old in code:
+    code = code.replace(old, new)
+    with open(path, 'w') as f:
+        f.write(code)
+    print("✅ FIX APLICADO — normalized_qty se capa al free_base real antes del submit")
+else:
+    print("❌ Patrón no encontrado — mostrando líneas 428-435:")
+    lines = code.split('\n')
+    for i, l in enumerate(lines[427:435], 428):
+        print(f"{i}: {l}")
+PYEOF
 
 echo ""
-echo "=== PROCESO ACTIVO ==="
-ps aux | grep python | grep -v grep | head -5
+echo "=== VERIFICANDO FIX ==="
+grep -n "FEE_ADJUST\|tolerance\|free_base.*normalized\|adjusted" /opt/bot/auto_trader_bot_v1/core/execution.py | head -20
 
 echo ""
-echo "=== SERVICIO ==="
-systemctl is-active auto-trader-bot 2>/dev/null || systemctl is-active bot-binance 2>/dev/null || systemctl list-units | grep -i "bot\|trader"
+echo "=== REINICIANDO BOT ==="
+systemctl restart auto-trader-bot.service
+sleep 5
+systemctl is-active auto-trader-bot.service
+echo ""
+echo "=== LOG POST-RESTART ==="
+journalctl -u auto-trader-bot.service --no-pager -n 20
