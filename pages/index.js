@@ -140,11 +140,11 @@ que te corresponden
             </div>
 
             {/* Trust layer */}
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32 }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 28, marginBottom: 32 }}>
               {['Actualizado automáticamente', 'Estatal, autonómico y local', 'Compatible con tu gestoría'].map(t => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ color: '#FF8300', fontSize: 11, fontWeight: 700 }}>✓</span>
-                  <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)' }}>{t}</span>
+                  <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.38)' }}>{t}</span>
                 </div>
               ))}
             </div>
