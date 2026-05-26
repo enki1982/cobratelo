@@ -442,10 +442,10 @@ export default function Cuenta() {
           </div>
         </nav>
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 64px', display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24, alignItems: 'start' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px 64px' }} className="crm-layout">
 
           {/* ── SIDEBAR — Ficha de contacto ── */}
-          <div style={{ position: 'sticky', top: 80 }}>
+          <div className="crm-sidebar">
             <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20, overflow: 'hidden' }}>
               {/* Avatar + nombre */}
               <div style={{ padding: '28px 24px 20px', borderBottom: '1px solid rgba(255,200,120,0.08)', textAlign: 'center' }}>
@@ -480,7 +480,7 @@ export default function Cuenta() {
           </div>
 
           {/* ── CONTENIDO PRINCIPAL ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
             {/* Bloque — Mi perfil */}
             <div style={{ background: 'rgba(255,200,120,0.04)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20 }}>

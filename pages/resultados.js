@@ -650,10 +650,10 @@ export default function Resultados() {
           </div>
         </nav>
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 64px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(16px,3vw,32px) clamp(12px,3vw,24px) 64px' }}>
 
           {/* ── KPI HEADER ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 32 }}>
+          <div className="crm-kpis" style={{ marginBottom: 24 }}>
             <div style={{ background: 'rgba(255,131,0,0.12)', border: '1px solid rgba(255,131,0,0.2)', borderRadius: 16, padding: '20px 24px' }}>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Ayudas detectadas</p>
               <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudas.length}</p>

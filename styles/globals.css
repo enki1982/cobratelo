@@ -185,3 +185,66 @@ textarea {
   0%, 100% { transform: translateY(-50%); }
   50% { transform: translateY(calc(-50% - 12px)); }
 }
+
+/* ─── Mi Cuenta — CRM Layout responsive ──────────────────── */
+.crm-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.crm-sidebar {
+  position: sticky;
+  top: 72px;
+}
+@media (max-width: 700px) {
+  .crm-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px !important;
+  }
+  .crm-sidebar {
+    position: static;
+  }
+}
+
+/* ─── Resultados CRM — Tabla responsive ──────────────────── */
+.crm-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.crm-table-header {
+  display: grid;
+  grid-template-columns: 1fr 110px 110px 100px;
+  gap: 0;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(255,200,120,0.1);
+  background: rgba(255,200,120,0.06);
+}
+.crm-table-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 110px 100px;
+  gap: 0;
+  border-left: 3px solid transparent;
+  align-items: center;
+}
+.crm-importe-mobile { display: none; }
+
+@media (max-width: 640px) {
+  .crm-kpis {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .crm-table-header {
+    grid-template-columns: 1fr auto;
+    padding: 10px 16px;
+  }
+  .crm-table-row {
+    grid-template-columns: 1fr auto;
+    padding: 14px 16px !important;
+  }
+  .crm-col-hide { display: none; }
+  .crm-col-action { display: block; }
+  .crm-importe-mobile { display: block; }
+}
