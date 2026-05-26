@@ -1,12 +1,7 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -c "
-import sqlite3, json
-conn = sqlite3.connect('ayudas.db')
-c = conn.cursor()
-c.execute('PRAGMA table_info(ayudas)')
-cols = [r[1] for r in c.fetchall()]
-print('Columnas:', cols)
-c.execute('SELECT nombre, slug, tipo, comunidad_autonoma, ambito, importe_min, importe_max, organismo, estado FROM ayudas LIMIT 3')
-for r in c.fetchall():
-    print(json.dumps(dict(zip(['nombre','slug','tipo','ccaa','ambito','min','max','org','estado'], r)), ensure_ascii=False)[:200])
-conn.close()
-"
+VERCEL_TOKEN=$(cat /root/.ark/v.txt | grep -A1 "\[VERCEL\]" | tail -1 | cut -d'=' -f2 | tr -d ' ' 2>/dev/null || echo "$VERCEL_TOKEN")
+echo "Token: ${VERCEL_TOKEN:0:8}..."
+curl -s -X POST "https://api.vercel.com/v10/projects/cobratelo/env" \
+  -H "Authorization: Bearer $VERCEL_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"key":"NEXT_PUBLIC_GOOGLE_PLACES_KEY","value":"AIzaSyCaNU_QX4KpRNVqP8ZM441VFHlRE0_Yc78","type":"plain","target":["production","preview"]}' \
+  | python3 -c "import sys,json; d=json.load(sys.stdin); print('OK:', d.get('key','?')) if 'key' in d else print('Error:', d)"
