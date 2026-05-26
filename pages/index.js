@@ -121,12 +121,13 @@ export default function Home() {
               {totalAyudas}+ convocatorias activas en España
             </div>
 
-            <h1 className="font-display font-bold" style={{ fontSize: 'clamp(38px,5vw,62px)', lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 24, color: C.text }}>
-              ¿Qué ayudas puedes<br/>cobrar tú?
+            <h1 className="font-display font-bold" style={{ fontSize: 'clamp(32px,4.5vw,54px)', lineHeight: 1.1, letterSpacing: '-1.2px', marginBottom: 24, color: C.text }}>
+              Descubre las ayudas públicas
+que te corresponden
             </h1>
 
             <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.75, marginBottom: 40, maxWidth: 440 }}>
-              Analizamos tu perfil y te decimos exactamente qué ayudas públicas puedes cobrar tú. Sin buscar. Sin burocracia. Sin perderte en portales. En 2 minutos. Gratis.
+              Analizamos tu situación y detectamos automáticamente subvenciones, prestaciones y ayudas disponibles para ti. Sin buscar. Sin burocracia. En solo 2 minutos.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
