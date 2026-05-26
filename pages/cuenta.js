@@ -414,258 +414,180 @@ export default function Cuenta() {
       <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
+  // Helper: iniciales del email
+  const initials = session?.user?.email?.[0]?.toUpperCase() || '?'
+  const emailShort = session?.user?.email || ''
+  const planLabel = plan === 'pro' ? 'Gestoría Pro' : plan === 'starter' ? 'Gestoría Starter' : plan === 'alertas' ? 'Alertas' : 'Particular'
+  const planColor = plan === 'pro' ? '#FF8300' : plan === 'starter' ? '#FF8300' : 'rgba(255,245,235,0.4)'
 
   return (
     <>
       <Head><title>Mi cuenta — Cóbratelo</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
-      <div style={bgMesh}>
-        <nav className="px-6 py-5 flex items-center justify-between max-w-2xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5]">cóbratelo<span className="text-[#cc5500]">.es</span></Link>
-          <button onClick={handleLogout} className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors">Cerrar sesión</button>
+
+      <div style={{ background: '#321A00', minHeight: '100vh' }}>
+
+        {/* NAV */}
+        <nav style={{ background: 'rgba(50,26,0,0.95)', borderBottom: '1px solid rgba(255,200,120,0.12)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link href="/" style={{ fontWeight: 700, fontSize: 17, color: '#FFF5EB', textDecoration: 'none' }}>
+              cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
+            </Link>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Link href="/resultados" style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.12)' }}>Mis ayudas</Link>
+              <button onClick={() => supabase.auth.signOut().then(() => router.push('/'))}
+                style={{ fontSize: 13, color: 'rgba(255,245,235,0.4)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '6px 14px' }}>
+                Salir
+              </button>
+            </div>
+          </div>
         </nav>
 
-        <div className="max-w-2xl mx-auto px-6 pb-20">
-          <h1 className="font-display text-3xl font-bold text-[#f0f0f5] mb-1">
-            {session?.user?.user_metadata?.nombre ? `Hola, ${session.user.user_metadata.nombre}` : 'Mi cuenta'}
-          </h1>
-          <p className="text-[rgba(240,240,245,0.5)] mb-6">{session?.user?.email}</p>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 64px', display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24, alignItems: 'start' }}>
 
-          <div className="flex gap-1 bg-[#2a1500] border border-[rgba(255,255,255,0.08)] rounded-full p-1 mb-8 w-fit">
-            {[{id:'perfil',label:'Mi perfil'},{id:'pagos',label:'Suscripción'},{id:'cuenta',label:'Cuenta'}].map(t => (
-              <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#FF8300] text-[#321A00]' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
-                {t.label}
-              </button>
-            ))}
+          {/* ── SIDEBAR — Ficha de contacto ── */}
+          <div style={{ position: 'sticky', top: 80 }}>
+            <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20, overflow: 'hidden' }}>
+              {/* Avatar + nombre */}
+              <div style={{ padding: '28px 24px 20px', borderBottom: '1px solid rgba(255,200,120,0.08)', textAlign: 'center' }}>
+                <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(255,131,0,0.2)', border: '2px solid rgba(255,131,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: 22, fontWeight: 700, color: '#FF8300' }}>
+                  {initials}
+                </div>
+                <p style={{ fontSize: 13, color: '#FFF5EB', fontWeight: 600, marginBottom: 4, wordBreak: 'break-all' }}>{emailShort}</p>
+                <span style={{ fontSize: 11, fontWeight: 700, color: planColor, background: 'rgba(255,131,0,0.12)', padding: '3px 10px', borderRadius: 100 }}>
+                  {planLabel}
+                </span>
+              </div>
+
+              {/* Acciones rápidas */}
+              <div style={{ padding: '16px 20px' }}>
+                <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,245,235,0.3)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>ACCIONES RÁPIDAS</p>
+                <Link href="/resultados" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, background: 'rgba(255,131,0,0.08)', color: '#FF8300', fontSize: 13, fontWeight: 600 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                  Ver mis ayudas
+                </Link>
+                <Link href="/perfil" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, color: 'rgba(255,245,235,0.6)', fontSize: 13 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Actualizar perfil
+                </Link>
+                {plan === 'free' && (
+                  <Link href="/precios" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, color: 'rgba(255,245,235,0.6)', fontSize: 13 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Actualizar plan
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Banner de ayudas actualizadas */}
-          {mostrarBotonAyudas && perfilData && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-3rem)] max-w-lg">
-              <div className="bg-[#f0f0f5] text-white rounded-2xl px-5 py-4 flex items-center justify-between gap-4 shadow-xl">
+          {/* ── CONTENIDO PRINCIPAL ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+            {/* Bloque — Mi perfil */}
+            <div style={{ background: 'rgba(255,200,120,0.04)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,200,120,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <p className="font-semibold text-sm">Perfil actualizado</p>
-                  <p className="text-xs text-white/60 mt-0.5">Ver ayudas con los nuevos datos</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB' }}>Perfil</p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', marginTop: 2 }}>Tus datos determinan qué ayudas ves</p>
                 </div>
-                <Link
-                  href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilData))}`}
-                  className="bg-[#cc5500] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#aa4400] transition-colors whitespace-nowrap shrink-0">
-                  Ver mis ayudas →
+                <Link href="/perfil" style={{ fontSize: 12, color: '#FF8300', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(255,131,0,0.3)', fontWeight: 600 }}>
+                  Editar →
                 </Link>
               </div>
-            </div>
-          )}
-
-          {/* Tab: Mi perfil */}
-          {tab === 'perfil' && (
-            <div>
-              {perfilData ? (
-                <>
-                  {/* CTA principal: Ver ayudas */}
-                  <Link
-                    href={`/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilData))}`}
-                    className="flex items-center justify-between w-full bg-[#f0f0f5] text-[#321A00] rounded-2xl px-6 py-5 mb-5 hover:bg-[rgba(255,255,255,0.1)] transition-colors group">
-                    <div>
-                      <p className="font-semibold text-lg">Ver mis ayudas</p>
-                      <p className="text-sm text-[rgba(240,240,245,0.5)] mt-0.5">Basadas en tu perfil actualizado</p>
-                    </div>
-                    <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
-                  <p className="text-xs text-[rgba(240,240,245,0.5)] mb-3 uppercase tracking-wide font-medium">Toca cualquier campo para editarlo</p>
-                  <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
-                    {SECCIONES_PERFIL.filter(s => !s.condicion || s.condicion(perfilData)).map((sec, i, arr) => {
-                      const valor = perfilData[sec.id]
-                      const tieneOpciones = !!OPCIONES_SECCION[sec.id]
-                      const esFecha = sec.tipo === 'fecha'
-                      const esPueblo = sec.tipo === 'pueblo'
-                      const esEditable = tieneOpciones || esFecha || esPueblo
-                      return (
-                        <button key={sec.id} disabled={!esEditable}
-                          onClick={() => {
-                            if (esFecha) setEditandoFecha(true)
-                            else if (esPueblo) setEditandoPueblo(sec.id)
-                            else if (tieneOpciones) setEditando(sec.id)
-                          }}
-                          className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors
-                            ${i > 0 ? 'border-t border-[rgba(255,255,255,0.06)]' : ''}
-                            ${esEditable ? 'hover:bg-[#321A00] cursor-pointer' : 'cursor-default'}`}>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[rgba(240,240,245,0.5)] mb-0.5">{sec.label}</p>
-                            <ValorPerfil id={sec.id} valor={valor} tipo={sec.tipo} />
-                          </div>
-                          {esEditable && (
-                            <span className="text-[#C0BAB0] text-sm ml-3 shrink-0">️</span>
-                          )}
-                        </button>
-                      )
-                    })}
+              <div style={{ padding: '8px 0' }}>
+                {perfil && Object.entries({
+                  'Situación laboral': perfil.situacion,
+                  'Ubicación': perfil.pueblo,
+                  'Situación familiar': perfil.familia,
+                  'Vivienda': perfil.vivienda,
+                  'Fecha de nacimiento': perfil.nacimiento,
+                }).map(([label, valor]) => valor && valor.length > 0 && (
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)' }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', width: 160, flexShrink: 0 }}>{label}</p>
+                    <div style={{ flex: 1 }}><ValorPerfil campo={label.toLowerCase().replace(' ', '_')} valor={valor} /></div>
                   </div>
-                  <p className="text-xs text-[#B0AAA0] mt-3">Los cambios se guardan al instante.</p>
-                </>
-              ) : (
-                <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] p-8 text-center">
-                  <p className="text-[rgba(240,240,245,0.5)] mb-4">Aún no has completado tu perfil.</p>
-                  <Link href="/perfil" className="inline-block bg-[#E8540A] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#d14a08] transition-colors">
-                    Completar perfil →
-                  </Link>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
-          )}
 
-          {/* Tab: Suscripción */}
-          {tab === 'pagos' && (
-            <div className="space-y-4">
-              <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
-                <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)]">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-[rgba(240,240,245,0.5)] uppercase tracking-wide font-medium mb-1">Plan actual</p>
-                      <p className="font-semibold text-[#f0f0f5] text-lg">{plan === 'free' ? 'Gratuito' : plan === 'alertas' ? 'Alertas' : 'Gestoría Pro'}</p>
-                    </div>
-                    <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${plan === 'free' ? 'bg-[rgba(255,255,255,0.05)] text-[rgba(240,240,245,0.5)]' : 'bg-[rgba(255,131,0,0.1)] text-[#cc5500]'}`}>
-                      {plan === 'free' ? 'Gratis' : plan === 'starter' ? '149€/mes' : plan === 'pro' ? '399€/mes' : '149€/mes'}
-                    </span>
+            {/* Bloque — Suscripción */}
+            <div style={{ background: 'rgba(255,200,120,0.04)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,200,120,0.08)' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB' }}>Suscripción</p>
+              </div>
+              <div style={{ padding: '20px 24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                  <div>
+                    <p style={{ fontSize: 20, fontWeight: 800, color: '#FFF5EB' }}>{planLabel}</p>
+                    <p style={{ fontSize: 13, color: 'rgba(255,245,235,0.4)', marginTop: 3 }}>
+                      {plan === 'free' ? 'Gratuito · siempre' : plan === 'starter' ? '149€/mes' : plan === 'pro' ? '399€/mes' : '—'}
+                    </p>
                   </div>
-                </div>
-                <div className="px-6 py-4">
                   {plan === 'free' ? (
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-[rgba(240,240,245,0.5)]">Sin alertas automáticas</p>
-                      <Link href="/precios" className="text-sm font-semibold text-[#cc5500] hover:text-[#aa4400] transition-colors ml-4">Mejorar →</Link>
-                    </div>
+                    <Link href="/precios" style={{ background: '#FF8300', color: '#1a0d00', fontWeight: 700, fontSize: 13, padding: '10px 20px', borderRadius: 100, textDecoration: 'none' }}>
+                      Actualizar →
+                    </Link>
                   ) : (
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-[rgba(240,240,245,0.5)]">Alertas semanales activas</p>
-                      <button onClick={handlePortalFacturacion} className="text-sm text-[rgba(240,240,245,0.5)] hover:text-red-500 transition-colors ml-4">Cancelar</button>
-                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#4ade80', background: 'rgba(34,197,94,0.1)', padding: '4px 12px', borderRadius: 100, border: '1px solid rgba(34,197,94,0.2)' }}>
+                      ● Activo
+                    </span>
                   )}
                 </div>
-              </div>
-
-              <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-hidden">
-                <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)]">
-                  <p className="text-xs text-[rgba(240,240,245,0.5)] uppercase tracking-wide font-medium mb-1">Facturación</p>
-                  <p className="font-semibold text-[#f0f0f5]">Métodos de pago y facturas</p>
-                </div>
-                <div className="px-6 py-2">
-                  {[
-                    {icon:'',label:'Método de pago',sub:plan==='free'?'Sin método guardado':'Tarjeta guardada',btn:plan==='free'?'Añadir':'Cambiar'},
-                    {icon:'',label:'Historial de facturas',sub:'Descarga tus facturas en PDF',btn:'Ver →'},
-                    {icon:'',label:'Email de facturación',sub:session?.user?.email,btn:'Editar'},
-                  ].map((row,i) => (
-                    <div key={i} className={`flex items-center justify-between py-4 ${i>0?'border-t border-[rgba(255,255,255,0.06)]':''}`}>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{row.icon}</span>
-                        <div>
-                          <p className="text-sm font-medium text-[#f0f0f5]">{row.label}</p>
-                          <p className="text-xs text-[rgba(240,240,245,0.5)]">{row.sub}</p>
-                        </div>
-                      </div>
-                      <button onClick={handlePortalFacturacion} className="text-sm text-[#cc5500] font-medium hover:text-[#aa4400] transition-colors ml-4">{row.btn}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
-                <h2 className="font-semibold text-[#f0f0f5] mb-1">¿Eres gestoría?</h2>
-                <p className="text-sm text-[rgba(240,240,245,0.5)] mb-4">Planes profesionales para gestionar ayudas de varios clientes.</p>
-                <Link href="/precios" className="inline-block bg-[#f0f0f5] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">Ver planes gestoría →</Link>
-              </div>
-            </div>
-          )}
-
-          {/* Tab: Cuenta */}
-          {tab === 'cuenta' && (
-            <div className="space-y-4">
-              <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
-                <h2 className="font-semibold text-[#f0f0f5] mb-4">Datos de acceso</h2>
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-[rgba(240,240,245,0.5)]">Email</span>
-                    <span className="text-[#f0f0f5] font-medium">{session?.user?.email}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-[rgba(240,240,245,0.5)]">Miembro desde</span>
-                    <span className="text-[#f0f0f5] font-medium">{new Date(session?.user?.created_at).toLocaleDateString('es-ES',{month:'long',year:'numeric'})}</span>
-                  </div>
-                </div>
-                {!cambiandoPassword ? (
-                  <button onClick={() => setCambiandoPassword(true)} className="text-sm text-[#cc5500] font-medium underline">Cambiar contraseña</button>
-                ) : (
-                  <form onSubmit={handleCambiarPassword} className="mt-4 space-y-3">
-                    <input type="password" value={nuevaPassword} onChange={e => setNuevaPassword(e.target.value)} placeholder="Nueva contraseña (mín. 6 caracteres)"
-                      className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#2a1500] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] transition-colors" />
-                    {passwordMsg && <p className={`text-sm ${passwordMsg.includes('Error')?'text-red-600':'text-[#cc5500]'}`}>{passwordMsg}</p>}
-                    <div className="flex gap-2">
-                      <button type="submit" className="bg-[#f0f0f5] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">Guardar</button>
-                      <button type="button" onClick={()=>{setCambiandoPassword(false);setPasswordMsg('')}} className="text-sm text-[rgba(240,240,245,0.5)] px-5 py-2.5 rounded-full border border-[rgba(255,255,255,0.08)]">Cancelar</button>
-                    </div>
-                  </form>
-                )}
-              </div>
-
-              <div className="bg-[#2a1500] rounded-2xl border border-[rgba(255,255,255,0.08)] p-6">
-                <h2 className="font-semibold text-[#f0f0f5] mb-3">Eliminar cuenta</h2>
-                <p className="text-sm text-[rgba(240,240,245,0.5)] mb-4">Se borrarán todos tus datos permanentemente.</p>
-                {!confirmEliminar ? (
-                  <button onClick={() => setConfirmEliminar(true)} className="text-sm text-red-500 hover:text-red-700 transition-colors font-medium">Eliminar mi cuenta</button>
-                ) : (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl">
-                    <p className="text-sm font-semibold text-red-700 mb-2">¿Estás seguro?</p>
-                    <p className="text-xs text-red-600 mb-3">Escribe <strong>ELIMINAR</strong> para confirmar.</p>
-                    <input type="text" value={confirmText} onChange={e => setConfirmText(e.target.value)} placeholder="Escribe ELIMINAR"
-                      className="w-full px-3 py-2 rounded-xl border border-red-300 text-sm mb-3 focus:outline-none focus:border-red-500" />
-                    <div className="flex gap-2">
-                      <button onClick={handleEliminarCuenta} disabled={confirmText!=='ELIMINAR'||eliminando}
-                        className="bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-red-700 disabled:opacity-40 transition-colors">
-                        {eliminando?'Eliminando...':'Eliminar definitivamente'}
-                      </button>
-                      <button onClick={()=>{setConfirmEliminar(false);setConfirmText('')}} className="text-sm text-[rgba(240,240,245,0.5)] px-4 py-2 rounded-full border border-[rgba(255,255,255,0.08)]">Cancelar</button>
-                    </div>
+                {plan !== 'free' && (
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <a href="https://billing.stripe.com/p/login/test_00g..." target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '7px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.15)' }}>
+                      Gestionar facturación
+                    </a>
+                    <button onClick={() => {if(confirm('¿Cancelar suscripción?')) alert('Escribe a hola@cobratelo.es para cancelar.')}}
+                      style={{ fontSize: 12, color: 'rgba(255,100,100,0.6)', background: 'transparent', border: '1px solid rgba(255,100,100,0.2)', padding: '7px 14px', borderRadius: 100, cursor: 'pointer' }}>
+                      Cancelar plan
+                    </button>
                   </div>
                 )}
               </div>
-
-              <button onClick={handleLogout} className="w-full py-3.5 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] font-medium hover:border-[#C0BAB0] transition-colors text-sm">
-                Cerrar sesión
-              </button>
             </div>
-          )}
+
+            {/* Bloque — Cuenta */}
+            <div style={{ background: 'rgba(255,200,120,0.04)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,200,120,0.08)' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB' }}>Cuenta</p>
+              </div>
+              <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB' }}>Email</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', marginTop: 2 }}>{emailShort}</p>
+                  </div>
+                </div>
+                <div style={{ height: 1, background: 'rgba(255,200,120,0.06)' }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB' }}>Alertas semanales</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', marginTop: 2 }}>Aviso cuando aparecen nuevas ayudas para tu perfil</p>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: '#4ade80', background: 'rgba(34,197,94,0.1)', padding: '4px 12px', borderRadius: 100 }}>Activas</span>
+                </div>
+                <div style={{ height: 1, background: 'rgba(255,200,120,0.06)' }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,100,100,0.7)' }}>Eliminar cuenta</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.3)', marginTop: 2 }}>Borra todos tus datos permanentemente</p>
+                  </div>
+                  <button onClick={() => { if(confirm('¿Eliminar tu cuenta y todos tus datos? Esta acción no se puede deshacer.')) alert('Escribe a hola@cobratelo.es para eliminar tu cuenta.') }}
+                    style={{ fontSize: 12, color: 'rgba(255,100,100,0.6)', background: 'transparent', border: '1px solid rgba(255,100,100,0.2)', padding: '7px 14px', borderRadius: 100, cursor: 'pointer' }}>
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      {/* Modal fecha de nacimiento */}
-      {editandoFecha && (
-        <ModalFecha
-          valor={perfilData?.nacimiento}
-          onGuardar={handleGuardarSeccion}
-          onCerrar={() => setEditandoFecha(false)}
-        />
-      )}
-
-      {/* Modal pueblo */}
-      {editandoPueblo && (
-        <ModalPueblo
-          campoId={editandoPueblo}
-          titulo={editandoPueblo === 'pueblo' ? '¿En qué población vives?' : '¿En qué población estás empadronado/a?'}
-          valor={perfilData?.[editandoPueblo]}
-          onGuardar={handleGuardarPueblo}
-          onCerrar={() => setEditandoPueblo(null)}
-        />
-      )}
-
-      {/* Modal edición inline */}
-      {editando && seccionEditando && OPCIONES_SECCION[editando] && (
-        <ModalEditar
-          seccion={seccionEditando}
-          valor={perfilData?.[editando] || []}
-          perfil={perfilData}
-          onGuardar={handleGuardarSeccion}
-          onCerrar={() => setEditando(null)}
-        />
-      )}
+      {/* Modales existentes */}
+      {editando && <ModalEditar seccion={editando} valor={perfil?.[editando]} perfil={perfil} onGuardar={guardarCampo} onCerrar={() => setEditando(null)} />}
+      {editandoPueblo && <ModalPueblo valor={perfil?.pueblo} onGuardar={v => guardarCampo('pueblo', v)} onCerrar={() => setEditandoPueblo(false)} />}
     </>
   )
 }

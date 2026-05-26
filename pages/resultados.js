@@ -623,6 +623,11 @@ export default function Resultados() {
     )
   }
 
+  // Agrupar ayudas por estado
+  const ayudasAbiertas = ayudas.filter(a => a.estado === 'abierta')
+  const ayudasOtras = ayudas.filter(a => a.estado !== 'abierta')
+  const importeTotal = ayudas.reduce((acc, a) => acc + (a.importe_max || a.importe_min || 0), 0)
+
   return (
     <>
       <Head>
@@ -630,165 +635,52 @@ export default function Resultados() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div style={bgMesh}>
-        <nav className="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#f0f0f5] shrink-0">
-            cóbratelo<span className="text-[#cc5500]">.es</span>
-          </Link>
-          <div className="flex items-center gap-3 ml-4 overflow-hidden">
-            <Link href="/" className="hidden sm:block text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">Inicio</Link>
-            <Link href="/cuenta" className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">Mi cuenta</Link>
-            <Link href="/perfil" className="text-sm text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5] transition-colors whitespace-nowrap">← Perfil</Link>
+      <div style={{ background: '#321A00', minHeight: '100vh' }}>
+
+        {/* ── NAV CRM ── */}
+        <nav style={{ background: 'rgba(50,26,0,0.95)', borderBottom: '1px solid rgba(255,200,120,0.12)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link href="/" style={{ fontWeight: 700, fontSize: 17, color: '#FFF5EB', textDecoration: 'none', letterSpacing: '-0.3px' }}>
+              cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
+            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Link href="/perfil" style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.12)' }}>Editar perfil</Link>
+              <Link href="/cuenta" style={{ fontSize: 13, color: '#FFF5EB', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, background: 'rgba(255,131,0,0.15)' }}>Mi cuenta</Link>
+            </div>
           </div>
         </nav>
 
-        <div className="max-w-3xl mx-auto px-6 pb-20">
-          <div className="bg-[#2a1500] rounded-3xl p-8 mb-6">
-            <p className="text-[rgba(240,240,245,0.5)] text-sm mb-2">Ayudas que encajan con tu perfil</p>
-            <div className="flex items-end gap-4 mb-4">
-              <span className="font-display text-5xl font-bold text-[#FF8300]">{ayudas.length}</span>
-              <span className="text-[rgba(240,240,245,0.5)] mb-2">ayudas encontradas</span>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 64px' }}>
+
+          {/* ── KPI HEADER ── */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 32 }}>
+            <div style={{ background: 'rgba(255,131,0,0.12)', border: '1px solid rgba(255,131,0,0.2)', borderRadius: 16, padding: '20px 24px' }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Ayudas detectadas</p>
+              <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudas.length}</p>
             </div>
-          </div>
-
-
-
-          {/* Bloque gestoría — si quiere una */}
-          {(perfil?.gestoria || [])[0] === 'quiero_gestoria' && (() => {
-            const puebloObj = (() => { try { return JSON.parse((perfil?.pueblo || ['{}'])[0]) } catch { return {} } })()
-            const pueblo = puebloObj.nombre || ''
-            const provincia = puebloObj.provincia || ''
-            const busqueda = encodeURIComponent(`gestoría asesoría fiscal ${pueblo} ${provincia}`.trim())
-            return (
-              <div className="bg-[rgba(255,131,0,0.1)] border border-[#cc5500]/20 rounded-2xl p-5 mb-6">
-                <div className="flex items-start gap-3 mb-3">
-                  
-                  <div>
-                    <p className="font-semibold text-[#f0f0f5]">Encuentra una gestoría cerca de ti</p>
-                    <p className="text-sm text-[rgba(240,240,245,0.5)] mt-0.5">
-                      {pueblo ? `Gestorías en ${pueblo} y alrededores` : 'Tramitar estas ayudas con un gestor aumenta mucho las posibilidades de éxito'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <a href={`https://www.google.com/maps/search/${busqueda}`}
-                     target="_blank" rel="noopener noreferrer"
-                     className="flex items-center justify-center gap-2 bg-[#cc5500] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#aa4400] transition-colors">
-                    Ver gestorías en Google Maps
-                  </a>
-                </div>
-              </div>
-            )
-          })()}
-
-          {perfil?.email_gestoria && (
-            <div className="bg-[rgba(255,131,0,0.1)] border border-[#cc5500]/20 rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
-              <div>
-                <p className="font-semibold text-[#f0f0f5] text-sm">Enviar informe a tu gestoría</p>
-                <p className="text-xs text-[rgba(240,240,245,0.5)] mt-0.5">{perfil.email_gestoria}</p>
-              </div>
-              {emailEnviado ? (
-                <span className="text-[#cc5500] font-semibold text-sm"> Enviado</span>
-              ) : (
-                <button onClick={enviarAGestoria} disabled={enviando}
-                  className="bg-[#cc5500] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#aa4400] transition-colors disabled:opacity-60">
-                  {enviando ? 'Enviando...' : 'Enviar →'}
-                </button>
-              )}
-            </div>
-          )}
-
-          <div className="space-y-4">
-            {ayudas.map((ayuda, i) => {
-              const limit = (userPlan && userPlan !== 'free') ? 9999 : FREE_LIMIT
-              const isBlurred = i >= limit
-              return (
-                <div key={ayuda.id}
-                  className={`ayuda-card bg-[#2a1500] rounded-2xl border p-5 ${isBlurred ? 'relative overflow-hidden' : ''} ${ayudasNuevas.has(ayuda.id) ? 'border-[#cc5500] border-2' : 'border-[rgba(255,255,255,0.08)]'}`}>
-                  {isBlurred && (
-                    <div className="absolute inset-0 backdrop-blur-sm bg-[#2a1500]/70 flex flex-col items-center justify-center z-10 rounded-2xl cursor-pointer"
-                      onClick={() => document.getElementById('cta-pro')?.scrollIntoView({ behavior: 'smooth' })}>
-                      <span className="text-2xl mb-2"></span>
-                      <p className="font-semibold text-[#f0f0f5] text-sm text-center px-4">
-                        {ayudas.length - FREE_LIMIT} ayudas más
-                      </p>
-                      <span className="mt-2 bg-[#E8540A] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-                        Desbloquear →
-                      </span>
-                    </div>
-                  )}
-                   <div className="mb-3">
-                     <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIPO_COLOR[ayuda.tipo] || 'bg-gray-50 text-gray-700'}`}>
-                         {TIPO_LABEL[ayuda.tipo] || ayuda.tipo}
-                       </span>
-                       <span className={`text-xs px-2 py-0.5 rounded-full ${ayuda.estado === 'abierta' ? 'bg-orange-50 text-orange-700' : 'bg-gray-50 text-gray-500'}`}>
-                         {ayuda.estado === 'abierta' ? '● Abierta' : ayuda.estado}
-                       </span>
-                       {ayuda.ambito !== 'estatal' && ayuda.comunidad_autonoma && (
-                         <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
-                           {ayuda.comunidad_autonoma}
-                         </span>
-                       )}
-                     </div>
-                     <h3 className="font-semibold text-[#f0f0f5] leading-snug mb-0.5">{ayuda.nombre}</h3>
-                     <p className="text-xs text-[rgba(240,240,245,0.5)] mb-1">{ayuda.organismo}</p>
-                     {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo) && (
-                       <p className="font-display text-base font-bold text-[#cc5500]">
-                         {formatImporte(ayuda.importe_min, ayuda.importe_max, ayuda.importe_descripcion, ayuda.tipo)}
-                       </p>
-                     )}
-                   </div>
-                  {ayuda.descripcion && (
-                    <p className="text-sm text-[rgba(240,240,245,0.6)] mb-4 leading-relaxed">{ayuda.descripcion}</p>
-                  )}
-                  {!isBlurred && (
-                    ayuda.url_oficial
-                      ? <a href={ayuda.url_oficial} target="_blank" onClick={() => window.cobratelo_track?.("convocatoria_click", { ayuda: ayuda.nombre, organismo: ayuda.organismo })} rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#cc5500] hover:text-[#aa4400] transition-colors">
-                          Ver convocatoria oficial →
-                        </a>
-                      : <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}>
-                          Enlace en verificación
-                        </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          {ayudas.length > FREE_LIMIT && userPlan === 'free' && (
-            <div id="cta-pro" className="bg-[#E8540A] rounded-3xl p-8 mt-8 text-center">
-              <p className="text-white/80 text-sm mb-1">{ayudas.length - FREE_LIMIT} ayudas más bloqueadas</p>
-              <h2 className="font-display text-3xl font-bold text-white mb-2">Cobra todo lo que te toca</h2>
-              <p className="text-white/80 mb-6 max-w-sm mx-auto text-sm">
-                Accede a todas las ayudas, alertas semanales y envío directo a tu gestoría.
+            <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Importe potencial</p>
+              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>
+                {importeTotal > 0 ? `${importeTotal.toLocaleString('es-ES')}€` : '—'}
               </p>
-              <a href={`/login?redirect=/precios&perfil=${encodeURIComponent(JSON.stringify(perfil))}`}
-                className="bg-[#2a1500] text-[#E8540A] font-bold px-8 py-3.5 rounded-full inline-block hover:bg-[#FEF0E8] transition-colors">
-                Guardar y desbloquear →
-              </a>
-              <p className="text-[rgba(240,240,245,0.5)] text-xs mt-3">Cancela cuando quieras</p>
             </div>
-          )}
-
-          {ayudas.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-4xl mb-4"></p>
-              <p className="font-semibold text-[#f0f0f5]">No hemos encontrado ayudas específicas para tu perfil</p>
-              <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Prueba a revisar tu perfil o ampliar las categorías.</p>
-              <Link href="/perfil" className="inline-block mt-4 bg-[#2a1500] text-[#f0f0f5] px-6 py-3 rounded-full font-semibold text-sm">
-                Revisar mi perfil
-              </Link>
+            <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Abiertas ahora</p>
+              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>{ayudasAbiertas.length}</p>
             </div>
-          )}
-
-          <p className="text-xs text-[#B0AAA0] text-center mt-10 leading-relaxed max-w-lg mx-auto">
-            Los resultados son orientativos. Verifica siempre los requisitos en la fuente oficial antes de solicitar cualquier ayuda.
+            {ayudasNuevas.size > 0 && (
+              <div style={{ background: 'rgba(255,131,0,0.18)', border: '1px solid rgba(255,131,0,0.35)', borderRadius: 16, padding: '20px 24px' }}>
+                <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Nuevas esta semana</p>
+                <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudasNuevas.size}</p>
+              </div>
+            )}
+          <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.25)', textAlign: 'center', marginTop: 32, lineHeight: 1.6 }}>
+            Los resultados son orientativos. Verifica siempre los requisitos en la fuente oficial.
           </p>
+          </div>
+
         </div>
       </div>
-    <>
       {/* Modal enviar al gestor */}
       {modalGestor && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
@@ -827,7 +719,6 @@ export default function Resultados() {
           </div>
         </div>
       )}
-    </>
     </>
   )
 }
