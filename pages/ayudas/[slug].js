@@ -27,6 +27,35 @@ export default function AyudaPage({ ayuda }) {
         <meta property="og:description" content={desc} />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`https://www.cobratelo.es/ayudas/${ayuda.slug}`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "GovernmentService",
+              "name": ayuda.nombre,
+              "description": ayuda.descripcion || ayuda.nombre,
+              "provider": { "@type": "GovernmentOrganization", "name": ayuda.organismo },
+              "areaServed": { "@type": "Country", "name": "Spain" },
+              "url": ayuda.url_oficial || `https://www.cobratelo.es/ayudas/${ayuda.slug}`,
+              ...(importe ? { "offers": { "@type": "Offer", "description": importe, "priceCurrency": "EUR" } } : {}),
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cobratelo.es" },
+                { "@type": "ListItem", "position": 2, "name": "Ayudas", "item": "https://www.cobratelo.es/ayudas" },
+                { "@type": "ListItem", "position": 3, "name": ayuda.nombre, "item": `https://www.cobratelo.es/ayudas/${ayuda.slug}` },
+              ]
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+                { "@type": "Question", "name": `¿Quién puede solicitar ${ayuda.nombre}?`, "acceptedAnswer": { "@type": "Answer", "text": ayuda.requisitos || `Consulta los requisitos oficiales en la convocatoria de ${ayuda.organismo}.` } },
+                { "@type": "Question", "name": `¿Cuánto se puede cobrar con ${ayuda.nombre}?`, "acceptedAnswer": { "@type": "Answer", "text": importe ? `${importe} según la convocatoria de ${ayuda.organismo}.` : `Consulta el importe exacto en la convocatoria oficial de ${ayuda.organismo}.` } },
+              ]
+            }
+          ]
+        })}} />
       </Head>
       <div style={{ background: '#fff', minHeight: '100vh', color: '#1a0d00' }}>
         <nav style={{ background: '#321A00', borderBottom: '1px solid rgba(255,200,120,0.12)', position: 'sticky', top: 0, zIndex: 50 }}>

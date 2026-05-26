@@ -24,6 +24,30 @@ export default function CcaaPage({ ayudas, ccaa, ccaaSlug, total }) {
         <meta name="description" content={desc} />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`https://www.cobratelo.es/ayudas/ccaa/${ccaaSlug}`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cobratelo.es" },
+                { "@type": "ListItem", "position": 2, "name": "Ayudas", "item": "https://www.cobratelo.es/ayudas" },
+                { "@type": "ListItem", "position": 3, "name": ccaa || "España", "item": `https://www.cobratelo.es/ayudas/ccaa/${ccaaSlug}` },
+              ]
+            },
+            {
+              "@type": "ItemList",
+              "name": `Ayudas públicas ${ccaa ? 'en ' + ccaa : 'en España'}`,
+              "numberOfItems": total,
+              "itemListElement": ayudas.slice(0, 10).map((a, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "name": a.nombre,
+                "url": `https://www.cobratelo.es/ayudas/${a.slug}`
+              }))
+            }
+          ]
+        })}} />
       </Head>
       <div style={{ background: '#fff', minHeight: '100vh', color: '#1a0d00' }}>
         <nav style={{ background: '#321A00', position: 'sticky', top: 0, zIndex: 50, borderBottom: '1px solid rgba(255,200,120,0.12)' }}>

@@ -30,6 +30,20 @@ export default function AyudasIndex({ ayudas, total }) {
         <meta name="description" content={`Descubre las ${total}+ ayudas públicas disponibles en España: subvenciones, prestaciones, bonificaciones y becas estatales, autonómicas y locales. Comprueba si te corresponden en 2 minutos.`} />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.cobratelo.es/ayudas" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Ayudas públicas en España 2025-2026",
+          "description": `${total}+ ayudas verificadas: subvenciones, prestaciones y bonificaciones estatales, autonómicas y locales en España.`,
+          "url": "https://www.cobratelo.es/ayudas",
+          "publisher": { "@type": "Organization", "name": "Cóbratelo.es", "url": "https://www.cobratelo.es" },
+          "hasPart": ayudas.slice(0, 10).map(a => ({
+            "@type": "GovernmentService",
+            "name": a.nombre,
+            "provider": { "@type": "GovernmentOrganization", "name": a.organismo },
+            "url": `https://www.cobratelo.es/ayudas/${a.slug}`
+          }))
+        })}} />
       </Head>
       <div style={{ background: '#fff', minHeight: '100vh', color: '#1a0d00' }}>
         <nav style={{ background: '#321A00', position: 'sticky', top: 0, zIndex: 50, borderBottom: '1px solid rgba(255,200,120,0.12)' }}>

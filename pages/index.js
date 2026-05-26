@@ -84,6 +84,29 @@ export default function Home() {
     <>
       <Head>
         <title>Cóbratelo.es — Las ayudas públicas que te corresponden</title>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "name": "Cóbratelo.es",
+              "url": "https://www.cobratelo.es",
+              "description": "Detectamos automáticamente las ayudas públicas que te corresponden en España: subvenciones, prestaciones y bonificaciones estatales, autonómicas y locales.",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": { "@type": "EntryPoint", "urlTemplate": "https://www.cobratelo.es/ayudas?q={search_term_string}" },
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@type": "Organization",
+              "name": "Cóbratelo.es",
+              "url": "https://www.cobratelo.es",
+              "logo": "https://www.cobratelo.es/logo.png",
+              "contactPoint": { "@type": "ContactPoint", "email": "hola@cobratelo.es", "contactType": "customer service" }
+            }
+          ]
+        })}} />
         <meta name="description" content="Descubre en 2 minutos qué ayudas, subvenciones y prestaciones del Estado te corresponden. Gratis." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
