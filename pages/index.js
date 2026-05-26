@@ -97,7 +97,7 @@ export default function Home() {
         <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #321A00', color: '#FFF5EB', color: '#FFF5EB' }}>
 
         {/* NAV */}
-        <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
+        <nav style={{ borderBottom: `1px solid ${C.border}`, background: C.bg, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
             <span className="font-display font-bold text-xl" style={{ letterSpacing: '-0.5px', color: C.text }}>
               cóbratelo<span style={{ color: C.green }}>.es</span>
