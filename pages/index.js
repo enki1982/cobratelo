@@ -14,7 +14,7 @@ const C = {
   green: '#FF8300',
   greenDim: 'rgba(255,131,0,0.10)',
   greenGlow: 'rgba(255,131,0,0.25)',
-  text: '#f0f0f5',
+  text: '#FFF5EB',
   muted: 'rgba(240,240,245,0.5)',
   red: '#ff6b6b',
   blue: '#4a9eff',
@@ -94,7 +94,7 @@ export default function Home() {
       }}>
 
         {/* BLOQUE OSCURO: Nav + Hero */}
-        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #321A00', color: '#f0f0f5', color: '#f0f0f5' }}>
+        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #321A00', color: '#FFF5EB', color: '#FFF5EB' }}>
 
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
@@ -117,15 +117,12 @@ export default function Home() {
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
             {/* Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: `1px solid rgba(255,131,0,0.25)`, color: C.green, fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 100, marginBottom: 24 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.2)', color: 'rgba(255,245,235,0.7)', fontSize: 11, fontWeight: 600, padding: '5px 14px', borderRadius: 100, marginBottom: 24, letterSpacing: '0.5px' }}>
               {totalAyudas}+ convocatorias activas en España
             </div>
 
             <h1 className="font-display font-bold" style={{ fontSize: 'clamp(36px,5vw,58px)', lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 20, color: C.text }}>
-              ¿Qué ayudas{' '}
-              <span style={{ background: 'linear-gradient(135deg,#FF8300 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                puedes cobrar tú?
-              </span>
+              ¿Qué ayudas puedes <span style={{ color: '#FFF5EB' }}>cobrar tú?</span>
             </h1>
 
             <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
@@ -195,7 +192,7 @@ export default function Home() {
         </div>{/* FIN BLOQUE OSCURO */}
 
         {/* CASO REAL */}
-        <section style={{ background: '#1a0d00', borderTop: '1px solid rgba(255,255,255,0.06)', width: '100%' }}>
+        <section style={{ background: '#321A00', borderTop: '1px solid rgba(255,255,255,0.06)', width: '100%' }}>
           <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px' }}>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 20, textAlign: 'center' }}>
               EJEMPLO REAL
@@ -206,7 +203,7 @@ export default function Home() {
                 { perfil: 'Familia numerosa · Madrid · 3 hijos', resultado: '8 ayudas detectadas', importe: '6.800€', detalle: 'Becas comedor, ayuda libros, bonificación transporte, ayuda guardería...' },
                 { perfil: 'Pyme · Sevilla · 6 empleados', resultado: '14 ayudas detectadas', importe: '28.500€', detalle: 'Bonificaciones SS, Kit Digital, FEDER, subvención Junta Andalucía...' },
               ].map((c, i) => (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '24px 20px' }}>
+                <div key={i} style={{ background: 'rgba(255,131,0,0.06)', border: '1px solid rgba(255,131,0,0.15)', borderRadius: 16, padding: '24px 20px' }}>
                   <p style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>{c.perfil}</p>
                   <p style={{ fontSize: 28, fontWeight: 800, color: C.green, marginBottom: 4 }}>{c.importe}</p>
                   <p style={{ fontSize: 13, color: C.text, fontWeight: 600, marginBottom: 8 }}>{c.resultado}</p>
@@ -304,7 +301,7 @@ export default function Home() {
               ].map((c, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f5' }}>{c.nombre}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB' }}>{c.nombre}</div>
                     <div style={{ fontSize: 11, color: 'rgba(240,240,245,0.5)', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
                   </div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
@@ -320,9 +317,9 @@ export default function Home() {
 
         {/* CTA FINAL */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 80px' }}>
-          <div style={{ background: '#1a0d00', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
-            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#f0f0f5', marginBottom: 16 }}>
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#FFF5EB', marginBottom: 16 }}>
               La mayoría de ayudas no se piden porque nadie sabe que existen
             </h2>
             <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
