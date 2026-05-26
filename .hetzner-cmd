@@ -1,1 +1,1 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && curl -s https://raw.githubusercontent.com/enki1982/cobratelo/main/hetzner-agent/ampliar_fuentes.py -o /tmp/ampliar_fuentes.py && python3 /tmp/ampliar_fuentes.py
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
