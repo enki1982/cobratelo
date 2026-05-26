@@ -10,7 +10,7 @@ const TIPO_LABEL = {
   servicio: 'Servicio', bonificacion: 'Bonificación', prestamo: 'Préstamo',
 }
 const TIPO_COLOR = {
-  prestacion: 'bg-blue-50 text-blue-700', subvencion: 'bg-green-50 text-green-700',
+  prestacion: 'bg-blue-50 text-blue-700', subvencion: 'bg-orange-50 text-orange-700',
   deduccion: 'bg-purple-50 text-purple-700', servicio: 'bg-yellow-50 text-yellow-700',
   bonificacion: 'bg-orange-50 text-orange-700', prestamo: 'bg-gray-50 text-gray-700',
 }
@@ -646,7 +646,7 @@ export default function Resultados() {
           <div className="bg-[#2a1500] rounded-3xl p-8 mb-6">
             <p className="text-[rgba(240,240,245,0.5)] text-sm mb-2">Ayudas que encajan con tu perfil</p>
             <div className="flex items-end gap-4 mb-4">
-              <span className="font-display text-5xl font-bold text-[#22C55E]">{ayudas.length}</span>
+              <span className="font-display text-5xl font-bold text-[#FF8300]">{ayudas.length}</span>
               <span className="text-[rgba(240,240,245,0.5)] mb-2">ayudas encontradas</span>
             </div>
           </div>
@@ -722,7 +722,7 @@ export default function Resultados() {
                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIPO_COLOR[ayuda.tipo] || 'bg-gray-50 text-gray-700'}`}>
                          {TIPO_LABEL[ayuda.tipo] || ayuda.tipo}
                        </span>
-                       <span className={`text-xs px-2 py-0.5 rounded-full ${ayuda.estado === 'abierta' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
+                       <span className={`text-xs px-2 py-0.5 rounded-full ${ayuda.estado === 'abierta' ? 'bg-orange-50 text-orange-700' : 'bg-gray-50 text-gray-500'}`}>
                          {ayuda.estado === 'abierta' ? '● Abierta' : ayuda.estado}
                        </span>
                        {ayuda.ambito !== 'estatal' && ayuda.comunidad_autonoma && (

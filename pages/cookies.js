@@ -23,7 +23,7 @@ export default function Cookies() {
             { t: 'Cookies de sesión', c: 'Cuando inicias sesión, almacenamos un token de autenticación en tu navegador mediante localStorage. Este token es necesario para mantenerte identificado. Se elimina al cerrar sesión.' },
             { t: 'Cookies de preferencias', c: 'Guardamos tu decisión sobre el consentimiento de cookies (aceptar/rechazar) en localStorage con la clave "cobratelo_cookies". Esto evita que el banner aparezca en cada visita.' },
             { t: '¿Cómo gestionar las cookies?', c: 'Puedes eliminar las cookies desde la configuración de tu navegador en cualquier momento. También puedes revocar tu consentimiento borrando el dato "cobratelo_cookies" de localStorage.' },
-            { t: 'Contacto', c: 'Para cualquier consulta sobre nuestra política de cookies: hola@cobratelo.es — KIESBROTER SL (NIF: B65417107), Mataró, Barcelona.' },
+            { t: 'Contacto', c: 'Para cualquier consulta sobre nuestra política de cookies: hola@cobratelo.es — Miquel Nogueras Camero (NIF: 77609795K).' },
           ].map((s, i) => (
             <div key={i} style={{ marginBottom: 32 }}>
               <h2 className="font-display font-bold" style={{ fontSize: 18, color: C.text, marginBottom: 8, letterSpacing: '-0.3px' }}>{s.t}</h2>

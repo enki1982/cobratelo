@@ -132,7 +132,7 @@ export default function Informe() {
 
           <p className="text-center text-xs text-[#B0AAA0] pt-2 pb-8">
             Resultados orientativos. Consulta siempre las fuentes oficiales.<br/>
-            Cóbratelo.es · KIESBROTER SL (NIF: B65417107) · Mataró, Barcelona
+            Cóbratelo.es · Miquel Nogueras Camero
           </p>
         </div>
       </div>

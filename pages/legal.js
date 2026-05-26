@@ -21,7 +21,7 @@ export default function Legal() {
           <p>
             En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la
             Información y de Comercio Electrónico (LSSI-CE), se informa que el presente sitio web
-            <strong> cobratelo.es</strong> es titularidad de <strong>KIESBROTER SL (NIF: B65417107), Mataró, Barcelona</strong>,
+            <strong> cobratelo.es</strong> es titularidad de <strong>Miquel Nogueras Camero (NIF: 77609795K)</strong>,
             
           </p>
           <p>Correo electrónico de contacto: <a href="mailto:hola@cobratelo.es">hola@cobratelo.es</a></p>
@@ -41,7 +41,7 @@ export default function Legal() {
           <h2>3. Propiedad intelectual</h2>
           <p>
             Todos los contenidos del sitio web — incluyendo textos, diseño, código y marca — son
-            propiedad de KIESBROTER SL (NIF: B65417107), Mataró, Barcelona o sus licenciantes, y están protegidos por la
+            propiedad de Miquel Nogueras Camero (NIF: 77609795K) o sus licenciantes, y están protegidos por la
             legislación de propiedad intelectual e industrial vigente.
           </p>
 

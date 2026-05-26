@@ -144,7 +144,7 @@ export default function Precios() {
         </div>
 
         <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '24px', borderTop: `1px solid ${C.border}`, textAlign: 'center' }}>
-          <p style={{ color: C.muted, fontSize: 12 }}>Cóbratelo.es · KIESBROTER SL (NIF: B65417107) · Mataró, Barcelona</p>
+          <p style={{ color: C.muted, fontSize: 12 }}>Cóbratelo.es · Miquel Nogueras Camero</p>
         </footer>
       </div>
     </>
