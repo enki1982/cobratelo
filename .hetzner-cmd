@@ -1,1 +1,15 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -c "
+import sqlite3
+conn = sqlite3.connect('ayudas.db')
+c = conn.cursor()
+print('=== TOTAL POR CCAA ===')
+c.execute('SELECT comunidad_autonoma, COUNT(*) as n FROM ayudas GROUP BY comunidad_autonoma ORDER BY n DESC')
+for r in c.fetchall():
+    print(f'{r[1]:4d}  {r[0] or \"(estatal)\"}')
+print()
+print('=== ÚLTIMAS 10 AÑADIDAS ===')
+c.execute('SELECT nombre, comunidad_autonoma, organismo FROM ayudas ORDER BY id DESC LIMIT 10')
+for r in c.fetchall():
+    print(f'  · {r[0][:50]} | {r[1] or \"Estatal\"} | {r[2][:30]}')
+conn.close()
+"
