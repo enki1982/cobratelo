@@ -494,10 +494,10 @@ export default function Cuenta() {
                 </Link>
               </div>
               <div style={{ padding: '8px 0' }}>
-                {perfil && [
-                  ['Situación laboral', perfil.situacion],
-                  ['Situación familiar', perfil.familia],
-                  ['Vivienda', perfil.vivienda],
+                {perfilData && [
+                  ['Situación laboral', perfilData.situacion],
+                  ['Situación familiar', perfilData.familia],
+                  ['Vivienda', perfilData.vivienda],
                 ].map(([label, valor]) => valor && valor.length > 0 && (
                   <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)' }}>
                     <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', width: 160, flexShrink: 0 }}>{label}</p>
@@ -586,8 +586,8 @@ export default function Cuenta() {
       </div>
 
       {/* Modales existentes */}
-      {editando && <ModalEditar seccion={editando} valor={perfil?.[editando]} perfil={perfil} onGuardar={guardarCampo} onCerrar={() => setEditando(null)} />}
-      {editandoPueblo && <ModalPueblo valor={perfil?.pueblo} onGuardar={v => guardarCampo('pueblo', v)} onCerrar={() => setEditandoPueblo(false)} />}
+      {editando && <ModalEditar seccion={editando} valor={perfilData?.[editando]} perfil={perfilData} onGuardar={handleGuardarSeccion} onCerrar={() => setEditando(null)} />}
+      {editandoPueblo && <ModalPueblo valor={perfilData?.pueblo} onGuardar={(campo, campos) => handleGuardarPueblo(campo, campos)} onCerrar={() => setEditandoPueblo(false)} />}
     </>
   )
 }
