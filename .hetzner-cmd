@@ -1,12 +1,14 @@
 echo "=== TODOS LOS PY DEL BOT ==="
-find /opt/bot -name "*.py" | sort
+find /opt/bot -name "*.py" 2>/dev/null | sort
 
 echo ""
-echo "=== GREP normalized_qty EN TODOS ==="
-grep -rn "normalized_qty\|free_base\|step_size\|LOT_SIZE" /opt/bot/ 2>/dev/null | grep -v ".pyc"
+echo "=== GREP EN TODOS ==="
+grep -rn "normalized_qty\|free_base\|step_size\|insufficient" /opt/bot/ 2>/dev/null | grep "\.py:" | grep -v ".pyc"
 
 echo ""
-echo "=== SERVICIO ACTIVO ==="
-systemctl status auto-trader-bot.service 2>/dev/null | head -15 || \
-systemctl status bot-binance.service 2>/dev/null | head -15 || \
-ps aux | grep python | grep -v grep
+echo "=== PROCESO ACTIVO ==="
+ps aux | grep python | grep -v grep | head -5
+
+echo ""
+echo "=== SERVICIO ==="
+systemctl is-active auto-trader-bot 2>/dev/null || systemctl is-active bot-binance 2>/dev/null || systemctl list-units | grep -i "bot\|trader"
