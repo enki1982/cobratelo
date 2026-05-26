@@ -139,8 +139,18 @@ que te corresponden
               </Link>
             </div>
 
+            {/* Trust layer */}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32 }}>
+              {['Actualizado automáticamente', 'Estatal, autonómico y local', 'Compatible con tu gestoría'].map(t => (
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ color: '#FF8300', fontSize: 11, fontWeight: 700 }}>✓</span>
+                  <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)' }}>{t}</span>
+                </div>
+              ))}
+            </div>
+
             {/* Stats */}
-            <div style={{ display: 'flex', gap: 32, marginTop: 40, paddingTop: 32, borderTop: `1px solid ${C.border}` }}>
+            <div style={{ display: 'flex', gap: 32, marginTop: 0, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
               {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '2 min', lbl: 'Análisis completo' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
