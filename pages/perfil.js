@@ -234,45 +234,46 @@ const PASOS = [
   },
 ]
 
-// Buscar municipios via Nominatim (OpenStreetMap) - gratis, sin API key
+// Buscar municipios via Google Places Autocomplete API
+let placesService = null
+
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
-  try {
-    // Búsqueda amplia sin filtro de tipo — incluye municipios pequeños, aldeas, barrios
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=12&addressdetails=1&accept-language=es`
-    const r = await fetch(url, {
-      headers: {
-        'Accept-Language': 'es',
-        'User-Agent': 'Cobratelo.es/1.0 (hola@cobratelo.es)'
+  if (typeof window === 'undefined') return []
+
+  return new Promise((resolve) => {
+    try {
+      if (!window.google?.maps?.places) {
+        resolve([])
+        return
       }
-    })
-    const data = await r.json()
-    return data
-      .filter(d => {
-        if (!d.address) return false
-        // Excluir resultados que no sean lugares habitados (carreteras, edificios, etc.)
-        const excluir = ['road','motorway','path','cycleway','footway','building','house','shop','amenity','tourism']
-        if (excluir.includes(d.type)) return false
-        // Solo España
-        if (d.address.country_code && d.address.country_code !== 'es') return false
-        return true
+      const service = new window.google.maps.places.AutocompleteService()
+      service.getPlacePredictions({
+        input: query,
+        componentRestrictions: { country: 'es' },
+        types: ['(cities)'],
+        language: 'es',
+      }, (predictions, status) => {
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK || !predictions) {
+          resolve([])
+          return
+        }
+        resolve(predictions.map(p => {
+          const parts = p.description.split(', ')
+          return {
+            nombre: parts[0] || p.description,
+            provincia: parts[1] || '',
+            ccaa: parts[2] || '',
+            comarca: '',
+            display: p.description,
+            placeId: p.place_id,
+          }
+        }).slice(0, 7))
       })
-      .map(d => ({
-        nombre: d.address.municipality || d.address.city || d.address.town ||
-                d.address.village || d.address.hamlet || d.address.suburb || d.name,
-        provincia: d.address.province || d.address.county || '',
-        ccaa: d.address.state || '',
-        comarca: d.address.county || d.address.state_district || '',
-        display: d.display_name.split(',').slice(0, 3).join(', '),
-      }))
-      .filter(d => d.nombre && d.nombre.length > 0)
-      .filter((v, i, a) => a.findIndex(t =>
-        t.nombre.toLowerCase() === v.nombre.toLowerCase() && t.provincia === v.provincia
-      ) === i)
-      .slice(0, 7)
-  } catch (e) {
-    return []
-  }
+    } catch (e) {
+      resolve([])
+    }
+  })
 }
 
 // Componente de input de pueblo con autocompletado
