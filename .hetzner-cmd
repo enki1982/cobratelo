@@ -1,9 +1,1 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && ls -la && python3 -c "
-import sqlite3
-conn = sqlite3.connect('ayudas.db')
-c = conn.cursor()
-c.execute('SELECT comunidad_autonoma, COUNT(*) as n FROM ayudas GROUP BY comunidad_autonoma ORDER BY n DESC')
-for r in c.fetchall():
-    print(f'{r[1]:4d}  {r[0] or \"(estatal)\"}')
-conn.close()
-"
+cd /root/ayuda-es-agent && head -100 agent.py
