@@ -1,13 +1,33 @@
-echo "=== LOCALIZANDO BUG normalized_qty ==="
-grep -n "normalized_qty\|free_base\|input_qty\|requested_qty" /opt/bot/auto_trader_bot_v1/main.py | head -40
+BOT=/opt/bot/auto_trader_bot_v1/main.py
+
+echo "=== BACKUP ==="
+cp $BOT ${BOT}.bak.$(date +%Y%m%d_%H%M%S)
+echo "Backup OK"
 
 echo ""
-echo "=== CONTEXTO LÍNEAS CLAVE ==="
-grep -n "normalized_qty" /opt/bot/auto_trader_bot_v1/main.py | while read line; do
-  lineno=$(echo "$line" | cut -d: -f1)
-  start=$((lineno - 5))
-  end=$((lineno + 5))
-  echo "--- Línea $lineno ---"
-  sed -n "${start},${end}p" /opt/bot/auto_trader_bot_v1/main.py
-  echo ""
-done
+echo "=== CONTEXTO DEL BUG ==="
+# Buscar donde se usa normalized_qty en el contexto de SELL
+grep -n "normalized_qty\|free_base\|input_qty\|floor\|round\|precision\|LOT_SIZE\|step_size" $BOT | head -50
+
+echo ""
+echo "=== FUNCIÓN COMPLETA DE SUBMIT/SELL ==="
+# Buscar la función que hace el submit de la orden
+python3 -c "
+import ast, sys
+
+with open('$BOT', 'r') as f:
+    content = f.read()
+    lines = content.split('\n')
+
+# Buscar líneas relevantes al sell/submit
+keywords = ['normalized_qty', 'free_base', 'SELL', 'submit_order', 'place_order', 'create_order', 'LOT_SIZE']
+for i, line in enumerate(lines, 1):
+    if any(k in line for k in keywords):
+        start = max(0, i-3)
+        end = min(len(lines), i+3)
+        print(f'--- Línea {i} ---')
+        for j in range(start, end):
+            marker = '>>> ' if j == i-1 else '    '
+            print(f'{marker}{j+1}: {lines[j]}')
+        print()
+"
