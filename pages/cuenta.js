@@ -494,16 +494,16 @@ export default function Cuenta() {
                 </Link>
               </div>
               <div style={{ padding: '8px 0' }}>
-                {perfil && Object.entries({
-                  'Situación laboral': perfil.situacion,
-                  'Ubicación': perfil.pueblo,
-                  'Situación familiar': perfil.familia,
-                  'Vivienda': perfil.vivienda,
-                  'Fecha de nacimiento': perfil.nacimiento,
-                }).map(([label, valor]) => valor && valor.length > 0 && (
+                {perfil && [
+                  ['Situación laboral', perfil.situacion],
+                  ['Situación familiar', perfil.familia],
+                  ['Vivienda', perfil.vivienda],
+                ].map(([label, valor]) => valor && valor.length > 0 && (
                   <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)' }}>
                     <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', width: 160, flexShrink: 0 }}>{label}</p>
-                    <div style={{ flex: 1 }}><ValorPerfil campo={label.toLowerCase().replace(' ', '_')} valor={valor} /></div>
+                    <p style={{ fontSize: 13, color: '#FFF5EB' }}>
+                      {Array.isArray(valor) ? valor.map(v => LABELS[v] || v).join(', ') : valor}
+                    </p>
                   </div>
                 ))}
               </div>

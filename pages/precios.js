@@ -93,7 +93,7 @@ export default function Precios() {
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 12 }}>Precios</p>
           <h1 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(32px,5vw,56px)', letterSpacing: '-2px', color: C.text, marginBottom: 14 }}>
             Gratis para ciudadanos.<br />
-            <span style={{ background: 'linear-gradient(135deg,#FF8300 0%,#00c4ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ color: '#FF8300' }}>
               Poderoso para gestorías.
             </span>
           </h1>

@@ -621,8 +621,8 @@ export default function Perfil() {
             <button onClick={siguiente} disabled={!puedeAvanzar()}
               className={`flex-1 py-3.5 rounded-full font-semibold transition-all duration-200
                 ${puedeAvanzar()
-                  ? 'bg-[#1a0d00] text-[#FFE2C4] hover:bg-[#333330]'
-                  : 'bg-[#F5C89A] text-[#B0AAA0] cursor-not-allowed'
+                  ? 'bg-[#FF8300] text-[#1a0d00] hover:bg-[#e67500]'
+                  : 'bg-[rgba(255,200,120,0.15)] text-[rgba(255,245,235,0.25)] cursor-not-allowed border border-[rgba(255,200,120,0.1)]'
                 }`}>
               {esUltimoPaso ? 'Ver mis ayudas →' : 'Continuar →'}
             </button>

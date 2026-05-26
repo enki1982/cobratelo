@@ -237,67 +237,60 @@ export default function Home() {
           </div>
         </section>
 
-        {/* GESTORÍAS */}
-        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
-            <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Para gestorías y despachos</p>
-              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
-                Más ingresos para tu gestoría.<br />Sin trabajo extra.
-              </h2>
-              <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.75, marginBottom: 40, maxWidth: 440 }}>
-                Cada cliente tuyo tiene ayudas que no conoce. Cóbratelo las detecta, genera el informe y tú cobras la gestión — sin buscar, sin burocracia, sin trabajo extra.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}>
-                {['Detecta ayudas de todos tus clientes automáticamente','Informe personalizado listo para presentar','Alertas cuando aparecen nuevas ayudas para cada cliente','Starter hasta 50 clientes · Pro ilimitado'].map((f, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#666660' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: C.greenDim, border: `1px solid rgba(255,131,0,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: C.green, flexShrink: 0 }}><svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{display:'block'}}><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
-                    {f}
+                {/* ── BIFURCACIÓN B2B — ELEGANTE ── */}
+        <section style={{ background: '#fff', width: '100%', borderTop: '1px solid #F5C89A' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 32 }}>
+              {/* Left — contexto */}
+              <div style={{ maxWidth: 480 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#FF8300', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>PARA GESTORÍAS Y ASESORES</p>
+                <h2 className="font-display font-bold" style={{ fontSize: 'clamp(22px,3vw,30px)', color: '#1a0d00', letterSpacing: '-0.8px', marginBottom: 12, lineHeight: 1.2 }}>
+                  También ayudamos a gestorías y asesores
+                </h2>
+                <p style={{ fontSize: 15, color: '#7a4a1a', lineHeight: 1.7, marginBottom: 24 }}>
+                  Centraliza solicitudes, recibe nuevos clientes y automatiza la detección de ayudas para todos tus clientes. Sin trabajo extra.
+                </p>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <Link href="/precios" style={{ background: '#321A00', color: '#FFE2C4', fontWeight: 700, fontSize: 14, padding: '12px 24px', borderRadius: 100, textDecoration: 'none' }}>
+                    Soy gestoría →
+                  </Link>
+                  <Link href="/precios" style={{ fontSize: 13, color: '#7a4a1a', textDecoration: 'none', fontWeight: 500 }}>
+                    Ver planes de gestoría
+                  </Link>
+                </div>
+              </div>
+              {/* Right — mini panel gestoría */}
+              <div style={{ background: '#321A00', borderRadius: 20, padding: '24px', minWidth: 280, boxShadow: '0 8px 32px rgba(50,26,0,0.15)' }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,245,235,0.35)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>PANEL GESTORÍA</p>
+                {[
+                  { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente', color: '#FF8300' },
+                  { nombre: 'López Sánchez, M.', ayudas: 5, importe: '7.200€', estado: 'Tramitado', color: '#4ade80' },
+                  { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente', color: '#FF8300' },
+                ].map((c, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < 2 ? '1px solid rgba(255,200,120,0.08)' : 'none' }}>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB', marginBottom: 2 }}>{c.nombre}</p>
+                      <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.35)' }}>{c.ayudas} ayudas · {c.importe}</p>
+                    </div>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: c.color, background: c.color + '18', padding: '3px 9px', borderRadius: 100 }}>{c.estado}</span>
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <Link href="/precios?tab=gestoria" style={{ background: '#cc5500', color: '#fff', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 100, textDecoration: 'none' }}>
-                  Probar 7 días gratis →
-                </Link>
-                <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
-              </div>
             </div>
-            <FloatingCard depth={1.5} glowColor="rgba(45,106,79,0.2)" style={{ background: '#2a1500', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#cc5500', opacity: 0.15 }} />
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
-              {[
-                { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente' },
-                { nombre: 'López Sánchez, M.', ayudas: 5, importe: '7.200€', estado: 'Tramitado' },
-                { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente' },
-                { nombre: 'Ruiz Pérez, C.', ayudas: 3, importe: '4.100€', estado: 'En proceso' },
-              ].map((c, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB' }}>{c.nombre}</div>
-                    <div style={{ fontSize: 11, color: 'rgba(240,240,245,0.5)', marginTop: 2 }}>{c.ayudas} ayudas · {c.importe}</div>
-                  </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100,
-                    background: c.estado === 'Tramitado' ? 'rgba(255,131,0,0.1)' : c.estado === 'En proceso' ? 'rgba(37,99,235,0.1)' : 'rgba(245,158,11,0.1)',
-                    color: c.estado === 'Tramitado' ? C.green : c.estado === 'En proceso' ? '#60a5fa' : '#f59e0b'
-                  }}>{c.estado}</span>
-                </div>
-              ))}
-            </FloatingCard>
-          </div>
           </div>
         </section>
 
-        {/* CTA FINAL */}
+        {/* ── CTA FINAL ── */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 48px' }}>
           <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '72px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,40px)', letterSpacing: '-1px', color: '#FFF5EB', marginBottom: 20, fontWeight: 700 }}>
-              La mayoría de ayudas no se piden porque nadie sabe que existen
+              La forma moderna de conectar ciudadanos,
+ayudas públicas y gestorías.
             </h2>
             <p style={{ color: 'rgba(240,240,245,0.6)', fontSize: 16, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
-              No hay que buscar entre miles de subvenciones ni entender la burocracia. En 2 minutos te decimos exactamente qué puedes cobrar tú, con enlace directo a cada trámite.
+              Una plataforma para ciudadanos que quieren cobrar lo que les corresponde,
+y para gestorías que quieren crecer sin trabajar más.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
               {tienePerfil ? 'Ver mis ayudas →' : 'Ver qué ayudas me corresponden →'}
