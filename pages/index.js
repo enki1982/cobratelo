@@ -323,7 +323,7 @@ y para gestorías que quieren crecer sin trabajar más.
               </div>
               <div>
                 <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>PRODUCTO</p>
-                {[['Cómo funciona', '/'], ['Para gestorías', '/precios'], ['Precios', '/precios']].map(([l,h]) => (
+                {[['Cómo funciona', '/'], ['Para gestorías', '/precios'], ['Precios', '/precios'], ['Sobre nosotros', '/sobre-nosotros'], ['Ayudas en España', '/ayudas']].map(([l,h]) => (
                   <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
                 ))}
               </div>
