@@ -1,1 +1,12 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 control.py stats
+cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -c "
+import sqlite3, json
+conn = sqlite3.connect('ayudas.db')
+c = conn.cursor()
+c.execute('PRAGMA table_info(ayudas)')
+cols = [r[1] for r in c.fetchall()]
+print('Columnas:', cols)
+c.execute('SELECT nombre, slug, tipo, comunidad_autonoma, ambito, importe_min, importe_max, organismo, estado FROM ayudas LIMIT 3')
+for r in c.fetchall():
+    print(json.dumps(dict(zip(['nombre','slug','tipo','ccaa','ambito','min','max','org','estado'], r)), ensure_ascii=False)[:200])
+conn.close()
+"
