@@ -19,19 +19,19 @@ NUEVAS_FUENTES = [
         'nombre_fuente': 'Junta de Andalucía',
     },
     {
-        'url': 'https://www.gva.es/es/inici/informacio-institucional/ajudes-i-subvencions',
+        'url': 'https://www.gva.es/es/inicio/informacion-institucional/ayudas-subvenciones',
         'ccaa': 'Comunidad Valenciana',
         'ambito': 'autonomico',
         'nombre_fuente': 'Generalitat Valenciana',
     },
     {
-        'url': 'https://www.euskadi.eus/gobierno-vasco/subvenciones-ayudas/',
+        'url': 'https://www.euskadi.eus/contenidos/informacion/buscador_ayudas_subvenciones/es_def/index.shtml',
         'ccaa': 'País Vasco',
         'ambito': 'autonomico',
         'nombre_fuente': 'Gobierno Vasco',
     },
     {
-        'url': 'https://www.xunta.gal/portada',
+        'url': 'https://www.xunta.gal/busca-subvencions',
         'ccaa': 'Galicia',
         'ambito': 'autonomico',
         'nombre_fuente': 'Xunta de Galicia',
@@ -95,6 +95,12 @@ def fetch_content(url):
         return None
 
 conn = sqlite3.connect('/root/ayuda-es-agent/ayudas.db')
+c_check = conn.cursor()
+c_check.execute("SELECT name FROM sqlite_master WHERE type='table'")
+tablas = [r[0] for r in c_check.fetchall()]
+print(f'Tablas disponibles: {tablas}')
+TABLA = 'ayudas' if 'ayudas' in tablas else (tablas[0] if tablas else 'ayudas')
+print(f'Usando tabla: {TABLA}')
 c = conn.cursor()
 
 total_añadidas = 0
@@ -132,12 +138,12 @@ for fuente in NUEVAS_FUENTES:
             continue
         slug = get_slug(ayuda['nombre'])
         # Verificar si ya existe
-        c.execute('SELECT id FROM ayudas WHERE slug = ?', (slug,))
+        c.execute(f'SELECT id FROM {TABLA} WHERE slug = ?', (slug,))
         if c.fetchone():
             print(f"    · Ya existe: {ayuda['nombre'][:50]}")
             continue
         try:
-            c.execute('''INSERT INTO ayudas 
+            c.execute(f'''INSERT INTO {TABLA} 
                 (nombre, slug, descripcion, tipo, organismo, comunidad_autonoma, ambito,
                  importe_descripcion, requisitos, url_oficial, estado, created_at)
                 VALUES (?,?,?,?,?,?,?,?,?,?,'abierta',?)''', (
