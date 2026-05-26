@@ -433,7 +433,7 @@ export default function Cuenta() {
           <div className="flex gap-1 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-full p-1 mb-8 w-fit">
             {[{id:'perfil',label:'Mi perfil'},{id:'pagos',label:'Suscripción'},{id:'cuenta',label:'Cuenta'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#f0f0f5] text-white' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#00e87a] text-[#030303]' : 'text-[rgba(240,240,245,0.5)] hover:text-[#f0f0f5]'}`}>
                 {t.label}
               </button>
             ))}
@@ -524,7 +524,7 @@ export default function Cuenta() {
                       <p className="font-semibold text-[#f0f0f5] text-lg">{plan === 'free' ? 'Gratuito' : plan === 'alertas' ? 'Alertas' : 'Gestoría Pro'}</p>
                     </div>
                     <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${plan === 'free' ? 'bg-[rgba(255,255,255,0.05)] text-[rgba(240,240,245,0.5)]' : 'bg-[rgba(0,232,122,0.1)] text-[#1A7A4A]'}`}>
-                      {plan === 'free' ? 'Gratis' : plan === 'alertas' ? '0,99€/mes' : '49€/mes'}
+                      {plan === 'free' ? 'Gratis' : plan === 'starter' ? '149€/mes' : plan === 'pro' ? '399€/mes' : '149€/mes'}
                     </span>
                   </div>
                 </div>
