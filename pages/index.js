@@ -383,8 +383,8 @@ export default function Home() {
         </section>
 
         {/* CTA FINAL */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 80px' }}>
-          <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 48px' }}>
+          <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '48px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#FFF5EB', marginBottom: 16 }}>
               La mayoría de ayudas no se piden porque nadie sabe que existen
@@ -399,24 +399,45 @@ export default function Home() {
         </section>
 
         {/* FOOTER */}
-        <footer style={{ background: '#FFE2C4', borderTop: '1px solid #F5C89A', width: '100%' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <span className="font-display font-bold" style={{ color: '#1a0d00' }}>cóbratelo<span style={{ color: '#cc5500' }}>.es</span></span>
-            <p style={{ color: '#7a4a1a', fontSize: 12, textAlign: 'center' }}>
-              Los resultados son orientativos. Consulta siempre las fuentes oficiales.
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, fontSize: 12, color: C.muted }}>
-              {[['Precios','/precios'],['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
-                <Link key={h} href={h} style={{ color: '#7a4a1a', textDecoration: 'none' }}>{l}</Link>
-              ))}
-              <a href="mailto:hola@cobratelo.es" style={{ color: '#7a4a1a', textDecoration: 'none' }}>hola@cobratelo.es</a>
+        <footer style={{ background: '#321A00', borderTop: '1px solid rgba(255,131,0,0.15)', width: '100%' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px 32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 32, marginBottom: 40 }}>
+              <div>
+                <span className="font-display font-bold" style={{ color: '#FFF5EB', fontSize: 18, display: 'block', marginBottom: 10 }}>
+                  cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
+                </span>
+                <p style={{ color: 'rgba(255,245,235,0.4)', fontSize: 12, lineHeight: 1.7 }}>
+                  Detectamos las ayudas públicas que te corresponden. Sin buscar. Sin burocracia.
+                </p>
+              </div>
+              <div>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>PRODUCTO</p>
+                {[['Cómo funciona', '/'], ['Para gestorías', '/precios'], ['Precios', '/precios']].map(([l,h]) => (
+                  <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
+                ))}
+              </div>
+              <div>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>LEGAL</p>
+                {[['Aviso Legal', '/aviso-legal'], ['Privacidad', '/privacidad'], ['Términos', '/terminos']].map(([l,h]) => (
+                  <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
+                ))}
+              </div>
+              <div>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 14 }}>CONTACTO</p>
+                <a href="mailto:hola@cobratelo.es" style={{ color: '#FF8300', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>hola@cobratelo.es</a>
+                <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 12, lineHeight: 1.6 }}>Respondemos en menos de 24h en días laborables.</p>
+              </div>
             </div>
-            <div className="legal-hover-wrap">
-              <span className="legal-trigger">Información del titular</span>
-              <div className="legal-tooltip">
-                <strong>Miquel Nogueras Camero</strong><br/>
-                NIF 77609795K · Carrer del Roser, 21 · 08185 Lliçà de Vall (Barcelona)<br/>
-                <a href="mailto:hola@cobratelo.es" style={{color:'#cc5500'}}>hola@cobratelo.es</a>
+            <div style={{ height: 1, background: 'rgba(255,131,0,0.12)', marginBottom: 24 }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <p style={{ color: 'rgba(255,245,235,0.25)', fontSize: 12 }}>© 2026 Cóbratelo.es · Los resultados son orientativos. Consulta siempre las fuentes oficiales.</p>
+              <div className="legal-hover-wrap">
+                <span className="legal-trigger">Información del titular</span>
+                <div className="legal-tooltip">
+                  <strong>Miquel Nogueras Camero</strong><br/>
+                  NIF 77609795K · Carrer del Roser, 21 · 08185 Lliçà de Vall (Barcelona)<br/>
+                  <a href="mailto:hola@cobratelo.es" style={{color:'#cc5500'}}>hola@cobratelo.es</a>
+                </div>
               </div>
             </div>
           </div>
