@@ -1,58 +1,12 @@
-echo "=== LEYENDO CONTEXTO LÍNEAS 407-460 ==="
-sed -n '400,460p' /opt/bot/auto_trader_bot_v1/core/execution.py
-
-echo ""
-echo "=== APLICANDO FIX ==="
-python3 << 'PYEOF'
-path = '/opt/bot/auto_trader_bot_v1/core/execution.py'
-with open(path) as f:
-    code = f.read()
-
-# El fix: después del tolerance check, si free_base < normalized_qty_f,
-# usar free_base floored al step_size en lugar de normalized_qty
-# Buscar el bloque exacto después de la tolerancia
-
-old = """        tolerance = max(normalized_qty_f * 0.001, 1e-12)
-        if free_base + tolerance < normalized_qty_f:"""
-
-new = """        tolerance = max(normalized_qty_f * 0.001, 1e-12)
-        # FIX: si free_base < normalized_qty (por fees de la compra), capamos al balance real
-        if 0 < free_base < normalized_qty_f:
-            import math
-            # Floor a 5 decimales (step_size de BTC/USDC en Binance = 0.00001)
-            adjusted = math.floor(free_base * 100000) / 100000
-            if adjusted > 0 and adjusted != normalized_qty_f:
-                import logging
-                logging.getLogger(__name__).warning(
-                    "FEE_ADJUST SELL qty capped: %s -> %s (free_base=%s)",
-                    normalized_qty_f, adjusted, free_base
-                )
-                from decimal import Decimal
-                normalized_qty = Decimal(str(adjusted))
-                normalized_qty_f = float(normalized_qty)
-        if free_base + tolerance < normalized_qty_f:"""
-
-if old in code:
-    code = code.replace(old, new)
-    with open(path, 'w') as f:
-        f.write(code)
-    print("✅ FIX APLICADO — normalized_qty se capa al free_base real antes del submit")
-else:
-    print("❌ Patrón no encontrado — mostrando líneas 428-435:")
-    lines = code.split('\n')
-    for i, l in enumerate(lines[427:435], 428):
-        print(f"{i}: {l}")
-PYEOF
-
-echo ""
-echo "=== VERIFICANDO FIX ==="
-grep -n "FEE_ADJUST\|tolerance\|free_base.*normalized\|adjusted" /opt/bot/auto_trader_bot_v1/core/execution.py | head -20
-
-echo ""
-echo "=== REINICIANDO BOT ==="
+echo "cGF0aCA9ICcvb3B0L2JvdC9hdXRvX3RyYWRlcl9ib3RfdjEvY29yZS9leGVjdXRpb24ucHknCndpdGggb3BlbihwYXRoKSBhcyBmOgogICAgY29kZSA9IGYucmVhZCgpCm9sZCA9ICcgICAgICAgIHRvbGVyYW5jZSA9IG1heChub3JtYWxpemVkX3F0eV9mICogMC4wMDEsIDFlLTEyKVxuICAgICAgICBpZiBmcmVlX2Jhc2UgKyB0b2xlcmFuY2UgPCBub3JtYWxpemVkX3F0eV9mOicKbGluZXNfdG9faW5zZXJ0ID0gWwogICAgJyAgICAgICAgIyBGSVggZmVlczogc2kgZnJlZV9iYXNlIDwgbm9ybWFsaXplZF9xdHksIHVzYXIgYmFsYW5jZSByZWFsJywKICAgICcgICAgICAgIGlmIDAgPCBmcmVlX2Jhc2UgPCBub3JtYWxpemVkX3F0eV9mOicsCiAgICAnICAgICAgICAgICAgaW1wb3J0IG1hdGggYXMgX21hdGgnLAogICAgJyAgICAgICAgICAgIF9hZGogPSBfbWF0aC5mbG9vcihmcmVlX2Jhc2UgKiAxMDAwMDApIC8gMTAwMDAwJywKICAgICcgICAgICAgICAgICBpZiBfYWRqID4gMCBhbmQgYWJzKF9hZGogLSBub3JtYWxpemVkX3F0eV9mKSA+IDFlLTEwOicsCiAgICAnICAgICAgICAgICAgICAgIGltcG9ydCBsb2dnaW5nIGFzIF9sb2cnLAogICAgJyAgICAgICAgICAgICAgICBfbG9nLmdldExvZ2dlcihfX25hbWVfXykud2FybmluZygiRkVFX0FESlVTVCBTRUxMIGNhcHBlZCAlcy0+JXMgZnJlZT0lcyIsIG5vcm1hbGl6ZWRfcXR5X2YsIF9hZGosIGZyZWVfYmFzZSknLAogICAgJyAgICAgICAgICAgICAgICBmcm9tIGRlY2ltYWwgaW1wb3J0IERlY2ltYWwgYXMgX0QnLAogICAgJyAgICAgICAgICAgICAgICBub3JtYWxpemVkX3F0eSA9IF9EKHN0cihfYWRqKSknLAogICAgJyAgICAgICAgICAgICAgICBub3JtYWxpemVkX3F0eV9mID0gZmxvYXQobm9ybWFsaXplZF9xdHkpJywKXQppbnNlcnQgPSAnXG4nLmpvaW4obGluZXNfdG9faW5zZXJ0KQp0b2xfbGluZSA9ICcgICAgICAgIHRvbGVyYW5jZSA9IG1heChub3JtYWxpemVkX3F0eV9mICogMC4wMDEsIDFlLTEyKScKaWZfbGluZSA9ICcgICAgICAgIGlmIGZyZWVfYmFzZSArIHRvbGVyYW5jZSA8IG5vcm1hbGl6ZWRfcXR5X2Y6Jwp0YXJnZXQgPSB0b2xfbGluZSArICdcbicgKyBpZl9saW5lCmlmIHRhcmdldCBpbiBjb2RlOgogICAgbmV3ID0gdG9sX2xpbmUgKyAnXG4nICsgaW5zZXJ0ICsgJ1xuJyArIGlmX2xpbmUKICAgIGNvZGUgPSBjb2RlLnJlcGxhY2UodGFyZ2V0LCBuZXcpCiAgICB3aXRoIG9wZW4ocGF0aCwgJ3cnKSBhcyBmOgogICAgICAgIGYud3JpdGUoY29kZSkKICAgIHByaW50KCdGSVhfT0snKQplbHNlOgogICAgcHJpbnQoJ1BBVFRFUk5fTk9UX0ZPVU5EJykKICAgIGZvciBpLCBsIGluIGVudW1lcmF0ZShjb2RlLnNwbGl0KCdcbicpWzQyNzo0MzRdLCA0MjgpOgogICAgICAgIHByaW50KHN0cihpKSArICc6ICcgKyByZXByKGwpKQo=" | base64 -d > /tmp/fix_execution.py
+echo "=== Script decodificado ==="
+head -5 /tmp/fix_execution.py
+echo "=== Ejecutando fix ==="
+python3 /tmp/fix_execution.py
+echo "=== Verificando ==="
+grep -n "FEE_ADJUST\|FIX fees" /opt/bot/auto_trader_bot_v1/core/execution.py | head -5
+echo "=== Reiniciando bot ==="
 systemctl restart auto-trader-bot.service
-sleep 5
-systemctl is-active auto-trader-bot.service
-echo ""
-echo "=== LOG POST-RESTART ==="
-journalctl -u auto-trader-bot.service --no-pager -n 20
+sleep 6
+echo "=== Log post-restart ==="
+journalctl -u auto-trader-bot.service --no-pager -n 15
