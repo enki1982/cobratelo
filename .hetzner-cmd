@@ -1,11 +1,6 @@
-echo "=== ARCHIVOS PYTHON DEL BOT ==="
-find /root -name "*.py" -not -path "*cobratelo*" -not -path "*__pycache__*" -not -path "*ayuda-es-agent*" 2>/dev/null | sort
+echo "=== LOCALIZANDO FUNCIÓN SELL ==="
+grep -n "normalized_qty\|free_base\|LIVE_SPOT_SELL\|SELL_REJECTED\|insufficient" /opt/bot/auto_trader_bot_v1/main.py | head -40
 
 echo ""
-echo "=== GREP normalized_qty ==="
-grep -rn "normalized_qty\|free_base\|EXCHANGE_SUBMIT" /root --include="*.py" \
-  --exclude-dir=cobratelo --exclude-dir=ayuda-es-agent --exclude-dir=__pycache__ 2>/dev/null
-
-echo ""
-echo "=== PROCESOS BOT ACTIVOS ==="
-ps aux | grep python | grep -v grep
+echo "=== CONTEXTO SUBMIT SELL ==="
+grep -n "normalized_qty\|free_base" /opt/bot/auto_trader_bot_v1/main.py | head -20
