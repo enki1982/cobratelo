@@ -1,15 +1,9 @@
-cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -c "
-from supabase import create_client
-import os
-sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
-
-# Ver columnas actuales de perfiles
-try:
-    r = sb.table('perfiles').select('*').limit(1).execute()
-    if r.data:
-        print('Columnas:', list(r.data[0].keys()))
-    else:
-        print('Tabla perfiles vacía pero existe')
-except Exception as e:
-    print('Error:', e)
+cd /root/ayuda-es-agent && set -a && source .env && set +a && ls -la && python3 -c "
+import sqlite3
+conn = sqlite3.connect('ayudas.db')
+c = conn.cursor()
+c.execute('SELECT comunidad_autonoma, COUNT(*) as n FROM ayudas GROUP BY comunidad_autonoma ORDER BY n DESC')
+for r in c.fetchall():
+    print(f'{r[1]:4d}  {r[0] or \"(estatal)\"}')
+conn.close()
 "
