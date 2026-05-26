@@ -1,6 +1,13 @@
-echo "=== LOCALIZANDO FUNCIÓN SELL ==="
-grep -n "normalized_qty\|free_base\|LIVE_SPOT_SELL\|SELL_REJECTED\|insufficient" /opt/bot/auto_trader_bot_v1/main.py | head -40
+echo "=== LOCALIZANDO BUG normalized_qty ==="
+grep -n "normalized_qty\|free_base\|input_qty\|requested_qty" /opt/bot/auto_trader_bot_v1/main.py | head -40
 
 echo ""
-echo "=== CONTEXTO SUBMIT SELL ==="
-grep -n "normalized_qty\|free_base" /opt/bot/auto_trader_bot_v1/main.py | head -20
+echo "=== CONTEXTO LÍNEAS CLAVE ==="
+grep -n "normalized_qty" /opt/bot/auto_trader_bot_v1/main.py | while read line; do
+  lineno=$(echo "$line" | cut -d: -f1)
+  start=$((lineno - 5))
+  end=$((lineno + 5))
+  echo "--- Línea $lineno ---"
+  sed -n "${start},${end}p" /opt/bot/auto_trader_bot_v1/main.py
+  echo ""
+done
