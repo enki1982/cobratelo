@@ -1,4 +1,10 @@
-echo "=== ESTRUCTURA BOT ==="
-ls /root/
-echo "---"
-find /root -name "*.py" -not -path "*/cobratelo/*" -not -path "*/__pycache__/*" 2>/dev/null | sort
+echo "=== ARCHIVOS PYTHON DEL BOT ==="
+find /root -name "*.py" -not -path "*cobratelo*" -not -path "*__pycache__*" 2>/dev/null | sort
+
+echo ""
+echo "=== BUSCANDO FUNCIÓN DE CIERRE ==="
+grep -rn "normalized_qty\|free_base\|SELL\|close\|submit" /root --include="*.py" -l 2>/dev/null | grep -v cobratelo
+
+echo ""
+echo "=== CONTEXTO normalized_qty ==="
+grep -rn "normalized_qty" /root --include="*.py" 2>/dev/null | grep -v cobratelo | head -30
