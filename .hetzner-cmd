@@ -1,22 +1,4 @@
 echo "=== ESTRUCTURA BOT ==="
-ls /root/ark-bot/ 2>/dev/null || ls /root/ | grep -i bot
-ls /root/ark-bot/
-
-echo ""
-echo "=== ESTADO POSICIÓN ==="
-find /root -name "*.json" -newer /root -o -name "state*" -o -name "position*" 2>/dev/null | head -10
-find /root/ark-bot -name "*.json" -o -name "*.db" -o -name "*.sqlite" 2>/dev/null
-
-echo ""
-echo "=== ÚLTIMAS LÍNEAS DEL LOG ==="
-find /root -name "*.log" 2>/dev/null | head -5
-tail -30 /root/ark-bot/*.log 2>/dev/null || journalctl -u ark-bot --no-pager -n 30 2>/dev/null || tail -30 /var/log/ark-bot.log 2>/dev/null
-
-echo ""
-echo "=== PROCESOS ACTIVOS ==="
-ps aux | grep -i "bot\|python\|ark" | grep -v grep
-
-echo ""
-echo "=== HALT FLAG ==="
-find /root -name "*halt*" -o -name "*HALT*" 2>/dev/null
-cat /root/ark-bot/halt.flag 2>/dev/null || echo "no halt.flag encontrado"
+ls /root/
+echo "---"
+find /root -name "*.py" -not -path "*/cobratelo/*" -not -path "*/__pycache__/*" 2>/dev/null | sort
