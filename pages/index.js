@@ -431,14 +431,7 @@ export default function Home() {
             <div style={{ height: 1, background: 'rgba(255,131,0,0.12)', marginBottom: 24 }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <p style={{ color: 'rgba(255,245,235,0.25)', fontSize: 12 }}>© 2026 Cóbratelo.es · Los resultados son orientativos. Consulta siempre las fuentes oficiales.</p>
-              <div className="legal-hover-wrap">
-                <span className="legal-trigger">Información del titular</span>
-                <div className="legal-tooltip">
-                  <strong>Miquel Nogueras Camero</strong><br/>
-                  NIF 77609795K · Carrer del Roser, 21 · 08185 Lliçà de Vall (Barcelona)<br/>
-                  <a href="mailto:hola@cobratelo.es" style={{color:'#cc5500'}}>hola@cobratelo.es</a>
-                </div>
-              </div>
+            </div>
             </div>
           </div>
         </footer>
