@@ -41,15 +41,15 @@ export default function Informe() {
   }, [token])
 
   if (loading) return (
-    <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center">
+    <div className="min-h-screen bg-[#FFE2C4] flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   if (error || !datos) return (
-    <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#FFE2C4] flex items-center justify-center px-6">
       <div className="text-center">
-        <p className="text-[#888882] mb-4">Este informe no existe o ha expirado.</p>
+        <p className="text-[#7a4a1a] mb-4">Este informe no existe o ha expirado.</p>
         <Link href="/" className="text-[#cc5500] underline">Ir a Cóbratelo.es</Link>
       </div>
     </div>
@@ -66,8 +66,8 @@ export default function Informe() {
   return (
     <>
       <Head><title>Informe de ayudas — Cóbratelo.es</title><meta name="viewport" content="width=device-width,initial-scale=1" /></Head>
-      <div className="min-h-screen bg-[#F7F3EC]">
-        <div className="bg-[#111110] text-white px-6 py-8">
+      <div className="min-h-screen bg-[#FFE2C4]">
+        <div className="bg-[#1a0d00] text-white px-6 py-8">
           <div className="max-w-2xl mx-auto">
             <Link href="/" className="font-display text-xl font-bold text-white mb-5 block">
               cóbratelo<span className="text-[#cc5500]">.es</span>
@@ -80,12 +80,12 @@ export default function Informe() {
 
         <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
           {/* Perfil */}
-          <div className="bg-white rounded-2xl border border-[#E0DAD0] p-5">
-            <h2 className="font-semibold text-[#111110] mb-3 text-sm uppercase tracking-wide text-[#888882]">Perfil del cliente</h2>
+          <div className="bg-white rounded-2xl border border-[#F5C89A] p-5">
+            <h2 className="font-semibold text-[#1a0d00] mb-3 text-sm uppercase tracking-wide text-[#7a4a1a]">Perfil del cliente</h2>
             <div className="flex flex-wrap gap-2 mb-2">
               {resumenPerfil.map((v,i) => <span key={i} className="text-xs bg-[#F0EAE0] text-[#555550] px-3 py-1 rounded-full">{v}</span>)}
             </div>
-            <div className="flex gap-4 mt-2 text-sm text-[#888882]">
+            <div className="flex gap-4 mt-2 text-sm text-[#7a4a1a]">
               {puebloObj.nombre && <span>📍 {puebloObj.nombre}, {puebloObj.provincia}</span>}
               {perfil.ingresos?.[0] && <span>💰 {LABELS[perfil.ingresos[0]]||perfil.ingresos[0]}</span>}
             </div>
@@ -95,14 +95,14 @@ export default function Informe() {
           <div className="bg-[#E8F5EE] border border-[#cc5500]/20 rounded-2xl p-5 flex items-center gap-4">
             <div className="font-display text-4xl font-bold text-[#cc5500]">{ayudas.length}</div>
             <div>
-              <p className="font-semibold text-[#111110]">ayudas identificadas</p>
-              <p className="text-sm text-[#888882]">Listas para tramitar</p>
+              <p className="font-semibold text-[#1a0d00]">ayudas identificadas</p>
+              <p className="text-sm text-[#7a4a1a]">Listas para tramitar</p>
             </div>
           </div>
 
           {/* Ayudas */}
           {ayudas.map((a,i) => (
-            <div key={i} className="ayuda-card bg-white rounded-2xl border border-[#E0DAD0] p-5">
+            <div key={i} className="ayuda-card bg-white rounded-2xl border border-[#F5C89A] p-5">
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex gap-2 flex-wrap mb-1">
@@ -111,8 +111,8 @@ export default function Informe() {
                       {a.estado==='abierta'?'● Abierta':a.estado||'Permanente'}
                     </span>
                   </div>
-                  <h3 className="font-semibold text-[#111110] leading-snug">{a.nombre}</h3>
-                  <p className="text-xs text-[#888882] mt-0.5">{a.organismo}</p>
+                  <h3 className="font-semibold text-[#1a0d00] leading-snug">{a.nombre}</h3>
+                  <p className="text-xs text-[#7a4a1a] mt-0.5">{a.organismo}</p>
                 </div>
                 {a.importe_max > 0 && (
                   <div className="shrink-0 text-right">

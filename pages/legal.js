@@ -8,14 +8,14 @@ export default function Legal() {
         <title>Aviso Legal — Cóbratelo</title>
         <meta name="robots" content="noindex" />
       </Head>
-      <div className="min-h-screen bg-[#F7F3EC]">
+      <div className="min-h-screen bg-[#FFE2C4]">
         <nav className="px-6 py-5 max-w-3xl mx-auto">
-          <Link href="/" className="font-display text-xl font-bold text-[#111110]">
+          <Link href="/" className="font-display text-xl font-bold text-[#1a0d00]">
             cóbratelo<span className="text-[#cc5500]">.es</span>
           </Link>
         </nav>
         <div className="max-w-3xl mx-auto px-6 pb-20 prose prose-sm">
-          <h1 className="font-display text-4xl font-bold text-[#111110] mb-8">Aviso Legal</h1>
+          <h1 className="font-display text-4xl font-bold text-[#1a0d00] mb-8">Aviso Legal</h1>
 
           <h2>1. Titular del sitio web</h2>
           <p>
@@ -59,7 +59,7 @@ export default function Legal() {
             del uso del sitio web, las partes se someten a los juzgados y tribunales de Barcelona.
           </p>
 
-          <p className="text-xs text-[#888882] mt-8">Última actualización: mayo 2026</p>
+          <p className="text-xs text-[#7a4a1a] mt-8">Última actualización: mayo 2026</p>
         </div>
       </div>
     </>

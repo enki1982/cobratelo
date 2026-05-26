@@ -8,18 +8,18 @@ export default function Privacidad() {
         <title>Política de Privacidad — Cóbratelo.es</title>
         <meta name="robots" content="noindex" />
       </Head>
-      <div style={{ background: '#f7f3ec', minHeight: '100vh', padding: '0 0 64px' }}>
-        <nav style={{ background: '#111110', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
+      <div style={{ background: '#FFE2C4', minHeight: '100vh', padding: '0 0 64px' }}>
+        <nav style={{ background: '#1a0d00', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
             cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
           </Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#111110', marginBottom: 8 }}>Política de Privacidad</h1>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Política de Privacidad</h1>
           <p style={{ color: '#888', marginBottom: 40 }}>Última actualización: mayo 2026</p>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>1. Responsable del tratamiento</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>1. Responsable del tratamiento</h2>
             <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
               <li><strong>Responsable:</strong> Miquel Nogueras Camero</li>
               <li><strong>NIF:</strong> 77609795K</li>
@@ -28,7 +28,7 @@ export default function Privacidad() {
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>2. Datos que recogemos</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>2. Datos que recogemos</h2>
             <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
               <li><strong>Datos de registro:</strong> dirección de email para crear y gestionar tu cuenta.</li>
               <li><strong>Datos de perfil:</strong> información sobre tu situación personal y profesional que facilitas voluntariamente para recibir resultados personalizados (edad, situación laboral, comunidad autónoma, ingresos aproximados, etc.).</li>
@@ -38,7 +38,7 @@ export default function Privacidad() {
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>3. Finalidad y base legal</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>3. Finalidad y base legal</h2>
             <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
               <li><strong>Prestación del servicio</strong> — base legal: ejecución de contrato (Art. 6.1.b RGPD)</li>
               <li><strong>Envío de alertas y comunicaciones sobre ayudas</strong> — base legal: consentimiento (Art. 6.1.a RGPD)</li>
@@ -48,14 +48,14 @@ export default function Privacidad() {
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>4. Conservación de datos</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>4. Conservación de datos</h2>
             <p style={{ color: '#444', lineHeight: 1.7 }}>
               Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación de la cuenta, los datos se eliminan en un plazo máximo de 30 días, salvo aquellos que deban conservarse por obligación legal (hasta 6 años para datos fiscales).
             </p>
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>5. Terceros que acceden a tus datos</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>5. Terceros que acceden a tus datos</h2>
             <ul style={{ color: '#444', lineHeight: 2, paddingLeft: 20 }}>
               <li><strong>Supabase</strong> — base de datos y autenticación (servidores en UE)</li>
               <li><strong>Stripe</strong> — procesamiento de pagos (certificado PCI-DSS)</li>
@@ -68,7 +68,7 @@ export default function Privacidad() {
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>6. Tus derechos</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>6. Tus derechos</h2>
             <p style={{ color: '#444', lineHeight: 1.7 }}>
               Puedes ejercer los derechos de acceso, rectificación, supresión, portabilidad, limitación u oposición al tratamiento enviando un email a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a> con el asunto "Derechos RGPD" y una copia de tu documento de identidad.
             </p>
@@ -78,13 +78,13 @@ export default function Privacidad() {
           </section>
 
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111110', marginBottom: 12 }}>7. Cookies</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a0d00', marginBottom: 12 }}>7. Cookies</h2>
             <p style={{ color: '#444', lineHeight: 1.7 }}>
               Utilizamos cookies estrictamente necesarias para el funcionamiento del servicio (sesión de usuario). No utilizamos cookies de publicidad ni de seguimiento de terceros sin consentimiento previo.
             </p>
           </section>
 
-          <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0dad0', display: 'flex', gap: 24 }}>
+          <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #F5C89A', display: 'flex', gap: 24 }}>
             <Link href="/aviso-legal" style={{ color: '#cc5500', textDecoration: 'none' }}>Aviso Legal</Link>
             <Link href="/terminos" style={{ color: '#cc5500', textDecoration: 'none' }}>Términos de Uso</Link>
             <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>← Volver al inicio</Link>

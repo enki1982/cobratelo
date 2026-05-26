@@ -13,12 +13,12 @@ const PLAN_COLOR = {
   pro: 'bg-purple-50 text-purple-700',
 }
 
-function Stat({ label, value, sub, color = '#111110' }) {
+function Stat({ label, value, sub, color = '#1a0d00' }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E0DAD0] p-5">
-      <p className="text-xs text-[#888882] uppercase tracking-wide font-medium mb-1">{label}</p>
+    <div className="bg-white rounded-2xl border border-[#F5C89A] p-5">
+      <p className="text-xs text-[#7a4a1a] uppercase tracking-wide font-medium mb-1">{label}</p>
       <p className="font-display text-3xl font-bold" style={{ color }}>{value}</p>
-      {sub && <p className="text-xs text-[#888882] mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-[#7a4a1a] mt-1">{sub}</p>}
     </div>
   )
 }
@@ -52,7 +52,7 @@ export default function Admin() {
   }, [])
 
   if (loading) return (
-    <div className="min-h-screen bg-[#F7F3EC] flex items-center justify-center">
+    <div className="min-h-screen bg-[#FFE2C4] flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin" />
     </div>
   )
@@ -70,9 +70,9 @@ export default function Admin() {
   return (
     <>
       <Head><title>Admin — Cóbratelo.es</title></Head>
-      <div className="min-h-screen bg-[#F7F3EC]">
+      <div className="min-h-screen bg-[#FFE2C4]">
         {/* Header */}
-        <div className="bg-[#111110] text-white px-6 py-5">
+        <div className="bg-[#1a0d00] text-white px-6 py-5">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/" className="font-display font-bold text-lg">
@@ -90,10 +90,10 @@ export default function Admin() {
 
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Tabs */}
-          <div className="flex gap-1 bg-white border border-[#E0DAD0] rounded-full p-1 mb-8 w-fit">
+          <div className="flex gap-1 bg-white border border-[#F5C89A] rounded-full p-1 mb-8 w-fit">
             {[{id:'overview',label:'Resumen'},{id:'usuarios',label:`Usuarios (${usuarios.length})`},{id:'facturacion',label:'Facturación'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#111110] text-white' : 'text-[#888882] hover:text-[#111110]'}`}>
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#1a0d00] text-white' : 'text-[#7a4a1a] hover:text-[#1a0d00]'}`}>
                 {t.label}
               </button>
             ))}
@@ -112,8 +112,8 @@ export default function Admin() {
 
               {/* Distribución planes */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                  <h2 className="font-semibold text-[#111110] mb-4">Distribución de planes</h2>
+                <div className="bg-white rounded-2xl border border-[#F5C89A] p-6">
+                  <h2 className="font-semibold text-[#1a0d00] mb-4">Distribución de planes</h2>
                   <div className="space-y-3">
                     {Object.entries(stats.planes).map(([plan, count]) => (
                       <div key={plan} className="flex items-center gap-3">
@@ -122,15 +122,15 @@ export default function Admin() {
                           <div className="bg-[#cc5500] h-2 rounded-full transition-all"
                             style={{ width: stats.total ? `${(count/stats.total)*100}%` : '0%' }} />
                         </div>
-                        <span className="text-sm font-semibold text-[#111110] w-8 text-right">{count}</span>
-                        <span className="text-xs text-[#888882] w-10">({stats.total ? Math.round((count/stats.total)*100) : 0}%)</span>
+                        <span className="text-sm font-semibold text-[#1a0d00] w-8 text-right">{count}</span>
+                        <span className="text-xs text-[#7a4a1a] w-10">({stats.total ? Math.round((count/stats.total)*100) : 0}%)</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                  <h2 className="font-semibold text-[#111110] mb-4">Tipo de usuario</h2>
+                <div className="bg-white rounded-2xl border border-[#F5C89A] p-6">
+                  <h2 className="font-semibold text-[#1a0d00] mb-4">Tipo de usuario</h2>
                   <div className="space-y-3">
                     {[
                       { label: 'Particulares', value: stats.particulares, color: '#cc5500' },
@@ -142,7 +142,7 @@ export default function Admin() {
                         <div className="flex-1 bg-[#F0EAE0] rounded-full h-2">
                           <div className="h-2 rounded-full transition-all" style={{ width: stats.total ? `${(item.value/stats.total)*100}%` : '0%', backgroundColor: item.color }} />
                         </div>
-                        <span className="text-sm font-semibold text-[#111110] w-8 text-right">{item.value}</span>
+                        <span className="text-sm font-semibold text-[#1a0d00] w-8 text-right">{item.value}</span>
                       </div>
                     ))}
                   </div>
@@ -150,19 +150,19 @@ export default function Admin() {
               </div>
 
               {/* Gráfico registros últimos 30 días */}
-              <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                <h2 className="font-semibold text-[#111110] mb-4">Registros últimos 30 días</h2>
+              <div className="bg-white rounded-2xl border border-[#F5C89A] p-6">
+                <h2 className="font-semibold text-[#1a0d00] mb-4">Registros últimos 30 días</h2>
                 <div className="flex items-end gap-1 h-32">
                   {Object.entries(stats.porDia).map(([fecha, count]) => {
                     const d = new Date(fecha)
                     const label = d.getDate() === 1 || d.getDay() === 0 ? `${d.getDate()}/${d.getMonth()+1}` : ''
                     return (
                       <div key={fecha} className="flex-1 flex flex-col items-center gap-1 group relative">
-                        <div className="absolute bottom-full mb-1 bg-[#111110] text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
+                        <div className="absolute bottom-full mb-1 bg-[#1a0d00] text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
                           {fecha}: {count} registros
                         </div>
                         <div className="w-full rounded-t transition-all hover:opacity-80"
-                          style={{ height: `${(count/maxDia)*100}%`, minHeight: count > 0 ? '4px' : '1px', backgroundColor: count > 0 ? '#cc5500' : '#E0DAD0' }} />
+                          style={{ height: `${(count/maxDia)*100}%`, minHeight: count > 0 ? '4px' : '1px', backgroundColor: count > 0 ? '#cc5500' : '#F5C89A' }} />
                         {label && <span className="text-[9px] text-[#B0AAA0] rotate-0 whitespace-nowrap">{label}</span>}
                       </div>
                     )
@@ -179,43 +179,43 @@ export default function Admin() {
               <div className="flex gap-3 flex-wrap">
                 <input type="text" value={busqueda} onChange={e => setBusqueda(e.target.value)}
                   placeholder="Buscar por email, localidad, situación..."
-                  className="flex-1 min-w-64 px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white focus:outline-none focus:border-[#cc5500] text-sm transition-colors" />
+                  className="flex-1 min-w-64 px-4 py-2.5 rounded-2xl border border-[#F5C89A] bg-white focus:outline-none focus:border-[#cc5500] text-sm transition-colors" />
                 <select value={filtroPlan} onChange={e => setFiltroPlan(e.target.value)}
-                  className="px-4 py-2.5 rounded-2xl border border-[#E0DAD0] bg-white text-sm focus:outline-none focus:border-[#cc5500]">
+                  className="px-4 py-2.5 rounded-2xl border border-[#F5C89A] bg-white text-sm focus:outline-none focus:border-[#cc5500]">
                   <option value="">Todos los planes</option>
                   <option value="free">Free</option>
                   <option value="alertas">Alertas</option>
                   <option value="starter">Starter</option>
                   <option value="pro">Pro</option>
                 </select>
-                <span className="text-sm text-[#888882] self-center">{usuariosFiltrados.length} resultados</span>
+                <span className="text-sm text-[#7a4a1a] self-center">{usuariosFiltrados.length} resultados</span>
               </div>
 
               {/* Tabla */}
-              <div className="bg-white rounded-2xl border border-[#E0DAD0] overflow-hidden">
+              <div className="bg-white rounded-2xl border border-[#F5C89A] overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#F0EAE0] bg-[#F7F3EC]">
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Email</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Plan</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Registro</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Situación</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Ingresos</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Localidad</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Gestoría</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Edad</th>
-                        <th className="text-left px-4 py-3 text-xs text-[#888882] uppercase tracking-wide font-medium">Perfil</th>
+                      <tr className="border-b border-[#F0EAE0] bg-[#FFE2C4]">
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Email</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Plan</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Registro</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Situación</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Ingresos</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Localidad</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Gestoría</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Edad</th>
+                        <th className="text-left px-4 py-3 text-xs text-[#7a4a1a] uppercase tracking-wide font-medium">Perfil</th>
                       </tr>
                     </thead>
                     <tbody>
                       {usuariosFiltrados.map((u, i) => (
                         <tr key={u.id} className={`border-b border-[#F0EAE0] hover:bg-[#FAFAF8] transition-colors ${i % 2 === 0 ? '' : 'bg-[#FDFCFA]'}`}>
-                          <td className="px-4 py-3 font-medium text-[#111110]">{u.email}</td>
+                          <td className="px-4 py-3 font-medium text-[#1a0d00]">{u.email}</td>
                           <td className="px-4 py-3">
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${PLAN_COLOR[u.plan] || PLAN_COLOR.free}`}>{u.plan}</span>
                           </td>
-                          <td className="px-4 py-3 text-[#888882] whitespace-nowrap">
+                          <td className="px-4 py-3 text-[#7a4a1a] whitespace-nowrap">
                             {new Date(u.created_at).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' })}
                           </td>
                           <td className="px-4 py-3 text-[#555550]">{u.situacion || '—'}</td>
@@ -233,7 +233,7 @@ export default function Admin() {
                     </tbody>
                   </table>
                   {usuariosFiltrados.length === 0 && (
-                    <div className="text-center py-12 text-[#888882]">No hay usuarios con estos filtros</div>
+                    <div className="text-center py-12 text-[#7a4a1a]">No hay usuarios con estos filtros</div>
                   )}
                 </div>
               </div>
@@ -252,9 +252,9 @@ export default function Admin() {
                 <Stat label="Suscripciones activas" value={stats.billing.suscripciones} sub="en Stripe" />
                 <Stat label="MRR estimado" value={`${(stats.planes.alertas * 0.99 + stats.planes.pro * 49).toFixed(2)}€`} sub="basado en planes activos" color="#cc5500" />
               </div>
-              <div className="bg-white rounded-2xl border border-[#E0DAD0] p-6">
-                <h2 className="font-semibold text-[#111110] mb-2">Desglose por plan</h2>
-                <p className="text-xs text-[#888882] mb-4">Basado en usuarios en BD — la facturación real está en Stripe Dashboard</p>
+              <div className="bg-white rounded-2xl border border-[#F5C89A] p-6">
+                <h2 className="font-semibold text-[#1a0d00] mb-2">Desglose por plan</h2>
+                <p className="text-xs text-[#7a4a1a] mb-4">Basado en usuarios en BD — la facturación real está en Stripe Dashboard</p>
                 <div className="space-y-3">
                   {[
                     { plan: 'Alertas (0,99€/mes)', count: stats.planes.alertas, precio: 0.99 },
@@ -264,20 +264,20 @@ export default function Admin() {
                     <div key={row.plan} className="flex items-center justify-between py-2 border-b border-[#F0EAE0] last:border-0">
                       <span className="text-sm text-[#555550]">{row.plan}</span>
                       <div className="flex gap-6 text-sm">
-                        <span className="text-[#888882]">{row.count} usuarios</span>
+                        <span className="text-[#7a4a1a]">{row.count} usuarios</span>
                         <span className="font-semibold text-[#cc5500]">{(row.count * row.precio).toFixed(2)}€/mes</span>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 pt-4 border-t border-[#E0DAD0] flex justify-between">
-                  <span className="font-semibold text-[#111110]">MRR total estimado</span>
+                <div className="mt-4 pt-4 border-t border-[#F5C89A] flex justify-between">
+                  <span className="font-semibold text-[#1a0d00]">MRR total estimado</span>
                   <span className="font-display text-xl font-bold text-[#cc5500]">
                     {(stats.planes.alertas * 0.99 + stats.planes.starter * 9.99 + stats.planes.pro * 49).toFixed(2)}€
                   </span>
                 </div>
               </div>
-              <div className="bg-[#F0EAE0] rounded-2xl p-4 text-sm text-[#888882]">
+              <div className="bg-[#F0EAE0] rounded-2xl p-4 text-sm text-[#7a4a1a]">
                 Para la facturación real con detalles de cada cobro, facturas y gestión de suscripciones → <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" className="text-[#cc5500] underline">Stripe Dashboard →</a>
               </div>
             </div>

@@ -317,7 +317,7 @@ function PuebloInput({ value, onChange, onSelect }) {
         onChange={handleChange}
         placeholder="Escribe tu pueblo o ciudad..."
         className={`w-full px-4 py-4 rounded-2xl border-2 text-[#f0f0f5] font-medium text-lg focus:outline-none transition-colors
-          ${seleccionado ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:border-[#cc5500]'}`}
+          ${seleccionado ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)]' : 'border-[rgba(255,255,255,0.08)] bg-[#2a1500] focus:border-[#cc5500]'}`}
       />
       {buscando && (
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -328,10 +328,10 @@ function PuebloInput({ value, onChange, onSelect }) {
         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#cc5500] text-xl font-bold"></div>
       )}
       {sugerencias.length > 0 && !seleccionado && (
-        <div className="absolute z-20 w-full mt-2 bg-[#161b27] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
+        <div className="absolute z-20 w-full mt-2 bg-[#2a1500] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-lg overflow-hidden">
           {sugerencias.map((mun, i) => (
             <button key={i} onClick={() => handleSelect(mun)}
-              className="w-full text-left px-4 py-3 hover:bg-[#161b27] transition-colors border-b border-[rgba(255,255,255,0.06)] last:border-0">
+              className="w-full text-left px-4 py-3 hover:bg-[#2a1500] transition-colors border-b border-[rgba(255,255,255,0.06)] last:border-0">
               <span className="font-semibold text-[#f0f0f5]">{mun.nombre}</span>
               <span className="text-sm text-[rgba(240,240,245,0.5)] ml-2">{mun.provincia}{mun.comarca && mun.comarca !== mun.provincia ? ` · ${mun.comarca}` : ''}</span>
             </button>
@@ -491,7 +491,7 @@ export default function Perfil() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen bg-[#161b27] flex flex-col">
+      <div className="min-h-screen bg-[#2a1500] flex flex-col">
       {/* Banner onboarding */}
       {isOnboarding && (
         <div style={{ background: 'rgba(255,131,0,0.08)', borderBottom: '1px solid rgba(255,131,0,0.2)', padding: '12px 24px', textAlign: 'center' }}>
@@ -507,7 +507,7 @@ export default function Perfil() {
           <span className="text-sm text-[rgba(240,240,245,0.5)]">{paso + 1} / {pasosFiltrados.length}</span>
         </div>
 
-        <div className="h-1 bg-[#E0DAD0] w-full">
+        <div className="h-1 bg-[#F5C89A] w-full">
           <div className="h-full bg-[#cc5500] transition-all duration-500" style={{ width: `${progreso}%` }} />
         </div>
 
@@ -526,7 +526,7 @@ export default function Perfil() {
                 onChange={e => setFechaNac(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 min={fechaMinNac.toISOString().split('T')[0]}
-                className="w-full max-w-full px-4 py-4 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] font-medium text-lg transition-colors" style={{ boxSizing: "border-box", WebkitAppearance: "none" }}
+                className="w-full max-w-full px-4 py-4 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#2a1500] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] font-medium text-lg transition-colors" style={{ boxSizing: "border-box", WebkitAppearance: "none" }}
               />
               {fechaNac && (
                 <p className="text-sm text-[#cc5500] mt-2 font-medium">
@@ -567,7 +567,7 @@ export default function Perfil() {
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
                         ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)] text-[#f0f0f5]'
-                        : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] text-[#f0f0f5] hover:border-[#C0BAB0]'
+                        : 'border-[rgba(255,255,255,0.08)] bg-[#2a1500] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
@@ -588,7 +588,7 @@ export default function Perfil() {
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
                         ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)] text-[#f0f0f5]'
-                        : 'border-[rgba(255,255,255,0.08)] bg-[#161b27] text-[#f0f0f5] hover:border-[#C0BAB0]'
+                        : 'border-[rgba(255,255,255,0.08)] bg-[#2a1500] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
                     <span className="font-medium text-sm leading-tight flex-1">{op.label}</span>
@@ -605,7 +605,7 @@ export default function Perfil() {
               <label className="block text-sm font-medium text-[#f0f0f5] mb-2">Email de tu gestoría</label>
               <input type="email" value={emailGestoria} onChange={e => setEmailGestoria(e.target.value)}
                 placeholder="gestor@ejemplo.com"
-                className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#161b27] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] font-medium transition-colors" />
+                className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] bg-[#2a1500] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] font-medium transition-colors" />
               <p className="text-xs text-[rgba(240,240,245,0.5)] mt-2">Les enviaremos tu informe para que tramiten las ayudas por ti.</p>
             </div>
           )}
@@ -621,8 +621,8 @@ export default function Perfil() {
             <button onClick={siguiente} disabled={!puedeAvanzar()}
               className={`flex-1 py-3.5 rounded-full font-semibold transition-all duration-200
                 ${puedeAvanzar()
-                  ? 'bg-[#111110] text-[#F7F3EC] hover:bg-[#333330]'
-                  : 'bg-[#E0DAD0] text-[#B0AAA0] cursor-not-allowed'
+                  ? 'bg-[#1a0d00] text-[#FFE2C4] hover:bg-[#333330]'
+                  : 'bg-[#F5C89A] text-[#B0AAA0] cursor-not-allowed'
                 }`}>
               {esUltimoPaso ? 'Ver mis ayudas →' : 'Continuar →'}
             </button>

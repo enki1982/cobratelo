@@ -88,7 +88,7 @@ export default function Login() {
             ))}
           </div>
 
-          <div style={{ background: '#161b27', border: `1px solid ${C.border}`, borderRadius: 20, padding: 32, position: 'relative', overflow: 'hidden' }}>
+          <div style={{ background: '#2a1500', border: `1px solid ${C.border}`, borderRadius: 20, padding: 32, position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.4 }} />
 
             {/* MAGIC LINK */}

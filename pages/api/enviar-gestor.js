@@ -32,8 +32,8 @@ export default async function handler(req, res) {
   const ayudasHtml = ayudas.map((a, i) => `
     <tr>
       <td style="padding:10px 0;border-bottom:1px solid #f0ead0;">
-        <div style="font-weight:600;color:#111110;font-size:14px;">${i + 1}. ${a.nombre}</div>
-        <div style="color:#888882;font-size:12px;margin-top:2px;">${a.organismo}</div>
+        <div style="font-weight:600;color:#1a0d00;font-size:14px;">${i + 1}. ${a.nombre}</div>
+        <div style="color:#7a4a1a;font-size:12px;margin-top:2px;">${a.organismo}</div>
         ${a.importe_max > 0 ? `<div style="color:#cc5500;font-weight:700;font-size:13px;margin-top:3px;">Hasta ${a.importe_max.toLocaleString('es-ES')}€</div>` : ''}
         ${a.descripcion ? `<div style="color:#666660;font-size:12px;margin-top:4px;">${a.descripcion}</div>` : ''}
         ${a.url_oficial ? `<div style="margin-top:5px;"><a href="${a.url_oficial}" style="color:#cc5500;font-size:12px;">Ver convocatoria oficial →</a></div>` : ''}
@@ -45,11 +45,11 @@ export default async function handler(req, res) {
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f7f3ec;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0dad0;">
+<body style="margin:0;padding:0;background:#FFE2C4;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #F5C89A;">
 
     <!-- Header -->
-    <div style="background:#111110;padding:32px 40px;">
+    <div style="background:#1a0d00;padding:32px 40px;">
       <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">
         cóbratelo<span style="color:#cc5500;">.es</span>
       </div>
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
     <!-- Intro -->
     <div style="padding:32px 40px 24px;">
-      <h2 style="margin:0 0 12px;color:#111110;font-size:20px;font-weight:700;">
+      <h2 style="margin:0 0 12px;color:#1a0d00;font-size:20px;font-weight:700;">
         ${nombre} tiene ${nAyudas} ayudas pendientes de tramitar
       </h2>
       <p style="margin:0;color:#555550;font-size:15px;line-height:1.6;">
@@ -69,8 +69,8 @@ export default async function handler(req, res) {
 
     <!-- Ayudas -->
     <div style="padding:0 40px 24px;">
-      <div style="background:#f7f3ec;border-radius:12px;padding:20px 24px;">
-        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888882;font-weight:600;margin-bottom:12px;">
+      <div style="background:#FFE2C4;border-radius:12px;padding:20px 24px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#7a4a1a;font-weight:600;margin-bottom:12px;">
           Ayudas identificadas
         </div>
         <table style="width:100%;border-collapse:collapse;">
@@ -81,8 +81,8 @@ export default async function handler(req, res) {
 
     <!-- Pitch -->
     <div style="padding:0 40px 32px;">
-      <div style="border:1px solid #e0dad0;border-radius:12px;padding:24px;">
-        <h3 style="margin:0 0 10px;color:#111110;font-size:16px;font-weight:700;">
+      <div style="border:1px solid #F5C89A;border-radius:12px;padding:24px;">
+        <h3 style="margin:0 0 10px;color:#1a0d00;font-size:16px;font-weight:700;">
           ¿Conoce Cóbratelo.es?
         </h3>
         <p style="margin:0 0 12px;color:#555550;font-size:14px;line-height:1.6;">
@@ -104,7 +104,7 @@ export default async function handler(req, res) {
     <div style="padding:20px 40px;border-top:1px solid #f0ead0;text-align:center;">
       <p style="margin:0;color:#b0aaa0;font-size:12px;">
         Cóbratelo.es · KIESBROTER SL (NIF: B65417107) · Mataró, Barcelona<br>
-        <a href="https://cobratelo.es" style="color:#888882;">cobratelo.es</a>
+        <a href="https://cobratelo.es" style="color:#7a4a1a;">cobratelo.es</a>
       </p>
     </div>
 

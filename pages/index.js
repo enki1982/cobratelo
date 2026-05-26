@@ -6,8 +6,8 @@ import { FloatingCard, FloatingScene } from '../components/FloatingCard'
 import { supabase } from '../lib/supabase'
 
 const C = {
-  bg: '#09090f',
-  surface: '#0f0f1a',
+  bg: '#321A00',
+  surface: '#321A00',
   card: 'rgba(255,255,255,0.03)',
   border: 'rgba(255,255,255,0.08)',
   borderHover: 'rgba(255,131,0,0.3)',
@@ -94,7 +94,7 @@ export default function Home() {
       }}>
 
         {/* BLOQUE OSCURO: Nav + Hero */}
-        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #030303', color: '#f0f0f5', color: '#f0f0f5' }}>
+        <div style={{ background: 'radial-gradient(ellipse 55% 45% at 68% 22%, rgba(255,131,0,0.22) 0%, rgba(255,131,0,0.05) 45%, transparent 70%), radial-gradient(ellipse 35% 30% at 12% 75%, rgba(0,160,255,0.12) 0%, transparent 55%), #321A00', color: '#f0f0f5', color: '#f0f0f5' }}>
 
         {/* NAV */}
         <nav style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(13,17,23,0.90)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, padding: '0 24px' }}>
@@ -146,7 +146,7 @@ export default function Home() {
               {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '2 min', lbl: 'Análisis completo' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
-                  <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{s.lbl}</div>
+                  <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -157,7 +157,7 @@ export default function Home() {
             {/* Glow ambiental de fondo */}
             <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(255,131,0,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
-            <FloatingCard depth={2} glowColor="rgba(255,131,0,0.22)" style={{ background: '#161b27', border: '1px solid rgba(255,131,0,0.3)', borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden', zIndex: 1 }}>
+            <FloatingCard depth={2} glowColor="rgba(255,131,0,0.22)" style={{ background: '#2a1500', border: '1px solid rgba(255,131,0,0.3)', borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden', zIndex: 1 }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.6 }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <span style={{ color: C.muted, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Ejemplo de resultado</span>
@@ -168,7 +168,7 @@ export default function Home() {
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: a.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>{a.icon}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.nombre}</div>
-                    <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>{a.org}</div>
+                    <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>{a.org}</div>
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: C.green, flexShrink: 0 }}>{a.importe}</div>
                 </div>
@@ -178,7 +178,7 @@ export default function Home() {
             {/* Float top-right */}
             <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: -20, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
-              <div style={{ fontSize: 11, color: '#888882', marginTop: 2 }}>ayudas para ti</div>
+              <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>ayudas para ti</div>
             </FloatingCard>
 
             {/* Float bottom-left */}
@@ -195,7 +195,7 @@ export default function Home() {
         </div>{/* FIN BLOQUE OSCURO */}
 
         {/* CASO REAL */}
-        <section style={{ background: '#111110', borderTop: '1px solid rgba(255,255,255,0.06)', width: '100%' }}>
+        <section style={{ background: '#1a0d00', borderTop: '1px solid rgba(255,255,255,0.06)', width: '100%' }}>
           <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px' }}>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: C.green, marginBottom: 20, textAlign: 'center' }}>
               EJEMPLO REAL
@@ -221,17 +221,17 @@ export default function Home() {
         </section>
 
         {/* CÓMO FUNCIONA */}
-        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Cómo funciona</p>
-          <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 48 }}>
+          <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 48 }}>
             Sin buscar. Sin perderse. Sin burocracia.
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
-              <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: '#ffffff', border: '1px solid #E0DAD0', borderRadius: 16, padding: 24, transition: 'border-color 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <HoverCard key={i} hoverBorder={C.borderHover} style={{ background: '#ffffff', border: '1px solid #F5C89A', borderRadius: 16, padding: 24, transition: 'border-color 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#cc5500', marginBottom: 8, letterSpacing: '1px' }}>{s.n}</div>
-                <div className="font-display font-bold" style={{ fontSize: 15, color: '#111110', marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
+                <div className="font-display font-bold" style={{ fontSize: 15, color: '#1a0d00', marginBottom: 8, letterSpacing: '-0.3px' }}>{s.title}</div>
                 <p style={{ fontSize: 13, color: '#666660', lineHeight: 1.6 }}>{s.desc}</p>
               </HoverCard>
             ))}
@@ -240,17 +240,17 @@ export default function Home() {
         </section>
 
         {/* FUENTES — Marquee horizontal */}
-        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%', overflow: 'hidden' }}>
+        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%', overflow: 'hidden' }}>
           <div style={{ padding: '36px 0' }}>
-            <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#888882', marginBottom: 24 }}>
+            <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#7a4a1a', marginBottom: 24 }}>
               FUENTES OFICIALES VERIFICADAS · ACTUALIZACIÓN CONTINUA
             </p>
             <div style={{ position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to right, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to left, #F7F3EC, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to right, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to left, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
               <div className='marquee-track' style={{ display: 'flex', gap: 16, width: 'max-content' }}>
                 {[...FUENTES, ...FUENTES].map((f, i) => (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 20px' : '12px 20px', borderRadius: 12, border: '1px solid #E0DAD0', background: '#fff', minWidth: 110, flexShrink: 0 }}>
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 20px' : '12px 20px', borderRadius: 12, border: '1px solid #F5C89A', background: '#fff', minWidth: 110, flexShrink: 0 }}>
                     {f.src ? (
                       <img src={f.src} alt={f.nombre} style={{ height: 32, width: 'auto', maxWidth: 130, objectFit: 'contain' }} />
                     ) : (
@@ -267,12 +267,12 @@ export default function Home() {
         </section>
 
         {/* GESTORÍAS */}
-        <section style={{ background: '#F7F3EC', color: '#111110', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }} className="!grid-cols-1 md:!grid-cols-2">
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Para gestorías y despachos</p>
-              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#111110', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 16, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
                 Más ingresos para tu gestoría.<br />Sin trabajo extra.
               </h2>
               <p style={{ color: '#666660', fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 420 }}>
@@ -293,7 +293,7 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: C.muted }}>Sin tarjeta de crédito</span>
               </div>
             </div>
-            <FloatingCard depth={1.5} glowColor="rgba(45,106,79,0.2)" style={{ background: '#161b27', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
+            <FloatingCard depth={1.5} glowColor="rgba(45,106,79,0.2)" style={{ background: '#2a1500', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#cc5500', opacity: 0.15 }} />
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#B0AAA0', marginBottom: 20 }}>Panel de gestión</p>
               {[
@@ -320,7 +320,7 @@ export default function Home() {
 
         {/* CTA FINAL */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 80px' }}>
-          <div style={{ background: '#111110', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ background: '#1a0d00', border: 'none', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
             <h2 className="font-display font-bold" style={{ fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-1.5px', color: '#f0f0f5', marginBottom: 16 }}>
               La mayoría de ayudas no se piden porque nadie sabe que existen
@@ -335,17 +335,17 @@ export default function Home() {
         </section>
 
         {/* FOOTER */}
-        <footer style={{ background: '#F7F3EC', borderTop: '1px solid #E0DAD0', width: '100%' }}>
+        <footer style={{ background: '#FFE2C4', borderTop: '1px solid #F5C89A', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '32px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <span className="font-display font-bold" style={{ color: '#111110' }}>cóbratelo<span style={{ color: '#cc5500' }}>.es</span></span>
-            <p style={{ color: '#888882', fontSize: 12, textAlign: 'center' }}>
+            <span className="font-display font-bold" style={{ color: '#1a0d00' }}>cóbratelo<span style={{ color: '#cc5500' }}>.es</span></span>
+            <p style={{ color: '#7a4a1a', fontSize: 12, textAlign: 'center' }}>
               Los resultados son orientativos. Consulta siempre las fuentes oficiales.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, fontSize: 12, color: C.muted }}>
               {[['Precios','/precios'],['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Términos','/terminos']].map(([l,h]) => (
-                <Link key={h} href={h} style={{ color: '#888882', textDecoration: 'none' }}>{l}</Link>
+                <Link key={h} href={h} style={{ color: '#7a4a1a', textDecoration: 'none' }}>{l}</Link>
               ))}
-              <a href="mailto:hola@cobratelo.es" style={{ color: '#888882', textDecoration: 'none' }}>hola@cobratelo.es</a>
+              <a href="mailto:hola@cobratelo.es" style={{ color: '#7a4a1a', textDecoration: 'none' }}>hola@cobratelo.es</a>
             </div>
             <div className="legal-hover-wrap">
               <span className="legal-trigger">Información del titular</span>
