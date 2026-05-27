@@ -1,47 +1,35 @@
-echo "=== AGENTE — PROCESO ACTIVO ==="
-ps aux | grep -E "agent|python" | grep -v grep | grep -v venv | grep -v bot
+echo "=== SERVICIOS AGENTE ==="
+systemctl list-units | grep -i "ayuda\|cobrat\|agent"
+echo ""
+systemctl status ayuda-es-agent 2>/dev/null || echo "servicio ayuda-es-agent no existe"
 
 echo ""
-echo "=== ÚLTIMA EJECUCIÓN AGENTE ==="
-ls -la /root/ayuda-es-agent/*.log 2>/dev/null || echo "no hay .log"
-tail -20 /root/ayuda-es-agent/agent.log 2>/dev/null || journalctl -u ayuda-es-agent --no-pager -n 20 2>/dev/null || echo "no hay logs del agente"
+echo "=== CRONTAB ==="
+crontab -l 2>/dev/null || echo "sin crontab"
 
 echo ""
-echo "=== AYUDAS EN SQLITE ==="
-python3 << 'PYEOF'
-import sqlite3, os
-db_paths = [
-    '/root/ayuda-es-agent/ayudas.db',
-    '/root/ayuda-es-agent/cobratelo.db',
-    '/root/ayuda-es-agent/data.db',
-]
-for p in db_paths:
-    if os.path.exists(p):
-        print(f"DB encontrada: {p}")
-        con = sqlite3.connect(p)
-        cur = con.cursor()
-        tables = cur.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
-        print(f"Tablas: {[t[0] for t in tables]}")
-        for t in tables:
-            n = cur.execute(f"SELECT COUNT(*) FROM {t[0]}").fetchone()[0]
-            print(f"  {t[0]}: {n} filas")
-        # Ayudas por CCAA
-        try:
-            ccaa = cur.execute("SELECT ccaa, COUNT(*) FROM ayudas GROUP BY ccaa ORDER BY COUNT(*) DESC").fetchall()
-            print("Ayudas por CCAA:")
-            for c in ccaa:
-                print(f"  {c[0]}: {c[1]}")
-        except:
-            pass
-        # Última sync
-        try:
-            ultima = cur.execute("SELECT MAX(created_at) FROM ayudas").fetchone()[0]
-            print(f"Última ayuda creada: {ultima}")
-        except:
-            pass
-        con.close()
-PYEOF
+echo "=== ARCHIVOS EN /root/ayuda-es-agent ==="
+ls -la /root/ayuda-es-agent/
 
 echo ""
-echo "=== SUPABASE SYNC — ÚLTIMA EJECUCIÓN ==="
-grep -i "sync\|supabase\|insert\|upload" /root/ayuda-es-agent/agent.log 2>/dev/null | tail -20 || echo "sin logs de sync"
+echo "=== BASE DE DATOS SQLite ==="
+ls -la /root/ayuda-es-agent/*.db 2>/dev/null
+python3 -c "
+import sqlite3
+con = sqlite3.connect('/root/ayuda-es-agent/ayudas.db')
+cur = con.cursor()
+tables = [t[0] for t in cur.execute(\"SELECT name FROM sqlite_master WHERE type='table'\").fetchall()]
+print('Tablas:', tables)
+for t in tables:
+    n = cur.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]
+    print(f'  {t}: {n} filas')
+try:
+    rows = cur.execute('SELECT ccaa, COUNT(*) FROM ayudas GROUP BY ccaa ORDER BY COUNT(*) DESC').fetchall()
+    print('Por CCAA:')
+    for r in rows: print(f'  {r[0]}: {r[1]}')
+    ultima = cur.execute('SELECT MAX(created_at) FROM ayudas').fetchone()[0]
+    print('Ultima creada:', ultima)
+except Exception as e:
+    print('Error:', e)
+con.close()
+"
