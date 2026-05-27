@@ -1,35 +1,14 @@
-echo "=== SERVICIOS AGENTE ==="
-systemctl list-units | grep -i "ayuda\|cobrat\|agent"
-echo ""
-systemctl status ayuda-es-agent 2>/dev/null || echo "servicio ayuda-es-agent no existe"
+echo "=== SERVICIOS ==="
+systemctl list-units --type=service | grep -i "ayuda\|cobrat\|agent" || echo "ninguno"
 
 echo ""
 echo "=== CRONTAB ==="
 crontab -l 2>/dev/null || echo "sin crontab"
 
 echo ""
-echo "=== ARCHIVOS EN /root/ayuda-es-agent ==="
+echo "=== ARCHIVOS AGENTE ==="
 ls -la /root/ayuda-es-agent/
 
 echo ""
-echo "=== BASE DE DATOS SQLite ==="
-ls -la /root/ayuda-es-agent/*.db 2>/dev/null
-python3 -c "
-import sqlite3
-con = sqlite3.connect('/root/ayuda-es-agent/ayudas.db')
-cur = con.cursor()
-tables = [t[0] for t in cur.execute(\"SELECT name FROM sqlite_master WHERE type='table'\").fetchall()]
-print('Tablas:', tables)
-for t in tables:
-    n = cur.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]
-    print(f'  {t}: {n} filas')
-try:
-    rows = cur.execute('SELECT ccaa, COUNT(*) FROM ayudas GROUP BY ccaa ORDER BY COUNT(*) DESC').fetchall()
-    print('Por CCAA:')
-    for r in rows: print(f'  {r[0]}: {r[1]}')
-    ultima = cur.execute('SELECT MAX(created_at) FROM ayudas').fetchone()[0]
-    print('Ultima creada:', ultima)
-except Exception as e:
-    print('Error:', e)
-con.close()
-"
+echo "=== SQLITE ==="
+echo "aW1wb3J0IHNxbGl0ZTMsIG9zCmRiID0gJy9yb290L2F5dWRhLWVzLWFnZW50L2F5dWRhcy5kYicKaWYgb3MucGF0aC5leGlzdHMoZGIpOgogICAgY29uID0gc3FsaXRlMy5jb25uZWN0KGRiKQogICAgY3VyID0gY29uLmN1cnNvcigpCiAgICB0YWJsZXMgPSBbdFswXSBmb3IgdCBpbiBjdXIuZXhlY3V0ZSgiU0VMRUNUIG5hbWUgRlJPTSBzcWxpdGVfbWFzdGVyIFdIRVJFIHR5cGU9J3RhYmxlJyIpLmZldGNoYWxsKCldCiAgICBwcmludCgnVGFibGFzOicsIHRhYmxlcykKICAgIGZvciB0IGluIHRhYmxlczoKICAgICAgICBuID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBDT1VOVCgqKSBGUk9NICIgKyB0KS5mZXRjaG9uZSgpWzBdCiAgICAgICAgcHJpbnQodCArICI6ICIgKyBzdHIobikgKyAiIGZpbGFzIikKICAgIHRyeToKICAgICAgICByb3dzID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBjY2FhLCBDT1VOVCgqKSBGUk9NIGF5dWRhcyBHUk9VUCBCWSBjY2FhIE9SREVSIEJZIENPVU5UKCopIERFU0MiKS5mZXRjaGFsbCgpCiAgICAgICAgcHJpbnQoIlBvciBDQ0FBOiIpCiAgICAgICAgZm9yIHIgaW4gcm93czoKICAgICAgICAgICAgcHJpbnQoIiAgIiArIHN0cihyWzBdKSArICI6ICIgKyBzdHIoclsxXSkpCiAgICAgICAgdWx0aW1hID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBNQVgoY3JlYXRlZF9hdCkgRlJPTSBheXVkYXMiKS5mZXRjaG9uZSgpWzBdCiAgICAgICAgcHJpbnQoIlVsdGltYSBjcmVhZGE6ICIgKyBzdHIodWx0aW1hKSkKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICBwcmludCgiRXJyb3IgcXVlcmllczogIiArIHN0cihlKSkKICAgIGNvbi5jbG9zZSgpCmVsc2U6CiAgICBwcmludCgiREIgbm8gZW5jb250cmFkYSBlbiAiICsgZGIpCiAgICBpbXBvcnQgZ2xvYgogICAgZGJzID0gZ2xvYi5nbG9iKCIvcm9vdC9heXVkYS1lcy1hZ2VudC8qLmRiIikKICAgIHByaW50KCJEQnMgZGlzcG9uaWJsZXM6ICIgKyBzdHIoZGJzKSkK" | base64 -d > /tmp/check_db.py && python3 /tmp/check_db.py
