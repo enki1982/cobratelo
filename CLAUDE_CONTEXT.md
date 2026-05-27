@@ -2,6 +2,21 @@
 
 > Lee este archivo al inicio de cualquier conversación nueva para ponerte al día sin preguntar.
 
+## MENSAJE DE INICIO PARA NUEVA CONVERSACIÓN
+
+Pega esto exactamente al abrir una conversación nueva con Claude:
+
+```
+Lee el archivo CLAUDE_CONTEXT.md del repo https://github.com/enki1982/cobratelo rama main — haz un web_fetch directo al raw para asegurarte de leer la versión más reciente. Una vez leído, clona el repo en /home/claude/cobratelo para tener acceso al mecanismo .hetzner-cmd. Antes de proponer nada, asegúrate de tener en cuenta tanto los pendientes técnicos como los estratégicos del documento.
+```
+
+**Por qué funciona así:**
+- `web_fetch` al raw garantiza la versión actual, sin caché
+- Clonar el repo activa el mecanismo `.hetzner-cmd` para ejecutar comandos en el VPS
+- La frase final sobre "técnico y estratégico" evita que Claude vaya directo al VPS check ignorando el contexto de Laborai, AEAT y el bot
+
+---
+
 ---
 
 ## QUIÉN ES MIKI
