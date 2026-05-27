@@ -658,12 +658,7 @@ export default function Resultados() {
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Ayudas detectadas</p>
               <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudas.length}</p>
             </div>
-            <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Importe potencial</p>
-              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>
-                {importeTotal > 0 ? `${importeTotal.toLocaleString('es-ES')}€` : '—'}
-              </p>
-            </div>
+
             <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Abiertas ahora</p>
               <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>{ayudasAbiertas.length}</p>
