@@ -1,23 +1,47 @@
-echo "=== ESTADO BOT ==="
-systemctl is-active auto-trader-bot.service
+echo "=== AGENTE — PROCESO ACTIVO ==="
+ps aux | grep -E "agent|python" | grep -v grep | grep -v venv | grep -v bot
 
 echo ""
-echo "=== APLICANDO FIX BASE64 ==="
-echo "cGF0aCA9ICcvb3B0L2JvdC9hdXRvX3RyYWRlcl9ib3RfdjEvY29yZS9leGVjdXRpb24ucHknCndpdGggb3BlbihwYXRoKSBhcyBmOgogICAgY29kZSA9IGYucmVhZCgpCm9sZCA9ICcgICAgICAgIHRvbGVyYW5jZSA9IG1heChub3JtYWxpemVkX3F0eV9mICogMC4wMDEsIDFlLTEyKVxuICAgICAgICBpZiBmcmVlX2Jhc2UgKyB0b2xlcmFuY2UgPCBub3JtYWxpemVkX3F0eV9mOicKbGluZXNfdG9faW5zZXJ0ID0gWwogICAgJyAgICAgICAgIyBGSVggZmVlczogc2kgZnJlZV9iYXNlIDwgbm9ybWFsaXplZF9xdHksIHVzYXIgYmFsYW5jZSByZWFsJywKICAgICcgICAgICAgIGlmIDAgPCBmcmVlX2Jhc2UgPCBub3JtYWxpemVkX3F0eV9mOicsCiAgICAnICAgICAgICAgICAgaW1wb3J0IG1hdGggYXMgX21hdGgnLAogICAgJyAgICAgICAgICAgIF9hZGogPSBfbWF0aC5mbG9vcihmcmVlX2Jhc2UgKiAxMDAwMDApIC8gMTAwMDAwJywKICAgICcgICAgICAgICAgICBpZiBfYWRqID4gMCBhbmQgYWJzKF9hZGogLSBub3JtYWxpemVkX3F0eV9mKSA+IDFlLTEwOicsCiAgICAnICAgICAgICAgICAgICAgIGltcG9ydCBsb2dnaW5nIGFzIF9sb2cnLAogICAgJyAgICAgICAgICAgICAgICBfbG9nLmdldExvZ2dlcihfX25hbWVfXykud2FybmluZygiRkVFX0FESlVTVCBTRUxMIGNhcHBlZCAlcy0+JXMgZnJlZT0lcyIsIG5vcm1hbGl6ZWRfcXR5X2YsIF9hZGosIGZyZWVfYmFzZSknLAogICAgJyAgICAgICAgICAgICAgICBmcm9tIGRlY2ltYWwgaW1wb3J0IERlY2ltYWwgYXMgX0QnLAogICAgJyAgICAgICAgICAgICAgICBub3JtYWxpemVkX3F0eSA9IF9EKHN0cihfYWRqKSknLAogICAgJyAgICAgICAgICAgICAgICBub3JtYWxpemVkX3F0eV9mID0gZmxvYXQobm9ybWFsaXplZF9xdHkpJywKXQppbnNlcnQgPSAnXG4nLmpvaW4obGluZXNfdG9faW5zZXJ0KQp0b2xfbGluZSA9ICcgICAgICAgIHRvbGVyYW5jZSA9IG1heChub3JtYWxpemVkX3F0eV9mICogMC4wMDEsIDFlLTEyKScKaWZfbGluZSA9ICcgICAgICAgIGlmIGZyZWVfYmFzZSArIHRvbGVyYW5jZSA8IG5vcm1hbGl6ZWRfcXR5X2Y6Jwp0YXJnZXQgPSB0b2xfbGluZSArICdcbicgKyBpZl9saW5lCmlmIHRhcmdldCBpbiBjb2RlOgogICAgbmV3ID0gdG9sX2xpbmUgKyAnXG4nICsgaW5zZXJ0ICsgJ1xuJyArIGlmX2xpbmUKICAgIGNvZGUgPSBjb2RlLnJlcGxhY2UodGFyZ2V0LCBuZXcpCiAgICB3aXRoIG9wZW4ocGF0aCwgJ3cnKSBhcyBmOgogICAgICAgIGYud3JpdGUoY29kZSkKICAgIHByaW50KCdGSVhfT0snKQplbHNlOgogICAgcHJpbnQoJ1BBVFRFUk5fTk9UX0ZPVU5EJykKICAgIGZvciBpLCBsIGluIGVudW1lcmF0ZShjb2RlLnNwbGl0KCdcbicpWzQyNzo0MzRdLCA0MjgpOgogICAgICAgIHByaW50KHN0cihpKSArICc6ICcgKyByZXByKGwpKQo=" | base64 -d > /tmp/fix_exec.py && python3 /tmp/fix_exec.py
+echo "=== ÚLTIMA EJECUCIÓN AGENTE ==="
+ls -la /root/ayuda-es-agent/*.log 2>/dev/null || echo "no hay .log"
+tail -20 /root/ayuda-es-agent/agent.log 2>/dev/null || journalctl -u ayuda-es-agent --no-pager -n 20 2>/dev/null || echo "no hay logs del agente"
 
 echo ""
-echo "=== VERIFICANDO FIX ==="
-grep -n "FEE_ADJUST\|FIX fees" /opt/bot/auto_trader_bot_v1/core/execution.py | head -5
+echo "=== AYUDAS EN SQLITE ==="
+python3 << 'PYEOF'
+import sqlite3, os
+db_paths = [
+    '/root/ayuda-es-agent/ayudas.db',
+    '/root/ayuda-es-agent/cobratelo.db',
+    '/root/ayuda-es-agent/data.db',
+]
+for p in db_paths:
+    if os.path.exists(p):
+        print(f"DB encontrada: {p}")
+        con = sqlite3.connect(p)
+        cur = con.cursor()
+        tables = cur.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+        print(f"Tablas: {[t[0] for t in tables]}")
+        for t in tables:
+            n = cur.execute(f"SELECT COUNT(*) FROM {t[0]}").fetchone()[0]
+            print(f"  {t[0]}: {n} filas")
+        # Ayudas por CCAA
+        try:
+            ccaa = cur.execute("SELECT ccaa, COUNT(*) FROM ayudas GROUP BY ccaa ORDER BY COUNT(*) DESC").fetchall()
+            print("Ayudas por CCAA:")
+            for c in ccaa:
+                print(f"  {c[0]}: {c[1]}")
+        except:
+            pass
+        # Última sync
+        try:
+            ultima = cur.execute("SELECT MAX(created_at) FROM ayudas").fetchone()[0]
+            print(f"Última ayuda creada: {ultima}")
+        except:
+            pass
+        con.close()
+PYEOF
 
 echo ""
-echo "=== ESTADO / ARCHIVOS BOT ==="
-find /opt/bot/auto_trader_bot_v1 -name "state*.json" -o -name "*.db" -o -name "bot_state*" 2>/dev/null | grep -v venv | head -10
-ls /opt/bot/auto_trader_bot_v1/*.db 2>/dev/null || echo "no .db en raiz"
-ls /opt/bot/auto_trader_bot_v1/*.json 2>/dev/null || echo "no .json en raiz"
-
-echo ""
-echo "=== ARRANCAR BOT (solo si estaba parado) ==="
-systemctl is-active auto-trader-bot.service | grep -q inactive && systemctl start auto-trader-bot.service && echo "Arrancado" || echo "Ya activo, no arrancado"
-sleep 4
-echo "=== LOG ARRANQUE ==="
-journalctl -u auto-trader-bot.service --no-pager -n 10
+echo "=== SUPABASE SYNC — ÚLTIMA EJECUCIÓN ==="
+grep -i "sync\|supabase\|insert\|upload" /root/ayuda-es-agent/agent.log 2>/dev/null | tail -20 || echo "sin logs de sync"
