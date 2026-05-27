@@ -53,6 +53,7 @@ export default async function handler(req, res) {
 
     // 3. Para cada usuario, comparar con los IDs que ya ha recibido
     let enviados = 0
+    let ayudasNuevas = []
     const errores = []
 
     for (const user of users) {
