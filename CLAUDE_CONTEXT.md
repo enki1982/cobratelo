@@ -174,7 +174,38 @@ Claude puede hacer push al repo directamente desde `/home/claude/cobratelo/` en 
 - [ ] Panel multi-cliente gestorías (feature Pro 399€/mes, no implementada)
 - [ ] Alertas email cuando aparecen ayudas nuevas para el perfil del usuario
 - [ ] Backfill URLs — 24 ayudas sin URL oficial
-- [ ] Revisar Google Search Console (24-48h tras envío sitemap)
+- [ ] Revisar Google Search Console (indexación tras envío sitemap)
+- [ ] Aplicar mejoras UI inspiradas en Holded (scroll analizado, conclusiones pendientes de implementar)
+
+---
+
+## BOT TRADING — FIX APLICADO (mayo 2026)
+
+**Bug corregido:** `core/execution.py` línea ~431
+
+El bot compraba BTC y luego no podía cerrar la posición porque Binance descontaba las fees del BTC recibido. El bot intentaba vender `0.00019000` pero Binance solo tenía `0.00018994` (diferencia = fees de compra). Binance devolvía "insufficient balance" y el bot quedaba bloqueado en loop HALT.
+
+**Fix:** Antes del submit SELL, si `free_base < normalized_qty`, la cantidad se capa al balance real flooreado a 5 decimales. Se loguea como `FEE_ADJUST SELL capped`.
+
+**Estado post-fix:** `RECONCILE_OK`, `IN_POSITION qty=0.00018994`, bot operativo.
+
+**Reflexión sobre rendimiento:** Con ~90 USDC de capital y 0.50% de fees round-trip, el bot es matemáticamente casi inviable. El TP actual (~0.35%) no cubre las fees (0.50%). Para resultados reales se necesita:
+- Mínimo ~2.000€ de capital para que las fees sean proporcionalmente pequeñas
+- O subir el TP a ≥0.70% para que cada trade ganador cubra varias fees
+
+---
+
+## REFLEXIÓN ESTRATÉGICA — COMPETENCIA (mayo 2026)
+
+**Laborai.es** — plataforma que tramita declaraciones de renta con acceso directo a datos AEAT (Colaborador Social). Sin pedir nada al usuario — acceso fiscal automático.
+
+**Riesgo:** Podrían replicar cobratelo en días (tienen AEAT + gestoría).
+
+**Oportunidad:** Posible colaboración — ellos ponen acceso AEAT + tramitación, cobratelo pone la base de datos de ayudas + motor de matching. Modelo de referido o API con revenue share.
+
+**Moat real de cobratelo:** La base de datos de ayudas curada y estructurada — no es replicable en días, es trabajo editorial continuo.
+
+**Vía AEAT para cobratelo:** Convertirse en Colaborador Social (requiere gestoría) o partnering con una ya registrada.
 
 ---
 
@@ -184,4 +215,6 @@ Claude puede hacer push al repo directamente desde `/home/claude/cobratelo/` en 
 - Le gusta ir directo al grano, sin rodeos
 - Prefiere soluciones en un solo push cuando es posible
 - El `.hetzner-cmd` es el único canal de acceso al VPS desde Claude
-- Las conversaciones largas (como las sesiones de cobratelo) ralentizan las respuestas — recomendable abrir conversación nueva y leer este archivo
+- Las conversaciones largas ralentizan las respuestas — abrir conversación nueva y leer este archivo
+- Al clonar el repo en conversación nueva: `git clone https://github.com/enki1982/cobratelo /home/claude/cobratelo`
+- Scripts Python via `.hetzner-cmd`: usar base64 para evitar conflictos de quoting en heredocs anidados
