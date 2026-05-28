@@ -93,25 +93,12 @@ function ValorPerfil({ id, valor, tipo }) {
   return <span className="text-[#f0f0f5] text-sm">{valor.map(v => LABELS[v] || v).join(', ')}</span>
 }
 
-// Búsqueda de municipios
+// Búsqueda de municipios vía Google Places
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=8&addressdetails=1&accept-language=es`
-    const r = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'Cobratelo.es/1.0' } })
-    const data = await r.json()
-    return data
-      .filter(d => d.address && !['road','motorway','building','shop','amenity'].includes(d.type))
-      .filter(d => !d.address.country_code || d.address.country_code === 'es')
-      .map(d => ({
-        nombre: d.address.municipality || d.address.city || d.address.town || d.address.village || d.address.hamlet || d.name,
-        provincia: d.address.province || d.address.county || '',
-        ccaa: d.address.state || '',
-        comarca: d.address.county || d.address.state_district || '',
-      }))
-      .filter(d => d.nombre)
-      .filter((v, i, a) => a.findIndex(t => t.nombre.toLowerCase() === v.nombre.toLowerCase() && t.provincia === v.provincia) === i)
-      .slice(0, 6)
+    const r = await fetch(`/api/municipios?q=${encodeURIComponent(query)}`)
+    return await r.json()
   } catch { return [] }
 }
 

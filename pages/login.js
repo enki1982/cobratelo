@@ -15,6 +15,7 @@ export default function Login() {
   const [error, setError] = useState(null)
 
   const returnUrl = router.query.return
+  const sessionExpired = router.query.session_expired === '1'
 
   const redirect = () => {
     router.push(returnUrl ? decodeURIComponent(returnUrl) : '/')
@@ -109,6 +110,16 @@ export default function Login() {
               </button>
             ))}
           </div>
+
+          {sessionExpired && (
+            <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <span style={{ fontSize: 18 }}>⚠️</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b', marginBottom: 2 }}>Sesión cerrada automáticamente</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,158,11,0.7)' }}>Tu cuenta se abrió en otro dispositivo. Vuelve a entrar para continuar.</div>
+              </div>
+            </div>
+          )}
 
           <div style={{ background: '#2a1500', border: `1px solid ${C.border}`, borderRadius: 20, padding: 32, position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)`, opacity: 0.4 }} />
