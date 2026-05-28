@@ -434,6 +434,9 @@ export default function Cuenta() {
             </Link>
             <div style={{ display: 'flex', gap: 8 }}>
               <Link href="/resultados" style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.12)' }}>Mis ayudas</Link>
+              {['starter', 'pro'].includes(plan) && (
+                <Link href="/gestor" style={{ fontSize: 13, color: '#cc5500', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(204,85,0,0.3)', background: 'rgba(204,85,0,0.06)' }}>Panel gestoría</Link>
+              )}
               <button onClick={() => supabase.auth.signOut().then(() => router.push('/'))}
                 style={{ fontSize: 13, color: 'rgba(255,245,235,0.4)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '6px 14px' }}>
                 Salir
