@@ -233,3 +233,16 @@ El bot compraba BTC y luego no podía cerrar la posición porque Binance descont
 - Las conversaciones largas ralentizan las respuestas — abrir conversación nueva y leer este archivo
 - Al clonar el repo en conversación nueva: `git clone https://github.com/enki1982/cobratelo /home/claude/cobratelo`
 - Scripts Python via `.hetzner-cmd`: usar base64 para evitar conflictos de quoting en heredocs anidados
+
+---
+
+## DEUDA TÉCNICA — REFACTOR PENDIENTE
+
+Los siguientes archivos han acumulado demasiados parches y deben reescribirse limpios en una sesión dedicada:
+
+- `/root/ayuda-es-agent/agent.py` — prioridad alta, muchos parches sobre parches
+- `pages/gestor.js` — CRM construido en capas sucesivas
+- `pages/resultados.js` — lógica de caché añadida sobre código original
+- `pages/cuenta.js` — múltiples patches de edición inline, envío gestor, etc.
+
+**Criterio:** usar el código actual como referencia funcional, reescribir desde cero limpio, sin perder funcionalidad.
