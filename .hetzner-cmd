@@ -1,14 +1,3 @@
-echo "=== SERVICIOS ==="
-systemctl list-units --type=service | grep -i "ayuda\|cobrat\|agent" || echo "ninguno"
-
-echo ""
-echo "=== CRONTAB ==="
-crontab -l 2>/dev/null || echo "sin crontab"
-
-echo ""
-echo "=== ARCHIVOS AGENTE ==="
-ls -la /root/ayuda-es-agent/
-
-echo ""
-echo "=== SQLITE ==="
-echo "aW1wb3J0IHNxbGl0ZTMsIG9zCmRiID0gJy9yb290L2F5dWRhLWVzLWFnZW50L2F5dWRhcy5kYicKaWYgb3MucGF0aC5leGlzdHMoZGIpOgogICAgY29uID0gc3FsaXRlMy5jb25uZWN0KGRiKQogICAgY3VyID0gY29uLmN1cnNvcigpCiAgICB0YWJsZXMgPSBbdFswXSBmb3IgdCBpbiBjdXIuZXhlY3V0ZSgiU0VMRUNUIG5hbWUgRlJPTSBzcWxpdGVfbWFzdGVyIFdIRVJFIHR5cGU9J3RhYmxlJyIpLmZldGNoYWxsKCldCiAgICBwcmludCgnVGFibGFzOicsIHRhYmxlcykKICAgIGZvciB0IGluIHRhYmxlczoKICAgICAgICBuID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBDT1VOVCgqKSBGUk9NICIgKyB0KS5mZXRjaG9uZSgpWzBdCiAgICAgICAgcHJpbnQodCArICI6ICIgKyBzdHIobikgKyAiIGZpbGFzIikKICAgIHRyeToKICAgICAgICByb3dzID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBjY2FhLCBDT1VOVCgqKSBGUk9NIGF5dWRhcyBHUk9VUCBCWSBjY2FhIE9SREVSIEJZIENPVU5UKCopIERFU0MiKS5mZXRjaGFsbCgpCiAgICAgICAgcHJpbnQoIlBvciBDQ0FBOiIpCiAgICAgICAgZm9yIHIgaW4gcm93czoKICAgICAgICAgICAgcHJpbnQoIiAgIiArIHN0cihyWzBdKSArICI6ICIgKyBzdHIoclsxXSkpCiAgICAgICAgdWx0aW1hID0gY3VyLmV4ZWN1dGUoIlNFTEVDVCBNQVgoY3JlYXRlZF9hdCkgRlJPTSBheXVkYXMiKS5mZXRjaG9uZSgpWzBdCiAgICAgICAgcHJpbnQoIlVsdGltYSBjcmVhZGE6ICIgKyBzdHIodWx0aW1hKSkKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICBwcmludCgiRXJyb3IgcXVlcmllczogIiArIHN0cihlKSkKICAgIGNvbi5jbG9zZSgpCmVsc2U6CiAgICBwcmludCgiREIgbm8gZW5jb250cmFkYSBlbiAiICsgZGIpCiAgICBpbXBvcnQgZ2xvYgogICAgZGJzID0gZ2xvYi5nbG9iKCIvcm9vdC9heXVkYS1lcy1hZ2VudC8qLmRiIikKICAgIHByaW50KCJEQnMgZGlzcG9uaWJsZXM6ICIgKyBzdHIoZGJzKSkK" | base64 -d > /tmp/check_db.py && python3 /tmp/check_db.py
+grep -n "url_oficial\|INCORRECTO\|CORRECTO\|privado\|infoautonomos\|dominios" /root/ayuda-es-agent/agent.py | head -20
+echo "==="
+sed -n '48,80p' /root/ayuda-es-agent/agent.py
