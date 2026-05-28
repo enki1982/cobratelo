@@ -416,6 +416,10 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
   const [guardando, setGuardando] = useState(false)
   const [form, setForm] = useState({ cliente_nombre: '', dni: '', telefono: '', notas: '' })
   const [ayudasEstado, setAyudasEstado] = useState({})
+  const [buscarAyuda, setBuscarAyuda] = useState('')
+  const [resultadosBusqueda, setResultadosBusqueda] = useState([])
+  const [buscando, setBuscando] = useState(false)
+  const [modalBuscar, setModalBuscar] = useState(false)
 
   useEffect(() => {
     setForm({
@@ -442,6 +446,41 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
     await onUpdate(cliente.id, form)
     setGuardando(false)
     setEditando(false)
+  }
+
+  const buscarEnBD = async (q) => {
+    if (!q || q.length < 3) { setResultadosBusqueda([]); return }
+    setBuscando(true)
+    try {
+      const { data } = await supabase
+        .from('ayudas')
+        .select('id,nombre,organismo,tipo,estado,url_oficial,importe_max,comunidad_autonoma')
+        .or(`nombre.ilike.%${q}%,organismo.ilike.%${q}%,descripcion.ilike.%${q}%`)
+        .in('estado', ['abierta', 'permanente', 'pendiente'])
+        .limit(8)
+      setResultadosBusqueda(data || [])
+    } finally { setBuscando(false) }
+  }
+
+  const añadirAyuda = async (ayuda) => {
+    const idsActuales = cliente.ayudas_ids || []
+    if (idsActuales.includes(ayuda.id)) {
+      alert('Esta ayuda ya está en la lista del cliente')
+      return
+    }
+    const nuevosIds = [...idsActuales, ayuda.id]
+    await onUpdate(cliente.id, { ayudas_ids: nuevosIds })
+    setAyudas(prev => [...prev, ayuda])
+    setBuscarAyuda('')
+    setResultadosBusqueda([])
+    setModalBuscar(false)
+  }
+
+  const quitarAyuda = async (ayudaId) => {
+    if (!confirm('¿Quitar esta ayuda del cliente?')) return
+    const nuevosIds = (cliente.ayudas_ids || []).filter(id => id !== ayudaId)
+    await onUpdate(cliente.id, { ayudas_ids: nuevosIds })
+    setAyudas(prev => prev.filter(a => a.id !== ayudaId))
   }
 
   const toggleAyudaEstado = async (ayudaId, nuevoEstado) => {
@@ -525,13 +564,78 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
 
       {/* Ayudas */}
       <div style={{ padding: '16px 24px' }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 14 }}>
-          Ayudas identificadas {ayudas.length > 0 && `(${ayudas.length})`}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Ayudas a gestionar {ayudas.length > 0 && `(${ayudas.length})`}
+          </div>
+          <button onClick={() => setModalBuscar(true)}
+            style={{ fontSize: 12, color: C.orange, background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, padding: '5px 12px', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>
+            + Añadir ayuda
+          </button>
         </div>
+
+        {/* Modal buscador de ayudas */}
+        {modalBuscar && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 100 }}>
+            <div style={{ background: C.white, borderRadius: 16, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', width: 520, maxWidth: '90vw', overflow: 'hidden' }}>
+              <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: C.text }}>Buscar ayuda para añadir</div>
+                  <button onClick={() => { setModalBuscar(false); setBuscarAyuda(''); setResultadosBusqueda([]) }}
+                    style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, width: 28, height: 28, cursor: 'pointer', color: C.muted }}>✕</button>
+                </div>
+                <input
+                  autoFocus
+                  value={buscarAyuda}
+                  onChange={e => { setBuscarAyuda(e.target.value); buscarEnBD(e.target.value) }}
+                  placeholder="Busca por nombre, organismo o tema..."
+                  style={{ width: '100%', background: C.bg, border: `1px solid ${C.borderStrong}`, borderRadius: 8, padding: '10px 14px', fontSize: 14, color: C.text, outline: 'none', boxSizing: 'border-box' }}
+                />
+                <div style={{ fontSize: 12, color: C.light, marginTop: 6 }}>Mínimo 3 caracteres. Busca en {'>'}200 ayudas activas.</div>
+              </div>
+              <div style={{ maxHeight: 360, overflowY: 'auto' }}>
+                {buscando ? (
+                  <div style={{ padding: 24, color: C.muted, fontSize: 13, textAlign: 'center' }}>Buscando...</div>
+                ) : resultadosBusqueda.length === 0 && buscarAyuda.length >= 3 ? (
+                  <div style={{ padding: 24, color: C.muted, fontSize: 13, textAlign: 'center' }}>Sin resultados para "{buscarAyuda}"</div>
+                ) : resultadosBusqueda.map(a => {
+                  const yaEsta = (cliente.ayudas_ids || []).includes(a.id)
+                  return (
+                    <div key={a.id}
+                      style={{ padding: '14px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, background: yaEsta ? C.bg : 'transparent' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 2 }}>{a.nombre}</div>
+                        <div style={{ fontSize: 11, color: C.muted }}>{a.organismo}</div>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                          {a.comunidad_autonoma && <span style={{ fontSize: 10, color: C.blue, background: C.blueBg, padding: '2px 6px', borderRadius: 100 }}>{a.comunidad_autonoma}</span>}
+                          {a.importe_max > 0 && <span style={{ fontSize: 10, color: C.orange }}>Hasta {a.importe_max.toLocaleString('es-ES')}€</span>}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => !yaEsta && añadirAyuda(a)}
+                        disabled={yaEsta}
+                        style={{ fontSize: 12, fontWeight: 600, color: yaEsta ? C.light : C.white, background: yaEsta ? C.bg : C.orange, border: `1px solid ${yaEsta ? C.border : C.orange}`, padding: '6px 14px', borderRadius: 6, cursor: yaEsta ? 'default' : 'pointer', flexShrink: 0 }}>
+                        {yaEsta ? 'Ya añadida' : '+ Añadir'}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
         {loadingAyudas ? (
           <div style={{ color: C.light, fontSize: 13 }}>Cargando...</div>
         ) : ayudas.length === 0 ? (
-          <div style={{ color: C.light, fontSize: 13 }}>Sin ayudas identificadas para este cliente.</div>
+          <div style={{ textAlign: 'center', padding: '24px 0', color: C.muted }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>📋</div>
+            <div style={{ fontSize: 13, marginBottom: 8 }}>Sin ayudas asignadas todavía.</div>
+            <button onClick={() => setModalBuscar(true)}
+              style={{ fontSize: 13, color: C.orange, background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, padding: '8px 16px', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>
+              + Buscar y añadir primera ayuda
+            </button>
+          </div>
         ) : ayudas.map((ayuda, idx) => {
           const tramite = ayudasEstado[ayuda.id] || {}
           const estAyuda = tramite.estado || 'pendiente'
@@ -542,12 +646,11 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
           return (
             <div key={ayuda.id} style={{ border: `1px solid ${C.border}`, borderRadius: 10, marginBottom: 12, background: C.white, overflow: 'hidden' }}>
               {/* Header ayuda */}
-              <div style={{ padding: '12px 16px', background: C.bg, borderBottom: expanded ? `1px solid ${C.border}` : 'none', cursor: 'pointer' }}
-                onClick={() => setExpanded(!expanded)}>
+              <div style={{ padding: '12px 16px', background: C.bg, borderBottom: expanded ? `1px solid ${C.border}` : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: C.muted, background: C.border, padding: '2px 7px', borderRadius: 100 }}>#{idx + 1}</span>
-                    <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: C.muted, background: C.border, padding: '2px 7px', borderRadius: 100, flexShrink: 0 }}>#{idx + 1}</span>
+                    <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{ayuda.nombre}</div>
                       <div style={{ fontSize: 11, color: C.muted }}>{ayuda.organismo}</div>
                     </div>
@@ -556,7 +659,10 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
                     <span style={{ fontSize: 11, fontWeight: 600, color: colorAyuda, background: colorAyuda + '18', padding: '3px 8px', borderRadius: 100 }}>
                       {ESTADOS_AYUDA_LABEL[estAyuda]}
                     </span>
-                    <span style={{ color: C.light, fontSize: 12 }}>{expanded ? '▲' : '▼'}</span>
+                    <span style={{ color: C.light, fontSize: 12, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>{expanded ? '▲' : '▼'}</span>
+                    <button onClick={e => { e.stopPropagation(); quitarAyuda(ayuda.id) }}
+                      title="Quitar ayuda"
+                      style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 14, padding: '0 2px', lineHeight: 1 }}>✕</button>
                   </div>
                 </div>
               </div>
