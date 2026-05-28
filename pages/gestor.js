@@ -54,6 +54,82 @@ const ESTADOS_AYUDA_COLOR = {
   desistida: C.light,
 }
 
+// Dependencias de fechas: qué campo necesita cada fecha para estar disponible
+const FECHA_DEPS = {
+  fecha_solicitud_cliente: null,               // siempre disponible
+  fecha_inicio_tramite: null,                  // siempre disponible
+  fecha_presentacion: 'fecha_inicio_tramite',  // requiere inicio
+  fecha_fin_tramite: 'fecha_inicio_tramite',   // requiere inicio
+  fecha_respuesta: 'fecha_presentacion',       // requiere presentación
+  fecha_resolucion: 'fecha_respuesta',         // requiere respuesta
+}
+
+// Mínimo fecha de cada campo basado en la cadena lógica
+const FECHA_MIN_DEP = {
+  fecha_inicio_tramite: 'fecha_solicitud_cliente',
+  fecha_presentacion: 'fecha_inicio_tramite',
+  fecha_fin_tramite: 'fecha_inicio_tramite',
+  fecha_respuesta: 'fecha_presentacion',
+  fecha_resolucion: 'fecha_respuesta',
+}
+
+// Qué fechas requiere cada estado
+const ESTADO_REQS = {
+  pendiente: [],
+  en_tramite: ['fecha_inicio_tramite'],
+  documentacion: ['fecha_inicio_tramite'],
+  solicitada: ['fecha_inicio_tramite', 'fecha_presentacion'],
+  en_espera: ['fecha_inicio_tramite', 'fecha_presentacion'],
+  concedida: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_respuesta'],
+  denegada: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_respuesta'],
+  desistida: ['fecha_inicio_tramite'],
+}
+
+// Campos que dependen de un campo dado (para avisar al borrarlo)
+const FECHA_CHILDREN = {
+  fecha_solicitud_cliente: [],
+  fecha_inicio_tramite: ['fecha_presentacion', 'fecha_fin_tramite'],
+  fecha_presentacion: ['fecha_respuesta'],
+  fecha_fin_tramite: [],
+  fecha_respuesta: ['fecha_resolucion'],
+  fecha_resolucion: [],
+}
+
+function isFechaDisabled(campo, tramite) {
+  const dep = FECHA_DEPS[campo]
+  if (!dep) return false
+  return !tramite[dep]
+}
+
+function getMinDate(campo, tramite) {
+  const minDep = FECHA_MIN_DEP[campo]
+  if (!minDep) return undefined
+  return tramite[minDep] || undefined
+}
+
+function canChangeEstado(nuevoEstado, tramite) {
+  const reqs = ESTADO_REQS[nuevoEstado] || []
+  const faltantes = reqs.filter(r => !tramite[r])
+  if (faltantes.length === 0) return { ok: true }
+  const LABELS = {
+    fecha_inicio_tramite: 'Inicio del trámite',
+    fecha_presentacion: 'Fecha presentación',
+    fecha_respuesta: 'Fecha respuesta',
+  }
+  return { ok: false, razon: 'Falta: ' + faltantes.map(f => LABELS[f] || f).join(', ') }
+}
+
+function getChildrenDirty(campo, tramite) {
+  // Campos que se perderán si se borra este campo
+  const hijos = FECHA_CHILDREN[campo] || []
+  const dirty = hijos.filter(h => tramite[h])
+  // recursivo: hijos de hijos
+  dirty.forEach(h => {
+    getChildrenDirty(h, tramite).forEach(hh => { if (!dirty.includes(hh)) dirty.push(hh) })
+  })
+  return dirty
+}
+
 export default function GestorDashboard() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -491,38 +567,98 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
                   {/* Estado */}
                   <div style={{ marginBottom: 16 }}>
                     <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Estado del trámite</label>
-                    <select value={estAyuda}
-                      onChange={e => {
-                        const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, estado: e.target.value } }
-                        setAyudasEstado(nuevo)
-                        onUpdate(cliente.id, { ayudas_estado: nuevo })
-                      }}
-                      style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 6, padding: '8px 10px', color: colorAyuda, cursor: 'pointer', fontWeight: 600 }}>
-                      {ESTADOS_AYUDA.map(e => <option key={e} value={e}>{ESTADOS_AYUDA_LABEL[e]}</option>)}
-                    </select>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <select value={estAyuda}
+                        onChange={e => {
+                          const check = canChangeEstado(e.target.value, tramite)
+                          if (!check.ok) {
+                            alert('No se puede cambiar al estado "' + ESTADOS_AYUDA_LABEL[e.target.value] + '".\n' + check.razon + '.\nRellena primero esas fechas.')
+                            return
+                          }
+                          const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, estado: e.target.value } }
+                          setAyudasEstado(nuevo)
+                          onUpdate(cliente.id, { ayudas_estado: nuevo })
+                        }}
+                        style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 6, padding: '8px 10px', color: colorAyuda, cursor: 'pointer', fontWeight: 600 }}>
+                        {ESTADOS_AYUDA.map(e => {
+                          const check = canChangeEstado(e, tramite)
+                          return <option key={e} value={e} disabled={!check.ok && e !== estAyuda}>
+                            {ESTADOS_AYUDA_LABEL[e]}{!check.ok && e !== estAyuda ? ' ⚠' : ''}
+                          </option>
+                        })}
+                      </select>
+                      {/* Indicador de qué se necesita para avanzar */}
+                      {(() => {
+                        const siguientes = ESTADOS_AYUDA.filter(e => e !== estAyuda && !canChangeEstado(e, tramite).ok)
+                        if (siguientes.length === 0) return null
+                        const proximoReq = ESTADO_REQS[ESTADOS_AYUDA[Math.min(ESTADOS_AYUDA.indexOf(estAyuda) + 1, ESTADOS_AYUDA.length - 1)]] || []
+                        const falta = proximoReq.find(r => !tramite[r])
+                        if (!falta) return null
+                        const LABELS2 = { fecha_inicio_tramite: 'Inicio del trámite', fecha_presentacion: 'Fecha presentación', fecha_respuesta: 'Fecha respuesta' }
+                        return <div style={{ fontSize: 11, color: '#0891B2', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 6, padding: '6px 10px' }}>
+                          💡 Para avanzar: rellena "{LABELS2[falta] || falta}"
+                        </div>
+                      })()}
+                    </div>
                   </div>
 
-                  {/* Fechas */}
+                  {/* Fechas con validación SAP */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
                     {[
                       { key: 'fecha_solicitud_cliente', label: 'Solicitud del cliente' },
                       { key: 'fecha_inicio_tramite', label: 'Inicio del trámite' },
-                      { key: 'fecha_presentacion', label: 'Fecha presentación' },
-                      { key: 'fecha_fin_tramite', label: 'Fin del trámite' },
-                      { key: 'fecha_respuesta', label: 'Fecha respuesta' },
-                      { key: 'fecha_resolucion', label: 'Fecha resolución' },
-                    ].map(f => (
-                      <div key={f.key}>
-                        <label style={{ fontSize: 11, color: C.muted, display: 'block', marginBottom: 4 }}>{f.label}</label>
-                        <input type="date" value={tramite[f.key] || ''}
-                          onChange={e => {
-                            const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, [f.key]: e.target.value } }
-                            setAyudasEstado(nuevo)
-                            onUpdate(cliente.id, { ayudas_estado: nuevo })
-                          }}
-                          style={{ width: '100%', fontSize: 12, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: '6px 8px', color: C.text, boxSizing: 'border-box' }} />
-                      </div>
-                    ))}
+                      { key: 'fecha_presentacion', label: 'Fecha presentación', dep: 'fecha_inicio_tramite', depLabel: 'Inicio del trámite' },
+                      { key: 'fecha_fin_tramite', label: 'Fin del trámite', dep: 'fecha_inicio_tramite', depLabel: 'Inicio del trámite' },
+                      { key: 'fecha_respuesta', label: 'Fecha respuesta', dep: 'fecha_presentacion', depLabel: 'Fecha presentación' },
+                      { key: 'fecha_resolucion', label: 'Fecha resolución', dep: 'fecha_respuesta', depLabel: 'Fecha respuesta' },
+                    ].map(f => {
+                      const disabled = isFechaDisabled(f.key, tramite)
+                      const minDate = getMinDate(f.key, tramite)
+                      return (
+                        <div key={f.key} title={disabled ? `Requiere: ${f.depLabel}` : undefined}>
+                          <label style={{ fontSize: 11, color: disabled ? C.light : C.muted, display: 'block', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {f.label}
+                            {disabled && <span style={{ fontSize: 10, color: C.light }}>🔒</span>}
+                          </label>
+                          <input type="date"
+                            value={tramite[f.key] || ''}
+                            disabled={disabled}
+                            min={minDate || undefined}
+                            onChange={e => {
+                              const val = e.target.value
+                              // Validar que la fecha no sea anterior al mínimo
+                              if (minDate && val && val < minDate) {
+                                const LABELS3 = { fecha_inicio_tramite: 'Inicio del trámite', fecha_presentacion: 'Fecha presentación', fecha_solicitud_cliente: 'Solicitud del cliente', fecha_respuesta: 'Fecha respuesta' }
+                                alert('La fecha no puede ser anterior a: ' + (LABELS3[FECHA_MIN_DEP[f.key]] || FECHA_MIN_DEP[f.key]))
+                                return
+                              }
+                              // Avisar si hay fechas hijas que quedarán incoherentes
+                              if (!val) {
+                                const hijos = getChildrenDirty(f.key, tramite)
+                                if (hijos.length > 0) {
+                                  const LABELS4 = { fecha_presentacion: 'Fecha presentación', fecha_fin_tramite: 'Fin del trámite', fecha_respuesta: 'Fecha respuesta', fecha_resolucion: 'Fecha resolución' }
+                                  const ok = confirm('Al borrar esta fecha también se borrarán: ' + hijos.map(h => LABELS4[h] || h).join(', ') + '.\n¿Continuar?')
+                                  if (!ok) return
+                                  // Borrar hijos
+                                  const nuevaTramite = { ...tramite, [f.key]: '' }
+                                  hijos.forEach(h => { nuevaTramite[h] = '' })
+                                  const nuevo = { ...ayudasEstado, [ayuda.id]: nuevaTramite }
+                                  setAyudasEstado(nuevo)
+                                  onUpdate(cliente.id, { ayudas_estado: nuevo })
+                                  return
+                                }
+                              }
+                              const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, [f.key]: val } }
+                              setAyudasEstado(nuevo)
+                              onUpdate(cliente.id, { ayudas_estado: nuevo })
+                            }}
+                            style={{ width: '100%', fontSize: 12, background: disabled ? '#F9FAFB' : C.bg, border: `1px solid ${disabled ? C.border : C.borderStrong}`, borderRadius: 6, padding: '6px 8px', color: disabled ? C.light : C.text, boxSizing: 'border-box', cursor: disabled ? 'not-allowed' : 'pointer' }} />
+                          {disabled && f.depLabel && (
+                            <div style={{ fontSize: 10, color: C.light, marginTop: 2 }}>Requiere: {f.depLabel}</div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
 
                   {/* Notas del trámite */}
