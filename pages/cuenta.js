@@ -366,13 +366,22 @@ export default function Cuenta() {
   const [eliminando, setEliminando] = useState(false)
   const [confirmEliminar, setConfirmEliminar] = useState(false)
   const [confirmText, setConfirmText] = useState('')
+  const [numAyudas, setNumAyudas] = useState(null)
+  const [emailGestor, setEmailGestor] = useState('')
+  const [enviandoGestor, setEnviandoGestor] = useState(false)
+  const [envioGestorOk, setEnvioGestorOk] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       setSession(session)
       const { data: userData } = await supabase.from('usuarios').select('*').eq('id', session.user.id).single()
-      if (userData) { setPerfilData(userData.perfil); setPlan(userData.plan || 'free') }
+      if (userData) {
+        setPerfilData(userData.perfil)
+        setPlan(userData.plan || 'free')
+        setNumAyudas(userData.ayudas_calculadas?.length ?? null)
+        setEmailGestor(userData.perfil?.email_gestoria?.[0] || '')
+      }
       if (perfilParam) {
         try {
           const p = JSON.parse(decodeURIComponent(perfilParam))
@@ -385,6 +394,51 @@ export default function Cuenta() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => { if (!s) router.push('/login') })
     return () => subscription.unsubscribe()
   }, [router.isReady])
+
+  const handleEnviarGestor = async () => {
+    if (!emailGestor || enviandoGestor) return
+    setEnviandoGestor(true)
+    try {
+      // Obtener las ayudas cacheadas del usuario
+      const { data: userData } = await supabase.from('usuarios')
+        .select('ayudas_calculadas')
+        .eq('id', session.user.id)
+        .single()
+      
+      let ayudasData = []
+      if (userData?.ayudas_calculadas?.length) {
+        const { data } = await supabase.from('ayudas')
+          .select('id,nombre,organismo,importe_max,descripcion,url_oficial')
+          .in('id', userData.ayudas_calculadas)
+        ayudasData = data || []
+      }
+
+      const res = await fetch('/api/enviar-gestor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailGestor,
+          emailUsuario: session.user.email,
+          nombreCliente: session.user.email,
+          ayudas: ayudasData,
+          perfil: perfilData,
+          clienteId: session.user.id,
+        })
+      })
+      if (res.ok) {
+        setEnvioGestorOk(true)
+        // Guardar email gestor en perfil si no estaba
+        if (!perfilData?.email_gestoria?.[0]) {
+          const nuevoPerfil = { ...perfilData, email_gestoria: [emailGestor] }
+          await supabase.from('usuarios').update({ perfil: nuevoPerfil }).eq('id', session.user.id)
+          setPerfilData(nuevoPerfil)
+        }
+      } else {
+        alert('Error al enviar. Inténtalo de nuevo.')
+      }
+    } catch (e) { alert('Error al enviar.') }
+    finally { setEnviandoGestor(false) }
+  }
 
   const handleGuardarPueblo = async (campoId, camposPerfil) => {
     setGuardando(true)
@@ -498,9 +552,14 @@ export default function Cuenta() {
               {/* Acciones rápidas */}
               <div style={{ padding: '16px 20px' }}>
                 <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,245,235,0.3)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>ACCIONES RÁPIDAS</p>
-                <Link href="/resultados" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, background: 'rgba(255,131,0,0.08)', color: '#FF8300', fontSize: 13, fontWeight: 600 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                  Ver mis ayudas
+                <Link href="/resultados" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, background: 'rgba(255,131,0,0.08)', color: '#FF8300', fontSize: 13, fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    Ver mis ayudas
+                  </div>
+                  {numAyudas !== null && (
+                    <span style={{ background: '#FF8300', color: '#1a0d00', fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 100 }}>{numAyudas}</span>
+                  )}
                 </Link>
                 <Link href="/perfil" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, textDecoration: 'none', marginBottom: 4, color: 'rgba(255,245,235,0.6)', fontSize: 13 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -612,6 +671,46 @@ export default function Cuenta() {
                     <button onClick={() => {if(confirm('¿Cancelar suscripción?')) alert('Escribe a hola@cobratelo.es para cancelar.')}}
                       style={{ fontSize: 12, color: 'rgba(255,100,100,0.6)', background: 'transparent', border: '1px solid rgba(255,100,100,0.2)', padding: '7px 14px', borderRadius: 100, cursor: 'pointer' }}>
                       Cancelar plan
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Bloque — Enviar a gestoría */}
+            <div style={{ background: 'rgba(255,200,120,0.04)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 20 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,200,120,0.08)' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB' }}>Enviar a tu gestoría</p>
+                <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', marginTop: 2 }}>Comparte tus ayudas con tu gestor para que te ayude a tramitarlas</p>
+              </div>
+              <div style={{ padding: '20px 24px' }}>
+                {envioGestorOk ? (
+                  <div style={{ background: 'rgba(77,182,42,0.1)', border: '1px solid rgba(77,182,42,0.3)', borderRadius: 12, padding: '16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 24, marginBottom: 8 }}>✅</div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: '#4DB62A' }}>¡Enviado correctamente!</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', marginTop: 4 }}>Hemos enviado una copia también a tu email.</p>
+                    <button onClick={() => setEnvioGestorOk(false)} style={{ marginTop: 12, fontSize: 12, color: 'rgba(255,245,235,0.4)', background: 'none', border: 'none', cursor: 'pointer' }}>Enviar de nuevo</button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <div>
+                      <label style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', display: 'block', marginBottom: 6 }}>Email de tu gestoría</label>
+                      <input
+                        type="email"
+                        value={emailGestor}
+                        onChange={e => setEmailGestor(e.target.value)}
+                        placeholder="gestor@gestoria.com"
+                        style={{ width: '100%', background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.2)', borderRadius: 10, padding: '10px 14px', color: '#FFF5EB', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+                      />
+                    </div>
+                    <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.3)', margin: 0 }}>
+                      Se enviará un informe con tus {numAyudas || ''} ayudas identificadas. Recibirás una copia en tu email.
+                    </p>
+                    <button
+                      onClick={handleEnviarGestor}
+                      disabled={!emailGestor || enviandoGestor}
+                      style={{ background: emailGestor ? '#cc5500' : 'rgba(255,200,120,0.1)', color: emailGestor ? '#fff' : 'rgba(255,245,235,0.3)', border: 'none', padding: '11px 0', borderRadius: 100, cursor: emailGestor ? 'pointer' : 'default', fontWeight: 600, fontSize: 14, width: '100%', transition: 'all 0.2s' }}>
+                      {enviandoGestor ? 'Enviando...' : '📤 Enviar a mi gestoría'}
                     </button>
                   </div>
                 )}

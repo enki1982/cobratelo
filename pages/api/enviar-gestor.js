@@ -9,7 +9,7 @@ const supabaseAdmin = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { emailGestor, nombreCliente, ayudas, perfil, clienteId } = req.body
+  const { emailGestor, nombreCliente, ayudas, perfil, clienteId, emailUsuario } = req.body
   if (!emailGestor || !ayudas?.length) return res.status(400).json({ error: 'Faltan datos' })
 
   const transporter = nodemailer.createTransport({
@@ -125,6 +125,19 @@ export default async function handler(req, res) {
       subject: `${nombre} tiene ${nAyudas} ayudas públicas pendientes de tramitar`,
       html,
     })
+
+    // Copia al usuario si se proporcionó su email
+    if (emailUsuario && emailUsuario !== emailGestor) {
+      await transporter.sendMail({
+        from: '"Cóbratelo.es" <hola@cobratelo.es>',
+        to: emailUsuario,
+        subject: `Copia: hemos enviado tus ${nAyudas} ayudas a tu gestoría`,
+        html: html.replace(
+          `${nombre} tiene ${nAyudas} ayudas pendientes de tramitar`,
+          `Confirmación: hemos enviado tus ${nAyudas} ayudas a ${emailGestor}`
+        ),
+      })
+    }
 
     // Guardar invitación pendiente para que cuando la gestoría se registre vea al cliente
     try {
