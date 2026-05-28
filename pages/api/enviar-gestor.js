@@ -1,9 +1,15 @@
 import nodemailer from 'nodemailer'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { emailGestor, nombreCliente, ayudas, perfil } = req.body
+  const { emailGestor, nombreCliente, ayudas, perfil, clienteId } = req.body
   if (!emailGestor || !ayudas?.length) return res.status(400).json({ error: 'Faltan datos' })
 
   const transporter = nodemailer.createTransport({
@@ -119,6 +125,18 @@ export default async function handler(req, res) {
       subject: `${nombre} tiene ${nAyudas} ayudas públicas pendientes de tramitar`,
       html,
     })
+
+    // Guardar invitación pendiente para que cuando la gestoría se registre vea al cliente
+    try {
+      await supabaseAdmin.from('gestoria_invitaciones').insert({
+        gestor_email: emailGestor,
+        cliente_email: perfil?.email || null,
+        cliente_nombre: nombreCliente || null,
+        cliente_id: clienteId || null,
+        ayudas_ids: ayudas.map(a => a.id).filter(Boolean),
+      })
+    } catch {} // No bloquear si falla el guardado
+
     res.status(200).json({ ok: true })
   } catch (e) {
     console.error('Error enviando email gestor:', e)

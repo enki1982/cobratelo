@@ -125,7 +125,7 @@ export default function Precios() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
                 {PLANES_GESTORIA.map(p => <PlanCard key={p.id} plan={p} />)}
               </div>
-              <p style={{ textAlign: 'center', fontSize: 13, color: C.muted, marginTop: 20 }}>14 días de prueba gratuita. Sin permanencia.</p>
+              <p style={{ textAlign: 'center', fontSize: 13, color: C.muted, marginTop: 20 }}>7 días de prueba gratuita. Sin permanencia.</p>
             </>
           )}
 

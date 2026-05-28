@@ -36,6 +36,14 @@ export default async function handler(req, res) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
     const plan = PRICE_TO_PLAN[priceId] || 'unknown'
 
+    const GESTOR_PRICES = [
+      process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER,
+      process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO,
+      'price_1TatI9RcjgMq3SnyPhsdIxYC',
+      'price_1TatJ8RcjgMq3Sny71IyZJGr',
+    ]
+    const isGestorPlan = GESTOR_PRICES.includes(priceId)
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -49,6 +57,7 @@ export default async function handler(req, res) {
         plan,
       },
       subscription_data: {
+        trial_period_days: isGestorPlan ? 7 : undefined,
         metadata: {
           supabase_user_id: userId || '',
           plan,

@@ -598,9 +598,27 @@ export default function Resultados() {
   const enviarAGestoria = async () => {
     if (!perfil?.email_gestoria) return
     setEnviando(true)
-    await new Promise(r => setTimeout(r, 1500))
-    setEmailEnviado(true)
-    setEnviando(false)
+    try {
+      const res = await fetch('/api/enviar-gestor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailGestor: perfil.email_gestoria,
+          nombreCliente: perfil.nombre || 'Su cliente',
+          ayudas,
+          perfil,
+        })
+      })
+      if (res.ok) {
+        setEmailEnviado(true)
+      } else {
+        alert('Error al enviar. Inténtalo de nuevo.')
+      }
+    } catch {
+      alert('Error al enviar.')
+    } finally {
+      setEnviando(false)
+    }
   }
 
   // Sin sesión — mostrar registro obligatorio
