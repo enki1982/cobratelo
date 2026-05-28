@@ -525,7 +525,7 @@ export default function Resultados() {
     try {
       const { data } = await supabase
         .from('ayudas')
-        .select('*')
+        .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
         .in('estado', ['abierta', 'permanente', 'pendiente'])
 
       const conScore = (data || [])
