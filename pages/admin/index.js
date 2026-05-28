@@ -270,6 +270,7 @@ export default function Admin() {
                 <h2 className="font-semibold text-[#1a0d00] mb-2">Desglose por plan</h2>
                 <p className="text-xs text-[#7a4a1a] mb-4">Basado en usuarios en BD — la facturación real está en Stripe Dashboard</p>
                 <div className="space-y-3">
+                  {[
                     { plan: 'Gestoría Básico (149€/mes)', count: stats.planes.starter, precio: 149 },
                     { plan: 'Gestoría Pro (399€/mes)', count: stats.planes.pro, precio: 399 },
                   ].map(row => (
