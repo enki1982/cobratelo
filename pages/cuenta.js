@@ -534,10 +534,10 @@ export default function Cuenta() {
                 </div>
                 {plan !== 'free' && (
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    <a href="https://billing.stripe.com/p/login/test_00g..." target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '7px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.15)' }}>
+                    <button onClick={handlePortalFacturacion}
+                      style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', background: 'transparent', textDecoration: 'none', padding: '7px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.15)', cursor: 'pointer' }}>
                       Gestionar facturación
-                    </a>
+                    </button>
                     <button onClick={() => {if(confirm('¿Cancelar suscripción?')) alert('Escribe a hola@cobratelo.es para cancelar.')}}
                       style={{ fontSize: 12, color: 'rgba(255,100,100,0.6)', background: 'transparent', border: '1px solid rgba(255,100,100,0.2)', padding: '7px 14px', borderRadius: 100, cursor: 'pointer' }}>
                       Cancelar plan
