@@ -1,3 +1,18 @@
-grep -n "url_oficial\|INCORRECTO\|CORRECTO\|privado\|infoautonomos\|dominios" /root/ayuda-es-agent/agent.py | head -20
-echo "==="
-sed -n '48,80p' /root/ayuda-es-agent/agent.py
+echo "=== CORRECCIÓN URL TARIFA PLANA ==="
+python3 << 'PYEOF'
+import os
+from supabase import create_client
+from dotenv import load_dotenv
+load_dotenv('/root/ayuda-es-agent/.env')
+sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
+r = sb.table('ayudas').select('id,nombre').execute()
+hits = [a for a in r.data if 'tarifa plana' in a['nombre'].lower() or 'tarifa_plana' in a['nombre'].lower()]
+print(f"Ayudas tarifa plana encontradas: {len(hits)}")
+for h in hits:
+    sb.table('ayudas').update({'url_oficial': 'https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/CotizacionRecaudacionTrabajadores/10721/10724'}).eq('id', h['id']).execute()
+    print(f"  Actualizada: {h['nombre']}")
+PYEOF
+
+echo ""
+echo "=== FIX PROMPT AGENTE ==="
+echo "cGF0aCA9ICcvcm9vdC9heXVkYS1lcy1hZ2VudC9hZ2VudC5weScKd2l0aCBvcGVuKHBhdGgpIGFzIGY6CiAgICBjb2RlID0gZi5yZWFkKCkKCm9sZCA9ICIiIiAg4p2MIElOQ09SUkVDVE86IGh0dHBzOi8vd3d3LnNlcGUuZXMgIChkZW1hc2lhZG8gZ2Vuw6lyaWNvKSIiIgoKbmV3ID0gIiIiICDinYwgSU5DT1JSRUNUTzogaHR0cHM6Ly93d3cuc2VwZS5lcyAgKGRlbWFzaWFkbyBnZW7DqXJpY28pCiAg4p2MIElOQ09SUkVDVE86IGN1YWxxdWllciB3ZWIgcHJpdmFkYSAoaW5mb2F1dG9ub21vcy5jb20sIGFzZXNvcmV4Y2VsZW50ZS5jb20sIGliZXJsZXkuZXMsIHdvbHRlcnNrbHV3ZXIuZXMsIGV4cGFuc2lvbi5jb20sIGVsZWNvbm9taXN0YS5lcywgZW1wcmVuZGVkb3Jlcy5lcywgc2FnZS5jb20sIGhvbGRlZC5jb20sIGRlY2xhcmFuZG8uY29tLCBhdXRvbm9tb3N5ZW1wcmVuZGVkb3IuZXMsIG5vdGljaWFzLmp1cmlkaWNhcy5jb20sIHJhbmtpYS5jb20sIGZpc2NhbC1pbXB1ZXN0b3MuY29tLCBvIGN1YWxxdWllciBvdHJvIHBvcnRhbCBwcml2YWRvLCBibG9nIG8gbWVkaW8gZGUgY29tdW5pY2FjacOzbikKLSBET01JTklPUyBWw4FMSURPUyBvYmxpZ2F0b3JpYW1lbnRlOiAuZ29iLmVzLCAuZ292LmVzLCBzZWctc29jaWFsLmVzLCBzZXBlLmVzLCBib2UuZXMsIGRvZ2MuY2F0LCBkaWFyaS1vZmljaWFsLCBzZWRlLiouZXMsIGdlbmNhdC5jYXQsIGNvbXVuaWRhZC5tYWRyaWQsIGp1bnRhYW5kYWx1Y2lhLmVzLCB4dW50YS5nYWwsIGd2YS5lcywgZWh1LmV1cywgZXVza2FkaS5ldXMsIG5hdmFycmEuZXMsIGFyYWdvbi5lcywgY2FzdGlsbGF5bGVvbi5lcywgamNjbS5lcywganVudGEtYW5kYWx1Y2lhLmVzLCBsYXJpb2phLm9yZywgY2FiaWxkbyouZXMsIGNvbnNlbGxlcmlhKi5lcywgbWluaXN0ZXJpbyouZXMsIGJvcm1lLmVzLCBhZ2VuY2lhdHJpYnV0YXJpYS5lcywgaW5mb3N1YnZlbmNpb25lcy5lcywgYmRucy4qIG8gY3VhbHF1aWVyIHBvcnRhbCBvZmljaWFsIGRlIGFkbWluaXN0cmFjacOzbiBww7pibGljYSBlc3Bhw7FvbGEKLSBTaSBubyBlbmN1ZW50cmFzIGxhIFVSTCBvZmljaWFsIGRlIGxhIGFkbWluaXN0cmFjacOzbiwgZGVqYSB1cmxfb2ZpY2lhbCBjb21vIGNhZGVuYSB2YWPDrWEgIiIuIE5VTkNBIHBvbmdhcyB1bmEgVVJMIGRlIHdlYiBwcml2YWRhLiIiIgoKaWYgb2xkIGluIGNvZGU6CiAgICBjb2RlID0gY29kZS5yZXBsYWNlKG9sZCwgbmV3KQogICAgd2l0aCBvcGVuKHBhdGgsICd3JykgYXMgZjoKICAgICAgICBmLndyaXRlKGNvZGUpCiAgICBwcmludCgnT0sgLSBwcm9tcHQgYWN0dWFsaXphZG8nKQplbHNlOgogICAgcHJpbnQoJ1BBVFRFUk4gTk9UIEZPVU5EIC0gYnVzY2FuZG8gY29udGV4dG8uLi4nKQogICAgaWR4ID0gY29kZS5maW5kKCdJTkNPUlJFQ1RPJykKICAgIGlmIGlkeCA+IDA6CiAgICAgICAgcHJpbnQocmVwcihjb2RlW2lkeC01MDppZHgrMjAwXSkpCgo=" | base64 -d > /tmp/fix_prompt.py && python3 /tmp/fix_prompt.py
