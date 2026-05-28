@@ -57,20 +57,17 @@ const ESTADOS_AYUDA_COLOR = {
 // Dependencias de fechas: qué campo necesita cada fecha para estar disponible
 const FECHA_DEPS = {
   fecha_solicitud_cliente: null,               // siempre disponible
+  fecha_plazo_maximo: null,                    // siempre disponible (referencia de urgencia)
   fecha_inicio_tramite: null,                  // siempre disponible
   fecha_presentacion: 'fecha_inicio_tramite',  // requiere inicio
-  fecha_fin_tramite: 'fecha_inicio_tramite',   // requiere inicio
-  fecha_respuesta: 'fecha_presentacion',       // requiere presentación
-  fecha_resolucion: 'fecha_respuesta',         // requiere respuesta
+  fecha_resolucion: 'fecha_presentacion',      // requiere presentación
 }
 
 // Mínimo fecha de cada campo basado en la cadena lógica
 const FECHA_MIN_DEP = {
   fecha_inicio_tramite: 'fecha_solicitud_cliente',
   fecha_presentacion: 'fecha_inicio_tramite',
-  fecha_fin_tramite: 'fecha_inicio_tramite',
-  fecha_respuesta: 'fecha_presentacion',
-  fecha_resolucion: 'fecha_respuesta',
+  fecha_resolucion: 'fecha_presentacion',
 }
 
 // Qué fechas requiere cada estado
@@ -80,18 +77,17 @@ const ESTADO_REQS = {
   documentacion: ['fecha_inicio_tramite'],
   solicitada: ['fecha_inicio_tramite', 'fecha_presentacion'],
   en_espera: ['fecha_inicio_tramite', 'fecha_presentacion'],
-  concedida: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_respuesta'],
-  denegada: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_respuesta'],
+  concedida: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
+  denegada: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
   desistida: ['fecha_inicio_tramite'],
 }
 
 // Campos que dependen de un campo dado (para avisar al borrarlo)
 const FECHA_CHILDREN = {
   fecha_solicitud_cliente: [],
-  fecha_inicio_tramite: ['fecha_presentacion', 'fecha_fin_tramite'],
-  fecha_presentacion: ['fecha_respuesta'],
-  fecha_fin_tramite: [],
-  fecha_respuesta: ['fecha_resolucion'],
+  fecha_plazo_maximo: [],
+  fecha_inicio_tramite: ['fecha_presentacion'],
+  fecha_presentacion: ['fecha_resolucion'],
   fecha_resolucion: [],
 }
 
@@ -712,11 +708,10 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
                     {[
                       { key: 'fecha_solicitud_cliente', label: 'Solicitud del cliente' },
+                      { key: 'fecha_plazo_maximo', label: '⏰ Plazo máximo presentación' },
                       { key: 'fecha_inicio_tramite', label: 'Inicio del trámite' },
                       { key: 'fecha_presentacion', label: 'Fecha presentación', dep: 'fecha_inicio_tramite', depLabel: 'Inicio del trámite' },
-                      { key: 'fecha_fin_tramite', label: 'Fin del trámite', dep: 'fecha_inicio_tramite', depLabel: 'Inicio del trámite' },
-                      { key: 'fecha_respuesta', label: 'Fecha respuesta', dep: 'fecha_presentacion', depLabel: 'Fecha presentación' },
-                      { key: 'fecha_resolucion', label: 'Fecha resolución', dep: 'fecha_respuesta', depLabel: 'Fecha respuesta' },
+                      { key: 'fecha_resolucion', label: 'Resolución / Respuesta admin.', dep: 'fecha_presentacion', depLabel: 'Fecha presentación' },
                     ].map(f => {
                       const disabled = isFechaDisabled(f.key, tramite)
                       const minDate = getMinDate(f.key, tramite)

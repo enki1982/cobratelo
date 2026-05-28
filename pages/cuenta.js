@@ -290,7 +290,7 @@ function ModalEditar({ seccion, valor, perfil, onGuardar, onCerrar }) {
             className="flex-1 py-3 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] text-sm font-medium">
             Cancelar
           </button>
-          <button onClick={() => onGuardar(seccion.id, sel)} disabled={sel.length === 0}
+          <button onClick={() => onGuardar(seccion.id, sel)} disabled={sel.length === 0 && (valor || []).length === 0}
             className="flex-1 py-3 rounded-full bg-[#f0f0f5] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[rgba(255,255,255,0.1)] transition-colors">
             Guardar
           </button>
@@ -576,7 +576,7 @@ export default function Cuenta() {
       </div>
 
       {/* Modales existentes */}
-      {editando && <ModalEditar seccion={editando} valor={perfilData?.[editando]} perfil={perfilData} onGuardar={handleGuardarSeccion} onCerrar={() => setEditando(null)} />}
+      {editando && <ModalEditar seccion={editando} valor={perfilData?.[editando?.id]} perfil={perfilData} onGuardar={handleGuardarSeccion} onCerrar={() => setEditando(null)} />}
       {editandoPueblo && <ModalPueblo valor={perfilData?.pueblo} onGuardar={(campo, campos) => handleGuardarPueblo(campo, campos)} onCerrar={() => setEditandoPueblo(false)} />}
     </>
   )
