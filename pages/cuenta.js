@@ -529,17 +529,42 @@ export default function Cuenta() {
               </div>
               <div style={{ padding: '8px 0' }}>
                 {perfilData && [
-                  ['Situación laboral', perfilData.situacion],
-                  ['Situación familiar', perfilData.familia],
-                  ['Vivienda', perfilData.vivienda],
-                ].map(([label, valor]) => valor && valor.length > 0 && (
-                  <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)', background: 'rgba(255,200,120,0.06)', borderLeft: '3px solid rgba(255,131,0,0.4)' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', width: 160, flexShrink: 0 }}>{label}</p>
-                    <p style={{ fontSize: 13, color: '#FFF5EB' }}>
-                      {Array.isArray(valor) ? valor.map(v => LABELS[v] || v).join(', ') : valor}
-                    </p>
-                  </div>
-                ))}
+                  { label: 'Situación laboral', id: 'situacion' },
+                  { label: 'Fecha de nacimiento', id: 'nacimiento', tipo: 'fecha' },
+                  { label: 'Situación familiar', id: 'familia' },
+                  { label: 'Vivienda', id: 'vivienda' },
+                  { label: 'Ingresos anuales', id: 'ingresos' },
+                  { label: 'Población', id: 'pueblo', tipo: 'pueblo' },
+                  { label: 'Vehículo', id: 'vehiculo' },
+                  { label: 'Situaciones especiales', id: 'especial' },
+                  { label: 'Extras', id: 'extras' },
+                  { label: 'Gestoría', id: 'gestoria' },
+                ].map(({ label, id, tipo }) => {
+                  const valor = perfilData[id]
+                  const tieneDatos = valor && valor.length > 0
+                  let texto = '—'
+                  if (tieneDatos) {
+                    if (tipo === 'fecha') texto = new Date(valor[0]).toLocaleDateString('es-ES')
+                    else if (tipo === 'pueblo') { try { const m = JSON.parse(valor[0]); texto = m.nombre + ' · ' + m.provincia } catch { texto = valor[0] } }
+                    else texto = valor.map(v => LABELS[v] || v).join(', ')
+                  }
+                  return (
+                    <div key={id} style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '11px 20px',
+                      borderBottom: '1px solid rgba(255,200,120,0.08)',
+                      background: tieneDatos ? 'rgba(255,200,100,0.14)' : 'transparent',
+                      borderLeft: tieneDatos ? '3px solid #cc5500' : '3px solid transparent',
+                    }}>
+                      <p style={{ fontSize: 12, color: tieneDatos ? 'rgba(255,245,235,0.6)' : 'rgba(255,245,235,0.25)', width: 150, flexShrink: 0 }}>{label}</p>
+                      <p style={{ fontSize: 13, color: tieneDatos ? '#FFF5EB' : 'rgba(255,245,235,0.2)', flex: 1, fontStyle: tieneDatos ? 'normal' : 'italic' }}>{texto}</p>
+                      {tieneDatos
+                        ? <span style={{ fontSize: 11, color: '#4ade80', marginLeft: 8, flexShrink: 0 }}>✓</span>
+                        : <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.2)', marginLeft: 8, flexShrink: 0 }}>—</span>
+                      }
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
