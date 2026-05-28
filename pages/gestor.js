@@ -32,9 +32,27 @@ const ESTADOS = {
   descartado: { label: 'Descartado', color: C.light, bg: '#F9FAFB', border: C.border },
 }
 
-const ESTADOS_AYUDA = ['pendiente', 'en_tramite', 'solicitada', 'concedida', 'denegada']
-const ESTADOS_AYUDA_LABEL = { pendiente: 'Pendiente', en_tramite: 'En trámite', solicitada: 'Solicitada', concedida: 'Concedida ✓', denegada: 'Denegada' }
-const ESTADOS_AYUDA_COLOR = { pendiente: C.yellow, en_tramite: C.blue, solicitada: C.orange, concedida: C.green, denegada: C.red }
+const ESTADOS_AYUDA = ['pendiente', 'en_tramite', 'documentacion', 'solicitada', 'en_espera', 'concedida', 'denegada', 'desistida']
+const ESTADOS_AYUDA_LABEL = {
+  pendiente: 'Pendiente',
+  en_tramite: 'En trámite',
+  documentacion: 'Docs. pendientes',
+  solicitada: 'Solicitada',
+  en_espera: 'En espera respuesta',
+  concedida: '✓ Concedida',
+  denegada: 'Denegada',
+  desistida: 'Desistida',
+}
+const ESTADOS_AYUDA_COLOR = {
+  pendiente: C.yellow,
+  en_tramite: C.blue,
+  documentacion: '#7C3AED',
+  solicitada: C.orange,
+  en_espera: '#0891B2',
+  concedida: C.green,
+  denegada: C.red,
+  desistida: C.light,
+}
 
 export default function GestorDashboard() {
   const router = useRouter()
@@ -438,23 +456,102 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
           <div style={{ color: C.light, fontSize: 13 }}>Cargando...</div>
         ) : ayudas.length === 0 ? (
           <div style={{ color: C.light, fontSize: 13 }}>Sin ayudas identificadas para este cliente.</div>
-        ) : ayudas.map(ayuda => {
-          const estAyuda = ayudasEstado[ayuda.id]?.estado || 'pendiente'
+        ) : ayudas.map((ayuda, idx) => {
+          const tramite = ayudasEstado[ayuda.id] || {}
+          const estAyuda = tramite.estado || 'pendiente'
           const colorAyuda = ESTADOS_AYUDA_COLOR[estAyuda] || C.yellow
+          const [expanded, setExpanded] = [tramite._expanded, (v) => {
+            setAyudasEstado(prev => ({ ...prev, [ayuda.id]: { ...prev[ayuda.id], _expanded: v } }))
+          }]
           return (
-            <div key={ayuda.id} style={{ border: `1px solid ${C.border}`, borderRadius: 10, padding: '14px', marginBottom: 10, background: C.bg }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 3 }}>{ayuda.nombre}</div>
-              <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>{ayuda.organismo}</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <select value={estAyuda} onChange={e => toggleAyudaEstado(ayuda.id, e.target.value)}
-                  style={{ fontSize: 12, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 6, padding: '4px 8px', color: colorAyuda, cursor: 'pointer', fontWeight: 600 }}>
-                  {ESTADOS_AYUDA.map(e => <option key={e} value={e}>{ESTADOS_AYUDA_LABEL[e]}</option>)}
-                </select>
-                {ayuda.url_oficial && (
-                  <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 11, color: C.blue, textDecoration: 'none', whiteSpace: 'nowrap' }}>Ver convocatoria →</a>
-                )}
+            <div key={ayuda.id} style={{ border: `1px solid ${C.border}`, borderRadius: 10, marginBottom: 12, background: C.white, overflow: 'hidden' }}>
+              {/* Header ayuda */}
+              <div style={{ padding: '12px 16px', background: C.bg, borderBottom: expanded ? `1px solid ${C.border}` : 'none', cursor: 'pointer' }}
+                onClick={() => setExpanded(!expanded)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: C.muted, background: C.border, padding: '2px 7px', borderRadius: 100 }}>#{idx + 1}</span>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{ayuda.nombre}</div>
+                      <div style={{ fontSize: 11, color: C.muted }}>{ayuda.organismo}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: colorAyuda, background: colorAyuda + '18', padding: '3px 8px', borderRadius: 100 }}>
+                      {ESTADOS_AYUDA_LABEL[estAyuda]}
+                    </span>
+                    <span style={{ color: C.light, fontSize: 12 }}>{expanded ? '▲' : '▼'}</span>
+                  </div>
+                </div>
               </div>
+
+              {/* Detalle tramitación */}
+              {expanded && (
+                <div style={{ padding: '16px' }}>
+                  {/* Estado */}
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Estado del trámite</label>
+                    <select value={estAyuda}
+                      onChange={e => {
+                        const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, estado: e.target.value } }
+                        setAyudasEstado(nuevo)
+                        onUpdate(cliente.id, { ayudas_estado: nuevo })
+                      }}
+                      style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 6, padding: '8px 10px', color: colorAyuda, cursor: 'pointer', fontWeight: 600 }}>
+                      {ESTADOS_AYUDA.map(e => <option key={e} value={e}>{ESTADOS_AYUDA_LABEL[e]}</option>)}
+                    </select>
+                  </div>
+
+                  {/* Fechas */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                    {[
+                      { key: 'fecha_solicitud_cliente', label: 'Solicitud del cliente' },
+                      { key: 'fecha_inicio_tramite', label: 'Inicio del trámite' },
+                      { key: 'fecha_presentacion', label: 'Fecha presentación' },
+                      { key: 'fecha_fin_tramite', label: 'Fin del trámite' },
+                      { key: 'fecha_respuesta', label: 'Fecha respuesta' },
+                      { key: 'fecha_resolucion', label: 'Fecha resolución' },
+                    ].map(f => (
+                      <div key={f.key}>
+                        <label style={{ fontSize: 11, color: C.muted, display: 'block', marginBottom: 4 }}>{f.label}</label>
+                        <input type="date" value={tramite[f.key] || ''}
+                          onChange={e => {
+                            const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, [f.key]: e.target.value } }
+                            setAyudasEstado(nuevo)
+                            onUpdate(cliente.id, { ayudas_estado: nuevo })
+                          }}
+                          style={{ width: '100%', fontSize: 12, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: '6px 8px', color: C.text, boxSizing: 'border-box' }} />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Notas del trámite */}
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ fontSize: 11, color: C.muted, display: 'block', marginBottom: 4 }}>Notas del trámite</label>
+                    <textarea value={tramite.notas || ''} rows={3}
+                      onChange={e => {
+                        const nuevo = { ...ayudasEstado, [ayuda.id]: { ...tramite, notas: e.target.value } }
+                        setAyudasEstado(nuevo)
+                      }}
+                      onBlur={() => onUpdate(cliente.id, { ayudas_estado: ayudasEstado })}
+                      placeholder="Documentación entregada, incidencias, observaciones..."
+                      style={{ width: '100%', fontSize: 12, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: '8px 10px', color: C.text, resize: 'vertical', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+
+                  {/* Importe y enlace */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {ayuda.importe_max > 0 && (
+                      <span style={{ fontSize: 12, fontWeight: 600, color: C.orange }}>
+                        Hasta {ayuda.importe_max.toLocaleString('es-ES')}€
+                      </span>
+                    )}
+                    {ayuda.url_oficial && (
+                      <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize: 12, color: C.blue, textDecoration: 'none' }}>Ver convocatoria oficial →</a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )
         })}
