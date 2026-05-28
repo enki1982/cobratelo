@@ -499,10 +499,14 @@ export default function Resultados() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user?.id) {
-        const { data } = await supabase.from('usuarios').select('plan').eq('id', session.user.id).single()
+        const { data } = await supabase.from('usuarios').select('plan, perfil').eq('id', session.user.id).single()
         if (data?.plan) setUserPlan(data.plan)
         setUserId(session.user.id)
         setSessionChecked(true)
+        // Si no hay perfil en URL, cargar desde BD
+        if (!router.query.perfil && data?.perfil && Object.keys(data.perfil).length > 0) {
+          setPerfil(data.perfil)
+        }
       } else {
         setSinSesion(true)
         setSessionChecked(true)
@@ -521,7 +525,8 @@ export default function Resultados() {
 
   useEffect(() => {
     if (perfil !== null && userId) fetchAyudas(userId)
-  }, [perfil, userId])
+    else if (sessionChecked && !userId) setLoading(false)
+  }, [perfil, userId, sessionChecked])
 
   const fetchAyudas = async (userId) => {
     try {
