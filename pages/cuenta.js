@@ -93,12 +93,56 @@ function ValorPerfil({ id, valor, tipo }) {
   return <span className="text-[#f0f0f5] text-sm">{valor.map(v => LABELS[v] || v).join(', ')}</span>
 }
 
-// Búsqueda de municipios vía Google Places
+// Búsqueda de municipios vía Google Places SDK (ya cargado en _app.js)
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
+  
+  // Usar Google Places si está disponible
+  if (typeof window !== 'undefined' && window.google?.maps?.places) {
+    return new Promise((resolve) => {
+      const service = new window.google.maps.places.AutocompleteService()
+      service.getPlacePredictions({
+        input: query,
+        types: ['(cities)'],
+        componentRestrictions: { country: 'es' },
+      }, async (predictions, status) => {
+        if (status !== 'OK' || !predictions) { resolve([]); return }
+        const geocoder = new window.google.maps.Geocoder()
+        const resultados = await Promise.all(
+          predictions.slice(0, 6).map(p => new Promise(res => {
+            geocoder.geocode({ placeId: p.place_id, language: 'es' }, (results, s) => {
+              if (s !== 'OK' || !results?.[0]) { res(null); return }
+              const comps = results[0].address_components
+              const get = (type) => comps.find(c => c.types.includes(type))?.long_name || ''
+              res({
+                nombre: get('locality') || get('sublocality') || get('administrative_area_level_3') || get('administrative_area_level_2') || p.structured_formatting?.main_text || p.description,
+                provincia: get('administrative_area_level_2') || '',
+                ccaa: get('administrative_area_level_1') || '',
+                comarca: get('administrative_area_level_3') || get('administrative_area_level_2') || '',
+              })
+            })
+          }))
+        )
+        resolve(resultados.filter(Boolean))
+      })
+    })
+  }
+
+  // Fallback: Nominatim
   try {
-    const r = await fetch(`/api/municipios?q=${encodeURIComponent(query)}`)
-    return await r.json()
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=6&addressdetails=1&accept-language=es`
+    const r = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'Cobratelo.es/1.0' } })
+    const data = await r.json()
+    return data
+      .filter(d => d.address && d.address.country_code === 'es')
+      .map(d => ({
+        nombre: d.address.municipality || d.address.city || d.address.town || d.address.village || d.name,
+        provincia: d.address.province || d.address.county || '',
+        ccaa: d.address.state || '',
+        comarca: d.address.county || '',
+      }))
+      .filter(d => d.nombre)
+      .slice(0, 6)
   } catch { return [] }
 }
 
@@ -489,7 +533,7 @@ export default function Cuenta() {
                   ['Situación familiar', perfilData.familia],
                   ['Vivienda', perfilData.vivienda],
                 ].map(([label, valor]) => valor && valor.length > 0 && (
-                  <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)' }}>
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid rgba(255,200,120,0.05)', background: 'rgba(255,200,120,0.06)', borderLeft: '3px solid rgba(255,131,0,0.4)' }}>
                     <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', width: 160, flexShrink: 0 }}>{label}</p>
                     <p style={{ fontSize: 13, color: '#FFF5EB' }}>
                       {Array.isArray(valor) ? valor.map(v => LABELS[v] || v).join(', ') : valor}

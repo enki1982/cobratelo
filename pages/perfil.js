@@ -567,7 +567,7 @@ export default function Perfil() {
                   <button key={op.value} onClick={() => toggleOpcion(op.value)}
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
-                        ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)] text-[#f0f0f5]'
+                        ? 'border-[#cc5500] bg-[rgba(255,200,100,0.22)] text-[#FFF5EB] shadow-sm'
                         : 'border-[rgba(255,255,255,0.08)] bg-[#2a1500] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
@@ -588,7 +588,7 @@ export default function Perfil() {
                   <button key={op.value} onClick={() => toggleOpcion(op.value)}
                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-150
                       ${selected
-                        ? 'border-[#cc5500] bg-[rgba(255,131,0,0.1)] text-[#f0f0f5]'
+                        ? 'border-[#cc5500] bg-[rgba(255,200,100,0.22)] text-[#FFF5EB] shadow-sm'
                         : 'border-[rgba(255,255,255,0.08)] bg-[#2a1500] text-[#f0f0f5] hover:border-[#C0BAB0]'
                       }`}>
                     <span className="text-2xl">{op.emoji}</span>
