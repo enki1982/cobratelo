@@ -220,6 +220,33 @@ export default function GestorDashboard() {
     pendientes: clientes.filter(c => c.estado === 'pendiente').length,
   }
 
+  const exportarCSV = () => {
+    const ESTADOS_LABEL = { pendiente: 'Pendiente', activo: 'Activo', gestionado: 'Gestionado', descartado: 'Descartado' }
+    const headers = ['Nombre', 'Email', 'DNI', 'Teléfono', 'Estado', 'Nº Ayudas', 'Notas', 'Fecha alta']
+    const rows = clientes.map(c => [
+      c.cliente_nombre || '',
+      c.cliente_email || '',
+      c.dni || '',
+      c.telefono || '',
+      ESTADOS_LABEL[c.estado] || c.estado || '',
+      c.ayudas_ids?.length || 0,
+      (c.notas || '').split('\n').join(' '),
+      new Date(c.created_at).toLocaleDateString('es-ES'),
+    ])
+    const csv = [headers, ...rows]
+      .map(r => r.map(v => { const s = String(v); return '"' + s.split('"').join('""') + '"' }).join(','))
+      .join('\n')
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'clientes-cobratelo-' + new Date().toISOString().slice(0, 10) + '.csv'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   if (loading) return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ color: C.muted, fontSize: 14 }}>Cargando panel...</div>
@@ -245,6 +272,10 @@ export default function GestorDashboard() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <a href="/cuenta" style={{ fontSize: 13, color: C.muted, textDecoration: 'none' }}>Mi cuenta</a>
+            <button onClick={exportarCSV}
+              style={{ background: 'white', color: C.orange, border: `1px solid ${C.orangeBorder}`, padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+              ↓ Exportar CSV
+            </button>
             <button onClick={() => setModalNuevo(true)}
               style={{ background: C.orange, color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
               + Añadir cliente

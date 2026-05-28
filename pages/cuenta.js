@@ -93,55 +93,58 @@ function ValorPerfil({ id, valor, tipo }) {
   return <span className="text-[#f0f0f5] text-sm">{valor.map(v => LABELS[v] || v).join(', ')}</span>
 }
 
-// Búsqueda de municipios vía Google Places SDK (ya cargado en _app.js)
+// Búsqueda de municipios — Google Places nueva API + Nominatim fallback
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
-  
-  // Usar Google Places si está disponible
-  if (typeof window !== 'undefined' && window.google?.maps?.places) {
-    return new Promise((resolve) => {
-      const service = new window.google.maps.places.AutocompleteService()
-      service.getPlacePredictions({
+
+  // Intentar nueva API Google Places (AutocompleteSuggestion)
+  try {
+    if (typeof window !== 'undefined' && window.google?.maps?.places) {
+      const { AutocompleteSuggestion } = await window.google.maps.importLibrary('places')
+      const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
         input: query,
-        types: ['(cities)'],
-        componentRestrictions: { country: 'es' },
-      }, async (predictions, status) => {
-        if (status !== 'OK' || !predictions) { resolve([]); return }
-        const geocoder = new window.google.maps.Geocoder()
+        language: 'es',
+        region: 'es',
+        includedPrimaryTypes: ['locality', 'administrative_area_level_3', 'postal_town'],
+      })
+      if (suggestions?.length) {
         const resultados = await Promise.all(
-          predictions.slice(0, 6).map(p => new Promise(res => {
-            geocoder.geocode({ placeId: p.place_id, language: 'es' }, (results, s) => {
-              if (s !== 'OK' || !results?.[0]) { res(null); return }
-              const comps = results[0].address_components
-              const get = (type) => comps.find(c => c.types.includes(type))?.long_name || ''
-              res({
-                nombre: get('locality') || get('sublocality') || get('administrative_area_level_3') || get('administrative_area_level_2') || p.structured_formatting?.main_text || p.description,
+          suggestions.slice(0, 6).map(async (s) => {
+            try {
+              const place = s.placePrediction.toPlace()
+              await place.fetchFields({ fields: ['addressComponents', 'displayName'] })
+              const comps = place.addressComponents || []
+              const get = (type) => comps.find(c => c.types?.includes(type))?.longText || ''
+              return {
+                nombre: get('locality') || get('administrative_area_level_3') || get('postal_town') || place.displayName || s.placePrediction.text?.text || '',
                 provincia: get('administrative_area_level_2') || '',
                 ccaa: get('administrative_area_level_1') || '',
                 comarca: get('administrative_area_level_3') || get('administrative_area_level_2') || '',
-              })
-            })
-          }))
+              }
+            } catch { return null }
+          })
         )
-        resolve(resultados.filter(Boolean))
-      })
-    })
-  }
+        const filtrados = resultados.filter(r => r?.nombre)
+        if (filtrados.length > 0) return filtrados
+      }
+    }
+  } catch {}
 
-  // Fallback: Nominatim
+  // Fallback: Nominatim (OpenStreetMap)
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=6&addressdetails=1&accept-language=es`
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},+España&format=json&limit=8&addressdetails=1&accept-language=es&countrycodes=es`
     const r = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'Cobratelo.es/1.0' } })
     const data = await r.json()
     return data
-      .filter(d => d.address && d.address.country_code === 'es')
+      .filter(d => d.address?.country_code === 'es' && !['road','motorway','building'].includes(d.type))
       .map(d => ({
-        nombre: d.address.municipality || d.address.city || d.address.town || d.address.village || d.name,
+        nombre: d.address.municipality || d.address.city || d.address.town || d.address.village || d.address.hamlet || d.name,
         provincia: d.address.province || d.address.county || '',
         ccaa: d.address.state || '',
-        comarca: d.address.county || '',
+        comarca: d.address.county || d.address.state_district || '',
       }))
       .filter(d => d.nombre)
+      .filter((v, i, a) => a.findIndex(t => t.nombre?.toLowerCase() === v.nombre?.toLowerCase()) === i)
       .slice(0, 6)
   } catch { return [] }
 }
@@ -548,20 +551,29 @@ export default function Cuenta() {
                     else if (tipo === 'pueblo') { try { const m = JSON.parse(valor[0]); texto = m.nombre + ' · ' + m.provincia } catch { texto = valor[0] } }
                     else texto = valor.map(v => LABELS[v] || v).join(', ')
                   }
+                  const handleClickCampo = () => {
+                    if (tipo === 'fecha') { setEditandoFecha(true) }
+                    else if (tipo === 'pueblo') { setEditandoPueblo('pueblo') }
+                    else {
+                      const s = SECCIONES_PERFIL.find(sec => sec.id === id)
+                      if (s) setEditando(s)
+                    }
+                  }
                   return (
-                    <div key={id} style={{
+                    <div key={id} onClick={handleClickCampo} style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '11px 20px',
                       borderBottom: '1px solid rgba(255,200,120,0.08)',
-                      background: tieneDatos ? 'rgba(255,200,100,0.14)' : 'transparent',
-                      borderLeft: tieneDatos ? '3px solid #cc5500' : '3px solid transparent',
-                    }}>
+                      background: tieneDatos ? 'rgba(255,220,170,0.18)' : 'rgba(255,255,255,0.01)',
+                      borderLeft: tieneDatos ? '3px solid rgba(204,85,0,0.6)' : '3px solid transparent',
+                      cursor: 'pointer',
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,200,120,0.22)'}
+                    onMouseLeave={e => e.currentTarget.style.background = tieneDatos ? 'rgba(255,220,170,0.18)' : 'rgba(255,255,255,0.01)'}>
                       <p style={{ fontSize: 12, color: tieneDatos ? 'rgba(255,245,235,0.6)' : 'rgba(255,245,235,0.25)', width: 150, flexShrink: 0 }}>{label}</p>
                       <p style={{ fontSize: 13, color: tieneDatos ? '#FFF5EB' : 'rgba(255,245,235,0.2)', flex: 1, fontStyle: tieneDatos ? 'normal' : 'italic' }}>{texto}</p>
-                      {tieneDatos
-                        ? <span style={{ fontSize: 11, color: '#4ade80', marginLeft: 8, flexShrink: 0 }}>✓</span>
-                        : <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.2)', marginLeft: 8, flexShrink: 0 }}>—</span>
-                      }
+                      <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.3)', marginLeft: 8, flexShrink: 0 }}>✏️</span>
                     </div>
                   )
                 })}
