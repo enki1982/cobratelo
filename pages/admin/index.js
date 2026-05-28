@@ -13,6 +13,20 @@ const PLAN_COLOR = {
   pro: 'bg-purple-50 text-purple-700',
 }
 
+const PLAN_LABEL = {
+  free: 'Gratuito',
+  alertas: 'Alertas',
+  starter: 'Gestoría Básico',
+  pro: 'Gestoría Pro',
+}
+
+const PLAN_PRECIO = {
+  free: 0,
+  alertas: 0,
+  starter: 149,
+  pro: 399,
+}
+
 function Stat({ label, value, sub, color = '#1a0d00' }) {
   return (
     <div className="bg-white rounded-2xl border border-[#F5C89A] p-5">
@@ -117,7 +131,7 @@ export default function Admin() {
                   <div className="space-y-3">
                     {Object.entries(stats.planes).map(([plan, count]) => (
                       <div key={plan} className="flex items-center gap-3">
-                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full w-20 text-center ${PLAN_COLOR[plan]}`}>{plan}</span>
+                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full w-28 text-center ${PLAN_COLOR[plan]}`}>{PLAN_LABEL[plan] || plan}</span>
                         <div className="flex-1 bg-[#F0EAE0] rounded-full h-2">
                           <div className="bg-[#cc5500] h-2 rounded-full transition-all"
                             style={{ width: stats.total ? `${(count/stats.total)*100}%` : '0%' }} />
@@ -213,7 +227,7 @@ export default function Admin() {
                         <tr key={u.id} className={`border-b border-[#F0EAE0] hover:bg-[#FAFAF8] transition-colors ${i % 2 === 0 ? '' : 'bg-[#FDFCFA]'}`}>
                           <td className="px-4 py-3 font-medium text-[#1a0d00]">{u.email}</td>
                           <td className="px-4 py-3">
-                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${PLAN_COLOR[u.plan] || PLAN_COLOR.free}`}>{u.plan}</span>
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${PLAN_COLOR[u.plan] || PLAN_COLOR.free}`}>{PLAN_LABEL[u.plan] || u.plan}</span>
                           </td>
                           <td className="px-4 py-3 text-[#7a4a1a] whitespace-nowrap">
                             {new Date(u.created_at).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' })}
@@ -250,16 +264,14 @@ export default function Admin() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Stat label="Suscripciones activas" value={stats.billing.suscripciones} sub="en Stripe" />
-                <Stat label="MRR estimado" value={`${(stats.planes.alertas * 0.99 + stats.planes.pro * 49).toFixed(2)}€`} sub="basado en planes activos" color="#cc5500" />
+                <Stat label="MRR estimado" value={`${(stats.planes.starter * 149 + stats.planes.pro * 399).toFixed(2)}€`} sub="basado en planes activos" color="#cc5500" />
               </div>
               <div className="bg-white rounded-2xl border border-[#F5C89A] p-6">
                 <h2 className="font-semibold text-[#1a0d00] mb-2">Desglose por plan</h2>
                 <p className="text-xs text-[#7a4a1a] mb-4">Basado en usuarios en BD — la facturación real está en Stripe Dashboard</p>
                 <div className="space-y-3">
-                  {[
-                    { plan: 'Alertas (0,99€/mes)', count: stats.planes.alertas, precio: 0.99 },
-                    { plan: 'Starter', count: stats.planes.starter, precio: 9.99 },
-                    { plan: 'Pro (49€/mes)', count: stats.planes.pro, precio: 49 },
+                    { plan: 'Gestoría Básico (149€/mes)', count: stats.planes.starter, precio: 149 },
+                    { plan: 'Gestoría Pro (399€/mes)', count: stats.planes.pro, precio: 399 },
                   ].map(row => (
                     <div key={row.plan} className="flex items-center justify-between py-2 border-b border-[#F0EAE0] last:border-0">
                       <span className="text-sm text-[#555550]">{row.plan}</span>
@@ -273,7 +285,7 @@ export default function Admin() {
                 <div className="mt-4 pt-4 border-t border-[#F5C89A] flex justify-between">
                   <span className="font-semibold text-[#1a0d00]">MRR total estimado</span>
                   <span className="font-display text-xl font-bold text-[#cc5500]">
-                    {(stats.planes.alertas * 0.99 + stats.planes.starter * 9.99 + stats.planes.pro * 49).toFixed(2)}€
+                    {(stats.planes.starter * 149 + stats.planes.pro * 399).toFixed(2)}€
                   </span>
                 </div>
               </div>
