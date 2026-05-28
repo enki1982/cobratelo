@@ -530,7 +530,7 @@ export default function Resultados() {
 
   const fetchAyudas = async (userId) => {
     try {
-      // 1. Comprobar si hay caché en Supabase
+      // 1. Comprobar caché en Supabase
       const { data: usuario } = await supabase
         .from('usuarios')
         .select('ayudas_calculadas')
@@ -540,27 +540,36 @@ export default function Resultados() {
       const idsCache = usuario?.ayudas_calculadas
 
       if (idsCache && idsCache.length > 0) {
-        // 2a. Caché hit: cargar solo esas ayudas por ID
+        // Caché hit: cargar solo esas ayudas por ID (rápido)
         const { data } = await supabase
           .from('ayudas')
           .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
           .in('id', idsCache)
 
-        // Mantener el orden del caché
-        const ordenadas = idsCache
-          .map(id => (data || []).find(a => a.id === id))
-          .filter(Boolean)
-
+        const ordenadas = idsCache.map(id => (data || []).find(a => a.id === id)).filter(Boolean)
         setAyudas(ordenadas)
       } else {
-        // 2b. Sin caché: calcular server-side y guardar
-        const res = await fetch('/api/calcular-ayudas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, perfil })
-        })
-        const json = await res.json()
-        if (json.ayudas) setAyudas(json.ayudas)
+        // Sin caché: cargar todas y calcular en el cliente
+        const { data } = await supabase
+          .from('ayudas')
+          .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
+          .in('estado', ['abierta', 'permanente', 'pendiente'])
+
+        const conScore = (data || [])
+          .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
+          .filter(a => a._score >= 40)
+          .sort((a, b) => b._score - a._score)
+          .slice(0, 20)
+
+        setAyudas(conScore)
+
+        // Guardar IDs en caché para próximas visitas (en background, sin bloquear)
+        if (conScore.length > 0) {
+          supabase.from('usuarios')
+            .update({ ayudas_calculadas: conScore.map(a => a.id) })
+            .eq('id', userId)
+            .then(() => {})
+        }
       }
 
       // Detectar ayudas nuevas vs las ya vistas
