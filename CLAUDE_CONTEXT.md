@@ -1,4 +1,4 @@
-# CLAUDE CONTEXT — Miki (actualizado mayo 2026)
+# CLAUDE CONTEXT — Miki (actualizado 29 mayo 2026)
 
 > Lee este archivo al inicio de cualquier conversación nueva para ponerte al día sin preguntar.
 
@@ -10,42 +10,36 @@ Pega esto exactamente al abrir una conversación nueva con Claude:
 Lee el archivo CLAUDE_CONTEXT.md del repo https://github.com/enki1982/cobratelo rama main — haz un web_fetch directo al raw para asegurarte de leer la versión más reciente. Una vez leído, clona el repo en /home/claude/cobratelo para tener acceso al mecanismo .hetzner-cmd. Antes de proponer nada, asegúrate de tener en cuenta tanto los pendientes técnicos como los estratégicos del documento.
 ```
 
-**Por qué funciona así:**
-- `web_fetch` al raw garantiza la versión actual, sin caché
-- Clonar el repo activa el mecanismo `.hetzner-cmd` para ejecutar comandos en el VPS
-- La frase final sobre "técnico y estratégico" evita que Claude vaya directo al VPS check ignorando el contexto de Laborai, AEAT y el bot
-
----
-
 ---
 
 ## QUIÉN ES MIKI
 
 - **Nombre:** Miki, 43 años, Mataró (Barcelona)
 - **Rol principal:** COO de Urban Self Storage Projects SL (urbanss.es)
-- **Holding personal:** Volta Grup (voltagrup.com) — advisory y proyectos propios
-- **Perfil:** Emprendedor serial, técnico-estratégico, construye él mismo los proyectos digitales con Claude como colaborador técnico
+- **Holding personal:** Volta Grup (voltagrup.com)
+- **Perfil:** Emprendedor serial, técnico-estratégico, construye él mismo los proyectos digitales con Claude
+
+**Estilo de trabajo:** directo, sin rodeos, prefiere un solo push cuando es posible. Habla castellano, a veces catalán.
 
 ---
 
 ## PROYECTOS ACTIVOS
 
-### 1. COBRATELO.ES — Plataforma de ayudas públicas
+### 1. COBRATELO.ES — Plataforma de ayudas públicas españolas
 
 **URLs:**
 - Producción: https://www.cobratelo.es
 - Vercel preview: cobratelo-five.vercel.app
-
-**Repositorio GitHub:** https://github.com/enki1982/cobratelo (rama `main`)
+- Repo: https://github.com/enki1982/cobratelo (rama `main`)
 
 **Stack:**
-- Frontend: Next.js desplegado en Vercel
-- Base de datos: Supabase (`pcuomumijpzgatpfgtyo.supabase.co`)
-- Pagos: Stripe
-- Email: Forward Email (SMTP configurado)
-- Servidor agente: Hetzner VPS (`46.224.184.13`)
+- Frontend: Next.js en Vercel
+- BD: Supabase (`pcuomumijpzgatpfgtyo.supabase.co`)
+- Pagos: Stripe (live mode)
+- Email: Forward Email (SMTP)
+- Agente ingesta: Hetzner VPS `46.224.184.13`
 
-**Variables de entorno Vercel (configuradas):**
+**Variables de entorno Vercel:**
 - `NEXT_PUBLIC_GA_ID` → G-8JCGD1CG67
 - `STRIPE_WEBHOOK_SECRET` → whsec_3CYTzgT79GDY3drwWQ5RWWm9i2GFBDf7
 - `NEXT_PUBLIC_STRIPE_PRICE_STARTER` → price_1TatI9RcjgMq3SnyPhsdIxYC (149€/mes)
@@ -58,191 +52,183 @@ Lee el archivo CLAUDE_CONTEXT.md del repo https://github.com/enki1982/cobratelo 
 
 **Webhook Stripe:** `we_1TatVmRcjgMq3SnyLrmnT4vu` → `https://www.cobratelo.es/api/webhook-stripe`
 
-**Supabase — tablas principales:**
-- `usuarios` — perfiles, planes, suscripciones
-- `ayudas` — base de datos de ayudas públicas (sincronizada desde SQLite Hetzner)
-- `informes` — informes generados
+---
 
-**Agente VPS (Hetzner):**
-- Ruta: `/root/ayuda-es-agent/`
-- Base de datos SQLite local con ~218 ayudas
-- El agente busca, scrape y sincroniza ayudas a Supabase
-- Script ampliación CCAA: `/root/ayuda-es-agent/ampliar_fuentes.py`
+## SUPABASE — TABLAS
 
-**Google Search Console:** verificado `sc-domain:cobratelo.es`, sitemap enviado
+| Tabla | Descripción |
+|-------|-------------|
+| `usuarios` | id, email, plan, perfil (JSONB), ayudas_calculadas (JSONB), session_token (TEXT), stripe_customer_id (TEXT), alertas_enviadas, ayudas_alertadas |
+| `ayudas` | 233 ayudas activas con slug único |
+| `gestoria_clientes` | CRM gestorías — clientes por gestor, con RLS |
+| `gestoria_invitaciones` | invitaciones pendientes cuando ciudadano envía email a gestoría |
 
 ---
 
-### 2. BOT DE TRADING — BTC/USDC en Binance Spot
+## PLANES Y PRECIOS
 
-**Servidor:** Hetzner VPS `46.224.184.13`
-
-**Ruta del bot:** `/opt/bot/auto_trader_bot_v1/`
-
-**Archivos clave:**
-- `main.py` — punto de entrada
-- `core/execution.py` — lógica de ejecución de órdenes (aquí está el fix de fees)
-- `core/orchestrator.py` — orquestador principal
-- `core/strategies.py` — estrategias
-- `core/risk.py` — gestión de riesgo
-
-**Servicio systemd:** `auto-trader-bot.service`
-- Arrancar: `systemctl start auto-trader-bot.service`
-- Parar: `systemctl stop auto-trader-bot.service`
-- Reiniciar: `systemctl restart auto-trader-bot.service`
-- Logs: `journalctl -u auto-trader-bot.service --no-pager -n 30`
-
-**Control Telegram:** `/opt/bot/auto_trader_bot_v1/core/telegram_control.py`
-
-**Dashboard live:** https://voltagrup.com/trading.html
-
-**Fix aplicado (mayo 2026):** `core/execution.py` línea ~431
-- Bug: el bot intentaba vender `0.00019000 BTC` pero Binance solo tenía `0.00018994` (diferencia = fees de la compra)
-- Fix: antes del submit SELL, si `free_base < normalized_qty`, se capea la qty al balance real flooreado a 5 decimales
-
-**Estado tras el fix:**
-- `RECONCILE_OK`, `IN_POSITION qty=0.00018994`
-- Win rate actual: 28.6% (18 de 63 trades)
-- PnL total: +0.28 USDC (capital ~90 USDC — demasiado pequeño para ser significativo)
+| Plan | Precio | Descripción |
+|------|--------|-------------|
+| `free` | 0€ | Ciudadano particular — acceso limitado |
+| `starter` | 149€/mes | Gestoría Básico — hasta 50 clientes, trial 7 días |
+| `pro` | 399€/mes | Gestoría Pro — ilimitado, trial 7 días |
+| `enterprise` | Próximamente | — |
 
 ---
 
-### 3. VOLTA GRUP — Holding personal
+## PRODUCTO — FUNCIONALIDADES IMPLEMENTADAS
 
-- Web: https://voltagrup.com (Nginx en Hetzner, HTTPS)
-- Email: ImprovMX forwarding
-- LinkedIn company page: activa
+### Flujo ciudadano
+- Cuestionario de perfil (situación laboral, familiar, vivienda, ingresos, población, vehículo, etc.)
+- Resultados personalizados con relevancia calculada client-side + caché en `ayudas_calculadas`
+- Edición inline de perfil en `/cuenta` — cada campo clicable abre el modal correcto
+- Invalidación de caché al editar perfil → recálculo en próxima visita a resultados
+- Envío de ayudas a gestoría desde `/cuenta` + copia al usuario por email
+- Alertas email semanales cuando aparecen ayudas nuevas
+
+### Flujo gestoría
+- Checkout con trial 7 días para planes starter/pro
+- Portal de facturación Stripe (live mode, funcional)
+- Panel CRM en `/gestor` — solo accesible para planes starter/pro
+  - Lista de clientes con filtros, búsqueda, stats
+  - Panel lateral detalle con edición inline
+  - Sistema de tramitación por ayuda tipo SAP:
+    - 5 fechas con dependencias validadas: solicitud cliente → inicio trámite → presentación → resolución
+    - `fecha_plazo_maximo` libre (sin bloqueo)
+    - Estados bloqueados si faltan fechas previas (⚠ en opciones no disponibles)
+    - Al borrar fecha padre: avisa y borra fechas hijas
+  - Buscador de ayudas para añadir manualmente al cliente
+  - Exportación CSV con BOM UTF-8 (compatible Excel)
+  - Límite 50 clientes plan Básico, ilimitado Pro
+- Control de sesiones concurrentes (token UUID en `usuarios.session_token`) — al entrar en otro dispositivo cierra el anterior con aviso
+- Enlace "Panel gestoría" en nav de `/cuenta` solo para starter/pro
+
+### Flujo email gestoría (captación)
+- Ciudadano envía sus ayudas al email de su gestoría desde `/resultados` o `/cuenta`
+- Email con resumen de ayudas, pitch de cobratelo, links a convocatorias OFICIALES, CTA trial 7 días
+- Copia al ciudadano confirmando el envío
+- Invitación guardada en `gestoria_invitaciones` → cuando la gestoría se registra, ve al cliente
+
+### Técnico
+- Google Places nueva API (`AutocompleteSuggestion`) para municipio + fallback Nominatim
+- Badge con número de ayudas en "Ver mis ayudas" (desde caché, sin recalcular)
+- `/admin` con stats, usuarios, MRR real (149€/399€), distribución de planes con nombres correctos
 
 ---
 
-### 4. URBAN SELF STORAGE PROJECTS SL
+## AGENTE VPS — ESTADO ACTUAL
 
-- Web: urbanss.es
-- COO: Miki
-- Mercados: España (~70% cuota), Portugal, Suiza, Francia, Italia
-- Fabricante: Jinka (filial)
-- Aplicación interna: Python + pywebview (presupuestos, AutoCAD via LISP, SQLite, PDFs)
+**Ruta:** `/root/ayuda-es-agent/`
+**Crontab:** `0 3 * * 1` → python3 agent.py (lunes 3am)
+**Log:** `/var/log/ayuda-es.log`
+
+**Imports confirmados (líneas 8-15):**
+```
+import os
+import unicodedata
+import re
+import json
+import logging
+import time
+from datetime import datetime
+import anthropic
+from supabase import create_client
+```
+
+**Sleeps:**
+- Línea 229: `time.sleep(15)` — entre lotes de backfill
+- Línea 289: `time.sleep(60)` — entre categorías de ingesta
+
+**Problema conocido — rate limit 429:**
+- Límite Anthropic: 50.000 input tokens/minuto (Haiku, tier 1)
+- Con 60s sleep + 18 categorías: debería funcionar, pero los reintentos automáticos del SDK acumulan tokens extra
+- `guardadas: 0` en última ejecución — posiblemente por errores previos de `re` no importado (ya corregido)
+- **Solución real:** subir tier en Anthropic Console añadiendo créditos (https://console.anthropic.com/settings/billing)
+
+**Errores resueltos:**
+- `name 're' is not defined` → añadido `import re` en línea 10
+- `name 'unicodedata' is not defined` → añadido `import unicodedata` en línea 9
+- URL privadas (infoautonomos.com) → corregida Tarifa Plana a seg-social.es + prompt actualizado con lista negra de dominios privados y lista blanca de dominios oficiales
+
+**Reglas de URL en el prompt:**
+- ✅ Válidos: .gob.es, seg-social.es, sepe.es, boe.es, dogc.cat, sede.*.es, gencat.cat, comunidad.madrid, juntaandalucia.es, infosubvenciones.es, bdns.*, agenciatributaria.es
+- ❌ Prohibidos: infoautonomos.com, iberley.es, wolterskluwer.es, expansion.com, eleconomista.es, emprendedores.es, sage.com, holded.com, declarando.com, noticias.juridicas.com, y cualquier web privada
+- Si no hay URL oficial → dejar vacío, NUNCA poner URL privada
 
 ---
 
 ## ACCESO A HETZNER VPS (46.224.184.13)
 
-**Mecanismo de acceso desde Claude:**
+Claude no puede hacer SSH directo. Acceso via **GitHub Actions**:
 
-Claude no puede hacer SSH directo (puerto 22 bloqueado por whitelist de red).
-El acceso se hace a través de **GitHub Actions** via el repo `enki1982/cobratelo`:
+1. Escribir comando en `.hetzner-cmd`
+2. Commit + push a `main`
+3. Workflow `.github/workflows/hetzner.yml` ejecuta via `appleboy/ssh-action@v1.0.3`
+4. Output en GitHub → Actions → último run → "Ejecutar en Hetzner"
 
-1. Escribir el comando a ejecutar en `.hetzner-cmd`
-2. Hacer commit y push a `main`
-3. El workflow `.github/workflows/hetzner.yml` se dispara automáticamente
-4. Ejecuta el comando via `appleboy/ssh-action@v1.0.3` en el servidor
-5. El output aparece en GitHub → Actions → último run → paso "Ejecutar en Hetzner"
-
-**Ejemplo de uso:**
-```bash
-# En Claude:
-cat > /home/claude/cobratelo/.hetzner-cmd << 'HCMD'
-echo "hola desde Hetzner"
-ls /root/
-HCMD
-
-cd /home/claude/cobratelo && git add .hetzner-cmd && git commit -m "ops: descripción" && git push
-```
-
-**Rutas importantes en el servidor:**
-- `/root/ayuda-es-agent/` — agente cobratelo
-- `/root/ayuda-es-agent/.env` — variables de entorno del agente
-- `/opt/bot/auto_trader_bot_v1/` — bot de trading
-- `/opt/bot/auto_trader_bot_v1/core/` — módulos del bot
-- `/opt/bot/auto_trader_bot_v1/venv/` — entorno virtual Python
-
-**Nota sobre scripts Python via hetzner-cmd:**
-Los heredocs anidados fallan por conflictos de quoting. Solución: codificar el script en base64 y decodificarlo en el servidor:
+**Scripts Python via hetzner-cmd:** usar base64 para evitar conflictos de quoting:
 ```bash
 echo "BASE64_AQUI" | base64 -d > /tmp/script.py && python3 /tmp/script.py
 ```
 
 ---
 
-## GITHUB — REPOS Y ACCESO
+## DEUDA TÉCNICA — REFACTOR PENDIENTE (PRIORIDAD ALTA)
 
-- **cobratelo:** https://github.com/enki1982/cobratelo
-- **Secrets configurados en cobratelo:** `HETZNER_HOST`, `HETZNER_USERNAME`, `HETZNER_KEY`, `VERCEL_TOKEN`, `HETZNER_API_TOKEN`, `FORWARD_EMAIL_API`, `STRIPE_API_KEY`
+Los siguientes archivos tienen demasiados parches acumulados y deben reescribirse limpios:
 
-Claude puede hacer push al repo directamente desde `/home/claude/cobratelo/` en el entorno de herramientas.
+1. **`/root/ayuda-es-agent/agent.py`** — prioridad máxima
+2. **`pages/gestor.js`** — CRM construido en capas sucesivas
+3. **`pages/resultados.js`** — lógica de caché parcheada
+4. **`pages/cuenta.js`** — múltiples patches de edición inline, envío gestor, etc.
 
----
-
-## SERVICIOS CONECTADOS (MCP)
-
-- **Gmail** → gmailmcp.googleapis.com
-- **Google Drive** → drivemcp.googleapis.com
-- **Stripe** → mcp.stripe.com
-- **Claude in Chrome** → browser automation activo
+**Criterio:** código actual = spec funcional → reescritura limpia sin perder funcionalidad.
 
 ---
 
-## PENDIENTES COBRATELO (mayo 2026)
+## PENDIENTES TÉCNICOS
 
-- [ ] Verificar que agente VPS añadió ayudas de Valencia, PV, ICO tras fix
-- [ ] Sincronización SQLite → Supabase de ayudas nuevas
-- [ ] Panel multi-cliente gestorías (feature Pro 399€/mes, no implementada)
-- [ ] Alertas email cuando aparecen ayudas nuevas para el perfil del usuario
-- [ ] Backfill URLs — 24 ayudas sin URL oficial
-- [ ] Revisar Google Search Console (indexación tras envío sitemap)
-- [ ] Aplicar mejoras UI inspiradas en Holded (scroll analizado, conclusiones pendientes de implementar)
-
----
-
-## BOT TRADING — FIX APLICADO (mayo 2026)
-
-**Bug corregido:** `core/execution.py` línea ~431
-
-El bot compraba BTC y luego no podía cerrar la posición porque Binance descontaba las fees del BTC recibido. El bot intentaba vender `0.00019000` pero Binance solo tenía `0.00018994` (diferencia = fees de compra). Binance devolvía "insufficient balance" y el bot quedaba bloqueado en loop HALT.
-
-**Fix:** Antes del submit SELL, si `free_base < normalized_qty`, la cantidad se capa al balance real flooreado a 5 decimales. Se loguea como `FEE_ADJUST SELL capped`.
-
-**Estado post-fix:** `RECONCILE_OK`, `IN_POSITION qty=0.00018994`, bot operativo.
-
-**Reflexión sobre rendimiento:** Con ~90 USDC de capital y 0.50% de fees round-trip, el bot es matemáticamente casi inviable. El TP actual (~0.35%) no cubre las fees (0.50%). Para resultados reales se necesita:
-- Mínimo ~2.000€ de capital para que las fees sean proporcionalmente pequeñas
-- O subir el TP a ≥0.70% para que cada trade ganador cubra varias fees
+- [ ] **Agente `guardadas: 0`** — verificar si ya se resolvió tras fix de `import re`. Próxima ejecución lunes 3am. Comprobar con `grep "Error upsert\|guardadas\|encontradas" /var/log/ayuda-es.log | tail -30`
+- [ ] **Subir tier Anthropic** → https://console.anthropic.com/settings/billing (solución real al rate limit)
+- [ ] **Refactor agent.py** — reescritura limpia como sesión dedicada
+- [ ] **Google Places municipio** — verificar que `AutocompleteSuggestion` funciona en producción (puede necesitar que el usuario actualice la página para cargar el SDK)
+- [ ] **Backfill URLs** — 28 ayudas sin URL oficial, pendiente de completar
+- [ ] **`fecha_plazo_maximo` en agente** — que el agente extraiga también esta fecha de las convocatorias
+- [ ] **Refactor gestor.js, resultados.js, cuenta.js** — sesión dedicada
 
 ---
 
-## REFLEXIÓN ESTRATÉGICA — COMPETENCIA (mayo 2026)
+## PENDIENTES ESTRATÉGICOS
 
-**Laborai.es** — plataforma que tramita declaraciones de renta con acceso directo a datos AEAT (Colaborador Social). Sin pedir nada al usuario — acceso fiscal automático.
-
-**Riesgo:** Podrían replicar cobratelo en días (tienen AEAT + gestoría).
-
-**Oportunidad:** Posible colaboración — ellos ponen acceso AEAT + tramitación, cobratelo pone la base de datos de ayudas + motor de matching. Modelo de referido o API con revenue share.
-
-**Moat real de cobratelo:** La base de datos de ayudas curada y estructurada — no es replicable en días, es trabajo editorial continuo.
-
-**Vía AEAT para cobratelo:** Convertirse en Colaborador Social (requiere gestoría) o partnering con una ya registrada.
+- Laborai.es como competencia/partner potencial (tienen acceso AEAT vía Colaborador Social)
+- Vía Colaborador Social para cobratelo — requiere partnering con gestoría registrada
+- Enterprise plan (próximamente) — definir funcionalidades
+- Captación activa de gestorías — el flujo email→trial ya está operativo
 
 ---
 
-## NOTAS RÁPIDAS
+## REFLEXIÓN ESTRATÉGICA
 
-- Miki habla castellano, a veces catalán ("fet!", "halo")
-- Le gusta ir directo al grano, sin rodeos
-- Prefiere soluciones en un solo push cuando es posible
-- El `.hetzner-cmd` es el único canal de acceso al VPS desde Claude
-- Las conversaciones largas ralentizan las respuestas — abrir conversación nueva y leer este archivo
-- Al clonar el repo en conversación nueva: `git clone https://github.com/enki1982/cobratelo /home/claude/cobratelo`
-- Scripts Python via `.hetzner-cmd`: usar base64 para evitar conflictos de quoting en heredocs anidados
+**Moat real:** La base de datos de ayudas curada y estructurada — no replicable en días.
+**Riesgo Laborai:** Podrían replicar cobratelo. Oportunidad de colaboración: ellos AEAT + tramitación, cobratelo base de datos + matching.
 
 ---
 
-## DEUDA TÉCNICA — REFACTOR PENDIENTE
+## OTROS PROYECTOS
 
-Los siguientes archivos han acumulado demasiados parches y deben reescribirse limpios en una sesión dedicada:
+### Bot de trading BTC/USDC
+- Servidor: Hetzner VPS `46.224.184.13`
+- Ruta: `/opt/bot/auto_trader_bot_v1/`
+- Servicio: `auto-trader-bot.service`
+- Dashboard: https://voltagrup.com/trading.html
+- Fix aplicado: `core/execution.py` — fee adjustment en SELL para evitar HALT por balance insuficiente
+- Pendiente: capital mínimo ~2.000€ para que fees sean proporcionales
 
-- `/root/ayuda-es-agent/agent.py` — prioridad alta, muchos parches sobre parches
-- `pages/gestor.js` — CRM construido en capas sucesivas
-- `pages/resultados.js` — lógica de caché añadida sobre código original
-- `pages/cuenta.js` — múltiples patches de edición inline, envío gestor, etc.
+### Urban Self Storage Projects SL
+- COO: Miki
+- App interna: Python + pywebview, SQLite, AutoCAD via LISP, PDFs
+- Mercados: España (~70% cuota), Portugal, Suiza, Francia, Italia
 
-**Criterio:** usar el código actual como referencia funcional, reescribir desde cero limpio, sin perder funcionalidad.
+### Volta Grup
+- Web: voltagrup.com (Nginx en Hetzner, HTTPS)
+- Email: ImprovMX forwarding
