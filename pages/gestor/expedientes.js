@@ -1,0 +1,449 @@
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
+import { supabase } from '../../lib/supabase'
+
+const C = {
+  bg: '#F7F8FA', white: '#FFFFFF', border: '#E5E7EB', borderStrong: '#D1D5DB',
+  text: '#111827', muted: '#6B7280', light: '#9CA3AF',
+  orange: '#cc5500', orangeLight: '#FFF5F0', orangeBorder: '#FDDCC4',
+  green: '#059669', greenBg: '#ECFDF5', blue: '#2563EB', blueBg: '#EFF6FF',
+  yellow: '#D97706', yellowBg: '#FFFBEB', red: '#DC2626', redBg: '#FEF2F2',
+  purple: '#7C3AED',
+}
+
+// Estados del expediente (columnas del Kanban), en orden de flujo
+const COLUMNAS = [
+  { key: 'nuevo', label: 'Nuevo', color: C.muted },
+  { key: 'en_estudio', label: 'En estudio', color: C.blue },
+  { key: 'documentacion', label: 'Documentación', color: C.purple },
+  { key: 'lista_presentar', label: 'Lista para presentar', color: '#0891B2' },
+  { key: 'presentada', label: 'Presentada', color: C.orange },
+  { key: 'requerimiento', label: 'Requerimiento', color: C.red, critico: true },
+  { key: 'concedida', label: 'Concedida', color: C.green },
+  { key: 'denegada', label: 'Denegada', color: C.light },
+  { key: 'justificacion', label: 'Justificación', color: '#0891B2' },
+  { key: 'cerrada', label: 'Cerrada', color: C.text },
+]
+const LABEL = Object.fromEntries(COLUMNAS.map(c => [c.key, c.label]))
+
+// Qué fechas exige cada estado (espejo de la validación SAP de gestor.js,
+// adaptada a los campos de la tabla expedientes)
+const ESTADO_REQS = {
+  nuevo: [],
+  en_estudio: [],
+  documentacion: [],
+  lista_presentar: ['fecha_inicio_tramite'],
+  presentada: ['fecha_inicio_tramite', 'fecha_presentacion'],
+  requerimiento: ['fecha_inicio_tramite', 'fecha_presentacion'],
+  concedida: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
+  denegada: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
+  justificacion: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
+  cerrada: ['fecha_inicio_tramite', 'fecha_presentacion', 'fecha_resolucion'],
+}
+const FECHA_LABEL = {
+  fecha_inicio_tramite: 'Inicio del trámite',
+  fecha_presentacion: 'Fecha de presentación',
+  fecha_resolucion: 'Fecha de resolución',
+}
+
+function canChangeEstado(nuevoEstado, exp) {
+  const reqs = ESTADO_REQS[nuevoEstado] || []
+  const faltan = reqs.filter(r => !exp[r])
+  if (faltan.length === 0) return { ok: true }
+  return { ok: false, razon: 'Falta rellenar: ' + faltan.map(f => FECHA_LABEL[f] || f).join(', ') }
+}
+
+// Semáforo de plazo según fecha_plazo_maximo
+function semaforo(exp) {
+  if (['concedida', 'denegada', 'cerrada'].includes(exp.estado)) return null
+  const plazo = exp.fecha_plazo_maximo
+  if (!plazo) return null
+  const dias = Math.ceil((new Date(plazo) - new Date()) / 86400000)
+  if (dias < 0) return { color: C.red, label: 'Vencido', dias }
+  if (dias <= 7) return { color: C.red, label: `${dias}d`, dias }
+  if (dias <= 21) return { color: C.yellow, label: `${dias}d`, dias }
+  return { color: C.green, label: `${dias}d`, dias }
+}
+
+const eur = n => n == null ? '—' : new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
+
+export default function ExpedientesKanban() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [plan, setPlan] = useState(null)
+  const [token, setToken] = useState(null)
+  const [expedientes, setExpedientes] = useState([])
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroCliente, setFiltroCliente] = useState('todos')
+  const [soloUrgentes, setSoloUrgentes] = useState(false)
+  const [vista, setVista] = useState('kanban')
+  const [dragId, setDragId] = useState(null)
+  const [dragOver, setDragOver] = useState(null)
+  const [aviso, setAviso] = useState(null)
+  const [detalle, setDetalle] = useState(null)
+  // Provisional: alta manual de expediente (cliente + ayuda)
+  const [modalNuevo, setModalNuevo] = useState(false)
+  const [clientesAll, setClientesAll] = useState([])
+  const [nuevoCli, setNuevoCli] = useState('')
+  const [busqAyuda, setBusqAyuda] = useState('')
+  const [ayudasRes, setAyudasRes] = useState([])
+  const [ayudaSel, setAyudaSel] = useState(null)
+  const [creando, setCreando] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) { router.push('/login'); return }
+      setToken(session.access_token)
+      const { data } = await supabase.from('usuarios').select('plan').eq('id', session.user.id).single()
+      if (!['starter', 'pro'].includes(data?.plan)) { router.push('/precios'); return }
+      setPlan(data.plan)
+      cargar(session.access_token)
+    })
+  }, [])
+
+  const cargar = async (tok) => {
+    try {
+      const res = await fetch('/api/gestor/expedientes', { headers: { Authorization: `Bearer ${tok}` } })
+      const json = await res.json()
+      setExpedientes(json.expedientes || [])
+    } catch (e) { console.error(e) }
+    finally { setLoading(false) }
+  }
+
+  const mostrarAviso = (msg) => {
+    setAviso(msg)
+    setTimeout(() => setAviso(null), 3500)
+  }
+
+  // Provisional: cargar clientes del gestor para el alta manual
+  const abrirNuevo = async () => {
+    setModalNuevo(true)
+    if (clientesAll.length === 0) {
+      try {
+        const res = await fetch('/api/gestor/clientes', { headers: { Authorization: `Bearer ${token}` } })
+        const json = await res.json()
+        setClientesAll(json.clientes || [])
+      } catch (e) { console.error(e) }
+    }
+  }
+
+  // Buscar ayudas por nombre (catálogo público, lectura directa)
+  const buscarAyudas = async (q) => {
+    setBusqAyuda(q)
+    setAyudaSel(null)
+    if (q.trim().length < 3) { setAyudasRes([]); return }
+    const { data } = await supabase
+      .from('ayudas')
+      .select('id,nombre,organismo,importe_max,fecha_cierre')
+      .ilike('nombre', `%${q}%`)
+      .limit(8)
+    setAyudasRes(data || [])
+  }
+
+  const crearExpediente = async () => {
+    if (!nuevoCli || !ayudaSel) return
+    setCreando(true)
+    try {
+      const res = await fetch('/api/gestor/expedientes', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cliente_id: nuevoCli,
+          ayuda_id: ayudaSel.id,
+          importe_estimado: ayudaSel.importe_max ?? null,
+          fecha_plazo_maximo: ayudaSel.fecha_cierre ?? null,
+          origen: 'manual',
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok) { mostrarAviso(json.error || 'No se pudo crear el expediente'); setCreando(false); return }
+      setModalNuevo(false)
+      setNuevoCli(''); setBusqAyuda(''); setAyudasRes([]); setAyudaSel(null)
+      cargar(token)
+    } catch (e) {
+      mostrarAviso('Error al crear el expediente')
+    } finally { setCreando(false) }
+  }
+
+  // Cambio de estado (drag o select). Valida y revierte con aviso si no procede.
+  const cambiarEstado = async (exp, nuevoEstado) => {
+    if (exp.estado === nuevoEstado) return
+    const check = canChangeEstado(nuevoEstado, exp)
+    if (!check.ok) {
+      mostrarAviso(`No se puede mover a "${LABEL[nuevoEstado]}". ${check.razon}.`)
+      return false
+    }
+    // Optimista
+    const prev = expedientes
+    setExpedientes(es => es.map(e => e.id === exp.id ? { ...e, estado: nuevoEstado } : e))
+    try {
+      const res = await fetch('/api/gestor/expedientes', {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: exp.id, estado: nuevoEstado }),
+      })
+      if (!res.ok) throw new Error()
+    } catch (e) {
+      setExpedientes(prev)            // revert si falla el guardado
+      mostrarAviso('No se pudo guardar el cambio. Inténtalo de nuevo.')
+      return false
+    }
+    return true
+  }
+
+  const onDrop = (estadoDestino) => {
+    setDragOver(null)
+    const exp = expedientes.find(e => e.id === dragId)
+    setDragId(null)
+    if (exp) cambiarEstado(exp, estadoDestino)   // si inválido, no muta y avisa → la tarjeta se queda donde estaba
+  }
+
+  const clientes = [...new Map(expedientes.map(e => [e.cliente?.id, e.cliente])).values()].filter(Boolean)
+
+  const filtrados = expedientes.filter(e => {
+    if (filtroCliente !== 'todos' && e.cliente?.id !== filtroCliente) return false
+    if (soloUrgentes) { const s = semaforo(e); if (!s || s.color !== C.red) return false }
+    if (busqueda) {
+      const q = busqueda.toLowerCase()
+      const hay = [e.cliente?.cliente_nombre, e.cliente?.cliente_email, e.cliente?.dni, e.ayuda?.nombre]
+        .filter(Boolean).some(v => v.toLowerCase().includes(q))
+      if (!hay) return false
+    }
+    return true
+  })
+
+  if (loading) return (
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <span style={{ color: C.muted, fontSize: 14 }}>Cargando expedientes…</span>
+    </div>
+  )
+
+  return (
+    <>
+      <Head><title>Expedientes — Cóbratelo.es</title></Head>
+      <div style={{ background: C.bg, minHeight: '100vh', color: C.text, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+
+        {/* Header con navegación cruzada */}
+        <div style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <a href="/" style={{ fontWeight: 800, fontSize: 16, color: C.orange, textDecoration: 'none', letterSpacing: '-0.5px' }}>
+              cóbratelo<span style={{ color: C.text }}>.es</span>
+            </a>
+            <span style={{ color: C.border }}>|</span>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: C.orange, padding: '6px 12px', borderRadius: 8, background: C.orangeLight }}>Expedientes</span>
+              <a href="/gestor" style={{ fontSize: 13, fontWeight: 600, color: C.muted, textDecoration: 'none', padding: '6px 12px', borderRadius: 8 }}>Clientes</a>
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 700, color: C.green, background: C.greenBg, padding: '3px 10px', borderRadius: 100, border: `1px solid ${C.border}` }}>
+              {plan === 'pro' ? 'Pro' : 'Básico'}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <a href="/cuenta" style={{ fontSize: 13, color: C.muted, textDecoration: 'none' }}>Mi cuenta</a>
+            <button onClick={abrirNuevo} title="Provisional para pruebas"
+              style={{ background: C.orange, color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              ＋ Nuevo expediente <span style={{ fontSize: 9, fontWeight: 700, background: 'rgba(255,255,255,0.25)', padding: '1px 6px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '0.5px' }}>provisional</span>
+            </button>
+          </div>
+        </div>
+
+        <div style={{ maxWidth: 1480, margin: '0 auto', padding: '24px 24px' }}>
+
+          {/* Toolbar: búsqueda + filtros + vista */}
+          <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: '14px 18px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <input value={busqueda} onChange={e => setBusqueda(e.target.value)}
+              placeholder="Buscar por cliente, NIF o ayuda…"
+              style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 14px', color: C.text, fontSize: 13, width: 260, outline: 'none' }} />
+            <select value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)}
+              style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', color: C.text, fontSize: 13, outline: 'none', cursor: 'pointer' }}>
+              <option value="todos">Todos los clientes</option>
+              {clientes.map(c => <option key={c.id} value={c.id}>{c.cliente_nombre || c.cliente_email}</option>)}
+            </select>
+            <button onClick={() => setSoloUrgentes(v => !v)}
+              style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${soloUrgentes ? C.red : C.border}`, background: soloUrgentes ? C.redBg : 'transparent', color: soloUrgentes ? C.red : C.muted, cursor: 'pointer', fontWeight: soloUrgentes ? 600 : 400, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              Solo urgentes
+            </button>
+            <div style={{ flex: 1 }} />
+            <div style={{ display: 'flex', gap: 2, background: C.bg, borderRadius: 8, padding: 3 }}>
+              {['kanban', 'lista'].map(v => (
+                <button key={v} onClick={() => setVista(v)}
+                  style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: 'none', background: vista === v ? C.white : 'transparent', color: vista === v ? C.text : C.muted, cursor: 'pointer', fontWeight: vista === v ? 600 : 400, boxShadow: vista === v ? '0 1px 2px rgba(0,0,0,0.1)' : 'none', textTransform: 'capitalize' }}>{v}</button>
+              ))}
+            </div>
+          </div>
+
+          {expedientes.length === 0 ? (
+            <div style={{ background: C.white, border: `1px dashed ${C.borderStrong}`, borderRadius: 12, padding: '60px 24px', textAlign: 'center' }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 8 }}>Aún no hay expedientes</div>
+              <div style={{ fontSize: 13, color: C.muted, maxWidth: 420, margin: '0 auto', lineHeight: 1.6 }}>
+                Los expedientes se crean al aceptar un match de la bandeja o manualmente desde un cliente.
+                Cada expediente es un cliente con una ayuda concreta en tramitación.
+              </div>
+            </div>
+          ) : vista === 'kanban' ? (
+            /* TABLERO KANBAN */
+            <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 16 }}>
+              {COLUMNAS.map(col => {
+                const items = filtrados.filter(e => e.estado === col.key)
+                const isOver = dragOver === col.key
+                return (
+                  <div key={col.key}
+                    onDragOver={e => { e.preventDefault(); setDragOver(col.key) }}
+                    onDragLeave={() => setDragOver(o => o === col.key ? null : o)}
+                    onDrop={() => onDrop(col.key)}
+                    style={{ minWidth: 260, width: 260, flexShrink: 0, background: isOver ? C.orangeLight : '#F0F1F4', borderRadius: 12, padding: 10, border: col.critico ? `1.5px solid ${C.red}` : `1px solid ${isOver ? C.orangeBorder : 'transparent'}`, transition: 'background 0.12s' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 8px 12px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 700, color: col.color, textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: col.color }} />{col.label}
+                      </span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: C.light, background: C.white, padding: '1px 8px', borderRadius: 100 }}>{items.length}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minHeight: 40 }}>
+                      {items.map(exp => {
+                        const sem = semaforo(exp)
+                        return (
+                          <div key={exp.id} draggable
+                            onDragStart={() => setDragId(exp.id)}
+                            onDragEnd={() => { setDragId(null); setDragOver(null) }}
+                            onClick={() => setDetalle(exp)}
+                            style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', cursor: 'grab', boxShadow: dragId === exp.id ? '0 8px 20px rgba(0,0,0,0.15)' : '0 1px 2px rgba(0,0,0,0.05)', opacity: dragId === exp.id ? 0.5 : 1 }}>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{exp.cliente?.cliente_nombre || exp.cliente?.cliente_email || 'Cliente'}</div>
+                            <div style={{ fontSize: 12, color: C.muted, marginBottom: 10, lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{exp.ayuda?.nombre || 'Ayuda'}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: C.orange }}>{eur(exp.importe_concedido ?? exp.importe_estimado)}</span>
+                              {sem && <span style={{ fontSize: 11, fontWeight: 700, color: sem.color, background: sem.color + '18', padding: '2px 8px', borderRadius: 100 }}>{sem.label}</span>}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            /* VISTA LISTA */
+            <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 2fr 130px 140px 110px', padding: '11px 20px', borderBottom: `1px solid ${C.border}`, background: C.bg, fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+                <span>Cliente</span><span>Ayuda</span><span>Importe</span><span>Estado</span><span>Plazo</span>
+              </div>
+              {filtrados.map((exp, idx) => {
+                const sem = semaforo(exp)
+                const col = COLUMNAS.find(c => c.key === exp.estado)
+                return (
+                  <div key={exp.id} onClick={() => setDetalle(exp)}
+                    style={{ display: 'grid', gridTemplateColumns: '1.4fr 2fr 130px 140px 110px', padding: '13px 20px', borderBottom: idx < filtrados.length - 1 ? `1px solid ${C.border}` : 'none', cursor: 'pointer', alignItems: 'center', fontSize: 13 }}>
+                    <span style={{ fontWeight: 600, color: C.text }}>{exp.cliente?.cliente_nombre || exp.cliente?.cliente_email}</span>
+                    <span style={{ color: C.muted, paddingRight: 12 }}>{exp.ayuda?.nombre}</span>
+                    <span style={{ fontWeight: 700, color: C.orange }}>{eur(exp.importe_concedido ?? exp.importe_estimado)}</span>
+                    <span><span style={{ fontSize: 11, fontWeight: 600, color: col?.color, background: (col?.color || C.muted) + '18', padding: '3px 10px', borderRadius: 100 }}>{col?.label}</span></span>
+                    <span>{sem ? <span style={{ fontSize: 12, fontWeight: 700, color: sem.color }}>{sem.label}</span> : <span style={{ color: C.light }}>—</span>}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Aviso flotante (revert / errores) */}
+        {aviso && (
+          <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: C.text, color: C.white, fontSize: 13, fontWeight: 500, padding: '12px 20px', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.25)', zIndex: 100, maxWidth: 480, textAlign: 'center', lineHeight: 1.4 }}>
+            {aviso}
+          </div>
+        )}
+
+        {/* Modal provisional: alta manual de expediente */}
+        {modalNuevo && (
+          <div onClick={() => setModalNuevo(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 95, padding: 20 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: C.white, borderRadius: 16, padding: 28, maxWidth: 480, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <h3 style={{ margin: 0, color: C.text, fontSize: 18, fontWeight: 700 }}>Nuevo expediente</h3>
+                <span style={{ fontSize: 9, fontWeight: 700, background: C.orangeLight, color: C.orange, padding: '2px 7px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '0.5px' }}>provisional</span>
+              </div>
+              <p style={{ margin: '0 0 18px', fontSize: 12, color: C.muted, lineHeight: 1.5 }}>Alta manual para pruebas. En producción los expedientes nacerán de la bandeja de matches.</p>
+
+              <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 6 }}>Cliente</label>
+              <select value={nuevoCli} onChange={e => setNuevoCli(e.target.value)}
+                style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 8, padding: '9px 12px', color: C.text, cursor: 'pointer', marginBottom: 16 }}>
+                <option value="">Selecciona un cliente…</option>
+                {clientesAll.map(c => <option key={c.id} value={c.id}>{c.cliente_nombre || c.cliente_email}</option>)}
+              </select>
+
+              <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 6 }}>Ayuda</label>
+              <input value={busqAyuda} onChange={e => buscarAyudas(e.target.value)}
+                placeholder="Escribe al menos 3 letras del nombre…"
+                style={{ width: '100%', fontSize: 13, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '9px 12px', color: C.text, outline: 'none', boxSizing: 'border-box', marginBottom: 8 }} />
+              {ayudaSel ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, padding: '10px 12px', marginBottom: 18 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{ayudaSel.nombre}</div>
+                    <div style={{ fontSize: 11, color: C.muted }}>{ayudaSel.organismo}</div>
+                  </div>
+                  <button onClick={() => { setAyudaSel(null); setBusqAyuda('') }} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 16, flexShrink: 0 }}>✕</button>
+                </div>
+              ) : ayudasRes.length > 0 && (
+                <div style={{ border: `1px solid ${C.border}`, borderRadius: 8, marginBottom: 18, maxHeight: 200, overflowY: 'auto' }}>
+                  {ayudasRes.map(a => (
+                    <div key={a.id} onClick={() => { setAyudaSel(a); setAyudasRes([]) }}
+                      style={{ padding: '10px 12px', borderBottom: `1px solid ${C.border}`, cursor: 'pointer', fontSize: 13 }}>
+                      <div style={{ fontWeight: 600, color: C.text }}>{a.nombre}</div>
+                      <div style={{ fontSize: 11, color: C.muted }}>{a.organismo}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={crearExpediente} disabled={!nuevoCli || !ayudaSel || creando}
+                  style={{ flex: 1, fontSize: 13, fontWeight: 600, color: '#fff', background: (!nuevoCli || !ayudaSel || creando) ? C.light : C.orange, border: 'none', padding: '11px', borderRadius: 8, cursor: (!nuevoCli || !ayudaSel || creando) ? 'not-allowed' : 'pointer' }}>
+                  {creando ? 'Creando…' : 'Crear expediente'}
+                </button>
+                <button onClick={() => setModalNuevo(false)}
+                  style={{ flex: 1, fontSize: 13, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, padding: '11px', borderRadius: 8, cursor: 'pointer' }}>Cancelar</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal mínimo de detalle (ficha completa en bloque posterior) */}
+        {detalle && (
+          <div onClick={() => setDetalle(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 90, padding: 20 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: C.white, borderRadius: 16, padding: 28, maxWidth: 460, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>{detalle.cliente?.cliente_nombre || detalle.cliente?.cliente_email}</div>
+              <h3 style={{ margin: '0 0 16px', color: C.text, fontSize: 18, fontWeight: 700, lineHeight: 1.3 }}>{detalle.ayuda?.nombre}</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, marginBottom: 20 }}>
+                <Row label="Organismo" value={detalle.ayuda?.organismo} />
+                <Row label="Importe estimado" value={eur(detalle.importe_estimado)} />
+                {detalle.importe_concedido != null && <Row label="Importe concedido" value={eur(detalle.importe_concedido)} />}
+                <Row label="Estado" value={LABEL[detalle.estado]} />
+                {detalle.fecha_plazo_maximo && <Row label="Plazo máximo" value={new Date(detalle.fecha_plazo_maximo).toLocaleDateString('es-ES')} />}
+              </div>
+              {/* Cambio de estado por select (con misma validación) */}
+              <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 6 }}>Cambiar estado</label>
+              <select value={detalle.estado}
+                onChange={async e => { const ok = await cambiarEstado(detalle, e.target.value); if (ok) setDetalle({ ...detalle, estado: e.target.value }) }}
+                style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 8, padding: '9px 12px', color: C.text, cursor: 'pointer', fontWeight: 600, marginBottom: 18 }}>
+                {COLUMNAS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+              </select>
+              <div style={{ display: 'flex', gap: 10 }}>
+                {detalle.ayuda?.url_oficial && <a href={detalle.ayuda.url_oficial} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: 600, color: C.orange, background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, padding: '10px', borderRadius: 8, textDecoration: 'none' }}>Convocatoria oficial</a>}
+                <button onClick={() => setDetalle(null)} style={{ flex: 1, fontSize: 13, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, padding: '10px', borderRadius: 8, cursor: 'pointer' }}>Cerrar</button>
+              </div>
+              <div style={{ fontSize: 11, color: C.light, marginTop: 14, textAlign: 'center' }}>La ficha completa (documentos, tareas, actividad, honorarios) llega en el siguiente bloque.</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  )
+}
+
+function Row({ label, value }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+      <span style={{ color: C.muted }}>{label}</span>
+      <span style={{ color: C.text, fontWeight: 500, textAlign: 'right' }}>{value || '—'}</span>
+    </div>
+  )
+}
