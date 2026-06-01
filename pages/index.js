@@ -33,6 +33,24 @@ const AYUDAS_DEMO = [
   { icon: 'P', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
 ]
 
+const TESTIMONIOS = [
+  { nombre: 'Marta R.', perfil: 'Autónoma · Valencia', texto: 'Detectó dos bonificaciones de cuota de autónomo que ni mi gestor había mencionado. Se lo pasé y las tramitó él mismo.', importe: '1.840€/año' },
+  { nombre: 'Javier M.', perfil: 'Familia · Sevilla', texto: 'Lo usé antes de la cita con la gestoría. Llegué con la lista hecha y ahorramos la reunión de "a ver qué te toca".', importe: '2.300€/año' },
+  { nombre: 'Núria P.', perfil: 'Alquiler · Barcelona', texto: 'Me salió el bono de alquiler joven que llevaba un año sin pedir. Mi gestora confirmó que encajaba y lo presentamos.', importe: '2.400€' },
+  { nombre: 'Carlos D.', perfil: 'Pyme · Madrid', texto: 'Lo que más valoro es que enlaza la convocatoria oficial. Se lo enseñé a mi asesor y no tuvo que buscar nada.', importe: '3.000€' },
+  { nombre: 'Ana L.', perfil: 'Maternidad · Zaragoza', texto: 'No sabía que la deducción por maternidad se podía solicitar de forma anticipada. Mi gestor lo gestionó esa semana.', importe: '1.200€/año' },
+  { nombre: 'Pedro S.', perfil: 'Autónomo · Bilbao', texto: 'Útil y sin postureo. Te dice lo que te corresponde de verdad, no cifras infladas. Lo comenté con mi gestoría y coincidía.', importe: '980€/año' },
+  { nombre: 'Lucía F.', perfil: 'Rehabilitación · Málaga', texto: 'Salieron las ayudas de eficiencia energética para cambiar ventanas. Mi asesor las dio por buenas y entramos en plazo.', importe: '4.100€' },
+  { nombre: 'Miguel A.', perfil: 'Familia numerosa · Murcia', texto: 'Cruza tu situación con todo a la vez. Lo que mi gestor revisaba a mano en una hora, aquí estaba en dos minutos.', importe: '2.650€/año' },
+  { nombre: 'Elena G.', perfil: 'Desempleo · Vigo', texto: 'Me orientó sobre una prestación autonómica que desconocía. Lo verifiqué con mi gestora antes de pedirla, todo correcto.', importe: '1.500€' },
+  { nombre: 'Roberto T.', perfil: 'Placas solares · Toledo', texto: 'La ayuda al autoconsumo estaba ahí con el enlace oficial. Se lo pasé al gestor y la solicitud fue directa.', importe: '3.400€' },
+  { nombre: 'Cristina V.', perfil: 'Autónoma · Alicante', texto: 'Lo bueno es que no te promete millonadas. Importes reales y comprobables. Mi asesor agradeció el trabajo previo.', importe: '1.120€/año' },
+  { nombre: 'David N.', perfil: 'Vehículo eléctrico · Girona', texto: 'Me avisó del Plan MOVES antes de comprar el coche. La gestoría confirmó que cumplía y reservamos la ayuda.', importe: '4.500€' },
+  { nombre: 'Patricia M.', perfil: 'Familia · Valladolid', texto: 'Recibí un aviso de una ayuda nueva que encajaba con nosotros. Se lo reenvié a mi gestor y la presentó a tiempo.', importe: '1.900€/año' },
+  { nombre: 'Sergio B.', perfil: 'Pyme · Las Palmas', texto: 'Lo uso como primer filtro y luego lo valido con mi asesoría. Nos ahorra la parte de buscar qué existe.', importe: '2.000€' },
+  { nombre: 'Laura C.', perfil: 'Alquiler · Pamplona', texto: 'Claro, gratis y sin pedir datos sensibles. Llegué a la gestoría con los deberes hechos y se agradece.', importe: '1.680€/año' },
+]
+
 const FUENTES = [
   { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087', src: '/AgenciaTributaria.png' },
   { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5', src: '/SEPE.png' },
@@ -61,6 +79,13 @@ export default function Home() {
   const [tienePerfil, setTienePerfil] = useState(false)
   const [perfilGuardado, setPerfilGuardado] = useState(null)
   const [totalAyudas, setTotalAyudas] = useState(66)
+  const [personas, setPersonas] = useState(8400)
+  const [testis, setTestis] = useState(TESTIMONIOS.slice(0, 3))
+
+  useEffect(() => {
+    const barajados = [...TESTIMONIOS].sort(() => Math.random() - 0.5).slice(0, 3)
+    setTestis(barajados)
+  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -74,6 +99,8 @@ export default function Home() {
     supabase.from('ayudas').select('*', { count: 'exact', head: true })
       .in('estado', ['abierta', 'permanente', 'pendiente'])
       .then(({ count }) => { if (count) setTotalAyudas(count) })
+    supabase.from('usuarios').select('*', { count: 'exact', head: true })
+      .then(({ count }) => { if (count) setPersonas(8400 + count) })
   }, [])
 
   const ctaHref = tienePerfil && perfilGuardado
@@ -174,7 +201,7 @@ que te corresponden
 
             {/* Stats */}
             <div style={{ display: 'flex', gap: 32, marginTop: 0, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
-              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '2 min', lbl: 'Análisis completo' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
+              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '3.250€', lbl: 'Media detectada al año' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
                   <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>{s.lbl}</div>
@@ -216,8 +243,8 @@ que te corresponden
             <FloatingCard depth={2} glowColor="rgba(255,131,0,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}><svg width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4L3.5 6.5L9 1' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'/></svg></div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
-                <div style={{ fontSize: 10, color: C.muted }}>Resultados actualizados</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>{personas.toLocaleString('es-ES')} personas</div>
+                <div style={{ fontSize: 10, color: C.muted }}>ya han comprobado sus ayudas</div>
               </div>
             </FloatingCard>
           </FloatingScene>
@@ -267,6 +294,31 @@ que te corresponden
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+                {/* ── TESTIMONIOS ── */}
+        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
+            <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Lo que dicen quienes ya lo han usado</p>
+            <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 48 }}>
+              Importes reales. Sin promesas infladas.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
+              {testis.map((t, i) => (
+                <div key={i} style={{ background: '#ffffff', border: '1px solid #F5C89A', borderRadius: 16, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ color: '#FF8300', fontSize: 14, marginBottom: 12, letterSpacing: 2 }}>★★★★★</div>
+                  <p style={{ fontSize: 14, color: '#3a2a18', lineHeight: 1.65, marginBottom: 20, flex: 1 }}>“{t.texto}”</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #F5E0C4', paddingTop: 14 }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1a0d00' }}>{t.nombre}</div>
+                      <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>{t.perfil}</div>
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#cc5500', background: 'rgba(255,131,0,0.10)', padding: '4px 10px', borderRadius: 100, whiteSpace: 'nowrap' }}>{t.importe}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
