@@ -251,7 +251,7 @@ que te corresponden
             </FloatingCard>
 
             {/* Float top-right */}
-            <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: -20, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 2 }}>
+            <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: 96, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 3 }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
               <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>ayudas para ti</div>
             </FloatingCard>
