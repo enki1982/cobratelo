@@ -16,9 +16,6 @@ No borrar entradas sin confirmación del owner; marcar como hechas con `[x]` y f
   notificación al cliente · honorarios.
   → Hacer cuando la herramienta esté COMPLETA (si no, el manual queda obsoleto enseguida).
 
-- [ ] **Redirect de `/gestor` al Kanban.** Cuando el tablero esté probado, `/gestor` debe
-  llevar a `/gestor/expedientes` como home del gestor. Ahora `/gestor` sigue en Clientes.
-
 - [ ] **Retirar o reubicar el botón provisional "＋ Nuevo expediente".** Es temporal para
   pruebas. Cuando llegue la bandeja de matches (origen real de los expedientes), retirarlo
   o reubicarlo como alta manual secundaria.
@@ -29,6 +26,14 @@ No borrar entradas sin confirmación del owner; marcar como hechas con `[x]` y f
 
 ## Hechas
 
+- [x] 2026-06-01 — Bloque 2 + cierre: ficha de expediente (Resumen/Actividad/Honorarios),
+  modal de captura de hito (Presentada/Concedida/Denegada) con red de seguridad en
+  fecha_inicio_tramite, validación SAP en módulo compartido `lib/expedientes-estados.js`
+  (Kanban y ficha hablan el mismo idioma), honorarios como registro interno sin Stripe,
+  API de actividad. Redirect `/gestor`→Kanban aplicado; Clientes movido a `/gestor/clientes`;
+  botón "Mi panel" en la home para gestor logado.
+
 - [x] 2026-06-01 — Bloque 1: tabla `expedientes` + 4 tablas relacionadas (RLS), API
   `/api/gestor/expedientes`, tablero Kanban, navegación cruzada Expedientes↔Clientes,
   botón provisional de alta. `gestor.js` movido a `gestor/index.js` (colisión de rutas).
+
