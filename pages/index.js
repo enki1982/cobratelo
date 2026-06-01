@@ -78,6 +78,8 @@ function HoverCard({ children, style, hoverBorder, ...props }) {
 export default function Home() {
   const [tienePerfil, setTienePerfil] = useState(false)
   const [perfilGuardado, setPerfilGuardado] = useState(null)
+  const [esGestor, setEsGestor] = useState(false)
+  const [haySesion, setHaySesion] = useState(false)
   const [totalAyudas, setTotalAyudas] = useState(66)
   const [personas, setPersonas] = useState(8400)
   const [testis, setTestis] = useState(TESTIMONIOS.slice(0, 3))
@@ -90,11 +92,13 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) return
-      const { data } = await supabase.from('usuarios').select('perfil').eq('id', session.user.id).single()
+      setHaySesion(true)
+      const { data } = await supabase.from('usuarios').select('perfil, plan').eq('id', session.user.id).single()
       if (data?.perfil && Object.keys(data.perfil).length > 0) {
         setTienePerfil(true)
         setPerfilGuardado(data.perfil)
       }
+      if (['starter', 'pro'].includes(data?.plan)) setEsGestor(true)
     })
     supabase.from('ayudas').select('*', { count: 'exact', head: true })
       .in('estado', ['abierta', 'permanente', 'pendiente'])
@@ -154,6 +158,9 @@ export default function Home() {
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }} className="hidden sm:block">Precios</Link>
+              {esGestor && (
+                <Link href="/gestor/expedientes" style={{ color: C.text, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Mi panel</Link>
+              )}
               <Link href="/cuenta" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>Mi cuenta</Link>
               <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 14, padding: '10px 22px', borderRadius: 100, textDecoration: 'none', letterSpacing: '-0.2px' }}>
                 {tienePerfil ? 'Mis ayudas' : 'Empezar gratis'}
