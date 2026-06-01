@@ -107,9 +107,18 @@ export default function Home() {
       .then(({ count }) => { if (count) setPersonas(8400 + count) })
   }, [])
 
-  const ctaHref = tienePerfil && perfilGuardado
-    ? `/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`
-    : '/perfil'
+  // CTA principal según el tipo de usuario:
+  // - Gestor (starter/pro): su acción es el panel, no buscar ayudas para sí mismo
+  // - Cliente con perfil: ver sus ayudas
+  // - Sin sesión / sin perfil: empezar gratis
+  const ctaHref = esGestor
+    ? '/gestor/expedientes'
+    : (tienePerfil && perfilGuardado
+        ? `/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`
+        : '/perfil')
+  const ctaLabelCorto = esGestor ? 'Mi panel' : (tienePerfil ? 'Mis ayudas' : 'Empezar gratis')
+  const ctaLabelLargo = esGestor ? 'Ir a mi panel →' : (tienePerfil ? 'Ver mis ayudas →' : 'Analizar mi caso gratis →')
+  const ctaLabelFinal = esGestor ? 'Ir a mi panel →' : (tienePerfil ? 'Ver mis ayudas →' : 'Ver qué ayudas me corresponden →')
 
   return (
     <>
@@ -158,12 +167,9 @@ export default function Home() {
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }} className="hidden sm:block">Precios</Link>
-              {esGestor && (
-                <Link href="/gestor/expedientes" style={{ color: C.text, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Mi panel</Link>
-              )}
               <Link href="/cuenta" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>Mi cuenta</Link>
               <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 14, padding: '10px 22px', borderRadius: 100, textDecoration: 'none', letterSpacing: '-0.2px' }}>
-                {tienePerfil ? 'Mis ayudas' : 'Empezar gratis'}
+                {ctaLabelCorto}
               </Link>
             </div>
           </div>
@@ -195,7 +201,7 @@ que te corresponden
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
               <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 28px', borderRadius: 100, textDecoration: 'none' }}>
-                {tienePerfil ? 'Ver mis ayudas →' : 'Analizar mi caso gratis →'}
+                {ctaLabelLargo}
               </Link>
               <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
                 Para gestorías →
@@ -411,7 +417,7 @@ ayudas públicas y gestorías.
 y para gestorías que quieren crecer sin trabajar más.
             </p>
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
-              {tienePerfil ? 'Ver mis ayudas →' : 'Ver qué ayudas me corresponden →'}
+              {ctaLabelFinal}
             </Link>
           </div>
         </section>
