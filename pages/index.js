@@ -166,8 +166,14 @@ export default function Home() {
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '80px 24px 64px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
+            {/* Hito — contador de personas (visible en todas las pantallas) */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: '1px solid rgba(255,131,0,0.3)', color: C.green, fontSize: 13, fontWeight: 700, padding: '7px 16px', borderRadius: 100, marginBottom: 16, letterSpacing: '-0.2px' }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}` }} />
+              {personas.toLocaleString('es-ES')} personas ya han comprobado sus ayudas
+            </div>
+
             {/* Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid rgba(255,245,235,0.15)', color: 'rgba(255,245,235,0.5)', fontSize: 11, fontWeight: 500, padding: '5px 14px', borderRadius: 100, marginBottom: 28, letterSpacing: '1px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid rgba(255,245,235,0.15)', color: 'rgba(255,245,235,0.5)', fontSize: 11, fontWeight: 500, padding: '5px 14px', borderRadius: 100, marginBottom: 28, letterSpacing: '1px', width: 'fit-content' }}>
               {totalAyudas}+ convocatorias activas en España
             </div>
 
@@ -243,8 +249,8 @@ que te corresponden
             <FloatingCard depth={2} glowColor="rgba(255,131,0,0.15)" style={{ position: 'absolute', bottom: -16, left: -20, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, backdropFilter: 'blur(20px)', zIndex: 2 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.greenDim, color: C.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}><svg width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4L3.5 6.5L9 1' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'/></svg></div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>{personas.toLocaleString('es-ES')} personas</div>
-                <div style={{ fontSize: 10, color: C.muted }}>ya han comprobado sus ayudas</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: C.text }}>Perfil completado</div>
+                <div style={{ fontSize: 10, color: C.muted }}>Resultados actualizados</div>
               </div>
             </FloatingCard>
           </FloatingScene>
