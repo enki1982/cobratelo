@@ -214,6 +214,17 @@ que te corresponden
                 </div>
               ))}
             </div>
+
+            {/* Banner gestorías — versión móvil (en desktop va en el dashboard) */}
+            <Link href="/precios" className="md:hidden" style={{ textDecoration: 'none', display: 'block', marginTop: 32 }}>
+              <div style={{ background: 'linear-gradient(135deg, rgba(255,131,0,0.10), rgba(255,131,0,0.02))', border: '1px solid rgba(255,131,0,0.28)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 4 }}>¿Eres gestoría o asesoría?</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.4 }}>Tienes un espacio propio para tus clientes</div>
+                </div>
+                <span style={{ flexShrink: 0, background: C.green, color: '#000', fontWeight: 700, fontSize: 13, padding: '9px 18px', borderRadius: 100, whiteSpace: 'nowrap' }}>Entrar →</span>
+              </div>
+            </Link>
           </div>
 
           {/* Dashboard */}
@@ -222,7 +233,7 @@ que te corresponden
             <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(255,131,0,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
             {/* Banner gestorías — capta al profesional al entrar */}
-            <Link href="/precios" style={{ textDecoration: 'none', display: 'block', marginBottom: 24, position: 'relative', zIndex: 1 }}>
+            <Link href="/precios" style={{ textDecoration: 'none', display: 'block', marginBottom: 48, position: 'relative', zIndex: 1 }}>
               <HoverCard hoverBorder="rgba(255,131,0,0.55)" style={{ background: 'linear-gradient(135deg, rgba(255,131,0,0.10), rgba(255,131,0,0.02))', border: '1px solid rgba(255,131,0,0.28)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, transition: 'border-color 0.2s', backdropFilter: 'blur(8px)' }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 4 }}>¿Eres gestoría o asesoría?</div>
@@ -251,7 +262,7 @@ que te corresponden
             </FloatingCard>
 
             {/* Float top-right */}
-            <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: 96, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 3 }}>
+            <FloatingCard depth={3} glowColor="rgba(255,131,0,0.3)" style={{ position: 'absolute', top: 150, right: -24, background: 'rgba(22,27,39,0.95)', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 16, padding: '12px 18px', textAlign: 'center', backdropFilter: 'blur(20px)', zIndex: 3 }}>
               <div className="font-display font-bold" style={{ fontSize: 32, color: C.green, letterSpacing: '-1px', lineHeight: 1 }}>14</div>
               <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>ayudas para ti</div>
             </FloatingCard>
