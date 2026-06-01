@@ -265,7 +265,10 @@ export default function GestorDashboard() {
               cóbratelo<span style={{ color: C.text }}>.es</span>
             </a>
             <span style={{ color: C.border }}>|</span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>Panel Gestoría</span>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <a href="/gestor/expedientes" style={{ fontSize: 13, fontWeight: 600, color: C.muted, textDecoration: 'none', padding: '6px 12px', borderRadius: 8 }}>Expedientes</a>
+              <span style={{ fontSize: 13, fontWeight: 600, color: C.orange, textDecoration: 'none', padding: '6px 12px', borderRadius: 8, background: C.orangeLight }}>Clientes</span>
+            </div>
             <span style={{ fontSize: 11, fontWeight: 700, color: C.green, background: C.greenBg, padding: '3px 10px', borderRadius: 100, border: `1px solid ${C.border}` }}>
               {plan === 'pro' ? 'Pro' : 'Básico'}
             </span>
