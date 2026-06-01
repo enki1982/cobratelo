@@ -170,7 +170,7 @@ export default function Home() {
         </nav>
 
         {/* HERO */}
-        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '80px 24px 64px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}
+        <section style={{ maxWidth: 1024, margin: '0 auto', padding: '80px 24px 64px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
             {/* Hito — contador de personas (visible en todas las pantallas) */}
@@ -223,7 +223,7 @@ que te corresponden
             </div>
 
             {/* Banner gestorías — versión móvil (en desktop va en el dashboard) */}
-            <Link href="/precios" className="md:hidden" style={{ textDecoration: 'none', display: 'block', marginTop: 32 }}>
+            <Link href="/precios" className="block md:hidden" style={{ textDecoration: 'none', marginTop: 32 }}>
               <div style={{ background: 'linear-gradient(135deg, rgba(255,131,0,0.10), rgba(255,131,0,0.02))', border: '1px solid rgba(255,131,0,0.28)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 4 }}>¿Eres gestoría o asesoría?</div>
