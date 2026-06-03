@@ -47,9 +47,15 @@ export default function FichaExpediente({ expediente, token, onClose, onUpdate, 
   const [nota, setNota] = useState('')
   const [guardando, setGuardando] = useState(false)
   const [hitoEstado, setHitoEstado] = useState(null)   // estado destino pendiente de captura
+  const [documentos, setDocumentos] = useState([])
+  const [tareas, setTareas] = useState([])
+  const [nuevaTarea, setNuevaTarea] = useState('')
+  const [nuevaTareaFecha, setNuevaTareaFecha] = useState('')
 
   useEffect(() => { setExp(expediente) }, [expediente])
   useEffect(() => { if (tab === 'actividad') cargarActividad() }, [tab])
+  useEffect(() => { if (tab === 'documentos') cargarDocumentos() }, [tab])
+  useEffect(() => { if (tab === 'tareas') cargarTareas() }, [tab])
 
   // --- Persistencia de cambios al expediente (PUT) ---
   const patch = async (campos) => {
@@ -135,10 +141,68 @@ export default function FichaExpediente({ expediente, token, onClose, onUpdate, 
     } catch (e) { console.error(e) }
   }
 
+  // --- Documentos ---
+  const cargarDocumentos = async () => {
+    try {
+      const res = await fetch(`/api/gestor/expediente-documentos?expediente_id=${exp.id}`, { headers: { Authorization: `Bearer ${token}` } })
+      const json = await res.json()
+      setDocumentos(json.documentos || [])
+    } catch (e) { console.error(e) }
+  }
+  const generarChecklist = async () => {
+    try {
+      const res = await fetch('/api/gestor/expediente-documentos', {
+        method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expediente_id: exp.id, action: 'generar' }),
+      })
+      const json = await res.json()
+      if (res.ok) setDocumentos(json.documentos || [])
+      else mostrarAviso && mostrarAviso(json.error)
+    } catch (e) { console.error(e) }
+  }
+  const cambiarEstadoDoc = async (doc, estado) => {
+    setDocumentos(ds => ds.map(d => d.id === doc.id ? { ...d, estado } : d))
+    await fetch('/api/gestor/expediente-documentos', {
+      method: 'PUT', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: doc.id, estado }),
+    })
+  }
+
+  // --- Tareas ---
+  const cargarTareas = async () => {
+    try {
+      const res = await fetch(`/api/gestor/expediente-tareas?expediente_id=${exp.id}`, { headers: { Authorization: `Bearer ${token}` } })
+      const json = await res.json()
+      setTareas(json.tareas || [])
+    } catch (e) { console.error(e) }
+  }
+  const crearTarea = async () => {
+    if (!nuevaTarea.trim()) return
+    try {
+      const res = await fetch('/api/gestor/expediente-tareas', {
+        method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expediente_id: exp.id, titulo: nuevaTarea.trim(), fecha_vencimiento: nuevaTareaFecha || null }),
+      })
+      const json = await res.json()
+      if (res.ok) { setNuevaTarea(''); setNuevaTareaFecha(''); cargarTareas() }
+    } catch (e) { console.error(e) }
+  }
+  const toggleTarea = async (t) => {
+    setTareas(ts => ts.map(x => x.id === t.id ? { ...x, completada: !x.completada } : x))
+    await fetch('/api/gestor/expediente-tareas', {
+      method: 'PUT', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: t.id, completada: !t.completada }),
+    })
+  }
+  const borrarTarea = async (t) => {
+    setTareas(ts => ts.filter(x => x.id !== t.id))
+    await fetch(`/api/gestor/expediente-tareas?id=${t.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+  }
+
   const TABS = [
     { key: 'resumen', label: 'Resumen' },
-    { key: 'documentos', label: 'Documentos', disabled: true },
-    { key: 'tareas', label: 'Tareas', disabled: true },
+    { key: 'documentos', label: 'Documentos' },
+    { key: 'tareas', label: 'Tareas' },
     { key: 'actividad', label: 'Actividad' },
     { key: 'honorarios', label: 'Honorarios' },
   ]
@@ -272,6 +336,97 @@ export default function FichaExpediente({ expediente, token, onClose, onUpdate, 
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === 'documentos' && (
+            <div>
+              {documentos.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <div style={{ fontSize: 13, color: C.muted, marginBottom: 14, lineHeight: 1.5 }}>
+                    No hay checklist de documentos. Genérala según el tipo de ayuda y ajústala después.
+                  </div>
+                  <button onClick={generarChecklist} style={{ background: C.orange, color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+                    Generar checklist
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {(() => {
+                    const total = documentos.length
+                    const ok = documentos.filter(d => d.estado === 'validado').length
+                    return <div style={{ fontSize: 12, color: C.muted, marginBottom: 4 }}>{ok} de {total} validados</div>
+                  })()}
+                  {documentos.map(d => {
+                    const hoy = new Date().toISOString().slice(0, 10)
+                    const caducado = d.fecha_caducidad && d.fecha_caducidad < hoy
+                    return (
+                      <div key={d.id} style={{ border: `1px solid ${d.bloqueante ? C.orangeBorder : C.border}`, borderRadius: 9, padding: '10px 12px', background: caducado ? C.redBg : C.white }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontSize: 13, fontWeight: 500, color: C.text, lineHeight: 1.3 }}>
+                              {d.nombre}{d.bloqueante && <span style={{ fontSize: 10, fontWeight: 700, color: C.orange, marginLeft: 6 }}>BLOQUEANTE</span>}
+                            </div>
+                            {d.fecha_caducidad && (
+                              <div style={{ fontSize: 11, color: caducado ? C.red : C.light, marginTop: 2 }}>
+                                {caducado ? 'Caducado el ' : 'Caduca el '}{new Date(d.fecha_caducidad).toLocaleDateString('es-ES')}
+                              </div>
+                            )}
+                          </div>
+                          <select value={d.estado} onChange={e => cambiarEstadoDoc(d, e.target.value)}
+                            style={{ fontSize: 12, border: `1px solid ${C.border}`, borderRadius: 7, padding: '5px 8px', color: C.text, cursor: 'pointer', flexShrink: 0,
+                              background: d.estado === 'validado' ? C.greenBg : (d.estado === 'caducado' ? C.redBg : C.white) }}>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="recibido">Recibido</option>
+                            <option value="validado">Validado</option>
+                            <option value="caducado">Caducado</option>
+                          </select>
+                        </div>
+                      </div>
+                    )
+                  })}
+                  <div style={{ fontSize: 11, color: C.light, marginTop: 6, lineHeight: 1.5 }}>
+                    Los documentos marcados como bloqueantes deben estar validados (y no caducados) para poder pasar el expediente a "Presentada".
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === 'tareas' && (
+            <div>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+                <input value={nuevaTarea} onChange={e => setNuevaTarea(e.target.value)} onKeyDown={e => e.key === 'Enter' && crearTarea()}
+                  placeholder="Nueva tarea…"
+                  style={{ flex: 1, minWidth: 140, fontSize: 13, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', color: C.text, outline: 'none' }} />
+                <input type="date" value={nuevaTareaFecha} onChange={e => setNuevaTareaFecha(e.target.value)}
+                  style={{ fontSize: 13, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 10px', color: C.text }} />
+                <button onClick={crearTarea} style={{ background: C.orange, color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Añadir</button>
+              </div>
+              {tareas.length === 0 ? (
+                <div style={{ fontSize: 13, color: C.light, textAlign: 'center', padding: '20px 0' }}>Sin tareas. Añade la primera arriba.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {tareas.map(t => {
+                    const hoy = new Date().toISOString().slice(0, 10)
+                    const vencida = !t.completada && t.fecha_vencimiento && t.fecha_vencimiento < hoy
+                    return (
+                      <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 10, border: `1px solid ${C.border}`, borderRadius: 9, padding: '10px 12px' }}>
+                        <input type="checkbox" checked={t.completada} onChange={() => toggleTarea(t)} style={{ cursor: 'pointer', width: 16, height: 16, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, color: t.completada ? C.light : C.text, textDecoration: t.completada ? 'line-through' : 'none' }}>{t.titulo}</div>
+                          {t.fecha_vencimiento && (
+                            <div style={{ fontSize: 11, color: vencida ? C.red : C.light, marginTop: 1 }}>
+                              {vencida ? 'Venció el ' : 'Vence el '}{new Date(t.fecha_vencimiento).toLocaleDateString('es-ES')}
+                            </div>
+                          )}
+                        </div>
+                        <button onClick={() => borrarTarea(t)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 16, flexShrink: 0 }}>✕</button>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>
