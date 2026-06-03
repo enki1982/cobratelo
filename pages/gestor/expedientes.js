@@ -87,6 +87,8 @@ export default function ExpedientesKanban() {
   const [detalle, setDetalle] = useState(null)
   const [panelVenc, setPanelVenc] = useState(false)
   const [vencimientos, setVencimientos] = useState(null)
+  const [alertaEmails, setAlertaEmails] = useState([])
+  const [nuevoEmail, setNuevoEmail] = useState('')
   const [hito, setHito] = useState(null)   // { exp, nuevoEstado } cuando una transición requiere captura
   // Provisional: alta manual de expediente (cliente + ayuda)
   const [modalNuevo, setModalNuevo] = useState(false)
@@ -130,7 +132,34 @@ export default function ExpedientesKanban() {
       const json = await res.json()
       setVencimientos(json.vencimientos || [])
     } catch (e) { setVencimientos([]) }
+    // cargar destinatarios de alertas
+    try {
+      const r = await fetch('/api/gestor/alertas-emails', { headers: { Authorization: `Bearer ${token}` } })
+      const j = await r.json()
+      setAlertaEmails(j.alertas_emails || [])
+    } catch (e) {}
   }
+
+  const guardarEmails = async (lista) => {
+    setAlertaEmails(lista)
+    try {
+      const r = await fetch('/api/gestor/alertas-emails', {
+        method: 'PUT', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alertas_emails: lista }),
+      })
+      const j = await r.json()
+      if (!r.ok) mostrarAviso(j.error || 'No se pudo guardar')
+      else setAlertaEmails(j.alertas_emails)
+    } catch (e) { mostrarAviso('Error al guardar correos') }
+  }
+  const añadirEmail = () => {
+    const e = nuevoEmail.trim().toLowerCase()
+    if (!e) return
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { mostrarAviso('Correo no válido'); return }
+    if (alertaEmails.includes(e)) { setNuevoEmail(''); return }
+    guardarEmails([...alertaEmails, e]); setNuevoEmail('')
+  }
+  const quitarEmail = (e) => guardarEmails(alertaEmails.filter(x => x !== e))
 
   // Provisional: cargar clientes del gestor para el alta manual
   const abrirNuevo = async () => {
@@ -496,6 +525,28 @@ export default function ExpedientesKanban() {
                     })}
                   </div>
                 )}
+              </div>
+              {/* Destinatarios de las alertas semanales por email */}
+              <div style={{ borderTop: `1px solid ${C.border}`, padding: '16px 24px', background: C.bg }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 4 }}>Alertas por email (lunes)</div>
+                <div style={{ fontSize: 11, color: C.muted, marginBottom: 10, lineHeight: 1.5 }}>
+                  Cada lunes enviamos este resumen a estos correos. Añade el tuyo y los de tu equipo.
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                  {alertaEmails.length === 0 && <span style={{ fontSize: 12, color: C.light }}>Sin destinatarios: no se enviarán alertas.</span>}
+                  {alertaEmails.map(e => (
+                    <span key={e} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: C.white, border: `1px solid ${C.border}`, borderRadius: 100, padding: '4px 6px 4px 12px', fontSize: 12, color: C.text }}>
+                      {e}
+                      <button onClick={() => quitarEmail(e)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: 0 }}>✕</button>
+                    </span>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input value={nuevoEmail} onChange={e => setNuevoEmail(e.target.value)} onKeyDown={e => e.key === 'Enter' && añadirEmail()}
+                    placeholder="correo@ejemplo.com"
+                    style={{ flex: 1, fontSize: 13, background: C.white, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', color: C.text, outline: 'none' }} />
+                  <button onClick={añadirEmail} style={{ background: C.orange, color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Añadir</button>
+                </div>
               </div>
             </div>
           </div>
