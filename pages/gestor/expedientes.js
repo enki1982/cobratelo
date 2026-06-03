@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { supabase } from '../../lib/supabase'
+import { ESTADO_LABEL as SHARED_LABEL, canChangeEstado as sharedCanChange, semaforo as sharedSemaforo, camposHito } from '../../lib/expedientes-estados'
+import FichaExpediente from '../../components/FichaExpediente'
+import ModalHito from '../../components/ModalHito'
 
 const C = {
   bg: '#F7F8FA', white: '#FFFFFF', border: '#E5E7EB', borderStrong: '#D1D5DB',
@@ -82,6 +85,9 @@ export default function ExpedientesKanban() {
   const [dragOver, setDragOver] = useState(null)
   const [aviso, setAviso] = useState(null)
   const [detalle, setDetalle] = useState(null)
+  const [panelVenc, setPanelVenc] = useState(false)
+  const [vencimientos, setVencimientos] = useState(null)
+  const [hito, setHito] = useState(null)   // { exp, nuevoEstado } cuando una transición requiere captura
   // Provisional: alta manual de expediente (cliente + ayuda)
   const [modalNuevo, setModalNuevo] = useState(false)
   const [clientesAll, setClientesAll] = useState([])
@@ -114,6 +120,16 @@ export default function ExpedientesKanban() {
   const mostrarAviso = (msg) => {
     setAviso(msg)
     setTimeout(() => setAviso(null), 3500)
+  }
+
+  const abrirVencimientos = async () => {
+    setPanelVenc(true)
+    setVencimientos(null)
+    try {
+      const res = await fetch('/api/gestor/vencimientos', { headers: { Authorization: `Bearer ${token}` } })
+      const json = await res.json()
+      setVencimientos(json.vencimientos || [])
+    } catch (e) { setVencimientos([]) }
   }
 
   // Provisional: cargar clientes del gestor para el alta manual
@@ -167,29 +183,41 @@ export default function ExpedientesKanban() {
   }
 
   // Cambio de estado (drag o select). Valida y revierte con aviso si no procede.
+  // Guardado real del cambio (estado + posibles campos de hito), optimista con revert.
+  const aplicarCambio = async (exp, payload) => {
+    const prev = expedientes
+    setExpedientes(es => es.map(e => e.id === exp.id ? { ...e, ...payload } : e))
+    try {
+      const res = await fetch('/api/gestor/expedientes', {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: exp.id, ...payload }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) { setExpedientes(prev); mostrarAviso(json.error || 'No se pudo guardar el cambio.'); return false }
+    } catch (e) {
+      setExpedientes(prev)
+      mostrarAviso('No se pudo guardar el cambio. Inténtalo de nuevo.')
+      return false
+    }
+    return true
+  }
+
+  // Cambio de estado. Hito (Presentada/Concedida/Denegada) → modal de captura.
+  // Resto → validación de candado y avance directo.
   const cambiarEstado = async (exp, nuevoEstado) => {
-    if (exp.estado === nuevoEstado) return
+    if (exp.estado === nuevoEstado) return false
+    const def = camposHito(nuevoEstado, exp)
+    if (def && def.campos.length > 0) {
+      setHito({ exp, nuevoEstado })   // la tarjeta no se mueve hasta confirmar el modal
+      return false
+    }
     const check = canChangeEstado(nuevoEstado, exp)
     if (!check.ok) {
       mostrarAviso(`No se puede mover a "${LABEL[nuevoEstado]}". ${check.razon}.`)
       return false
     }
-    // Optimista
-    const prev = expedientes
-    setExpedientes(es => es.map(e => e.id === exp.id ? { ...e, estado: nuevoEstado } : e))
-    try {
-      const res = await fetch('/api/gestor/expedientes', {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: exp.id, estado: nuevoEstado }),
-      })
-      if (!res.ok) throw new Error()
-    } catch (e) {
-      setExpedientes(prev)            // revert si falla el guardado
-      mostrarAviso('No se pudo guardar el cambio. Inténtalo de nuevo.')
-      return false
-    }
-    return true
+    return aplicarCambio(exp, { estado: nuevoEstado })
   }
 
   const onDrop = (estadoDestino) => {
@@ -263,6 +291,10 @@ export default function ExpedientesKanban() {
             <button onClick={() => setSoloUrgentes(v => !v)}
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${soloUrgentes ? C.red : C.border}`, background: soloUrgentes ? C.redBg : 'transparent', color: soloUrgentes ? C.red : C.muted, cursor: 'pointer', fontWeight: soloUrgentes ? 600 : 400, whiteSpace: 'nowrap', flexShrink: 0 }}>
               Solo urgentes
+            </button>
+            <button onClick={abrirVencimientos}
+              style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${C.orangeBorder}`, background: C.orangeLight, color: C.orange, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              Vencimientos
             </button>
             <div style={{ flex: 1 }} />
             <div style={{ display: 'flex', gap: 2, background: C.bg, borderRadius: 8, padding: 3 }}>
@@ -407,30 +439,64 @@ export default function ExpedientesKanban() {
         )}
 
         {/* Modal mínimo de detalle (ficha completa en bloque posterior) */}
+        {/* Modal de captura de hito (avanzar + registrar fecha en un acto) */}
+        {hito && (
+          <ModalHito
+            expediente={hito.exp}
+            nuevoEstado={hito.nuevoEstado}
+            onCancel={() => setHito(null)}
+            onConfirm={async (payload) => {
+              const ok = await aplicarCambio(hito.exp, payload)
+              if (ok) { setHito(null); setDetalle(d => d && d.id === hito.exp.id ? { ...d, ...payload } : d) }
+              return ok
+            }}
+          />
+        )}
+
+        {/* Ficha de expediente completa (Resumen · Documentos · Tareas · Actividad · Honorarios) */}
         {detalle && (
-          <div onClick={() => setDetalle(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 90, padding: 20 }}>
-            <div onClick={e => e.stopPropagation()} style={{ background: C.white, borderRadius: 16, padding: 28, maxWidth: 460, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>{detalle.cliente?.cliente_nombre || detalle.cliente?.cliente_email}</div>
-              <h3 style={{ margin: '0 0 16px', color: C.text, fontSize: 18, fontWeight: 700, lineHeight: 1.3 }}>{detalle.ayuda?.nombre}</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, marginBottom: 20 }}>
-                <Row label="Organismo" value={detalle.ayuda?.organismo} />
-                <Row label="Importe estimado" value={eur(detalle.importe_estimado)} />
-                {detalle.importe_concedido != null && <Row label="Importe concedido" value={eur(detalle.importe_concedido)} />}
-                <Row label="Estado" value={LABEL[detalle.estado]} />
-                {detalle.fecha_plazo_maximo && <Row label="Plazo máximo" value={new Date(detalle.fecha_plazo_maximo).toLocaleDateString('es-ES')} />}
+          <FichaExpediente
+            expediente={detalle}
+            token={token}
+            mostrarAviso={mostrarAviso}
+            onClose={() => setDetalle(null)}
+            onUpdate={(actualizado) => {
+              setExpedientes(es => es.map(e => e.id === actualizado.id ? { ...e, ...actualizado } : e))
+              setDetalle(d => d && d.id === actualizado.id ? { ...d, ...actualizado } : d)
+            }}
+          />
+        )}
+
+        {/* Panel transversal de vencimientos */}
+        {panelVenc && (
+          <div onClick={() => setPanelVenc(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'flex-end', zIndex: 92 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: C.white, width: 460, maxWidth: '100%', height: '100%', boxShadow: '-8px 0 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: C.text }}>Vencimientos</h3>
+                <button onClick={() => setPanelVenc(false)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 22 }}>✕</button>
               </div>
-              {/* Cambio de estado por select (con misma validación) */}
-              <label style={{ fontSize: 11, fontWeight: 600, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 6 }}>Cambiar estado</label>
-              <select value={detalle.estado}
-                onChange={async e => { const ok = await cambiarEstado(detalle, e.target.value); if (ok) setDetalle({ ...detalle, estado: e.target.value }) }}
-                style={{ width: '100%', fontSize: 13, background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 8, padding: '9px 12px', color: C.text, cursor: 'pointer', fontWeight: 600, marginBottom: 18 }}>
-                {COLUMNAS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
-              </select>
-              <div style={{ display: 'flex', gap: 10 }}>
-                {detalle.ayuda?.url_oficial && <a href={detalle.ayuda.url_oficial} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: 600, color: C.orange, background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, padding: '10px', borderRadius: 8, textDecoration: 'none' }}>Convocatoria oficial</a>}
-                <button onClick={() => setDetalle(null)} style={{ flex: 1, fontSize: 13, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, padding: '10px', borderRadius: 8, cursor: 'pointer' }}>Cerrar</button>
+              <div style={{ padding: '16px 24px', overflowY: 'auto' }}>
+                {vencimientos === null ? (
+                  <div style={{ color: C.muted, fontSize: 13, textAlign: 'center', padding: '30px 0' }}>Cargando…</div>
+                ) : vencimientos.length === 0 ? (
+                  <div style={{ color: C.muted, fontSize: 13, textAlign: 'center', padding: '30px 0', lineHeight: 1.5 }}>Nada vence próximamente. Todo bajo control.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {vencimientos.map((v, i) => {
+                      const col = v.urgencia === 'vencido' || v.urgencia === 'rojo' ? C.red : v.urgencia === 'ambar' ? C.yellow : C.green
+                      return (
+                        <div key={i} style={{ border: `1px solid ${C.border}`, borderLeft: `3px solid ${col}`, borderRadius: 9, padding: '10px 12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{v.etiqueta}</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: col, whiteSpace: 'nowrap' }}>{v.dias < 0 ? `Hace ${-v.dias}d` : `${v.dias}d`}</span>
+                          </div>
+                          <div style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{v.cliente} · {v.ayuda}</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
-              <div style={{ fontSize: 11, color: C.light, marginTop: 14, textAlign: 'center' }}>La ficha completa (documentos, tareas, actividad, honorarios) llega en el siguiente bloque.</div>
             </div>
           </div>
         )}
