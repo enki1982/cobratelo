@@ -3,6 +3,10 @@
     {
       "path": "/api/alertas-lunes",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/alertas-vencimientos",
+      "schedule": "0 8 * * 1"
     }
   ]
 }
