@@ -110,6 +110,18 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Estado no válido' })
     }
 
+    // Coherencia: no se puede pasar a "Presentada" con documentos bloqueantes
+    // sin validar o caducados.
+    if (updates.estado === 'presentada' && existing.estado !== 'presentada') {
+      const { data: docs } = await supabaseAdmin
+        .from('expediente_documentos').select('nombre, estado, bloqueante, fecha_caducidad').eq('expediente_id', id)
+      const hoy = new Date().toISOString().slice(0, 10)
+      const problemas = (docs || []).filter(d => d.bloqueante && (d.estado !== 'validado' || (d.fecha_caducidad && d.fecha_caducidad < hoy)))
+      if (problemas.length > 0) {
+        return res.status(409).json({ error: 'Documentos bloqueantes pendientes: ' + problemas.map(p => p.nombre).join(', ') })
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from('expedientes')
       .update({ ...updates, updated_at: new Date().toISOString() })
