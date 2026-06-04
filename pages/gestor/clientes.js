@@ -848,8 +848,17 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
         })}
       </div>
 
-      {/* Eliminar */}
-      <div style={{ padding: '12px 24px', borderTop: `1px solid ${C.border}`, background: C.bg }}>
+      {/* Acciones */}
+      <div style={{ padding: '12px 24px', borderTop: `1px solid ${C.border}`, background: C.bg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+        <button onClick={async () => {
+            const r = await fetch('/api/gestor/invitar-cliente', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ cliente_id: cliente.id }) });
+            const j = await r.json();
+            if (r.ok) alert('Se ha enviado el correo de acceso al cliente.');
+            else alert(j.error || 'No se pudo enviar la invitación');
+          }}
+          style={{ fontSize: 12, fontWeight: 600, color: C.orange, background: 'none', border: `1px solid ${C.orangeBorder || '#FDDCC4'}`, borderRadius: 8, padding: '7px 14px', cursor: 'pointer' }}>
+          {cliente.invitado ? 'Reenviar acceso' : 'Invitar al cliente'}
+        </button>
         <button onClick={() => onDelete(cliente.id)}
           style={{ fontSize: 12, color: C.red, background: 'none', border: 'none', cursor: 'pointer' }}>
           Eliminar cliente
