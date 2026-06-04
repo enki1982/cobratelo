@@ -86,6 +86,8 @@ export default function ExpedientesKanban() {
   const [aviso, setAviso] = useState(null)
   const [detalle, setDetalle] = useState(null)
   const [panelVenc, setPanelVenc] = useState(false)
+  const [panelBandeja, setPanelBandeja] = useState(false)
+  const [matches, setMatches] = useState(null)
   const [vencimientos, setVencimientos] = useState(null)
   const [alertaEmails, setAlertaEmails] = useState([])
   const [nuevoEmail, setNuevoEmail] = useState('')
@@ -124,6 +126,24 @@ export default function ExpedientesKanban() {
     setTimeout(() => setAviso(null), 3500)
   }
 
+  const abrirBandeja = async () => {
+    setPanelBandeja(true); setMatches(null);
+    try {
+      const res = await fetch('/api/gestor/matches', { headers: { Authorization: `Bearer ${token}` } });
+      const j = await res.json();
+      setMatches(j.matches || []);
+    } catch (e) { setMatches([]); }
+  };
+  const aceptarMatch = async (m) => {
+    const res = await fetch('/api/gestor/expedientes', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ cliente_id: m.cliente_id, ayuda_id: m.ayuda_id, importe_estimado: m.importe_max, fecha_plazo_maximo: m.fecha_cierre, origen: 'match' }) });
+    if (res.ok) { setMatches(ms => ms.filter(x => !(x.cliente_id===m.cliente_id && x.ayuda_id===m.ayuda_id))); cargar(token); }
+    else { const j = await res.json(); mostrarAviso(j.error || 'No se pudo aceptar'); }
+  };
+  const descartarMatch = async (m) => {
+    const motivo = window.prompt('Motivo del descarte (opcional):') || '';
+    const res = await fetch('/api/gestor/descartar-match', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ cliente_id: m.cliente_id, ayuda_id: m.ayuda_id, motivo }) });
+    if (res.ok) setMatches(ms => ms.filter(x => !(x.cliente_id===m.cliente_id && x.ayuda_id===m.ayuda_id)));
+  };
   const abrirVencimientos = async () => {
     setPanelVenc(true)
     setVencimientos(null)
@@ -321,6 +341,10 @@ export default function ExpedientesKanban() {
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${soloUrgentes ? C.red : C.border}`, background: soloUrgentes ? C.redBg : 'transparent', color: soloUrgentes ? C.red : C.muted, cursor: 'pointer', fontWeight: soloUrgentes ? 600 : 400, whiteSpace: 'nowrap', flexShrink: 0 }}>
               Solo urgentes
             </button>
+            <button onClick={abrirBandeja}
+              style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: '1px solid #FDDCC4', background: '#FFF5F0', color: '#cc5500', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
+              Bandeja de matches
+            </button>
             <button onClick={abrirVencimientos}
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${C.orangeBorder}`, background: C.orangeLight, color: C.orange, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
               Vencimientos
@@ -497,6 +521,40 @@ export default function ExpedientesKanban() {
         )}
 
         {/* Panel transversal de vencimientos */}
+        {panelBandeja && (
+          <div onClick={() => setPanelBandeja(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'flex-end', zIndex: 92 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: C.white, width: 480, maxWidth: '100%', height: '100%', boxShadow: '-8px 0 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: C.text }}>Bandeja de matches</h3>
+                  <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>Ayudas detectadas para tus clientes</div>
+                </div>
+                <button onClick={() => setPanelBandeja(false)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 22 }}>✕</button>
+              </div>
+              <div style={{ padding: '16px 24px', overflowY: 'auto' }}>
+                {matches === null ? (
+                  <div style={{ color: C.muted, fontSize: 13, textAlign: 'center', padding: '30px 0' }}>Buscando matches…</div>
+                ) : matches.length === 0 ? (
+                  <div style={{ color: C.muted, fontSize: 13, textAlign: 'center', padding: '30px 0', lineHeight: 1.6 }}>No hay matches nuevos. Si tus clientes no tienen perfil, rellénalo desde su ficha para que aparezcan ayudas aquí.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {matches.map((m, i) => (
+                      <div key={i} style={{ border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: C.orange, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>{m.cliente_nombre}</div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.3 }}>{m.ayuda_nombre}</div>
+                        <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{m.organismo}{m.importe_max ? ' · hasta ' + new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(m.importe_max) : ''}</div>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                          <button onClick={() => aceptarMatch(m)} style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff', background: C.green, border: 'none', borderRadius: 8, padding: '8px', cursor: 'pointer' }}>Aceptar</button>
+                          <button onClick={() => descartarMatch(m)} style={{ flex: 1, fontSize: 12, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px', cursor: 'pointer' }}>Descartar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
         {panelVenc && (
           <div onClick={() => setPanelVenc(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'flex-end', zIndex: 92 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: C.white, width: 460, maxWidth: '100%', height: '100%', boxShadow: '-8px 0 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column' }}>
