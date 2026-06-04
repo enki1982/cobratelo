@@ -6,12 +6,12 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
-// Versión del texto de consentimiento aceptado (para la traza legal).
-// IMPORTANTE: texto BORRADOR generado sin asesoría legal. Pendiente de validación
-// por abogado antes de captar clientes reales. Al cambiar el texto, subir la versión.
+// VersiÃ³n del texto de consentimiento aceptado (para la traza legal).
+// IMPORTANTE: texto BORRADOR generado sin asesorÃ­a legal. Pendiente de validaciÃ³n
+// por abogado antes de captar clientes reales. Al cambiar el texto, subir la versiÃ³n.
 const CONSENTIMIENTO_VERSION = 'borrador-2026-06-01'
 
-// Genera y envía el enlace de acceso (magic link) al cliente invitado.
+// Genera y envÃ­a el enlace de acceso (magic link) al cliente invitado.
 async function enviarInvitacion(email, nombre) {
   try {
     const { data, error } = await supabaseAdmin.auth.admin.generateLink({
@@ -23,13 +23,13 @@ async function enviarInvitacion(email, nombre) {
     if (!link) return false
     const html = `
       <div style="font-family:-apple-system,Segoe UI,sans-serif;max-width:520px;margin:0 auto">
-        <h2 style="color:#cc5500;font-size:18px">Tu gestoría te ha dado acceso a Cóbratelo.es</h2>
+        <h2 style="color:#cc5500;font-size:18px">Tu gestorÃ­a te ha dado acceso a CÃ³bratelo.es</h2>
         <p style="color:#333;font-size:14px;line-height:1.6">Hola${nombre ? ' ' + nombre : ''},</p>
-        <p style="color:#333;font-size:14px;line-height:1.6">Tu gestoría utiliza Cóbratelo.es para gestionar tus ayudas y subvenciones públicas. Puedes acceder a tu cuenta para ver tu situación con el siguiente enlace:</p>
+        <p style="color:#333;font-size:14px;line-height:1.6">Tu gestorÃ­a utiliza CÃ³bratelo.es para gestionar tus ayudas y subvenciones pÃºblicas. Puedes acceder a tu cuenta para ver tu situaciÃ³n con el siguiente enlace:</p>
         <p style="margin:24px 0"><a href="${link}" style="background:#cc5500;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Acceder a mi cuenta</a></p>
-        <p style="color:#999;font-size:12px;line-height:1.5">Si no esperabas este correo o no reconoces a tu gestoría, puedes ignorarlo. El enlace caduca por seguridad.</p>
+        <p style="color:#999;font-size:12px;line-height:1.5">Si no esperabas este correo o no reconoces a tu gestorÃ­a, puedes ignorarlo. El enlace caduca por seguridad.</p>
       </div>`
-    const r = await enviarEmail({ to: email, subject: 'Tu gestoría te ha dado acceso a Cóbratelo.es', html })
+    const r = await enviarEmail({ to: email, subject: 'Tu gestorÃ­a te ha dado acceso a CÃ³bratelo.es', html })
     return r.ok
   } catch (e) { console.error('enviarInvitacion:', e.message); return false }
 }
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
   const gestorId = await getGestorId(req)
   if (!gestorId) return res.status(401).json({ error: 'No autenticado' })
 
-  // Verificar plan gestoría
+  // Verificar plan gestorÃ­a
   const { data: usuario } = await supabaseAdmin
     .from('usuarios')
     .select('plan')
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     .single()
 
   if (!['starter', 'pro'].includes(usuario?.plan)) {
-    return res.status(403).json({ error: 'Plan gestoría requerido' })
+    return res.status(403).json({ error: 'Plan gestorÃ­a requerido' })
   }
 
   if (req.method === 'GET') {
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    // Añadir cliente. Crea (o enlaza) un usuario real de Cóbratelo.
+    // AÃ±adir cliente. Crea (o enlaza) un usuario real de CÃ³bratelo.
     const { cliente_email, cliente_nombre, dni, telefono, notas, ayudas_ids,
             perfil, consentimiento, avisar } = req.body
     if (!cliente_email) return res.status(400).json({ error: 'Email requerido' })
@@ -80,29 +80,29 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Debes declarar que cuentas con el consentimiento del cliente' })
     }
 
-    // Límite de clientes para plan starter
+    // LÃ­mite de clientes para plan starter
     if (usuario.plan === 'starter') {
       const { count } = await supabaseAdmin
         .from('gestoria_clientes')
         .select('id', { count: 'exact', head: true })
         .eq('gestor_id', gestorId)
-      if (count >= 50) return res.status(403).json({ error: 'Límite de 50 clientes alcanzado' })
+      if (count >= 50) return res.status(403).json({ error: 'LÃ­mite de 50 clientes alcanzado' })
     }
 
     // Buscar si el cliente ya tiene cuenta; si no, crearla (usuario real).
-    const { data: users } = await supabaseAdmin.auth.admin.listUsers()
-    let clienteUser = users?.users?.find(u => u.email === cliente_email)
+    const { data: existingRow } = await supabaseAdmin.from('usuarios').select('id, email').eq('email', cliente_email).maybeSingle()
+    let clienteUser = existingRow ? { id: existingRow.id, email: existingRow.email } : null
     let cuentaNueva = false
     if (!clienteUser) {
       const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: cliente_email,
-        email_confirm: true,           // alta sin que tenga que confirmar; el acceso se da por enlace mágico al invitar
+        email_confirm: true,           // alta sin que tenga que confirmar; el acceso se da por enlace mÃ¡gico al invitar
         user_metadata: { nombre: cliente_nombre || '', alta_por_gestoria: gestorId },
       })
       if (createErr && !/already/i.test(createErr.message)) {
         return res.status(500).json({ error: 'No se pudo crear la cuenta del cliente: ' + createErr.message })
       }
-      clienteUser = created?.user || users?.users?.find(u => u.email === cliente_email)
+      clienteUser = created?.user || null
       cuentaNueva = !!created?.user
       // Crear fila base en usuarios con el perfil que rellena el gestor
       if (clienteUser) {
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
         }, { onConflict: 'id' })
       }
     } else if (perfil) {
-      // Cliente ya existe: no piso su perfil si ya tiene uno; solo relleno si está vacío
+      // Cliente ya existe: no piso su perfil si ya tiene uno; solo relleno si estÃ¡ vacÃ­o
       const { data: cd } = await supabaseAdmin.from('usuarios').select('perfil').eq('id', clienteUser.id).single()
       if (!cd?.perfil || Object.keys(cd.perfil).length === 0) {
         await supabaseAdmin.from('usuarios').update({ perfil }).eq('id', clienteUser.id)
@@ -143,7 +143,7 @@ export default async function handler(req, res) {
 
     if (error) return res.status(500).json({ error: error.message })
 
-    // Si el gestor marcó "avisar", enviar enlace de acceso al cliente
+    // Si el gestor marcÃ³ "avisar", enviar enlace de acceso al cliente
     let avisoEnviado = false
     if (avisar && clienteUser) {
       avisoEnviado = await enviarInvitacion(cliente_email, cliente_nombre)
