@@ -137,7 +137,7 @@ export default function GestorDashboard() {
   const [clienteDetalle, setClienteDetalle] = useState(null)
   const [guardando, setGuardando] = useState(false)
   const [token, setToken] = useState(null)
-  const [form, setForm] = useState({ cliente_email: '', cliente_nombre: '', dni: '', telefono: '', notas: '' })
+  const [form, setForm] = useState({ cliente_email: '', cliente_nombre: '', dni: '', telefono: '', notas: '', consentimiento: false, avisar: false })
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -161,6 +161,7 @@ export default function GestorDashboard() {
 
   const añadirCliente = async () => {
     if (!form.cliente_email) return
+    if (!form.consentimiento) { alert('Debes declarar que cuentas con el consentimiento del cliente.'); return }
     setGuardando(true)
     try {
       const res = await fetch('/api/gestor/clientes', {
@@ -172,7 +173,9 @@ export default function GestorDashboard() {
       if (json.error) { alert(json.error); return }
       setClientes(prev => [json.cliente, ...prev])
       setModalNuevo(false)
-      setForm({ cliente_email: '', cliente_nombre: '', dni: '', telefono: '', notas: '' })
+      if (form.avisar && json.aviso_enviado) alert('Cliente añadido. Se ha enviado el correo de acceso.')
+      else if (form.avisar && !json.aviso_enviado) alert('Cliente añadido, pero no se pudo enviar el correo de acceso. Puedes reintentar desde su ficha.')
+      setForm({ cliente_email: '', cliente_nombre: '', dni: '', telefono: '', notas: '', consentimiento: false, avisar: false })
     } catch { alert('Error al añadir cliente') }
     finally { setGuardando(false) }
   }
@@ -422,13 +425,30 @@ export default function GestorDashboard() {
                   style={{ width: '100%', background: C.white, border: `1px solid ${C.borderStrong}`, borderRadius: 8, padding: '9px 12px', color: C.text, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
               </div>
             ))}
+
+            {/* Consentimiento (obligatorio) — texto BORRADOR pendiente de validación legal */}
+            <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginTop: 16, cursor: 'pointer', background: C.bg, border: `1px solid ${form.consentimiento ? C.orange : C.border}`, borderRadius: 8, padding: '11px 12px' }}>
+              <input type="checkbox" checked={form.consentimiento} onChange={e => setForm(p => ({ ...p, consentimiento: e.target.checked }))} style={{ marginTop: 2, flexShrink: 0, cursor: 'pointer' }} />
+              <span style={{ fontSize: 12, color: C.text, lineHeight: 1.5 }}>
+                Declaro que cuento con el consentimiento del cliente para dar de alta y tratar sus datos en Cóbratelo.es, y que actúo como responsable del tratamiento de dichos datos conforme a mi propia política de protección de datos (RGPD). <span style={{ color: C.red }}>*</span>
+              </span>
+            </label>
+
+            {/* Avisar al cliente (opcional) */}
+            <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginTop: 10, cursor: 'pointer', padding: '4px 2px' }}>
+              <input type="checkbox" checked={form.avisar} onChange={e => setForm(p => ({ ...p, avisar: e.target.checked }))} style={{ marginTop: 2, flexShrink: 0, cursor: 'pointer' }} />
+              <span style={{ fontSize: 12, color: C.muted, lineHeight: 1.5 }}>
+                Avisar al cliente y darle acceso a su cuenta (se le enviará un correo con un enlace de acceso). Si no lo marcas, el alta es silenciosa y podrás invitarle más adelante.
+              </span>
+            </label>
+
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button onClick={() => setModalNuevo(false)}
                 style={{ flex: 1, padding: '10px', borderRadius: 8, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, cursor: 'pointer', fontSize: 14 }}>
                 Cancelar
               </button>
-              <button onClick={añadirCliente} disabled={!form.cliente_email || guardando}
-                style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', background: form.cliente_email ? C.orange : C.light, color: '#fff', cursor: form.cliente_email ? 'pointer' : 'default', fontWeight: 600, fontSize: 14 }}>
+              <button onClick={añadirCliente} disabled={!form.cliente_email || !form.consentimiento || guardando}
+                style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', background: (form.cliente_email && form.consentimiento) ? C.orange : C.light, color: '#fff', cursor: (form.cliente_email && form.consentimiento) ? 'pointer' : 'default', fontWeight: 600, fontSize: 14 }}>
                 {guardando ? 'Añadiendo...' : 'Añadir cliente'}
               </button>
             </div>
