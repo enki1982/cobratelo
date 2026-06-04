@@ -850,6 +850,10 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
 
       {/* Acciones */}
       <div style={{ padding: '12px 24px', borderTop: `1px solid ${C.border}`, background: C.bg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => { window.location.href = '/perfil?cliente=' + cliente.id; }}
+          style={{ fontSize: 12, fontWeight: 600, color: '#fff', background: C.orange, border: 'none', borderRadius: 8, padding: '7px 14px', cursor: 'pointer' }}>
+          {cliente.perfil ? 'Editar perfil' : 'Rellenar perfil'}
+        </button>
         <button onClick={async () => {
             const r = await fetch('/api/gestor/invitar-cliente', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ cliente_id: cliente.id }) });
             const j = await r.json();
