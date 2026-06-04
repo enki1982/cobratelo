@@ -428,6 +428,19 @@ export default function Perfil() {
       // Guardar en Supabase si el usuario está logado
       try {
         const { data: { session } } = await supabase.auth.getSession()
+        const clienteGestor = router.query.cliente
+        if (clienteGestor) {
+          try {
+            const { data: { session: s2 } } = await supabase.auth.getSession()
+            await fetch('/api/gestor/cliente-perfil', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${s2?.access_token}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ cliente_id: clienteGestor, perfil: nuevoPerfil }),
+            })
+          } catch (e) { console.error(e) }
+          router.push('/gestor/clientes?perfil_ok=1')
+          return
+        }
         if (session?.user?.id) {
           await supabase.from('usuarios').upsert({
             id: session.user.id,
