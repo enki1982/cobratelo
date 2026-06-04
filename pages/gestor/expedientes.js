@@ -319,7 +319,7 @@ export default function ExpedientesKanban() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <a href="/cuenta" style={{ fontSize: 13, color: C.muted, textDecoration: 'none' }}>Mi cuenta</a>
             <button onClick={abrirNuevo} title="Provisional para pruebas"
-              style={{ background: C.orange, color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              style={{ display: 'none', background: C.orange, color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
               ＋ Nuevo expediente <span style={{ fontSize: 9, fontWeight: 700, background: 'rgba(255,255,255,0.25)', padding: '1px 6px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '0.5px' }}>provisional</span>
             </button>
           </div>
