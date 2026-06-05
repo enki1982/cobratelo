@@ -301,7 +301,7 @@ export default function ExpedientesKanban() {
   return (
     <>
       <Head><title>Expedientes — Cóbratelo.es</title></Head>
-      <div style={{ background: C.bg, minHeight: '100vh', color: C.text, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <div className="gestor-panel" style={{ background: C.bg, minHeight: '100vh', color: C.text, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
 
         {/* Header con navegación cruzada */}
         <div style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 40 }}>
