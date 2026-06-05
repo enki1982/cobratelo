@@ -89,6 +89,11 @@ textarea {
 ::-webkit-scrollbar-thumb { background: rgba(255,131,0,0.25); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,131,0,0.45); }
 
+/* Scrollbar clara para el panel de gestoría (fondo claro) */
+.gestor-panel ::-webkit-scrollbar-track { background: #EDEEF1; }
+.gestor-panel ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 3px; }
+.gestor-panel ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.30); }
+
 /* Selección de texto */
 ::selection { background: rgba(255,131,0,0.25); color: #f0f0f5; }
 
