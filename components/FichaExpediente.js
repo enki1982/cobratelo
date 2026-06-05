@@ -255,6 +255,22 @@ export default function FichaExpediente({ expediente, token, onClose, onUpdate, 
                 )}
               </div>
 
+              {(exp.estado === 'concedida' || exp.estado === 'denegada') && (
+                <div style={{ background: exp.estado === 'concedida' ? C.greenBg : C.bg, border: `1px solid ${exp.estado === 'concedida' ? '#A7F3D0' : C.border}`, borderRadius: 10, padding: '12px 14px' }}>
+                  <div style={{ fontSize: 12, color: C.muted, marginBottom: 8, lineHeight: 1.4 }}>El expediente está resuelto. Puedes avisar al cliente del resultado por email.</div>
+                  <button onClick={async () => {
+                      if (!window.confirm('¿Enviar email al cliente con el resultado (' + exp.estado + ')?')) return;
+                      const r = await fetch('/api/gestor/notificar-cliente', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ expediente_id: exp.id }) });
+                      const j = await r.json();
+                      if (r.ok) { mostrarAviso && mostrarAviso('Email enviado al cliente.'); if (tab === 'actividad') cargarActividad(); }
+                      else mostrarAviso && mostrarAviso(j.error || 'No se pudo enviar');
+                    }}
+                    style={{ fontSize: 13, fontWeight: 600, color: '#fff', background: C.orange, border: 'none', borderRadius: 8, padding: '9px 16px', cursor: 'pointer' }}>
+                    Notificar al cliente
+                  </button>
+                </div>
+              )}
+
               {/* Estado */}
               <div>
                 <Label>Estado</Label>
