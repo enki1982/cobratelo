@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import { ESTADO_LABEL as SHARED_LABEL, canChangeEstado as sharedCanChange, semaforo as sharedSemaforo, camposHito } from '../../lib/expedientes-estados'
 import FichaExpediente from '../../components/FichaExpediente'
 import ModalHito from '../../components/ModalHito'
+import ManualAyuda from '../../components/ManualAyuda'
 
 const C = {
   bg: '#F7F8FA', white: '#FFFFFF', border: '#E5E7EB', borderStrong: '#D1D5DB',
@@ -86,6 +87,7 @@ export default function ExpedientesKanban() {
   const [aviso, setAviso] = useState(null)
   const [detalle, setDetalle] = useState(null)
   const [panelVenc, setPanelVenc] = useState(false)
+  const [manualAbierto, setManualAbierto] = useState(false)
   const [panelBandeja, setPanelBandeja] = useState(false)
   const [matches, setMatches] = useState(null)
   const [vencimientos, setVencimientos] = useState(null)
@@ -345,6 +347,10 @@ export default function ExpedientesKanban() {
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: '1px solid #FDDCC4', background: '#FFF5F0', color: '#cc5500', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
               Bandeja de matches
             </button>
+            <button onClick={() => setManualAbierto(true)} title="Ayuda"
+              style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
+              ? Ayuda
+            </button>
             <button onClick={abrirVencimientos}
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${C.orangeBorder}`, background: C.orangeLight, color: C.orange, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
               Vencimientos
@@ -555,6 +561,7 @@ export default function ExpedientesKanban() {
             </div>
           </div>
         )}
+        {manualAbierto && <ManualAyuda onClose={() => setManualAbierto(false)} />}
         {panelVenc && (
           <div onClick={() => setPanelVenc(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'flex-end', zIndex: 92 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: C.white, width: 460, maxWidth: '100%', height: '100%', boxShadow: '-8px 0 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column' }}>
