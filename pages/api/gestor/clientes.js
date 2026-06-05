@@ -187,11 +187,53 @@ export default async function handler(req, res) {
     const { id } = req.query
     if (!id) return res.status(400).json({ error: 'id requerido' })
 
+    // Recuperar el cliente para saber su cuenta de usuario vinculada
+    const { data: cli } = await supabaseAdmin
+      .from('gestoria_clientes')
+      .select('id, cliente_id')
+      .eq('id', id)
+      .eq('gestor_id', gestorId)
+      .single()
+    if (!cli) return res.status(404).json({ error: 'Cliente no encontrado' })
+
+    // Borrar el vínculo con esta gestoría
     await supabaseAdmin
       .from('gestoria_clientes')
       .delete()
       .eq('id', id)
       .eq('gestor_id', gestorId)
+
+    // Limpieza de cuenta huérfana: SOLO si la cuenta la creó una gestoría,
+    // no tiene perfil propio, y ninguna otra gestoría la tiene como cliente.
+    if (cli.cliente_id) {
+      try {
+        // ¿la usa otra gestoría?
+        const { count: otras } = await supabaseAdmin
+          .from('gestoria_clientes')
+          .select('id', { count: 'exact', head: true })
+          .eq('cliente_id', cli.cliente_id)
+        if (!otras || otras === 0) {
+          // ¿tiene perfil propio o fue creada por gestoría?
+          const { data: u } = await supabaseAdmin
+            .from('usuarios')
+            .select('perfil, plan')
+            .eq('id', cli.cliente_id)
+            .single()
+          const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(cli.cliente_id)
+          const creadaPorGestoria = !!authUser?.user?.user_metadata?.alta_por_gestoria
+          const sinPerfilPropio = !u?.perfil || Object.keys(u.perfil).length === 0
+          const planFree = !u?.plan || u.plan === 'free'
+          // Solo borrar si la creó una gestoría, no tiene perfil propio y es plan free
+          if (creadaPorGestoria && sinPerfilPropio && planFree) {
+            await supabaseAdmin.from('usuarios').delete().eq('id', cli.cliente_id)
+            await supabaseAdmin.auth.admin.deleteUser(cli.cliente_id)
+          }
+        }
+      } catch (e) {
+        // Si la limpieza falla, no romper el borrado del cliente (ya hecho)
+        console.error('Limpieza cuenta huérfana:', e.message)
+      }
+    }
 
     return res.json({ ok: true })
   }
