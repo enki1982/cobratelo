@@ -98,9 +98,9 @@ export default function App({ Component, pageProps }) {
         </>
       )}
       <Component {...pageProps} />
-      {process.env.NEXT_PUBLIC_PLACES_KEY && (
+      {process.env.NEXT_PUBLIC_GOOGLE_PLACES_KEY && (
         <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_PLACES_KEY}&libraries=places&language=es`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_KEY}&libraries=places&language=es`}
           strategy="lazyOnload"
         />
       )}
