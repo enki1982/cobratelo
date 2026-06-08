@@ -51,26 +51,29 @@ const TESTIMONIOS = [
   { nombre: 'Laura C.', perfil: 'Alquiler · Pamplona', texto: 'Gratis, sin formularios largos ni pedir datos bancarios. Me detectó 1.680€ al año y fui a la gestoría con el trabajo hecho. Eso sí que tiene valor.' },
 ]
 
-const FUENTES = [
-  { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', border: '#003087', src: '/AgenciaTributaria.png' },
-  { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', border: '#0055A5', src: '/SEPE.png' },
-  { nombre: 'Seg-Social', sub: 'Seguridad Social', color: '#004899', border: '#004899', src: '/Logo_TGSS (1).svg' },
-  { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', border: '#CC0000', src: '/Logo_Red.es.svg' },
-  { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', border: '#1B4F72', src: '/Vivienda.png' },
-  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E', src: '/Logotipo_de_la_Generalitat_de_Catalunya.svg' },
-  { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B', src: '/Logotipo_del_Gobierno_de_la_Comunidad_de_Madrid.svg' },
-  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B', src: '/Logotipo_del_Gobierno_de_España.svg' },
-  { nombre: 'J·Andalucía', sub: 'Junta de Andalucía', color: '#009A44', border: '#009A44', src: '/Juntadeandalucia.svg' },
-  { nombre: 'G·Valencia', sub: 'Generalitat Valenciana', color: '#003A70', border: '#003A70', src: '/Imagotip_de_la_Generalitat_Valenciana.svg' },
-  { nombre: 'G·Aragón', sub: 'Gobierno de Aragón', color: '#C8102E', border: '#C8102E', src: '/Logotipo_del_Gobierno_de_Aragón.svg' },
-  { nombre: 'C·La·Mancha', sub: 'Castilla-La Mancha', color: '#B22222', border: '#B22222', src: '/Escudo_de_la_Junta_de_Comunidades_de_Castilla-La_Mancha.svg' },
-  { nombre: 'C·y·León', sub: 'Castilla y León', color: '#7B0D1E', border: '#7B0D1E', src: '/Logotipo_de_la_Junta_de_Castilla_y_León.svg' },
-  { nombre: 'La·Rioja', sub: 'Gobierno de La Rioja', color: '#9E1B32', border: '#9E1B32', src: '/Logotipo_del_Gobierno_de_La_Rioja.svg' },
-  { nombre: 'Asturias', sub: 'Principado de Asturias', color: '#003DA5', border: '#003DA5', src: '/Logotipo_del_Gobierno_del_Principado_de_Asturias_(2022).svg' },
-  { nombre: 'G·Vasco', sub: 'Gobierno Vasco', color: '#D4342B', border: '#D4342B', src: '/PaisVasco.png' },
-  { nombre: 'Xunta', sub: 'Xunta de Galicia', color: '#003DA5', border: '#003DA5', src: '/Flag_of_Galicia_(civil).svg' },
-  { nombre: 'Murcia', sub: 'Región de Murcia', color: '#AA151B', border: '#AA151B', src: '/Murcia.png' },
-  { nombre: 'Navarra', sub: 'Gobierno de Navarra', color: '#CC0000', border: '#CC0000', src: '/Navarra.png' },
+const FUENTES_ADMIN = [
+  { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', src: '/AgenciaTributaria.png' },
+  { nombre: 'SEPE', sub: 'Empleo Público', color: '#0055A5', src: '/SEPE.png' },
+  { nombre: 'Seg-Social', sub: 'Seguridad Social', color: '#004899', src: '/Logo_TGSS (1).svg' },
+  { nombre: 'red.es', sub: 'Transformación Digital', color: '#CC0000', src: '/Logo_Red.es.svg' },
+  { nombre: 'MIVAU', sub: 'Vivienda y Agenda Urbana', color: '#1B4F72', src: '/Vivienda.png' },
+  { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', src: '/Logotipo_del_Gobierno_de_España.svg' },
+]
+
+const FUENTES_CCAA = [
+  { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', src: '/Logotipo_de_la_Generalitat_de_Catalunya.svg' },
+  { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', src: '/Logotipo_del_Gobierno_de_la_Comunidad_de_Madrid.svg' },
+  { nombre: 'J·Andalucía', sub: 'Junta de Andalucía', color: '#009A44', src: '/Juntadeandalucia.svg' },
+  { nombre: 'G·Valencia', sub: 'Generalitat Valenciana', color: '#003A70', src: '/Imagotip_de_la_Generalitat_Valenciana.svg' },
+  { nombre: 'G·Vasco', sub: 'Gobierno Vasco', color: '#D4342B', src: '/PaisVasco.png' },
+  { nombre: 'Xunta', sub: 'Xunta de Galicia', color: '#003DA5', src: '/Flag_of_Galicia_(civil).svg' },
+  { nombre: 'G·Aragón', sub: 'Gobierno de Aragón', color: '#C8102E', src: '/Logotipo_del_Gobierno_de_Aragón.svg' },
+  { nombre: 'C·La·Mancha', sub: 'Castilla-La Mancha', color: '#B22222', src: '/Escudo_de_la_Junta_de_Comunidades_de_Castilla-La_Mancha.svg' },
+  { nombre: 'C·y·León', sub: 'Castilla y León', color: '#7B0D1E', src: '/Logotipo_de_la_Junta_de_Castilla_y_León.svg' },
+  { nombre: 'Asturias', sub: 'Principado de Asturias', color: '#003DA5', src: '/Logotipo_del_Gobierno_del_Principado_de_Asturias_(2022).svg' },
+  { nombre: 'La·Rioja', sub: 'Gobierno de La Rioja', color: '#9E1B32', src: '/Logotipo_del_Gobierno_de_La_Rioja.svg' },
+  { nombre: 'Murcia', sub: 'Región de Murcia', color: '#AA151B', src: '/Murcia.png' },
+  { nombre: 'Navarra', sub: 'Gobierno de Navarra', color: '#CC0000', src: '/Navarra.png' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
@@ -329,20 +332,26 @@ que te corresponden
             <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#7a4a1a', marginBottom: 24 }}>
               FUENTES OFICIALES VERIFICADAS · ACTUALIZACIÓN CONTINUA
             </p>
+            {/* Fila 1: Administración General del Estado → */}
+            <div style={{ position: 'relative', overflow: 'hidden', marginBottom: 12 }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to right, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to left, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div className='marquee-track' style={{ display: 'flex', gap: 12, width: 'max-content' }}>
+                {[...FUENTES_ADMIN, ...FUENTES_ADMIN, ...FUENTES_ADMIN].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px 18px', borderRadius: 12, border: '1px solid #F5C89A', background: '#fff', minWidth: 100, flexShrink: 0 }}>
+                    <img src={f.src} alt={f.nombre} style={{ height: 30, width: 'auto', maxWidth: 120, objectFit: 'contain' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Fila 2: Comunidades Autónomas ← (sentido contrario) */}
             <div style={{ position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to right, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, background: 'linear-gradient(to left, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              <div className='marquee-track' style={{ display: 'flex', gap: 16, width: 'max-content' }}>
-                {[...FUENTES, ...FUENTES].map((f, i) => (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: f.src ? '10px 20px' : '12px 20px', borderRadius: 12, border: '1px solid #F5C89A', background: '#fff', minWidth: 110, flexShrink: 0 }}>
-                    {f.src ? (
-                      <img src={f.src} alt={f.nombre} style={{ height: 32, width: 'auto', maxWidth: 130, objectFit: 'contain' }} />
-                    ) : (
-                      <>
-                        <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: f.color, letterSpacing: '-0.3px', lineHeight: 1 }}>{f.nombre}</span>
-                        <span style={{ fontSize: 9, color: '#999', marginTop: 3, letterSpacing: '0.2px' }}>{f.sub}</span>
-                      </>
-                    )}
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to right, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to left, #FFE2C4, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div className='marquee-track-reverse' style={{ display: 'flex', gap: 12, width: 'max-content' }}>
+                {[...FUENTES_CCAA, ...FUENTES_CCAA].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px 18px', borderRadius: 12, border: '1px solid #F5C89A', background: '#fff', minWidth: 100, flexShrink: 0 }}>
+                    <img src={f.src} alt={f.nombre} style={{ height: 30, width: 'auto', maxWidth: 120, objectFit: 'contain' }} />
                   </div>
                 ))}
               </div>

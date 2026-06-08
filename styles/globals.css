@@ -106,7 +106,11 @@ textarea {
 .marquee-track {
   animation: marquee 28s linear infinite;
 }
-.marquee-track:hover {
+.marquee-track-reverse {
+  animation: marquee 32s linear infinite reverse;
+}
+.marquee-track:hover,
+.marquee-track-reverse:hover {
   animation-play-state: paused;
 }
 
