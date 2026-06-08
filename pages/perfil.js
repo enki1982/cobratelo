@@ -81,6 +81,18 @@ const PASOS = [
     opciones: [],
   },
   {
+    id: 'genero',
+    titulo: '¿Cuál es tu género?',
+    subtitulo: 'Algunas ayudas están dirigidas específicamente a mujeres o a hombres',
+    multi: false,
+    opciones: [
+      { value: 'mujer',  label: 'Mujer',               emoji: '' },
+      { value: 'hombre', label: 'Hombre',              emoji: '' },
+      { value: 'otro',   label: 'Otro / No binario',   emoji: '' },
+      { value: 'nd',     label: 'Prefiero no decirlo', emoji: '' },
+    ],
+  },
+  {
     id: 'familia',
     titulo: '¿Cuál es tu situación familiar?',
     subtitulo: 'Selecciona todas las que apliquen',
