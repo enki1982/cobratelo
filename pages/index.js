@@ -60,6 +60,12 @@ const FUENTES = [
   { nombre: 'Generalitat', sub: 'Catalunya', color: '#C9222E', border: '#C9222E', src: '/Logotipo_de_la_Generalitat_de_Catalunya.svg' },
   { nombre: 'C·Madrid', sub: 'Comunidad de Madrid', color: '#B5121B', border: '#B5121B', src: '/Logotipo_del_Gobierno_de_la_Comunidad_de_Madrid.svg' },
   { nombre: 'Gobierno·ES', sub: 'España', color: '#AA151B', border: '#AA151B', src: '/Logotipo_del_Gobierno_de_España.svg' },
+  { nombre: 'J·Andalucía', sub: 'Junta de Andalucía', color: '#009A44', border: '#009A44', src: null },
+  { nombre: 'G·Vasco', sub: 'Gobierno Vasco', color: '#D4342B', border: '#D4342B', src: null },
+  { nombre: 'G·Valencia', sub: 'Generalitat Valenciana', color: '#003A70', border: '#003A70', src: null },
+  { nombre: 'Xunta', sub: 'Xunta de Galicia', color: '#003DA5', border: '#003DA5', src: null },
+  { nombre: 'G·Aragón', sub: 'Gobierno de Aragón', color: '#C8102E', border: '#C8102E', src: null },
+  { nombre: 'G·Canarias', sub: 'Gobierno de Canarias', color: '#FFCD00', border: '#F0A500', src: null },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
