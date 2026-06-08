@@ -132,7 +132,7 @@ export default function Informe() {
 
           <p className="text-center text-xs text-[#B0AAA0] pt-2 pb-8">
             Resultados orientativos. Consulta siempre las fuentes oficiales.<br/>
-            Cóbratelo.es · Miquel Nogueras Camero
+            Cóbratelo.es · hola@cobratelo.es
           </p>
         </div>
       </div>

@@ -20,11 +20,11 @@ const PLANES_GESTORIA = [
   {
     id: 'pro', nombre: 'Pro', precio: '399€', periodo: 'mes',
     desc: 'Para gestorías medianas y grandes sin límite de clientes',
-    features: ['Clientes ilimitados','Todo lo del plan Básico','Panel multi-cliente','Exportación masiva de informes','Alertas personalizadas por cliente','Soporte prioritario'],
+    features: ['Clientes ilimitados','Expedientes y Kanban sin límite','Exportación masiva de informes','Alertas personalizadas por cliente','Bandeja de matches prioritaria','Soporte prioritario'],
     cta: 'Empezar Pro', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO, destacado: true,
   },
   {
-    id: 'enterprise', nombre: 'Enterprise', precio: '799€', periodo: 'mes',
+    id: 'enterprise', nombre: 'Enterprise', precio: null, periodo: null,
     desc: 'Para grandes despachos con integración completa',
     features: ['Todo lo del plan Pro','Integración sede electrónica','Formularios pre-rellenados','API acceso a datos','Marca blanca','Account manager'],
     cta: 'Contactar', href: 'mailto:hola@cobratelo.es', destacado: false, badge: 'Próximamente',
@@ -34,7 +34,7 @@ const PLANES_GESTORIA = [
 const FAQ = [
   { q: '¿De verdad es gratis para ciudadanos?', a: 'Sí, completamente. Accedes a todas las ayudas, alertas y el informe para tu gestoría sin pagar nada.' },
   { q: '¿Puedo cancelar cuando quiera?', a: 'Sí. Sin permanencia ni penalizaciones. Cancelas desde tu cuenta en cualquier momento.' },
-  { q: '¿Qué diferencia hay entre Básico y Pro?', a: 'El plan Básico tiene límite de 10 clientes activos. El Pro es ilimitado y añade panel multi-cliente y exportación masiva.' },
+  { q: '¿Qué diferencia hay entre Básico y Pro?', a: 'El plan Básico gestiona hasta 50 clientes activos. El Pro es ilimitado, añade exportación masiva de informes, alertas personalizadas por cliente y soporte prioritario.' },
   { q: '¿Cuándo estará disponible Enterprise?', a: 'La integración con sede electrónica está en desarrollo. Escríbenos a hola@cobratelo.es para la lista de espera.' },
   { q: '¿Los datos de mis clientes son seguros?', a: 'Sí. No vendemos datos a terceros. Cumplimos RGPD y normativa española de protección de datos.' },
 ]
@@ -56,8 +56,9 @@ function PlanCard({ plan }) {
       <h3 className="font-display font-bold" style={{ fontSize: 20, color: C.text, marginBottom: 4, letterSpacing: '-0.5px' }}>{plan.nombre}</h3>
       <p style={{ color: C.muted, fontSize: 13, marginBottom: 20 }}>{plan.desc}</p>
       <div style={{ marginBottom: 24 }}>
-        <span className="font-display font-bold" style={{ fontSize: 40, color: C.text, letterSpacing: '-2px' }}>{plan.precio}</span>
-        <span style={{ color: C.muted, fontSize: 13, marginLeft: 4 }}>/{plan.periodo}</span>
+        {plan.precio
+          ? <><span className="font-display font-bold" style={{ fontSize: 40, color: C.text, letterSpacing: '-2px' }}>{plan.precio}</span><span style={{ color: C.muted, fontSize: 13, marginLeft: 4 }}>/{plan.periodo}</span></>
+          : <span className="font-display font-bold" style={{ fontSize: 28, color: C.text }}>A consultar</span>}
       </div>
       <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {plan.features.map((f, i) => (
@@ -144,7 +145,7 @@ export default function Precios() {
         </div>
 
         <footer style={{ maxWidth: 1024, margin: '0 auto', padding: '24px', borderTop: `1px solid ${C.border}`, textAlign: 'center' }}>
-          <p style={{ color: C.muted, fontSize: 12 }}>Cóbratelo.es · Miquel Nogueras Camero</p>
+          <p style={{ color: C.muted, fontSize: 12 }}>Cóbratelo.es · <a href="mailto:hola@cobratelo.es" style={{ color: C.muted }}>hola@cobratelo.es</a></p>
         </footer>
       </div>
     </>

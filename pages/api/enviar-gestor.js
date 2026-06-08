@@ -109,7 +109,7 @@ export default async function handler(req, res) {
     <!-- Footer -->
     <div style="padding:20px 40px;border-top:1px solid #f0ead0;text-align:center;">
       <p style="margin:0;color:#b0aaa0;font-size:12px;">
-        Cóbratelo.es · Miquel Nogueras Camero<br>
+        Cóbratelo.es · hola@cobratelo.es<br>
         <a href="https://cobratelo.es" style="color:#7a4a1a;">cobratelo.es</a>
       </p>
     </div>

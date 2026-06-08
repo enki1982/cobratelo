@@ -34,21 +34,21 @@ const AYUDAS_DEMO = [
 ]
 
 const TESTIMONIOS = [
-  { nombre: 'Marta R.', perfil: 'Autónoma · Valencia', texto: 'Detectó dos bonificaciones de cuota de autónomo, unos 1.840€ al año, que ni mi gestor había mencionado. Se lo pasé y las tramitó él mismo.' },
-  { nombre: 'Javier M.', perfil: 'Familia · Sevilla', texto: 'Lo usé antes de la cita con la gestoría y llegué con la lista hecha. Salieron unos 2.300€ al año entre varias ayudas que no conocía.' },
-  { nombre: 'Núria P.', perfil: 'Alquiler · Barcelona', texto: 'Me salió el bono de alquiler joven, 2.400€ que llevaba un año sin pedir. Mi gestora confirmó que encajaba y lo presentamos.' },
-  { nombre: 'Carlos D.', perfil: 'Pyme · Madrid', texto: 'Lo que más valoro es que enlaza la convocatoria oficial. Localizó unos 3.000€ en ayudas y se lo enseñé a mi asesor sin que tuviera que buscar nada.' },
-  { nombre: 'Ana L.', perfil: 'Maternidad · Zaragoza', texto: 'No sabía que la deducción por maternidad, 1.200€ al año, se podía solicitar de forma anticipada. Mi gestor lo gestionó esa semana.' },
-  { nombre: 'Pedro S.', perfil: 'Autónomo · Bilbao', texto: 'Útil y sin postureo. Me marcó unos 980€ al año reales, no cifras infladas. Lo comenté con mi gestoría y coincidía.' },
-  { nombre: 'Lucía F.', perfil: 'Rehabilitación · Málaga', texto: 'Salieron las ayudas de eficiencia energética para cambiar ventanas, unos 4.100€. Mi asesor las dio por buenas y entramos en plazo.' },
-  { nombre: 'Miguel A.', perfil: 'Familia numerosa · Murcia', texto: 'Cruza tu situación con todo a la vez. Encontró unos 2.650€ al año que mi gestor revisaba a mano en una hora; aquí estaba en dos minutos.' },
-  { nombre: 'Elena G.', perfil: 'Desempleo · Vigo', texto: 'Me orientó sobre una prestación autonómica de unos 1.500€ que desconocía. Lo verifiqué con mi gestora antes de pedirla, todo correcto.' },
-  { nombre: 'Roberto T.', perfil: 'Placas solares · Toledo', texto: 'La ayuda al autoconsumo, unos 3.400€, estaba ahí con el enlace oficial. Se lo pasé al gestor y la solicitud fue directa.' },
-  { nombre: 'Cristina V.', perfil: 'Autónoma · Alicante', texto: 'Lo bueno es que no te promete millonadas. Me salieron unos 1.120€ al año, reales y comprobables. Mi asesor agradeció el trabajo previo.' },
-  { nombre: 'David N.', perfil: 'Vehículo eléctrico · Girona', texto: 'Me avisó del Plan MOVES, unos 4.500€, antes de comprar el coche. La gestoría confirmó que cumplía y reservamos la ayuda.' },
-  { nombre: 'Patricia M.', perfil: 'Familia · Valladolid', texto: 'Recibí un aviso de una ayuda nueva de unos 1.900€ al año que encajaba con nosotros. Se lo reenvié a mi gestor y la presentó a tiempo.' },
-  { nombre: 'Sergio B.', perfil: 'Pyme · Las Palmas', texto: 'Lo uso como primer filtro y luego lo valido con mi asesoría. Nos sacó unos 2.000€ y ahorra toda la parte de buscar qué existe.' },
-  { nombre: 'Laura C.', perfil: 'Alquiler · Pamplona', texto: 'Claro, gratis y sin pedir datos sensibles. Me detectó unos 1.680€ al año y llegué a la gestoría con los deberes hechos.' },
+  { nombre: 'Marta R.', perfil: 'Autónoma · Valencia', texto: 'Me detectó dos bonificaciones de la cuota de autónomo que sumaban 1.840€ al año. Ni mi gestor las había visto. Se las pasé y las tramitó en una semana.' },
+  { nombre: 'Javier M.', perfil: 'Empleado con familia · Sevilla', texto: 'Fui a la cita con la gestoría con la lista ya hecha. En total, ayudas por unos 2.300€ al año que no sabía que existían. La reunión duró diez minutos.' },
+  { nombre: 'Núria P.', perfil: 'Alquiler joven · Barcelona', texto: 'El bono de alquiler joven, 2.400€, llevaba un año disponible y yo sin saberlo. Mi gestora lo confirmó y lo presentamos antes de que cerrara el plazo.' },
+  { nombre: 'Carlos D.', perfil: 'Administrador de pyme · Madrid', texto: 'Lo que me convenció fue el enlace a la convocatoria oficial en cada ayuda. Se lo enseñé a mi asesor con los deberes hechos: 3.000€ en ayudas localizadas.' },
+  { nombre: 'Ana L.', perfil: 'Maternidad reciente · Zaragoza', texto: 'No sabía que la deducción por maternidad, 1.200€ al año, se puede pedir de forma mensual anticipada. Mi gestor lo tramitó esa misma semana.' },
+  { nombre: 'Pedro S.', perfil: 'Autónomo · Bilbao', texto: 'Me salieron 980€ al año reales, sin exagerar. Lo consulté con mi gestoría y cuadraba. Prefiero esto a herramientas que te prometen fortunas y no entregan nada.' },
+  { nombre: 'Lucía F.', perfil: 'Rehabilitación de vivienda · Málaga', texto: 'Detectó las ayudas de eficiencia energética para cambiar ventanas: hasta 4.100€. Mi asesor las revisó, dijo que estaban bien y entramos en el plazo justo.' },
+  { nombre: 'Miguel A.', perfil: 'Familia numerosa · Murcia', texto: 'Mi gestor tardaba una hora en revisar esto a mano. Aquí estaba en dos minutos con 2.650€ al año cruzando toda mi situación a la vez.' },
+  { nombre: 'Elena G.', perfil: 'En búsqueda de empleo · Vigo', texto: 'Me apareció una prestación autonómica de 1.500€ que ni conocía. Antes de pedirla lo verifiqué con mi gestora — estaba todo en orden.' },
+  { nombre: 'Roberto T.', perfil: 'Autoconsumo solar · Toledo', texto: 'La ayuda al autoconsumo fotovoltaico, 3.400€, con el enlace oficial incluido. Se lo mandé al gestor y la solicitud fue directa, sin ir a buscar más.' },
+  { nombre: 'Cristina V.', perfil: 'Autónoma · Alicante', texto: 'Me salieron 1.120€ al año. Puede parecer poco, pero son reales, comprobables y estaban en la convocatoria oficial. Mi asesor lo agradeció.' },
+  { nombre: 'David N.', perfil: 'Comprador de vehículo eléctrico · Girona', texto: 'Lo usé antes de comprar el coche. El Plan MOVES salió con 4.500€ de ayuda. Mi gestoría confirmó que cumplía los requisitos y reservamos la subvención.' },
+  { nombre: 'Patricia M.', perfil: 'Madre con dos hijos · Valladolid', texto: 'Me llegó un aviso de una ayuda nueva de 1.900€ que encajaba con nosotros. Se lo mandé al gestor por email y la presentó a tiempo. Sin eso, no nos habríamos enterado.' },
+  { nombre: 'Sergio B.', perfil: 'Gerente de pyme · Las Palmas', texto: 'Lo uso como primer filtro antes de hablar con la asesoría. Nos salieron 2.000€ y ahorramos toda la parte de investigar qué existe. La gestoría ejecuta, no busca.' },
+  { nombre: 'Laura C.', perfil: 'Alquiler · Pamplona', texto: 'Gratis, sin formularios largos ni pedir datos bancarios. Me detectó 1.680€ al año y fui a la gestoría con el trabajo hecho. Eso sí que tiene valor.' },
 ]
 
 const FUENTES = [
