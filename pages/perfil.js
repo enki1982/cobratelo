@@ -256,7 +256,6 @@ async function buscarMunicipio(query) {
   } catch (e) {
     return []
   }
-  })
 }
 
 // Componente de input de pueblo con autocompletado
