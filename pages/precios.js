@@ -20,7 +20,7 @@ const PLANES_GESTORIA = [
   {
     id: 'pro', nombre: 'Pro', precio: '399€', periodo: 'mes',
     desc: 'Para gestorías medianas y grandes sin límite de clientes',
-    features: ['Clientes ilimitados','Expedientes y Kanban sin límite','Exportación masiva de informes','Alertas personalizadas por cliente','Bandeja de matches prioritaria','Soporte prioritario'],
+    features: ['Clientes ilimitados','Expedientes y Kanban sin límite','Exportación masiva de informes','Alertas personalizadas por cliente','Histórico completo de actividad','Soporte prioritario'],
     cta: 'Empezar Pro', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO, destacado: true,
   },
   {

@@ -182,7 +182,7 @@ export default function Home() {
             {/* Hito — contador de personas (visible en todas las pantallas) */}
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: '1px solid rgba(255,131,0,0.3)', color: C.green, fontSize: 13, fontWeight: 700, padding: '7px 16px', borderRadius: 100, marginBottom: 16, letterSpacing: '-0.2px' }}>
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}` }} />
-              {String(personas).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} personas ya han comprobado sus ayudas
+              {String(personas).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} comprobaciones de ayudas realizadas
             </div>
 
             {/* Badge */}
