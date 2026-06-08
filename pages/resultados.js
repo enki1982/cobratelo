@@ -476,6 +476,63 @@ function calcularRelevancia(ayuda, perfil) {
 
 const FREE_LIMIT = 3 // usado solo como fallback
 
+function AyudaCard({ ayuda, esNueva, onEnviarGestor }) {
+  const [expandida, setExpandida] = useState(false)
+  const importe = ayuda.importe_max || ayuda.importe_min
+  const estadoColor = { abierta: '#4ade80', permanente: '#60a5fa', pendiente: '#f59e0b', cerrada: 'rgba(255,245,235,0.3)' }[ayuda.estado] || 'rgba(255,245,235,0.3)'
+
+  return (
+    <div style={{ background: 'rgba(255,200,120,0.04)', border: `1px solid ${esNueva ? 'rgba(255,131,0,0.4)' : 'rgba(255,200,120,0.12)'}`, borderRadius: 16, overflow: 'hidden', transition: 'border-color 0.2s' }}>
+      {esNueva && (
+        <div style={{ background: 'rgba(255,131,0,0.15)', padding: '4px 16px' }}>
+          <span style={{ fontSize: 10, color: '#FF8300', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' }}>✨ Nueva esta semana</span>
+        </div>
+      )}
+      <div style={{ padding: '16px 20px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}
+        onClick={() => setExpandida(!expandida)}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: estadoColor, textTransform: 'uppercase', letterSpacing: '0.5px' }}>● {ayuda.estado}</span>
+            {ayuda.tipo && <span style={{ fontSize: 10, color: 'rgba(255,245,235,0.3)', background: 'rgba(255,255,255,0.04)', padding: '2px 8px', borderRadius: 100 }}>{ayuda.tipo}</span>}
+          </div>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB', margin: 0, lineHeight: 1.3, marginBottom: 4 }}>{ayuda.nombre}</h3>
+          <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.45)', margin: 0 }}>{ayuda.organismo}</p>
+        </div>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+          {importe > 0 && (
+            <p style={{ fontSize: 18, fontWeight: 800, color: '#FF8300', margin: 0 }}>
+              {importe >= 1000 ? `${(importe/1000).toFixed(0)}K€` : `${importe}€`}
+            </p>
+          )}
+          {ayuda.importe_descripcion && !importe && (
+            <p style={{ fontSize: 12, color: '#FF8300', margin: 0 }}>{ayuda.importe_descripcion}</p>
+          )}
+          <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.3)' }}>{expandida ? '▲' : '▼'}</span>
+        </div>
+      </div>
+      {expandida && (
+        <div style={{ padding: '0 20px 20px', borderTop: '1px solid rgba(255,200,120,0.08)' }}>
+          {ayuda.descripcion && (
+            <p style={{ fontSize: 13, color: 'rgba(255,245,235,0.6)', lineHeight: 1.6, margin: '16px 0 12px' }}>{ayuda.descripcion}</p>
+          )}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
+            {ayuda.url_oficial && (
+              <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: 13, color: '#FF8300', background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.3)', padding: '8px 16px', borderRadius: 100, textDecoration: 'none', fontWeight: 600 }}>
+                Ver convocatoria oficial →
+              </a>
+            )}
+            <button onClick={e => { e.stopPropagation(); onEnviarGestor() }}
+              style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', background: 'transparent', border: '1px solid rgba(255,200,120,0.15)', padding: '8px 16px', borderRadius: 100, cursor: 'pointer' }}>
+              Enviar a gestoría
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Resultados() {
   const router = useRouter()
   const [ayudas, setAyudas] = useState([])
@@ -725,6 +782,25 @@ export default function Resultados() {
             Los resultados son orientativos. Verifica siempre los requisitos en la fuente oficial.
           </p>
           </div>
+
+          {/* ── LISTA DE AYUDAS ── */}
+          {ayudasAbiertas.length > 0 && (
+            <div style={{ marginBottom: 32 }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Abiertas ahora</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} onEnviarGestor={() => setModalGestor(true)} />)}
+              </div>
+            </div>
+          )}
+
+          {ayudasOtras.length > 0 && (
+            <div>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Otras convocatorias</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} onEnviarGestor={() => setModalGestor(true)} />)}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>
