@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   const { q } = req.query
   if (!q || q.length < 2) return res.json([])
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_KEY
+  const apiKey = process.env.NEXT_PUBLIC_PLACES_KEY
   if (!apiKey) return res.status(500).json({ error: 'API key no configurada' })
 
   try {
