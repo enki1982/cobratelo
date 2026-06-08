@@ -560,8 +560,19 @@ export default function Resultados() {
         if (data?.plan) setUserPlan(data.plan)
         setUserId(session.user.id)
         setSessionChecked(true)
-        // Si no hay perfil en URL, cargar desde BD
-        if (!router.query.perfil && data?.perfil && Object.keys(data.perfil).length > 0) {
+        // Si hay perfil en URL y el usuario está logado → guardarlo en BD (flujo post-registro)
+        if (router.query.perfil) {
+          try {
+            const perfilUrl = JSON.parse(decodeURIComponent(router.query.perfil))
+            await supabase.from('usuarios').upsert({
+              id: session.user.id,
+              email: session.user.email,
+              perfil: perfilUrl,
+              updated_at: new Date().toISOString(),
+            }, { onConflict: 'id' })
+          } catch {}
+        } else if (!router.query.perfil && data?.perfil && Object.keys(data.perfil).length > 0) {
+          // Sin perfil en URL → cargar desde BD
           setPerfil(data.perfil)
         }
       } else {
@@ -584,6 +595,23 @@ export default function Resultados() {
     if (perfil !== null && userId) fetchAyudas(userId)
     else if (sessionChecked && !userId) setLoading(false)
   }, [perfil, userId, sessionChecked])
+
+  // Enviar automáticamente a gestoría si el perfil tiene email_gestoria y aún no se ha enviado
+  const gestorEnviadoRef = React.useRef(false)
+  useEffect(() => {
+    if (!perfil?.email_gestoria || !ayudas.length || gestorEnviadoRef.current) return
+    gestorEnviadoRef.current = true
+    fetch('/api/enviar-gestor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        emailGestor: perfil.email_gestoria,
+        nombreCliente: perfil.nombre || '',
+        ayudas,
+        perfil,
+      }),
+    }).then(r => { if (r.ok) setEmailEnviado(true) }).catch(() => {})
+  }, [ayudas, perfil])
 
   const fetchAyudas = async (userId) => {
     try {
