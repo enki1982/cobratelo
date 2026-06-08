@@ -67,8 +67,10 @@ const FUENTES = [
   { nombre: 'C·y·León', sub: 'Castilla y León', color: '#7B0D1E', border: '#7B0D1E', src: '/Logotipo_de_la_Junta_de_Castilla_y_León.svg' },
   { nombre: 'La·Rioja', sub: 'Gobierno de La Rioja', color: '#9E1B32', border: '#9E1B32', src: '/Logotipo_del_Gobierno_de_La_Rioja.svg' },
   { nombre: 'Asturias', sub: 'Principado de Asturias', color: '#003DA5', border: '#003DA5', src: '/Logotipo_del_Gobierno_del_Principado_de_Asturias_(2022).svg' },
-  { nombre: 'G·Vasco', sub: 'Gobierno Vasco', color: '#D4342B', border: '#D4342B', src: null },
-  { nombre: 'Xunta', sub: 'Xunta de Galicia', color: '#003DA5', border: '#003DA5', src: null },
+  { nombre: 'G·Vasco', sub: 'Gobierno Vasco', color: '#D4342B', border: '#D4342B', src: '/PaisVasco.png' },
+  { nombre: 'Xunta', sub: 'Xunta de Galicia', color: '#003DA5', border: '#003DA5', src: '/Flag_of_Galicia_(civil).svg' },
+  { nombre: 'Murcia', sub: 'Región de Murcia', color: '#AA151B', border: '#AA151B', src: '/Murcia.png' },
+  { nombre: 'Navarra', sub: 'Gobierno de Navarra', color: '#CC0000', border: '#CC0000', src: '/Navarra.png' },
 ]
 
 function HoverCard({ children, style, hoverBorder, ...props }) {
