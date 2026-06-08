@@ -232,3 +232,54 @@ Los siguientes archivos tienen demasiados parches acumulados y deben reescribirs
 ### Volta Grup
 - Web: voltagrup.com (Nginx en Hetzner, HTTPS)
 - Email: ImprovMX forwarding
+
+---
+
+## ROADMAP REAL HACIA PRODUCTO OPERATIVO (análisis Miki, jun 2026)
+
+### 🔴 BLOQUEANTE — sin esto no se puede cobrar a clientes reales
+
+**1. Cobertura de datos completa (el trabajo más largo)**
+- Agente de ingesta BDNS: recorre la API pública de subvenciones (todas las CCAA, provincias y municipios). El mapeador de campos ya está hecho y validado. Falta el agente que recorre la API y carga en Supabase desde el VPS.
+- Confirmar/mantener fuentes estatales: prestaciones (SEPE), deducciones (AEAT), bonificaciones (Seg. Social) — determinar si se mantienen solas o necesitan ingesta manual.
+- Migración de tabla `ayudas`: añadir campos `provincia` y `comarca`.
+- Cruce municipio→comarca para desglose territorial.
+
+**2. Validación legal**
+- Texto de consentimiento (hoy borrador) → revisión por abogado
+- Contrato DPA (Data Processing Agreement) gestoría↔Cóbratelo
+- Revisar que los textos legales cubren el lado B2B
+
+### 🟠 IMPORTANTE — antes de escalar / abrir al público
+
+**3. Navegación territorial**
+- Páginas para explorar por estatal / comunidad / provincia / comarca / pueblo
+- Depende de que estén los datos del punto 1
+
+**4. Piloto con gestor real**
+- Una gestoría real usando el flujo completo durante una semana antes de cobrar
+- Todo hasta ahora testeado solo por Miki con su propia cuenta
+
+**5. Rendimiento con volumen**
+- La bandeja de matches recalcula relevancia para todos los clientes en cada apertura. Con pocos va en 2s; con cientos hay que ver si aguanta o necesita caché.
+- Igual para el motor de vencimientos.
+
+### 🟢 OPERATIVO / NEGOCIO — no es código pero sin esto no hay producto vendible
+
+**6. Onboarding de gestorías** — el manual cubre el "cómo se usa", no el "cómo entra"
+**7. Precios y planes publicados** — qué incluye starter vs pro en la web
+**8. Canal de soporte** para incidencias de clientes
+
+### ⚪ MENOR / DEUDA TÉCNICA
+
+- Verificar scroll con tablero lleno de expedientes
+- Cron de alertas de vencimientos: solo probado en código, no en lunes real
+- Comportamiento cuando un cliente pertenece a varias gestorías
+
+### RESUMEN DEL CAMINO MÁS CORTO
+
+El CRM está terminado. Lo que separa el producto del mercado:
+1. **Los datos** (cobertura nacional real) — trabajo más largo, determina si sirve a una gestoría de Sevilla o solo de Barcelona
+2. **Lo legal** — rápido para un abogado, imprescindible
+
+Con esos dos resueltos, hay producto. El resto se pule con los primeros clientes.
