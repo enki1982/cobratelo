@@ -26,8 +26,8 @@ SUPABASE_KEY = os.environ.get('SUPABASE_SERVICE_KEY', '')
 BDNS_SEARCH  = 'https://www.infosubvenciones.es/bdnstrans/api/convocatorias/busqueda'
 BDNS_DETAIL  = 'https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria?id={id}'
 PAGE_SIZE    = 50
-SLEEP_PAGES  = 2       # segundos entre páginas
-MAX_PAGES    = 500     # ~25.000 convocatorias por ejecución
+SLEEP_PAGES  = 2
+MAX_PAGES    = 600   # ~30.000 por ejecución semanal; el cron acumula semana a semana
 
 HEADERS = {
     'Accept': 'application/json',
@@ -57,10 +57,10 @@ def bdns_get(page):
 
 def nivel_to_ambito(nivel1):
     n = (nivel1 or '').upper()
-    if 'ESTATAL' in n or 'NACIONAL' in n:  return 'estatal'
-    if 'AUTON' in n:                        return 'autonomico'
-    if 'PROVIN' in n:                       return 'provincial'
-    return 'local'
+    if 'ESTATAL' in n or 'NACIONAL' in n: return 'estatal'
+    if 'AUTON'   in n:                    return 'autonomico'
+    if 'PROVIN'  in n:                    return 'autonomico'
+    return 'municipal'
 
 def mapear(conv):
     titulo    = (conv.get('descripcion') or '').strip()
@@ -69,25 +69,22 @@ def mapear(conv):
         return None
 
     nivel1 = conv.get('nivel1', '')
-    nivel2 = conv.get('nivel2', '')   # CCAA o provincia
+    nivel2 = conv.get('nivel2', '')
     ambito = nivel_to_ambito(nivel1)
-
-    # CCAA
-    ccaa = nivel2 if ambito in ('autonomico', 'local', 'provincial') else 'Estatal'
+    ccaa   = nivel2 if ambito != 'estatal' else 'Estatal'
 
     bdns_id     = conv.get('id') or conv.get('numeroConvocatoria')
     url_oficial = BDNS_DETAIL.format(id=bdns_id) if bdns_id else None
-    fecha_rec   = conv.get('fechaRecepcion', '')
 
     return {
         'nombre':              titulo[:200],
-        'descripcion':         titulo,          # sin detalle en search; usamos título
+        'descripcion':         titulo,
         'organismo':           organismo[:200],
         'ambito':              ambito,
         'comunidad_autonoma':  ccaa[:100],
         'slug':                slugify(f'{titulo[:80]}-{organismo[:40]}'),
         'tipo':                'subvencion',
-        'estado':              'activa',
+        'estado':              'permanente',
         'importe_max':         None,
         'importe_min':         None,
         'importe_descripcion': '',
@@ -95,7 +92,7 @@ def mapear(conv):
         'fecha_fin':           None,
         'palabras_clave':      [],
         'fuente':              'bdns',
-        'updated_at':          datetime.utcnow().isoformat(),
+        'updated_at':          datetime.now().isoformat(),
     }
 
 def upsert(sb, ayuda):
@@ -108,12 +105,12 @@ def upsert(sb, ayuda):
 
 def main():
     if not SUPABASE_URL or not SUPABASE_KEY:
-        log.error('Faltan variables SUPABASE_URL o SUPABASE_SERVICE_KEY')
+        log.error('Faltan SUPABASE_URL o SUPABASE_SERVICE_KEY')
         return
 
     sb = create_client(SUPABASE_URL, SUPABASE_KEY)
     log.info('=' * 60)
-    log.info(f'BDNS AGENT inicio — últimas {MAX_PAGES * PAGE_SIZE:,} convocatorias personas físicas')
+    log.info(f'BDNS AGENT inicio')
     log.info('=' * 60)
 
     total_proc = 0
@@ -130,7 +127,7 @@ def main():
         total_el    = data.get('totalElements', '?')
 
         if not content:
-            log.info(f'Página {page}: vacía, fin')
+            log.info('Fin de resultados')
             break
 
         log.info(f'Página {page+1}/{total_pages} ({total_el} total) — {len(content)} registros')
@@ -142,7 +139,6 @@ def main():
                 total_ok += 1
 
         if page >= total_pages - 1:
-            log.info('Última página')
             break
 
         time.sleep(SLEEP_PAGES)
