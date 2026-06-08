@@ -7,7 +7,7 @@ Cron: lunes 4am (tras agent.py a las 3am)
 """
 
 import os, time, json, logging, unicodedata, re, urllib.request, urllib.error
-from datetime import datetime, timedelta
+from datetime import datetime
 from supabase import create_client
 
 logging.basicConfig(
@@ -28,7 +28,6 @@ BDNS_DETAIL  = 'https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria?id=
 PAGE_SIZE    = 50
 SLEEP_PAGES  = 2       # segundos entre páginas
 MAX_PAGES    = 500     # ~25.000 convocatorias por ejecución
-DIAS_ATRAS   = 365     # solo convocatorias del último año en la primera pasada
 
 HEADERS = {
     'Accept': 'application/json',
@@ -41,12 +40,11 @@ def slugify(text):
     text = re.sub(r'[^a-z0-9]+', '-', text)
     return text.strip('-')[:120]
 
-def bdns_get(page, fecha_desde):
+def bdns_get(page):
     params = (
         f'vpd=GE&tipoBeneficiario=1'
         f'&page={page}&pageSize={PAGE_SIZE}'
         f'&order=fechaRecepcion&direccion=desc'
-        f'&fechaDesde={fecha_desde}'
     )
     url = f'{BDNS_SEARCH}?{params}'
     req = urllib.request.Request(url, headers=HEADERS)
@@ -114,17 +112,15 @@ def main():
         return
 
     sb = create_client(SUPABASE_URL, SUPABASE_KEY)
-    fecha_desde = (datetime.today() - timedelta(days=DIAS_ATRAS)).strftime('%d-%m-%Y')
-
     log.info('=' * 60)
-    log.info(f'BDNS AGENT inicio — desde {fecha_desde}')
+    log.info(f'BDNS AGENT inicio — últimas {MAX_PAGES * PAGE_SIZE:,} convocatorias personas físicas')
     log.info('=' * 60)
 
     total_proc = 0
     total_ok   = 0
 
     for page in range(MAX_PAGES):
-        data = bdns_get(page, fecha_desde)
+        data = bdns_get(page)
         if not data:
             log.warning(f'Página {page}: sin respuesta, parando')
             break
