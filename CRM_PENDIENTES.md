@@ -5,9 +5,9 @@ No borrar entradas sin confirmación del owner; marcar como hechas con `[x]` y f
 
 ## Aparcadas (esperando su momento)
 
-- [ ] **Retirar o reubicar el botón provisional "＋ Nuevo expediente".**
+- [x] 2026-06-08 — Retirar o reubicar el botón provisional "＋ Nuevo expediente".**
   Es temporal para pruebas. Cuando el flujo Bandeja de matches → Expediente esté
-  consolidado con clientes reales, retirarlo o dejarlo como alta manual secundaria
+  consolidado con clientes reales, retirarlo o dejarlo como alta manual secundaria — HECHO, se quitó
   bien integrada (no provisional).
 
 ## Surgidas durante el desarrollo
