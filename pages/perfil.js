@@ -234,45 +234,16 @@ const PASOS = [
   },
 ]
 
-// Buscar municipios via Google Places Autocomplete API
-let placesService = null
-
+// Buscar municipios via endpoint propio /api/municipios (server-side Places API)
 async function buscarMunicipio(query) {
   if (query.length < 2) return []
-  if (typeof window === 'undefined') return []
-
-  return new Promise((resolve) => {
-    try {
-      if (!window.google?.maps?.places) {
-        resolve([])
-        return
-      }
-      const service = new window.google.maps.places.AutocompleteService()
-      service.getPlacePredictions({
-        input: query,
-        componentRestrictions: { country: 'es' },
-        types: ['(cities)'],
-        language: 'es',
-      }, (predictions, status) => {
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK || !predictions) {
-          resolve([])
-          return
-        }
-        resolve(predictions.map(p => {
-          const parts = p.description.split(', ')
-          return {
-            nombre: parts[0] || p.description,
-            provincia: parts[1] || '',
-            ccaa: parts[2] || '',
-            comarca: '',
-            display: p.description,
-            placeId: p.place_id,
-          }
-        }).slice(0, 7))
-      })
-    } catch (e) {
-      resolve([])
-    }
+  try {
+    const res = await fetch(`/api/municipios?q=${encodeURIComponent(query)}`)
+    if (!res.ok) return []
+    return await res.json()
+  } catch (e) {
+    return []
+  }
   })
 }
 
