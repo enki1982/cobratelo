@@ -16,6 +16,7 @@ const LABELS = {
   coche_gasolina:'Coche gasolina/diésel',coche_electrico:'Coche eléctrico/híbrido',moto:'Moto',quiero_vehiculo:'Quiere vehículo',sin_vehiculo:'Sin vehículo',
   mascotas:'Mascotas',energia:'Eficiencia energética',salud_cronica:'Enfermedad crónica',gafas_audifonos:'Gafas/audífonos',estudios_hijos:'Hijos en edad escolar',negocio_digital:'Digitalización negocio',pyme:'Empresa/pyme',ninguno:'Ninguno',
   si_gestoria:'Tiene gestoría',no_gestoria:'Sin gestoría',quiero_gestoria:'Quiere gestoría',
+  mujer:'Mujer',hombre:'Hombre',otro:'Otro / No binario',nd:'Prefiero no decirlo',
   empadronado_si:'Sí',empadronado_no:'No (otro lugar)',
 }
 
@@ -24,6 +25,9 @@ const OPCIONES_SECCION = {
   situacion: { multi: true, opts: [
     {v:'empleado',l:'Empleado/a',e:''},{v:'autonomo',l:'Autónomo/a',e:''},{v:'desempleado',l:'En paro',e:''},
     {v:'pensionista',l:'Pensionista',e:'️'},{v:'estudiante',l:'Estudiante',e:''},{v:'emprendedor',l:'Quiero emprender',e:''},
+  ]},
+  genero: { multi: false, opts: [
+    {v:'mujer',l:'Mujer',e:''},{v:'hombre',l:'Hombre',e:''},{v:'otro',l:'Otro / No binario',e:''},{v:'nd',l:'Prefiero no decirlo',e:''},
   ]},
   familia: { multi: true, opts: [
     {v:'soltero',l:'Soltero/a',e:''},{v:'casado',l:'Casado/a o pareja',e:''},{v:'divorciado',l:'Divorciado/a',e:'️'},{v:'viudo',l:'Viudo/a',e:'️'},
@@ -65,6 +69,7 @@ const OPCIONES_SECCION = {
 const SECCIONES_PERFIL = [
   { id:'situacion',         label:'Situación laboral' },
   { id:'nacimiento',        label:'Fecha de nacimiento', tipo:'fecha' },
+  { id:'genero',            label:'Género' },
   { id:'familia',           label:'Situación familiar' },
   { id:'vivienda',          label:'Vivienda' },
   { id:'alquiler_detalle',  label:'Alquiler mensual', condicion: p => (p.vivienda||[]).includes('alquiler') },
