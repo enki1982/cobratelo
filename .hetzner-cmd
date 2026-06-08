@@ -1,10 +1,1 @@
-echo "=== AGENT.PY — últimas 30 líneas log ==="
-tail -30 /var/log/ayuda-es.log 2>/dev/null || echo "Log vacío"
-
-echo ""
-echo "=== GUARDADAS CHECK ==="
-grep -c "guardadas\|guardada\|upsert\|INSERT\|insert" /var/log/ayuda-es.log 2>/dev/null || echo "0"
-
-echo ""
-echo "=== HEAD AGENT.PY ==="
-head -50 /root/ayuda-es-agent/agent.py
+sed -n '100,235p' /root/ayuda-es-agent/agent.py
