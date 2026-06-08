@@ -62,6 +62,35 @@ def nivel_to_ambito(nivel1):
     if 'PROVIN'  in n:                    return 'autonomico'
     return 'municipal'
 
+PROV_A_CCAA = {
+    'alava':'Pais Vasco','araba':'Pais Vasco','guipuzcoa':'Pais Vasco','gipuzkoa':'Pais Vasco',
+    'vizcaya':'Pais Vasco','bizkaia':'Pais Vasco','navarra':'Navarra','nafarroa':'Navarra',
+    'la rioja':'La Rioja','cantabria':'Cantabria','asturias':'Asturias',
+    'galicia':'Galicia','a coruna':'Galicia','lugo':'Galicia','ourense':'Galicia','pontevedra':'Galicia',
+    'burgos':'Castilla y Leon','leon':'Castilla y Leon','palencia':'Castilla y Leon',
+    'salamanca':'Castilla y Leon','segovia':'Castilla y Leon','soria':'Castilla y Leon',
+    'valladolid':'Castilla y Leon','zamora':'Castilla y Leon','avila':'Castilla y Leon',
+    'madrid':'Comunidad de Madrid','comunidad de madrid':'Comunidad de Madrid',
+    'albacete':'Castilla-La Mancha','ciudad real':'Castilla-La Mancha',
+    'cuenca':'Castilla-La Mancha','guadalajara':'Castilla-La Mancha','toledo':'Castilla-La Mancha',
+    'badajoz':'Extremadura','caceres':'Extremadura','extremadura':'Extremadura',
+    'almeria':'Andalucia','cadiz':'Andalucia','cordoba':'Andalucia',
+    'granada':'Andalucia','huelva':'Andalucia','jaen':'Andalucia','malaga':'Andalucia','sevilla':'Andalucia',
+    'murcia':'Murcia','region de murcia':'Murcia',
+    'valencia':'Comunidad Valenciana','alicante':'Comunidad Valenciana','castellon':'Comunidad Valenciana',
+    'huesca':'Aragon','teruel':'Aragon','zaragoza':'Aragon',
+    'barcelona':'Cataluna','girona':'Cataluna','lleida':'Cataluna','tarragona':'Cataluna',
+    'illes balears':'Illes Balears','baleares':'Illes Balears',
+    'las palmas':'Canarias','santa cruz de tenerife':'Canarias','canarias':'Canarias',
+    'ceuta':'Ceuta','melilla':'Melilla',
+}
+
+def nivel2_a_ccaa(nivel2):
+    if not nivel2: return None
+    n = unicodedata.normalize('NFD', nivel2.lower())
+    n = ''.join(c for c in n if unicodedata.category(c) != 'Mn')
+    return PROV_A_CCAA.get(n.strip())
+
 def mapear(conv):
     titulo    = (conv.get('descripcion') or '').strip()
     organismo = (conv.get('nivel3') or conv.get('nivel2') or '').strip()
@@ -71,7 +100,12 @@ def mapear(conv):
     nivel1 = conv.get('nivel1', '')
     nivel2 = conv.get('nivel2', '')
     ambito = nivel_to_ambito(nivel1)
-    ccaa   = nivel2 if ambito != 'estatal' else 'Estatal'
+    if ambito == 'estatal':
+        ccaa = 'Estatal'
+    elif ambito == 'autonomico':
+        ccaa = nivel2
+    else:
+        ccaa = nivel2_a_ccaa(nivel2) or nivel2 or 'Estatal'
 
     bdns_id     = conv.get('id') or conv.get('numeroConvocatoria')
     url_oficial = BDNS_DETAIL.format(id=bdns_id) if bdns_id else None
