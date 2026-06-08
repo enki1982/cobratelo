@@ -283,3 +283,47 @@ El CRM está terminado. Lo que separa el producto del mercado:
 2. **Lo legal** — rápido para un abogado, imprescindible
 
 Con esos dos resueltos, hay producto. El resto se pule con los primeros clientes.
+
+---
+
+## Sesión 12 — 8 junio 2026
+
+### Estado al cierre
+
+**BDNS agent operativo:**
+- 22.796 ayudas guardadas en primera pasada (MAX_PAGES=600, ~25k convocatorias)
+- Endpoint correcto: `/bdnstrans/api/convocatorias/busqueda?vpd=GE&tipoBeneficiario=1`
+- Cron: lunes 4am. Acumula semana a semana.
+- Columna `fuente` ya existe en Supabase (no volver a crear)
+
+**agent.py parcheado:**
+- JSON parsing robusto: `re.search(r"\{.*\}", texto, re.DOTALL)` en lugar de split de backticks
+- Backfill sin web_search (evita respuestas vacías por stop_reason=tool_use)
+- Última ejecución: guardadas 35, backfill 0 URLs (esperado con fix aplicado)
+
+**Webhook Stripe completo:**
+- Archivo: `pages/api/webhook-stripe.js` (161 líneas)
+- Eventos registrados: checkout.session.completed, invoice.paid, customer.subscription.updated, customer.subscription.deleted, invoice.payment_failed
+- Fallback userId: busca en tabla `usuarios` por email (sin listUsers masivo)
+- STRIPE_WEBHOOK_SECRET ya existe en Vercel
+
+**Google Places arreglado:**
+- Variable en Vercel era `NEXT_PUBLIC_PLACES_KEY`, código esperaba `NEXT_PUBLIC_GOOGLE_PLACES_KEY`
+- Solución: renombrar en Vercel al nombre correcto (no tocar el código)
+- Redeploy hecho, en producción
+
+**Web completa:**
+- Precios: Enterprise → "A consultar", Pro features honestas, FAQ 50 clientes
+- Testimonios: 15 mejorados, más naturales y creíbles
+- Footer: "Cóbratelo.es · hola@cobratelo.es" en todos los archivos
+- Contador: "comprobaciones de ayudas realizadas" (defensible)
+
+### Pendientes reales
+- [ ] Piloto con gestor real (bloqueante de negocio)
+- [ ] Legal — en manos de abogados (DPA, consentimiento, B2B)
+- [ ] Verificar motor de relevancia con volumen BDNS (23k+ ayudas)
+- [ ] Stripe test end-to-end con pago real
+
+### NO hacer
+- No crear columna `fuente` en Supabase (ya existe)
+- No tocar `NEXT_PUBLIC_GOOGLE_PLACES_KEY` en código (ya correcto)
