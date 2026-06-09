@@ -612,13 +612,11 @@ export default function Resultados() {
       // 1. Comprobar caché en Supabase
       const { data: usuario } = await supabase
         .from('usuarios')
-        .select('ayudas_calculadas, perfil')
+        .select('ayudas_calculadas')
         .eq('id', userId)
         .single()
 
       const idsCache = usuario?.ayudas_calculadas
-      const perfilDB = usuario?.perfil
-      console.log('[DEBUG] cache_len:', idsCache?.length, '| pueblo:', perfilDB?.pueblo?.[0]?.substring?.(0,50), '| ccaa:', perfilDB?.ccaa, '| prov:', perfilDB?.provincia, '| comarca:', perfilDB?.comarca)
 
       if (idsCache && idsCache.length > 0) {
         // Caché hit: cargar solo esas ayudas por ID (rápido)
