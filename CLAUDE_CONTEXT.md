@@ -327,3 +327,54 @@ Con esos dos resueltos, hay producto. El resto se pule con los primeros clientes
 ### NO hacer
 - No crear columna `fuente` en Supabase (ya existe)
 - No tocar `NEXT_PUBLIC_GOOGLE_PLACES_KEY` en código (ya correcto)
+
+---
+
+## Sesión 13 — 9 junio 2026 (continuación sesión 12)
+
+### Fixes aplicados
+
+**Localidad (selector pueblo):**
+- Google Maps SDK JS deprecated para keys nuevas (post-marzo 2025)
+- Solución: `buscarMunicipio` migrada a `/api/municipios` server-side
+- Restricción de key cambiada en Google Cloud: "Sitios web" → "Ninguno"
+- SDK de JS eliminado de `_app.js` (ya no se usa)
+- Resultado: Google Places funciona, devuelve nombre+provincia+CCAA+comarca
+
+**Género:**
+- Pregunta añadida en cuestionario (paso 3, entre nacimiento y familia)
+- Opciones: Mujer / Hombre / Otro/No binario / Prefiero no decirlo
+- Editable en Mi cuenta igual que el resto del perfil
+- Motor de relevancia: ayudas específicas de mujer → no aparecen a hombres
+
+**Marquee logos:**
+- Dos filas: Administración (→) y CCAA (←) en sentidos opuestos
+- 19 logos: 6 admin + 13 CCAA
+- Escudos SVG pesados (País Vasco 3.8MB, Murcia 2.1MB, Navarra 370KB) → PNG 10-14KB
+
+**Flujo post-registro:**
+- Bug: usuario completaba cuestionario sin cuenta → creaba cuenta → tenía que rellenar de nuevo
+- Fix: cuando el usuario tiene sesión y hay perfil en URL → se guarda automáticamente en Supabase
+
+**Gestoría no enviaba:**
+- Bug: `enviarAGestoria` definida pero nunca llamada
+- Fix: useEffect automático cuando cargan ayudas + perfil tiene email_gestoria
+- useRef previene doble envío
+
+**Filtro geográfico municipal:**
+- Bug: ayudas de Silla/Finestrat/Venecia aparecían a usuario de Mataró
+- Causa: 17.915 ayudas BDNS con ambito=municipal y comunidad_autonoma='Estatal' (nivel2 era municipio, no CCAA)
+- Fix relevancia: no bloquear municipales con CCAA='Estatal' (desconocida), dejar pasar al filtro textual
+- Fix agente BDNS: mapeador nivel2→CCAA para próximas ingestas
+- bdns_agent.py actualizado en servidor
+
+### Estado Supabase
+- 17.915 ayudas municipales con comunidad_autonoma='Estatal' → SQL de corrección ejecutado por Miki
+- "Madrid" vs "Comunidad de Madrid": inconsistencia de nombres, pendiente de normalizar
+- Columna `fuente` existe (no recrear)
+
+### Pendientes reales
+- [ ] Piloto con gestor real
+- [ ] Legal (abogados)
+- [ ] Normalizar nombres CCAA en tabla ayudas (Madrid/Comunidad de Madrid, etc.)
+- [ ] Stripe test end-to-end con pago real
