@@ -1,7 +1,8 @@
-# Obtener la API key de Anthropic del agente
-grep -r "ANTHROPIC_API_KEY\|anthropic_api_key" /root/ayuda-es-agent/.env 2>/dev/null
-grep -r "ANTHROPIC_API_KEY\|anthropic_api_key" /root/ayuda-es-agent/agent.py 2>/dev/null | head -5
-env | grep ANTHROPIC
-cat /root/.bashrc | grep ANTHROPIC
-cat /root/.profile | grep ANTHROPIC
-cat /root/ayuda-es-agent/.env 2>/dev/null
+python3 -c "
+import urllib.request, json
+url = 'https://pcuomumijpzgatpfgtyo.supabase.co/rest/v1/ayudas?nombre=ilike.*Giron%C3%A8s*&select=id,nombre,ambito,comunidad_autonoma,organismo&limit=5'
+import os
+key = open('/root/ayuda-es-agent/.env').read()
+anon = [l.split('=',1)[1].strip() for l in key.split('\n') if 'SUPABASE_ANON' in l or 'ANON_KEY' in l]
+print('key lines:', anon)
+"
