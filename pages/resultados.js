@@ -748,6 +748,33 @@ export default function Resultados() {
     }
   }
 
+  // Terminal loading — disparar animación cuando empieza a cargar
+  useEffect(() => {
+    if (!loading) return
+    const ccaa      = perfil?.ccaa?.[0]      || 'España'
+    const provincia = perfil?.provincia?.[0] || ccaa
+    const comarca   = perfil?.comarca?.[0]   || provincia
+    const LABEL_LAB = { empleado:'Empleado/a', autonomo:'Autónomo/a', desempleado:'En paro', pensionista:'Pensionista', estudiante:'Estudiante', emprendedor:'Emprendedor/a' }
+    const laboral   = LABEL_LAB[perfil?.situacion?.[0]] || '—'
+    const LABEL_ING = { bajo:'< 8.000€', medio_bajo:'8.000–15.000€', medios:'15.000–30.000€', alto:'> 30.000€' }
+    const ingresos  = LABEL_ING[perfil?.ingresos?.[0]] || '—'
+    const LINES = [
+      { text: '> Iniciando análisis de perfil...', delay: 0 },
+      { text: '> Accediendo a base de datos nacional [23.458 ayudas]...', delay: 500 },
+      { text: `> Filtrando por comunidad autónoma: ${ccaa} [847 matches]...`, delay: 1100 },
+      { text: `> Filtrando por provincia: ${provincia} [312 matches]...`, delay: 1700 },
+      { text: `> Filtrando por comarca: ${comarca} [89 matches]...`, delay: 2200 },
+      { text: `> Cruzando situación laboral: ${laboral}...`, delay: 2700 },
+      { text: `> Cruzando nivel de ingresos: ${ingresos}...`, delay: 3100 },
+      { text: '> Correlacionando 312 variables de elegibilidad...', delay: 3600 },
+      { text: '> Ordenando por relevancia personal...', delay: 5000 },
+    ]
+    const timers = LINES.map(({ text, delay }) =>
+      setTimeout(() => setTerminalLines(prev => [...prev, text]), delay)
+    )
+    return () => timers.forEach(clearTimeout)
+  }, [loading])
+
   // Sin sesión — mostrar registro obligatorio
   if (sessionChecked && sinSesion) {
     const returnUrl = typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''
@@ -776,32 +803,6 @@ export default function Resultados() {
     )
   }
 
-  // Terminal loading — disparar animación cuando empieza a cargar
-  useEffect(() => {
-    if (!loading) return
-    const ccaa      = perfil?.ccaa?.[0]      || 'España'
-    const provincia = perfil?.provincia?.[0] || ccaa
-    const comarca   = perfil?.comarca?.[0]   || provincia
-    const LABEL_LAB = { empleado:'Empleado/a', autonomo:'Autónomo/a', desempleado:'En paro', pensionista:'Pensionista', estudiante:'Estudiante', emprendedor:'Emprendedor/a' }
-    const laboral   = LABEL_LAB[perfil?.situacion?.[0]] || '—'
-    const LABEL_ING = { bajo:'< 8.000€', medio_bajo:'8.000–15.000€', medios:'15.000–30.000€', alto:'> 30.000€' }
-    const ingresos  = LABEL_ING[perfil?.ingresos?.[0]] || '—'
-    const LINES = [
-      { text: '> Iniciando análisis de perfil...', delay: 0 },
-      { text: '> Accediendo a base de datos nacional [23.458 ayudas]...', delay: 500 },
-      { text: `> Filtrando por comunidad autónoma: ${ccaa} [847 matches]...`, delay: 1100 },
-      { text: `> Filtrando por provincia: ${provincia} [312 matches]...`, delay: 1700 },
-      { text: `> Filtrando por comarca: ${comarca} [89 matches]...`, delay: 2200 },
-      { text: `> Cruzando situación laboral: ${laboral}...`, delay: 2700 },
-      { text: `> Cruzando nivel de ingresos: ${ingresos}...`, delay: 3100 },
-      { text: '> Correlacionando 312 variables de elegibilidad...', delay: 3600 },
-      { text: '> Ordenando por relevancia personal...', delay: 5000 },
-    ]
-    const timers = LINES.map(({ text, delay }) =>
-      setTimeout(() => setTerminalLines(prev => [...prev, text]), delay)
-    )
-    return () => timers.forEach(clearTimeout)
-  }, [loading])
 
   if (loading) {
     const total = 9
