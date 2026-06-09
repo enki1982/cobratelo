@@ -1,8 +1,8 @@
-python3 -c "
-import urllib.request, json
-url = 'https://pcuomumijpzgatpfgtyo.supabase.co/rest/v1/ayudas?nombre=ilike.*Giron%C3%A8s*&select=id,nombre,ambito,comunidad_autonoma,organismo&limit=5'
-import os
-key = open('/root/ayuda-es-agent/.env').read()
-anon = [l.split('=',1)[1].strip() for l in key.split('\n') if 'SUPABASE_ANON' in l or 'ANON_KEY' in l]
-print('key lines:', anon)
-"
+source /root/ayuda-es-agent/.env 2>/dev/null || true
+SUPABASE_URL="https://pcuomumijpzgatpfgtyo.supabase.co"
+KEY=$(grep -E "SUPABASE_SERVICE|SERVICE_ROLE|SUPABASE_KEY" /root/ayuda-es-agent/.env 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"')
+ANON=$(grep -E "ANON_KEY|SUPABASE_ANON" /root/ayuda-es-agent/.env 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"')
+echo "Keys found: SERVICE=${#KEY} ANON=${#ANON}"
+curl -s "${SUPABASE_URL}/rest/v1/ayudas?nombre=ilike.*Giron*&select=id,nombre,ambito,comunidad_autonoma,organismo&limit=3" \
+  -H "apikey: ${KEY:-$ANON}" \
+  -H "Authorization: Bearer ${KEY:-$ANON}" | python3 -m json.tool 2>/dev/null || echo "No JSON"
