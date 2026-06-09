@@ -3,10 +3,3 @@ cd /root/ayuda-es-agent
 source .env
 export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY
 python3 enricher.py --batch 500 2>&1
-python3 -c "
-from supabase import create_client; import os
-sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
-a = sb.table('ayudas').select('id',count='exact').eq('ia_analizada',True).execute().count
-p = sb.table('ayudas').select('id',count='exact').eq('ia_analizada',False).execute().count
-print(f'PROGRESO: {a} analizadas / {a+p} total ({100*a//(a+p)}%)')
-" 2>&1
