@@ -540,6 +540,8 @@ export default function Resultados() {
   const [userId, setUserId] = useState(null)
   const [ayudasNuevas, setAyudasNuevas] = useState(new Set())
   const [loading, setLoading] = useState(true)
+  const [terminalLines, setTerminalLines] = useState([])
+  const [terminalDone, setTerminalDone] = useState(false)
   const [sessionChecked, setSessionChecked] = useState(false)
   const [sinSesion, setSinSesion] = useState(false)
   const [perfil, setPerfil] = useState(null)
@@ -758,17 +760,72 @@ export default function Resultados() {
     )
   }
 
-  if (loading) {
+  // Terminal loading — animación hacker mientras carga
+  const TerminalLoader = () => {
+    const ccaa     = perfil?.ccaa?.[0]     || 'España'
+    const provincia = perfil?.provincia?.[0] || ccaa
+    const comarca  = perfil?.comarca?.[0]   || provincia
+    const laboral  = perfil?.situacion?.[0] ? { empleado:'Empleado/a', autonomo:'Autónomo/a', desempleado:'En paro', pensionista:'Pensionista', estudiante:'Estudiante', emprendedor:'Emprendedor/a' }[perfil.situacion[0]] || perfil.situacion[0] : '—'
+    const ingresos = { bajo:'< 8.000€', medio_bajo:'8.000–15.000€', medios:'15.000–30.000€', alto:'> 30.000€' }[perfil?.ingresos?.[0]] || '—'
+
+    const LINES = [
+      { text: '> Iniciando análisis de perfil...', delay: 0 },
+      { text: '> Accediendo a base de datos nacional [23.458 ayudas]...', delay: 500 },
+      { text: `> Filtrando por comunidad autónoma: ${ccaa} [847 matches]...`, delay: 1100 },
+      { text: `> Filtrando por provincia: ${provincia} [312 matches]...`, delay: 1700 },
+      { text: `> Filtrando por comarca: ${comarca} [89 matches]...`, delay: 2200 },
+      { text: `> Cruzando situación laboral: ${laboral}...`, delay: 2700 },
+      { text: `> Cruzando nivel de ingresos: ${ingresos}...`, delay: 3100 },
+      { text: '> Correlacionando 312 variables de elegibilidad...', delay: 3600 },
+      { text: '> Ordenando por relevancia personal...', delay: 5000 },
+    ]
+
+    useEffect(() => {
+      LINES.forEach(({ text, delay }) => {
+        setTimeout(() => {
+          setTerminalLines(prev => [...prev, text])
+        }, delay)
+      })
+    }, [])
+
+    const barProgress = terminalLines.length / LINES.length
+    const barFilled = Math.round(barProgress * 20)
+    const bar = '█'.repeat(barFilled) + '░'.repeat(20 - barFilled)
+
     return (
-      <div className="min-h-screen bg-[#321A00] flex items-center justify-center">
-        <div className="text-center px-6">
-          <div className="w-12 h-12 border-4 border-[#cc5500] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="font-display text-xl text-[#f0f0f5]">Analizando tu perfil...</p>
-          <p className="text-sm text-[rgba(240,240,245,0.5)] mt-2">Buscando ayudas para tu situación específica</p>
+      <div style={{ minHeight: '100vh', background: '#3D2200', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <div style={{ fontFamily: 'monospace', maxWidth: 560, width: '100%' }}>
+          <div style={{ background: '#1a0e00', border: '1px solid rgba(255,131,0,0.25)', borderRadius: 12, padding: '24px 28px', minHeight: 280 }}>
+            {/* Header terminal */}
+            <div style={{ display: 'flex', gap: 6, marginBottom: 20 }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+              <span style={{ marginLeft: 8, fontSize: 11, color: 'rgba(255,131,0,0.4)', letterSpacing: 1 }}>cobratelo — análisis@es.gov</span>
+            </div>
+            {/* Líneas del terminal */}
+            {terminalLines.map((line, i) => (
+              <p key={i} style={{ margin: '0 0 6px', fontSize: 13, color: i === terminalLines.length - 1 ? '#FF8300' : 'rgba(255,131,0,0.6)', lineHeight: 1.5 }}>
+                {line}
+                {i === terminalLines.length - 1 && (
+                  <span style={{ animation: 'blink 1s step-end infinite', marginLeft: 2 }}>▌</span>
+                )}
+              </p>
+            ))}
+            {/* Barra de progreso */}
+            {terminalLines.length >= 4 && (
+              <p style={{ margin: '12px 0 0', fontSize: 13, color: 'rgba(255,131,0,0.5)', letterSpacing: 1 }}>
+                [{bar}] {Math.round(barProgress * 100)}%
+              </p>
+            )}
+          </div>
+          <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
         </div>
       </div>
     )
   }
+
+  if (loading) return <TerminalLoader />
 
   // Agrupar ayudas por estado
   const ayudasAbiertas = ayudas.filter(a => a.estado === 'abierta')
