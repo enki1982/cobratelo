@@ -891,8 +891,8 @@ export default function Resultados() {
                   }
                 }}
                 disabled={enviando}
-                style={{ background: 'rgba(255,131,0,0.12)', border: '1px solid rgba(255,131,0,0.35)', color: '#FF8300', fontWeight: 600, fontSize: 14, padding: '12px 28px', borderRadius: 100, cursor: 'pointer' }}>
-                {enviando ? 'Enviando...' : '📤 Enviar informe a mi gestoría'}
+                style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.4)', color: '#4ade80', fontWeight: 600, fontSize: 14, padding: '12px 28px', borderRadius: 100, cursor: 'pointer' }}>
+                {enviando ? 'Enviando...' : 'Enviar informe a mi gestoría'}
               </button>
             </div>
           ) : (
