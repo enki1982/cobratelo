@@ -1,3 +1,6 @@
+# Copiar enricher.py desde el repo al directorio del agente y ejecutar dry-run
+cp /github/workspace/scripts/enricher.py /root/ayuda-es-agent/enricher.py
+echo "enricher.py copiado OK"
 cd /root/ayuda-es-agent
 source .env 2>/dev/null || true
 python3 enricher.py --batch 5 --dry-run
