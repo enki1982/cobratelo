@@ -655,14 +655,31 @@ export default function Resultados() {
           .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
           .filter(a => a._score >= 40)
           .sort((a, b) => b._score - a._score)
-          .slice(0, 20)
+          .slice(0, 40)
 
-        setAyudas(conScore)
+        // Filtro de sentido común con Claude
+        let ayudasFinal = conScore.slice(0, 20)
+        try {
+          const r = await fetch('/api/filtrar-ayudas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ perfil, ayudas: conScore }),
+          })
+          if (r.ok) {
+            const { ids } = await r.json()
+            if (ids?.length > 0) {
+              const mapa = Object.fromEntries(conScore.map(a => [a.id, a]))
+              ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
+            }
+          }
+        } catch {}
+
+        setAyudas(ayudasFinal)
 
         // Guardar IDs en caché para próximas visitas (en background, sin bloquear)
-        if (conScore.length > 0) {
+        if (ayudasFinal.length > 0) {
           supabase.from('usuarios')
-            .update({ ayudas_calculadas: conScore.map(a => a.id) })
+            .update({ ayudas_calculadas: ayudasFinal.map(a => a.id) })
             .eq('id', userId)
             .then(() => {})
         }
