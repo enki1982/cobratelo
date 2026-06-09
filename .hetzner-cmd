@@ -1,15 +1,5 @@
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" > /root/ayuda-es-agent/enricher.py
 cd /root/ayuda-es-agent
-source .env 2>/dev/null || true
-echo "Iniciando enriquecimiento de todas las ayudas..."
-python3 enricher.py --batch 500
-echo "Primer lote completado. Ayudas analizadas hasta ahora:"
-python3 -c "
-from supabase import create_client
-import os
-sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
-r = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute()
-print(f'  Analizadas: {r.count}')
-r2 = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute()
-print(f'  Pendientes: {r2.count}')
-"
+echo "=== ENV VARS ==="
+cat .env | grep -v "KEY\|TOKEN\|SECRET" | head -20
+echo "=== CLAVES DISPONIBLES (nombres sin valores) ==="
+cat .env | grep -oE "^[A-Z_]+" | sort
