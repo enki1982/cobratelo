@@ -497,15 +497,15 @@ function AyudaCard({ ayuda, esNueva, onEnviarGestor }) {
           </div>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB', margin: 0, lineHeight: 1.3, marginBottom: 4 }}>{ayuda.nombre}</h3>
           <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.45)', margin: 0 }}>{ayuda.organismo}</p>
+          {ayuda.importe_descripcion && !importe && (
+            <p style={{ fontSize: 11, color: 'rgba(255,131,0,0.7)', margin: '4px 0 0', fontStyle: 'italic' }}>{ayuda.importe_descripcion}</p>
+          )}
         </div>
-        <div style={{ textAlign: 'right', flexShrink: 0, maxWidth: 120 }}>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
           {importe > 0 && (
             <p style={{ fontSize: 18, fontWeight: 800, color: '#FF8300', margin: 0 }}>
               {importe >= 1000 ? `${(importe/1000).toFixed(0)}K€` : `${importe}€`}
             </p>
-          )}
-          {ayuda.importe_descripcion && !importe && ayuda.importe_descripcion.length < 30 && (
-            <p style={{ fontSize: 12, color: '#FF8300', margin: 0 }}>{ayuda.importe_descripcion}</p>
           )}
           <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.3)' }}>{expandida ? '▲' : '▼'}</span>
         </div>
