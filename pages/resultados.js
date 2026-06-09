@@ -560,19 +560,22 @@ export default function Resultados() {
         if (data?.plan) setUserPlan(data.plan)
         setUserId(session.user.id)
         setSessionChecked(true)
-        // Si hay perfil en URL y el usuario está logado → guardarlo en BD (flujo post-registro)
-        if (router.query.perfil) {
+        // Recuperar perfil pendiente de localStorage (guardado antes del redirect a login)
+        const perfilPendiente = typeof window !== 'undefined' ? localStorage.getItem('cobratelo_perfil_pendiente') : null
+        if (perfilPendiente) {
           try {
-            const perfilUrl = JSON.parse(decodeURIComponent(router.query.perfil))
+            const perfilUrl = JSON.parse(perfilPendiente)
             await supabase.from('usuarios').upsert({
               id: session.user.id,
               email: session.user.email,
               perfil: perfilUrl,
               updated_at: new Date().toISOString(),
             }, { onConflict: 'id' })
+            localStorage.removeItem('cobratelo_perfil_pendiente')
+            setPerfil(perfilUrl)
           } catch {}
-        } else if (!router.query.perfil && data?.perfil && Object.keys(data.perfil).length > 0) {
-          // Sin perfil en URL → cargar desde BD
+        } else if (data?.perfil && Object.keys(data.perfil).length > 0) {
+          // Sin perfil pendiente → cargar desde BD
           setPerfil(data.perfil)
         }
       } else {
@@ -582,6 +585,13 @@ export default function Resultados() {
       }
     })
   }, [])
+
+  // Cuando no hay sesión y hay perfil → guardarlo en localStorage para recuperarlo tras el registro
+  useEffect(() => {
+    if (sinSesion && perfil && typeof window !== 'undefined') {
+      try { localStorage.setItem('cobratelo_perfil_pendiente', JSON.stringify(perfil)) } catch {}
+    }
+  }, [sinSesion, perfil])
 
   useEffect(() => {
     if (!router.isReady) return
