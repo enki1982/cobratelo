@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   const { perfil, ayudas } = req.body
   if (!perfil || !ayudas?.length) return res.json({ ids: [] })
 
-  // Construir descripción del perfil
   const LABEL_LAB = { empleado:'Empleado/a por cuenta ajena', autonomo:'Autónomo/a', desempleado:'En paro', pensionista:'Pensionista/Jubilado', estudiante:'Estudiante', emprendedor:'Quiere emprender' }
   const LABEL_ING = { bajo:'Menos de 8.000€/año', medio_bajo:'8.000–15.000€/año', medios:'15.000–30.000€/año', alto:'Más de 30.000€/año' }
 
@@ -36,7 +35,6 @@ export default async function handler(req, res) {
 - Situaciones especiales: ${especial}
 - Extras: ${(perfil.extras || []).join(', ') || 'ninguno'}`
 
-  // Lista de ayudas para analizar
   const listaAyudas = ayudas.slice(0, 40).map(a => ({
     id: a.id,
     nombre: a.nombre,
@@ -44,40 +42,43 @@ export default async function handler(req, res) {
     ambito: a.ambito,
     ccaa: a.comunidad_autonoma,
     tipo: a.tipo,
-    estado: a.estado,
   }))
 
-  const ubicacion = `${pueblo} (comarca: ${comarca}, provincia: ${provincia}, CCAA: ${ccaa})`
+  const prompt = `Eres un experto en ayudas públicas españolas. Filtra estas ayudas para el usuario.
 
-  const prompt = `Eres un experto en ayudas públicas españolas. Dado un perfil de usuario y una lista de ayudas potenciales, filtra y ordena las que realmente le corresponden.
-
-PERFIL DEL USUARIO:
+PERFIL:
 ${perfilTexto}
 
-UBICACIÓN EXACTA DEL USUARIO: ${ubicacion}
+LOCALIZACIÓN EXACTA DEL USUARIO:
+- Municipio: ${pueblo}
+- Comarca: ${comarca}
+- Provincia: ${provincia}
+- CCAA: ${ccaa}
 
-LISTA DE AYUDAS (${listaAyudas.length} candidatas):
-${listaAyudas.map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.ccaa || 'Estatal'} | ${a.tipo}`).join('\n')}
+AYUDAS A ANALIZAR:
+${listaAyudas.map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.ccaa || 'Estatal'}`).join('\n')}
 
-REGLAS DE FILTRADO (aplica con criterio estricto):
-1. EXCLUIR si el nombre u organismo menciona una comarca, municipio o provincia DIFERENTE a la del usuario:
-   - Usuario en ${comarca} → excluir ayudas de otras comarcas catalanas (Gironès, Maresme, Vallès, etc.)
-   - Usuario en ${provincia} → excluir ayudas de otras provincias
-2. EXCLUIR si la situación laboral no coincide:
-   - Ayudas de/para autónomos o empresas → excluir si el usuario es solo empleado por cuenta ajena
-   - Ayudas para contratación (el usuario contrataría a alguien) → excluir si no tiene empresa
-   - Becas universitarias o de movilidad estudiantil → excluir si no es estudiante
-3. EXCLUIR ayudas para empresas, pymes o entidades → el usuario es persona física
-4. MANTENER: ayudas estatales, autonómicas de ${ccaa}, y cualquier caso de duda → a favor del usuario
-5. ORDENAR por relevancia directa al perfil concreto
+REGLAS DE EXCLUSIÓN (sé estricto):
 
-Responde ÚNICAMENTE con JSON válido, sin texto adicional:
+1. GEOGRÁFICAS — EXCLUIR si la ayuda menciona explícitamente una comarca, municipio o entidad local DISTINTA a donde vive el usuario.
+   El usuario vive en: municipio ${pueblo}, comarca ${comarca}, provincia ${provincia}.
+   Por tanto EXCLUIR ayudas cuyo nombre u organismo mencione comarcas distintas (ej: si comarca usuario es "Vallès Oriental", excluir Gironès, Barcelonès, Maresme, Baix Llobregat, Osona, etc.).
+   MANTENER: ayudas estatales, de ${ccaa} en general, provinciales de ${provincia}, o que no especifiquen área geográfica concreta.
+
+2. LABORALES — EXCLUIR si:
+   - La ayuda es EXCLUSIVA para autónomos o freelance y el usuario NO es autónomo
+   - La ayuda es para que empresas/autónomos contraten trabajadores (el usuario no tiene empresa)
+   - Es una beca universitaria o de movilidad estudiantil y el usuario no es estudiante
+   - Es exclusivamente para empresas, pymes o entidades (el usuario es persona física)
+   MANTENER: ayudas para empleados, vivienda, familia, subsidios, bonificaciones individuales.
+
+Devuelve SOLO este JSON sin ningún texto adicional antes ni después:
 {"ids": ["id1", "id2", "id3", ...]}`
 
   try {
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 500,
+      max_tokens: 600,
       messages: [{ role: 'user', content: prompt }],
     })
 
@@ -89,7 +90,6 @@ Responde ÚNICAMENTE con JSON válido, sin texto adicional:
     return res.json({ ids: Array.isArray(ids) ? ids : [] })
   } catch (e) {
     console.error('filtrar-ayudas error:', e)
-    // Fallback: devolver sin filtrar
     return res.json({ ids: ayudas.slice(0, 20).map(a => a.id) })
   }
 }
