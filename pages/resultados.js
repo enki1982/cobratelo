@@ -476,7 +476,7 @@ function calcularRelevancia(ayuda, perfil) {
 
 const FREE_LIMIT = 3 // usado solo como fallback
 
-function AyudaCard({ ayuda, esNueva, onEnviarGestor }) {
+function AyudaCard({ ayuda, esNueva }) {
   const [expandida, setExpandida] = useState(false)
   const importe = ayuda.importe_max || ayuda.importe_min
   const estadoColor = { abierta: '#4ade80', permanente: '#60a5fa', pendiente: '#f59e0b', cerrada: 'rgba(255,245,235,0.3)' }[ayuda.estado] || 'rgba(255,245,235,0.3)'
@@ -522,10 +522,6 @@ function AyudaCard({ ayuda, esNueva, onEnviarGestor }) {
                 Ver convocatoria oficial →
               </a>
             )}
-            <button onClick={e => { e.stopPropagation(); onEnviarGestor() }}
-              style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', background: 'transparent', border: '1px solid rgba(255,200,120,0.15)', padding: '8px 16px', borderRadius: 100, cursor: 'pointer' }}>
-              Enviar a gestoría
-            </button>
           </div>
         </div>
       )}
@@ -552,6 +548,8 @@ export default function Resultados() {
   const [nombreCliente, setNombreCliente] = useState('')
   const [envioGestorOk, setEnvioGestorOk] = useState(false)
   const [enviandoGestor, setEnviandoGestor] = useState(false)
+  const [emailGestorInput, setEmailGestorInput] = useState('')
+  const [modalEmailGestor, setModalEmailGestor] = useState(false)
 
 
   useEffect(() => {
@@ -607,22 +605,7 @@ export default function Resultados() {
     else if (sessionChecked && !userId) setLoading(false)
   }, [perfil, userId, sessionChecked])
 
-  // Enviar automáticamente a gestoría si el perfil tiene email_gestoria y aún no se ha enviado
-  const gestorEnviadoRef = useRef(false)
-  useEffect(() => {
-    if (!perfil?.email_gestoria || !ayudas.length || gestorEnviadoRef.current) return
-    gestorEnviadoRef.current = true
-    fetch('/api/enviar-gestor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        emailGestor: perfil.email_gestoria,
-        nombreCliente: perfil.nombre || '',
-        ayudas,
-        perfil,
-      }),
-    }).then(r => { if (r.ok) setEmailEnviado(true) }).catch(() => {})
-  }, [ayudas, perfil])
+  // Gestor: no auto-envío — el usuario elige cuándo enviar
 
   const fetchAyudas = async (userId) => {
     try {
@@ -716,8 +699,16 @@ export default function Resultados() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailGestor, nombreCliente, ayudas, perfil })
       })
-      if (res.ok) { setEnvioGestorOk(true); setModalGestor(false) }
-      else alert('Error al enviar. Inténtalo de nuevo.')
+      if (res.ok) {
+        setEnvioGestorOk(true)
+        setModalGestor(false)
+        // Guardar el email en el perfil del usuario para próximas veces
+        if (userId && !perfil?.email_gestoria) {
+          const nuevoPerfil = { ...perfil, email_gestoria: emailGestor }
+          setPerfil(nuevoPerfil)
+          supabase.from('usuarios').update({ perfil: nuevoPerfil }).eq('id', userId).then(() => {})
+        }
+      } else alert('Error al enviar. Inténtalo de nuevo.')
     } catch { alert('Error al enviar.') }
     finally { setEnviandoGestor(false) }
   }
@@ -885,6 +876,30 @@ export default function Resultados() {
           <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.25)', textAlign: 'center', marginTop: 32, lineHeight: 1.6 }}>
             Los resultados son orientativos. Verifica siempre los requisitos en la fuente oficial.
           </p>
+
+          {/* ── BOTÓN GESTORÍA ── */}
+          {!envioGestorOk ? (
+            <div style={{ marginTop: 16, textAlign: 'center' }}>
+              <button
+                onClick={() => {
+                  if (perfil?.email_gestoria) {
+                    // Tiene email → enviar directamente
+                    enviarAGestoria()
+                  } else {
+                    // No tiene email → abrir modal para pedirlo
+                    setModalGestor(true)
+                  }
+                }}
+                disabled={enviando}
+                style={{ background: 'rgba(255,131,0,0.12)', border: '1px solid rgba(255,131,0,0.35)', color: '#FF8300', fontWeight: 600, fontSize: 14, padding: '12px 28px', borderRadius: 100, cursor: 'pointer' }}>
+                {enviando ? 'Enviando...' : '📤 Enviar informe a mi gestoría'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ marginTop: 16, textAlign: 'center', padding: '12px 24px', background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 100, display: 'inline-block', marginLeft: 'auto', marginRight: 'auto', width: 'fit-content' }}>
+              <span style={{ color: '#4ade80', fontSize: 14, fontWeight: 600 }}>✓ Informe enviado a tu gestoría</span>
+            </div>
+          )}
           </div>
 
           {/* ── LISTA DE AYUDAS ── */}
@@ -892,7 +907,7 @@ export default function Resultados() {
             <div style={{ marginBottom: 32 }}>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Abiertas ahora</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} onEnviarGestor={() => setModalGestor(true)} />)}
+                {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
               </div>
             </div>
           )}
@@ -901,7 +916,7 @@ export default function Resultados() {
             <div>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Otras convocatorias</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} onEnviarGestor={() => setModalGestor(true)} />)}
+                {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
               </div>
             </div>
           )}

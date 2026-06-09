@@ -47,26 +47,31 @@ export default async function handler(req, res) {
     estado: a.estado,
   }))
 
-  const prompt = `Eres un experto en ayudas públicas españolas. Dado un perfil de usuario y una lista de ayudas potenciales, debes filtrar y ordenar las que realmente le corresponden.
+  const ubicacion = `${pueblo} (comarca: ${comarca}, provincia: ${provincia}, CCAA: ${ccaa})`
+
+  const prompt = `Eres un experto en ayudas públicas españolas. Dado un perfil de usuario y una lista de ayudas potenciales, filtra y ordena las que realmente le corresponden.
 
 PERFIL DEL USUARIO:
 ${perfilTexto}
 
+UBICACIÓN EXACTA DEL USUARIO: ${ubicacion}
+
 LISTA DE AYUDAS (${listaAyudas.length} candidatas):
 ${listaAyudas.map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.ccaa || 'Estatal'} | ${a.tipo}`).join('\n')}
 
-INSTRUCCIONES:
-1. EXCLUIR ayudas que claramente NO aplican al perfil:
-   - Ayudas de autónomos/emprendedores si el usuario SOLO es empleado
-   - Becas universitarias si no es estudiante
-   - Ayudas específicas de otra CCAA/provincia diferente a la del usuario
-   - Ayudas para mujeres si el usuario es hombre (o viceversa si está claro)
-   - Ayudas para empresas/pymes si el usuario no tiene empresa
-   - Ayudas para mayores de 65 si el usuario es joven
-2. MANTENER ayudas estatales (aplican a todos), autonómicas de su CCAA, y cualquier duda resuelta a favor del usuario
-3. ORDENAR por relevancia real: primero las más directamente aplicables
+REGLAS DE FILTRADO (aplica con criterio estricto):
+1. EXCLUIR si el nombre u organismo menciona una comarca, municipio o provincia DIFERENTE a la del usuario:
+   - Usuario en ${comarca} → excluir ayudas de otras comarcas catalanas (Gironès, Maresme, Vallès, etc.)
+   - Usuario en ${provincia} → excluir ayudas de otras provincias
+2. EXCLUIR si la situación laboral no coincide:
+   - Ayudas de/para autónomos o empresas → excluir si el usuario es solo empleado por cuenta ajena
+   - Ayudas para contratación (el usuario contrataría a alguien) → excluir si no tiene empresa
+   - Becas universitarias o de movilidad estudiantil → excluir si no es estudiante
+3. EXCLUIR ayudas para empresas, pymes o entidades → el usuario es persona física
+4. MANTENER: ayudas estatales, autonómicas de ${ccaa}, y cualquier caso de duda → a favor del usuario
+5. ORDENAR por relevancia directa al perfil concreto
 
-Responde ÚNICAMENTE con JSON válido, sin explicaciones:
+Responde ÚNICAMENTE con JSON válido, sin texto adicional:
 {"ids": ["id1", "id2", "id3", ...]}`
 
   try {
