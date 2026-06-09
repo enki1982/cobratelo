@@ -636,7 +636,23 @@ export default function Resultados() {
           .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
           .in('estado', ['abierta', 'permanente', 'pendiente'])
 
-        const conScore = (data || [])
+        // Pre-filtro inline en resultados.js para Consell Comarcal de otra comarca
+        const _normStr = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').trim()
+        const _provUser = _normStr((perfil?.provincia||[])[0] || '')
+        const _EXCL = {
+          'barcelona':['girones','tarragones','tarragona','girona','lleida'],
+          'girona':['barcelona','maresme','valles','tarragona','lleida'],
+          'tarragona':['barcelona','girona','lleida'],
+          'lleida':['barcelona','girona','tarragona'],
+        }
+        const _excluirProv = _EXCL[_provUser] || []
+        const _preFilter = (data || []).filter(a => {
+          const _t = _normStr(`${a.nombre} ${a.organismo}`)
+          if (_excluirProv.some(p => _t.includes(p))) return false
+          return true
+        })
+
+        const conScore = _preFilter
           .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
           .filter(a => a._score >= 40)
           .sort((a, b) => b._score - a._score)
