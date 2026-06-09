@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { C, bgMesh, navStyle } from '../lib/theme'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 
@@ -607,7 +607,7 @@ export default function Resultados() {
   }, [perfil, userId, sessionChecked])
 
   // Enviar automáticamente a gestoría si el perfil tiene email_gestoria y aún no se ha enviado
-  const gestorEnviadoRef = React.useRef(false)
+  const gestorEnviadoRef = useRef(false)
   useEffect(() => {
     if (!perfil?.email_gestoria || !ayudas.length || gestorEnviadoRef.current) return
     gestorEnviadoRef.current = true
