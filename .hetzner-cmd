@@ -1,16 +1,16 @@
-cd /root/ayuda-es-agent || true
+cd /root/ayuda-es-agent
 set -a; source .env 2>/dev/null; set +a
 
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o /root/ayuda-es-agent/enricher.py || true
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
+
 pkill -f "enricher.py" 2>/dev/null || true
+screen -S enricher -X quit 2>/dev/null || true
 sleep 2
 
-# Lanzar totalmente desconectado del shell
-setsid nohup python3 -u /root/ayuda-es-agent/enricher.py --all </dev/null >/tmp/enricher.log 2>&1 &
-echo "Lanzado PID: $!"
-sleep 10
+screen -dmS enricher bash -c "cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -u enricher.py --all > /tmp/enricher.log 2>&1"
 
-ps aux | grep "[e]nricher" | head -3 || true
-echo "=== Log ==="
-cat /tmp/enricher.log 2>/dev/null || true
-echo "DONE"
+sleep 5
+screen -ls | grep enricher || true
+echo "Log inicial:"
+cat /tmp/enricher.log 2>/dev/null || echo "log vacio"
+echo "OK"
