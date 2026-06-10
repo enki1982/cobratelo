@@ -1,4 +1,9 @@
-echo "=== Log del enricher ==="
-cat /tmp/enricher.log 2>/dev/null || echo "Sin log"
-echo "=== Procesos enricher activos ==="
-ps aux | grep enricher | grep -v grep || echo "Ninguno corriendo"
+echo "=== Log enricher ==="
+cat /tmp/enricher.log 2>/dev/null | tail -30 || echo "SIN_LOG"
+echo "=== Procesos ==="
+ps aux | grep -i enricher | grep -v grep || echo "NO_PROCESO"
+echo "=== Variables env ==="
+cd /root/ayuda-es-agent && source .env 2>/dev/null
+echo "SUPABASE_URL=${SUPABASE_URL:0:30}..."
+echo "ANTHROPIC_KEY_LEN=${#ANTHROPIC_API_KEY}"
+echo "FORWARD_EMAIL_LEN=${#FORWARD_EMAIL_API}"
