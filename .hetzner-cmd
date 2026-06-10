@@ -1,20 +1,16 @@
-cd /root/ayuda-es-agent
-set -a; source .env; set +a
+cd /root/ayuda-es-agent || true
+set -a; source .env 2>/dev/null; set +a
 
-# Actualizar enricher
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" > /root/ayuda-es-agent/enricher.py
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o /root/ayuda-es-agent/enricher.py || true
+pkill -f "enricher.py" 2>/dev/null || true
+sleep 2
 
-# Matar proceso anterior si existe
-pkill -f "enricher.py" 2>/dev/null; sleep 2
+# Lanzar totalmente desconectado del shell
+setsid nohup python3 -u /root/ayuda-es-agent/enricher.py --all </dev/null >/tmp/enricher.log 2>&1 &
+echo "Lanzado PID: $!"
+sleep 10
 
-# Lanzar en background
-nohup python3 -u /root/ayuda-es-agent/enricher.py --all > /tmp/enricher.log 2>&1 &
-echo "PID: $!"
-disown
-
-# Esperar 8s y verificar
-sleep 8
-echo "=== Proceso ==="
-ps aux | grep "enricher" | grep -v grep && echo "CORRIENDO" || echo "NO_ENCONTRADO"
-echo "=== Log inicial ==="
-head -15 /tmp/enricher.log || true
+ps aux | grep "[e]nricher" | head -3 || true
+echo "=== Log ==="
+cat /tmp/enricher.log 2>/dev/null || true
+echo "DONE"
