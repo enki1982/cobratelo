@@ -1,9 +1,8 @@
-cd /root/ayuda-es-agent
-set -a; source .env 2>/dev/null; set +a
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
-crontab -l 2>/dev/null | grep -v enricher > /tmp/cron_tmp || true
-echo "@reboot cd /root/ayuda-es-agent && source /root/ayuda-es-agent/.env && python3 -u /root/ayuda-es-agent/enricher.py --all >> /tmp/enricher.log 2>&1" >> /tmp/cron_tmp
-echo "* * * * * pgrep -f enricher.py || (cd /root/ayuda-es-agent && source /root/ayuda-es-agent/.env && python3 -u /root/ayuda-es-agent/enricher.py --all >> /tmp/enricher.log 2>&1)" >> /tmp/cron_tmp
-crontab /tmp/cron_tmp
-crontab -l
-echo CRON_OK
+echo "=== Log enricher ==="
+cat /tmp/enricher.log 2>/dev/null | tail -20 || echo "Sin log"
+echo "=== Proceso activo ==="
+pgrep -fa enricher || echo "No corre"
+echo "=== FORWARD_EMAIL en .env ==="
+grep -c FORWARD_EMAIL /root/ayuda-es-agent/.env 2>/dev/null || echo "No esta"
+echo "=== Cron instalado ==="
+crontab -l 2>/dev/null | grep enricher || echo "No hay cron"
