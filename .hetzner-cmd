@@ -1,25 +1,9 @@
 cd /root/ayuda-es-agent
 set -a; source .env 2>/dev/null; set +a
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py || true
-pkill -f "enricher.py" 2>/dev/null || true
-python3 -c "
-import subprocess, os, time
-env = dict(os.environ)
-proc = subprocess.Popen(
-    ['python3', '-u', '/root/ayuda-es-agent/enricher.py', '--all'],
-    stdout=open('/tmp/enricher.log', 'w'),
-    stderr=subprocess.STDOUT,
-    env=env,
-    start_new_session=True
-)
-time.sleep(5)
-print('PID:', proc.pid)
-import psutil
-try:
-    p = psutil.Process(proc.pid)
-    print('Estado:', p.status())
-except:
-    print('Proceso arrancado (psutil no disponible)')
-"
-cat /tmp/enricher.log 2>/dev/null | head -15 || true
-echo "DONE"
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
+crontab -l 2>/dev/null | grep -v enricher > /tmp/cron_tmp || true
+echo "@reboot cd /root/ayuda-es-agent && source /root/ayuda-es-agent/.env && python3 -u /root/ayuda-es-agent/enricher.py --all >> /tmp/enricher.log 2>&1" >> /tmp/cron_tmp
+echo "* * * * * pgrep -f enricher.py || (cd /root/ayuda-es-agent && source /root/ayuda-es-agent/.env && python3 -u /root/ayuda-es-agent/enricher.py --all >> /tmp/enricher.log 2>&1)" >> /tmp/cron_tmp
+crontab /tmp/cron_tmp
+crontab -l
+echo CRON_OK
