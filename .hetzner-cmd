@@ -1,20 +1,4 @@
-# Descargar el enricher actualizado
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" > /root/ayuda-es-agent/enricher.py
-echo "enricher.py: $(wc -l /root/ayuda-es-agent/enricher.py) lineas"
-
-# Matar cualquier proceso enricher anterior
-pkill -f "enricher.py" 2>/dev/null && echo "Proceso anterior detenido" || echo "No habia proceso anterior"
-
-# Lanzar en background con nohup
-cd /root/ayuda-es-agent
-source .env
-export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY FORWARD_EMAIL_API
-
-nohup python3 -u enricher.py --all > /tmp/enricher.log 2>&1 &
-ENRICHER_PID=$!
-echo "Enricher PID: $ENRICHER_PID"
-sleep 5
-echo "--- Primeras lineas del log ---"
-head -20 /tmp/enricher.log
-echo "--- Estado del proceso ---"
-ps aux | grep enricher | grep -v grep
+echo "=== Log del enricher ==="
+cat /tmp/enricher.log 2>/dev/null || echo "Sin log"
+echo "=== Procesos enricher activos ==="
+ps aux | grep enricher | grep -v grep || echo "Ninguno corriendo"
