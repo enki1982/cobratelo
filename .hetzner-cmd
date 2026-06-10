@@ -2,4 +2,13 @@ curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enric
 cd /root/ayuda-es-agent
 source .env
 export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY
-python3 enricher.py --batch 500 2>&1
+
+# Matar cualquier enricher previo
+pkill -f enricher.py 2>/dev/null || true
+
+# Lanzar en background — procesa todas las pendientes (~11K)
+nohup python3 enricher.py --batch 11000 > /root/enricher.log 2>&1 &
+echo "Enricher PID: $!"
+echo "Corriendo en background. Log en /root/enricher.log"
+sleep 5
+tail -20 /root/enricher.log
