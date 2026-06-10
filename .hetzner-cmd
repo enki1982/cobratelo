@@ -1,5 +1,25 @@
-echo "=== ESTADO ENRICHER ==="
-ps aux | grep enricher.py | grep -v grep && echo "CORRIENDO OK" || echo "NO CORRE"
-echo ""
-echo "=== LOG (últimas 20 líneas) ==="
-tail -20 /root/enricher.log 2>/dev/null || echo "Sin log"
+cd /root/ayuda-es-agent
+source .env
+export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY
+
+# Descargar enricher actualizado
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" > enricher.py
+
+# Verificar si ya hay un proceso corriendo
+if pgrep -f "enricher.py" > /dev/null; then
+    echo "YA CORRE — PID: $(pgrep -f enricher.py)"
+    tail -10 /root/enricher.log
+else
+    echo "Lanzando enricher en background..."
+    nohup python3 -u enricher.py --batch 11000 >> /root/enricher.log 2>&1 &
+    ENRICHER_PID=$!
+    echo "PID: $ENRICHER_PID"
+    sleep 10
+    if ps -p $ENRICHER_PID > /dev/null; then
+        echo "CORRIENDO OK"
+        tail -15 /root/enricher.log
+    else
+        echo "ERROR — tail del log:"
+        tail -20 /root/enricher.log
+    fi
+fi
