@@ -1,6 +1,3 @@
-grep -v FORWARD_EMAIL /root/ayuda-es-agent/.env > /tmp/env_tmp 2>/dev/null || true
-echo "FORWARD_EMAIL_API=$FORWARD_EMAIL_API" >> /tmp/env_tmp
-cp /tmp/env_tmp /root/ayuda-es-agent/.env
-echo "FORWARD_EMAIL guardado: $(grep -c FORWARD_EMAIL /root/ayuda-es-agent/.env) linea(s)"
-cat /tmp/enricher.log 2>/dev/null | tail -10 || echo "Log vacio - enricher aun no ha arrancado"
-pgrep -fa enricher || echo "Enriquecedor no corre todavia"
+pkill -f enricher.py 2>/dev/null && echo "Proceso matado" || echo "No habia proceso"
+crontab -l 2>/dev/null | grep -v enricher | crontab - 2>/dev/null || true
+echo "Cron limpiado"
