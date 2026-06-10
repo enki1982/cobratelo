@@ -1,17 +1,27 @@
 cd /root/ayuda-es-agent && source .env
 export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY
 
-# Verificar si corre, si no → relanzar
+# Estado del proceso
 if pgrep -f "enricher.py" > /dev/null 2>&1; then
-    echo "YA CORRE PID=$(pgrep -f enricher.py)"
+    PID=$(pgrep -f "enricher.py")
+    echo "ENRICHER ACTIVO — PID $PID"
+    ps -p $PID -o pid,etime,pcpu,pmem 2>/dev/null
 else
-    echo "No corre, relanzando..."
+    echo "ENRICHER NO CORRE — relanzando..."
     nohup python3 -u enricher.py --batch 11000 >> /root/enricher.log 2>&1 &
-    echo "Lanzado PID=$!"
+    echo "Relanzado PID=$!"
 fi
 
-sleep 5
-echo "--- PROCESO ---"
-ps aux | grep enricher | grep -v grep || echo "no encontrado"
-echo "--- LOG ---"
-tail -20 /root/enricher.log
+# Contar en Supabase
+python3 -c "
+from supabase import create_client; import os
+sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
+ok = sb.table('ayudas').select('id',count='exact').eq('ia_analizada',True).execute().count
+pend = sb.table('ayudas').select('id',count='exact').eq('ia_analizada',False).execute().count
+print(f'PROGRESO SUPABASE: {ok} analizadas / {ok+pend} total ({100*ok//(ok+pend) if ok+pend else 0}%)')
+print(f'Pendientes: {pend}')
+"
+
+# Log
+echo "Últimas 10 líneas del log:"
+tail -10 /root/enricher.log 2>/dev/null || echo "Sin log"
