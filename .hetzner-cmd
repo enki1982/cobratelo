@@ -1,5 +1,28 @@
-echo "=== PROCESO ==="
-ps aux | grep enricher | grep -v grep
-echo ""
-echo "=== LOG ÚLTIMAS 25 LÍNEAS ==="
-tail -25 /root/enricher.log 2>/dev/null || echo "Sin log"
+cd /root/ayuda-es-agent && source .env && export SUPABASE_URL SUPABASE_SERVICE_KEY
+python3 << 'PYEOF'
+from supabase import create_client
+import os
+sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
+ok = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
+pending = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
+total = ok + pending
+pct = int(100 * ok / total) if total > 0 else 0
+print(f"ANALIZADAS: {ok} / {total} ({pct}%) | PENDIENTES: {pending}")
+
+# Ver proceso
+import subprocess
+proc = subprocess.run(['pgrep', '-f', 'enricher.py'], capture_output=True, text=True)
+if proc.stdout.strip():
+    print(f"Enricher CORRIENDO (PID: {proc.stdout.strip()})")
+else:
+    print("Enricher NO CORRE")
+# Últimas líneas del log
+try:
+    with open('/root/enricher.log') as f:
+        lines = f.readlines()
+    print("Últimas 5 líneas del log:")
+    for l in lines[-5:]:
+        print(" ", l.strip())
+except:
+    print("Sin log")
+PYEOF
