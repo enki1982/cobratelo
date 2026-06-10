@@ -5,7 +5,5 @@ from supabase import create_client; import os
 sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
 a = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
 p = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
-print('Analizadas:', a)
-print('Pendientes:', p)
-print('Progreso:', str(round(100*a/(a+p))) + '%')
+print('RESULTADO:', a, 'analizadas', p, 'pendientes', str(round(100*a/(a+p)))+'%')
 "
