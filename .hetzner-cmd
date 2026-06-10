@@ -5,5 +5,12 @@ from supabase import create_client; import os
 sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
 a = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
 p = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
-print('RESULTADO:', a, 'analizadas', p, 'pendientes', str(round(100*a/(a+p)))+'%')
+pct = round(100*a/(a+p))
+# Escribir en GITHUB_STEP_SUMMARY para que aparezca en la API
+import os
+summary_file = os.environ.get('GITHUB_STEP_SUMMARY', '')
+if summary_file:
+    with open(summary_file, 'w') as f:
+        f.write(f'ANALIZADAS={a} PENDIENTES={p} PCT={pct}')
+print(f'ANALIZADAS={a} PENDIENTES={p} PCT={pct}%')
 "
