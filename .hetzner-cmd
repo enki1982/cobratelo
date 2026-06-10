@@ -1,7 +1,38 @@
-echo "PROC:"
-ps aux | grep enricher | grep -v grep || true
-echo "LOG:"
-cat /tmp/enricher.log 2>/dev/null | head -20 || echo none
-echo "ENV_CHECK:"
-cd /root/ayuda-es-agent && source .env 2>/dev/null
-python3 -c "import os; print('ANT', len(os.environ.get('ANTHROPIC_API_KEY','')), 'SB', len(os.environ.get('SUPABASE_SERVICE_KEY','')), 'FE', len(os.environ.get('FORWARD_EMAIL_API','')))" 2>&1
+cd /root/ayuda-es-agent
+set -a; source .env; set +a
+
+echo "FORWARD_EMAIL_API length: ${#FORWARD_EMAIL_API}"
+
+# Test email via Forward Email SMTP
+python3 << 'EOF'
+import smtplib, os
+from email.mime.text import MIMEText
+
+api_key = os.environ.get("FORWARD_EMAIL_API", "")
+print(f"API key length: {len(api_key)}")
+
+if not api_key:
+    print("ERROR: FORWARD_EMAIL_API no disponible")
+else:
+    try:
+        msg = MIMEText("Test de cobratelo.es enricher", "plain", "utf-8")
+        msg["Subject"] = "Test email cobratelo enricher"
+        msg["From"] = "hola@cobratelo.es"
+        msg["To"] = "mikinogueras@gmail.com"
+        with smtplib.SMTP_SSL("smtp.forwardemail.net", 465, timeout=15) as s:
+            s.login("hola@cobratelo.es", api_key)
+            s.sendmail("hola@cobratelo.es", "mikinogueras@gmail.com", msg.as_string())
+        print("EMAIL ENVIADO OK")
+    except Exception as e:
+        print(f"EMAIL ERROR: {e}")
+        # Fallback: Telegram
+        import urllib.request, urllib.parse, json
+        bot = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+        chat = os.environ.get("TELEGRAM_CHAT_ID", "")
+        if bot and chat:
+            text = "Test enricher cobratelo - SMTP falló, usando Telegram"
+            url = f"https://api.telegram.org/bot{bot}/sendMessage"
+            data = urllib.parse.urlencode({"chat_id": chat, "text": text}).encode()
+            urllib.request.urlopen(url, data)
+            print("TELEGRAM OK (fallback)")
+EOF
