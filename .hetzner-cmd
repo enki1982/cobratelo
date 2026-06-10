@@ -1,9 +1,7 @@
-echo "=== Log enricher ==="
-cat /tmp/enricher.log 2>/dev/null | tail -30 || echo "SIN_LOG"
-echo "=== Procesos ==="
-ps aux | grep -i enricher | grep -v grep || echo "NO_PROCESO"
-echo "=== Variables env ==="
+echo "PROC:"
+ps aux | grep enricher | grep -v grep || true
+echo "LOG:"
+cat /tmp/enricher.log 2>/dev/null | head -20 || echo none
+echo "ENV_CHECK:"
 cd /root/ayuda-es-agent && source .env 2>/dev/null
-echo "SUPABASE_URL=${SUPABASE_URL:0:30}..."
-echo "ANTHROPIC_KEY_LEN=${#ANTHROPIC_API_KEY}"
-echo "FORWARD_EMAIL_LEN=${#FORWARD_EMAIL_API}"
+python3 -c "import os; print('ANT', len(os.environ.get('ANTHROPIC_API_KEY','')), 'SB', len(os.environ.get('SUPABASE_SERVICE_KEY','')), 'FE', len(os.environ.get('FORWARD_EMAIL_API','')))" 2>&1
