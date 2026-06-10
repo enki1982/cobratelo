@@ -1,15 +1,12 @@
 cd /root/ayuda-es-agent
 source .env
-python3 -c "
-from supabase import create_client; import os, json
+RESULT=$(python3 -c "
+from supabase import create_client; import os
 sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
 a = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
 p = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
-result = {'analizadas': a, 'pendientes': p, 'pct': round(100*a/(a+p))}
-print(json.dumps(result))
-# Escribir en archivo temporal accesible
-with open('/tmp/enricher_status.json', 'w') as f:
-    json.dump(result, f)
-print('Escrito en /tmp/enricher_status.json')
-"
-cat /tmp/enricher_status.json
+print(a, p)
+")
+A=$(echo $RESULT | cut -d' ' -f1)
+P=$(echo $RESULT | cut -d' ' -f2)
+echo "==STATS== analizadas=$A pendientes=$P total=$((A+P))"
