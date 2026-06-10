@@ -1,14 +1,15 @@
 cd /root/ayuda-es-agent
 source .env
-export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY
-
-# Estado proceso
-pgrep -f enricher.py && echo "PROCESO ACTIVO" || echo "NO CORRE"
-
-# Relanzar si no corre
-pgrep -f enricher.py || nohup python3 -u enricher.py --batch 11000 >> /root/enricher.log 2>&1 &
-
-sleep 3
-
-# Log
-tail -15 /root/enricher.log
+python3 << 'EOF'
+from supabase import create_client
+import os
+sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
+analizadas = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
+pendientes = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
+total = analizadas + pendientes
+pct = round(100 * analizadas / total) if total else 0
+print(f"Analizadas:  {analizadas}")
+print(f"Pendientes:  {pendientes}")
+print(f"Total:       {total}")
+print(f"Progreso:    {pct}%")
+EOF
