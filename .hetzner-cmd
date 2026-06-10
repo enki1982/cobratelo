@@ -1,12 +1,20 @@
+# Descargar el enricher actualizado
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" > /root/ayuda-es-agent/enricher.py
+echo "enricher.py: $(wc -l /root/ayuda-es-agent/enricher.py) lineas"
+
+# Matar cualquier proceso enricher anterior
+pkill -f "enricher.py" 2>/dev/null && echo "Proceso anterior detenido" || echo "No habia proceso anterior"
+
+# Lanzar en background con nohup
 cd /root/ayuda-es-agent
 source .env
-RESULT=$(python3 -c "
-from supabase import create_client; import os
-sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
-a = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
-p = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
-print(a, p)
-")
-A=$(echo $RESULT | cut -d' ' -f1)
-P=$(echo $RESULT | cut -d' ' -f2)
-echo "==STATS== analizadas=$A pendientes=$P total=$((A+P))"
+export SUPABASE_URL SUPABASE_SERVICE_KEY ANTHROPIC_API_KEY FORWARD_EMAIL_API
+
+nohup python3 -u enricher.py --all > /tmp/enricher.log 2>&1 &
+ENRICHER_PID=$!
+echo "Enricher PID: $ENRICHER_PID"
+sleep 5
+echo "--- Primeras lineas del log ---"
+head -20 /tmp/enricher.log
+echo "--- Estado del proceso ---"
+ps aux | grep enricher | grep -v grep
