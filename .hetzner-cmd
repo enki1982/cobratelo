@@ -1,15 +1,11 @@
 cd /root/ayuda-es-agent
 source .env
-python3 << 'EOF'
-from supabase import create_client
-import os
+python3 -c "
+from supabase import create_client; import os
 sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
-analizadas = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
-pendientes = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
-total = analizadas + pendientes
-pct = round(100 * analizadas / total) if total else 0
-print(f"Analizadas:  {analizadas}")
-print(f"Pendientes:  {pendientes}")
-print(f"Total:       {total}")
-print(f"Progreso:    {pct}%")
-EOF
+a = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', True).execute().count
+p = sb.table('ayudas').select('id', count='exact').eq('ia_analizada', False).execute().count
+print('Analizadas:', a)
+print('Pendientes:', p)
+print('Progreso:', str(round(100*a/(a+p))) + '%')
+"
