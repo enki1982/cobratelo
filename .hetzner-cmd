@@ -1,16 +1,22 @@
 cd /root/ayuda-es-agent
 set -a; source .env 2>/dev/null; set +a
-
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py || true
 
 pkill -f "enricher.py" 2>/dev/null || true
-screen -S enricher -X quit 2>/dev/null || true
-sleep 2
 
-screen -dmS enricher bash -c "cd /root/ayuda-es-agent && set -a && source .env && set +a && python3 -u enricher.py --all > /tmp/enricher.log 2>&1"
+cat > /root/run_enricher.sh << 'SCRIPT'
+#!/bin/bash
+cd /root/ayuda-es-agent
+source /root/ayuda-es-agent/.env
+export ANTHROPIC_API_KEY SUPABASE_URL SUPABASE_SERVICE_KEY FORWARD_EMAIL_API
+python3 -u /root/ayuda-es-agent/enricher.py --all >> /tmp/enricher.log 2>&1
+SCRIPT
 
+chmod +x /root/run_enricher.sh
+
+# Ejecutar via at (si disponible) o bash directo en background absoluto
+(bash /root/run_enricher.sh &) &
 sleep 5
-screen -ls | grep enricher || true
-echo "Log inicial:"
-cat /tmp/enricher.log 2>/dev/null || echo "log vacio"
-echo "OK"
+ps aux | grep "enricher.py" | grep -v grep && echo "PROCESO_OK" || echo "PROCESO_NO_ENCONTRADO"
+cat /tmp/enricher.log 2>/dev/null | head -10 || true
+echo "DONE"
