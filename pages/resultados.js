@@ -660,9 +660,13 @@ export default function Resultados() {
         // Filtro de sentido común con Claude
         let ayudasFinal = conScore.slice(0, 20)
         try {
+          const { data: { session: sess } } = await supabase.auth.getSession()
           const r = await fetch('/api/filtrar-ayudas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              ...(sess?.access_token ? { 'Authorization': `Bearer ${sess.access_token}` } : {})
+            },
             body: JSON.stringify({ perfil, ayudas: conScore }),
           })
           if (r.ok) {
