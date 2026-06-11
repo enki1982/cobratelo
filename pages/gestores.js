@@ -2,8 +2,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 
 const C = {
-  bg: '#0f0800',
-  card: '#1a1000',
+  bg: '#1a1200',
+  card: '#241800',
   border: 'rgba(255,180,60,0.12)',
   orange: '#FF8300',
   orangeLight: 'rgba(255,131,0,0.12)',
@@ -85,8 +85,8 @@ export default function Gestores() {
             Tu próximo cliente ya sabe<br />las ayudas que le corresponden
           </h1>
           <p style={{ fontSize: 18, color: C.muted, lineHeight: 1.7, margin: '0 0 40px', maxWidth: 580, marginLeft: 'auto', marginRight: 'auto' }}>
-            Cóbratelo.es identifica automáticamente las ayudas públicas de cada ciudadano.
-            Si quiere tramitarlas, te las envía a ti. Tú gestionas desde un panel propio.
+            Convierte ayudas públicas en nuevos clientes para tu despacho.
+            El ciudadano llega ya sabiendo sus ayudas — tú solo tienes que tramitarlas.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>

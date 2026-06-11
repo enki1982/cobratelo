@@ -48,14 +48,14 @@ export default async function handler(req, res) {
       const key = d.toISOString().split('T')[0]
       porDia[key] = 0
     }
-    usuarios?.forEach(u => {
+    usuariosSinAdmin.forEach(u => {
       const key = u.created_at?.split('T')[0]
       if (key && porDia[key] !== undefined) porDia[key]++
     })
 
     // Gestorías vs particulares
-    const gestores = usuarios?.filter(u => u.perfil?.gestoria?.[0] === 'si_gestoria').length || 0
-    const quieren_gestor = usuarios?.filter(u => u.perfil?.gestoria?.[0] === 'quiero_gestoria').length || 0
+    const gestores = usuariosSinAdmin.filter(u => u.perfil?.gestoria?.[0] === 'si_gestoria').length || 0
+    const quieren_gestor = usuariosSinAdmin.filter(u => u.perfil?.gestoria?.[0] === 'quiero_gestoria').length || 0
     const particulares = total - gestores
 
     // Billing desde Stripe
