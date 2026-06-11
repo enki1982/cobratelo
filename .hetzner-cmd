@@ -1,3 +1,5 @@
-pkill -f enricher.py 2>/dev/null && echo "Proceso matado" || echo "No habia proceso"
-crontab -l 2>/dev/null | grep -v enricher | crontab - 2>/dev/null || true
-echo "Cron limpiado"
+cd /root/ayuda-es-agent
+set -a; source .env 2>/dev/null; set +a
+curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
+echo "Enricher listo. Iniciando proceso completo..."
+python3 -u enricher.py --all

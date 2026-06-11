@@ -54,4 +54,4 @@ jobs:
             eval "$CMD"
             echo "---"
             echo "✅ Completado"
-          command_timeout: 30m
+          command_timeout: 360m
