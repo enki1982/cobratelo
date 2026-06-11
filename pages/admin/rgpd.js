@@ -108,7 +108,7 @@ export default function AdminRGPD() {
                     colectivo: 'Ciudadanos usuarios de la plataforma.',
                     conservacion: 'Mientras la cuenta esté activa + 30 días tras baja.',
                     encargados: 'Supabase (UE), Vercel.',
-                    transferencias: 'Supabase (UE). Vercel (cláusulas contractuales tipo).',
+                    transferencias: 'Supabase (UE). Vercel (CCT).',
                     medidas: 'Autenticación JWT, HTTPS/TLS, RLS en base de datos.'
                   },
                   {
@@ -165,6 +165,17 @@ export default function AdminRGPD() {
                     encargados: 'Supabase (UE), Vercel, Stripe.',
                     transferencias: 'Mismas que T-01 y T-04.',
                     medidas: 'RLS por gestor_id. Segregación total entre gestorías.'
+                  },
+                  {
+                    id: 'T-07', nombre: 'Logs de seguridad y auditoría',
+                    finalidad: 'Detección de accesos no autorizados, errores del sistema y auditoría de operaciones críticas.',
+                    base: 'Interés legítimo — seguridad de la información (Art. 6.1.f RGPD)',
+                    datos: 'Dirección IP, identificador de usuario (anonimizado), tipo de operación, timestamp, resultado de la operación.',
+                    colectivo: 'Todos los usuarios que interactúan con la plataforma.',
+                    conservacion: '12 meses. Logs de incidentes de seguridad: 5 años.',
+                    encargados: 'Supabase (UE), Vercel.',
+                    transferencias: 'Mismas que T-01.',
+                    medidas: 'Logs de solo lectura. Acceso restringido al administrador. No contienen contraseñas ni datos de pago.'
                   },
                 ].map(t => (
                   <div key={t.id} style={{ marginBottom: 24, borderLeft: '3px solid #cc5500', paddingLeft: 16 }}>
@@ -236,6 +247,71 @@ export default function AdminRGPD() {
                 <h3 style={s.h3}>8. Revisión post-incidente</h3>
                 <p style={s.p}>En los 30 días posteriores: análisis de causa raíz, actualización de medidas de seguridad, revisión del presente procedimiento si procede.</p>
 
+                <h3 style={s.h3}>Plantilla: Notificación a la AEPD</h3>
+                <div style={{ background: '#f8f8f8', border: '1px solid #ddd', borderRadius: 8, padding: 16, fontFamily: 'monospace', fontSize: 12, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: '#333' }}>{`NOTIFICACIÓN DE BRECHA DE SEGURIDAD — Art. 33 RGPD
+
+Responsable del tratamiento:
+  Nombre: Miquel Nogueras Camero
+  NIF: 77609795K
+  Email: privacidad@cobratelo.es
+  Domicilio: Carrer del Roser, 21 — 08185 Lliçà de Vall (Barcelona)
+
+Fecha y hora de detección: [FECHA Y HORA]
+Fecha de esta notificación: [FECHA]
+
+1. NATURALEZA DE LA BRECHA:
+   [Describir: acceso no autorizado / pérdida / destrucción / alteración]
+   [Sistemas o datos afectados]
+
+2. CATEGORÍAS Y NÚMERO APROXIMADO DE AFECTADOS:
+   Categorías de datos: [emails / perfiles / datos de acceso / etc.]
+   Número aproximado de interesados afectados: [NÚMERO]
+   Número aproximado de registros afectados: [NÚMERO]
+
+3. CONSECUENCIAS PROBABLES:
+   [Describir los posibles efectos para los interesados]
+
+4. MEDIDAS ADOPTADAS O PROPUESTAS:
+   - [Medida 1]
+   - [Medida 2]
+   - [Medida 3]
+
+5. INFORMACIÓN ADICIONAL:
+   [Si no se dispone de toda la información, indicar cuándo se completará]
+
+DPO / Punto de contacto: privacidad@cobratelo.es`}</div>
+
+                <h3 style={s.h3}>Plantilla: Comunicación a usuarios afectados</h3>
+                <div style={{ background: '#f8f8f8', border: '1px solid #ddd', borderRadius: 8, padding: 16, fontFamily: 'monospace', fontSize: 12, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: '#333' }}>{`Asunto: Información importante sobre la seguridad de tu cuenta en Cóbratelo.es
+
+Estimado/a [NOMBRE],
+
+Te escribimos para informarte de un incidente de seguridad que puede afectar a tus datos personales.
+
+¿QUÉ HA OCURRIDO?
+[Descripción clara y sencilla del incidente, sin tecnicismos]
+
+¿QUÉ DATOS PUEDEN ESTAR AFECTADOS?
+[Listar solo los datos específicos del usuario afectado]
+
+¿QUÉ PUEDE PASAR?
+[Consecuencias posibles en lenguaje claro]
+
+¿QUÉ HEMOS HECHO?
+[Medidas de contención adoptadas]
+[Fecha en que se resolvió o se espera resolver]
+
+¿QUÉ PUEDES HACER TÚ?
+- Cambia tu contraseña en cobratelo.es si utilizas la misma en otros servicios.
+- [Otras acciones recomendadas según el tipo de brecha]
+- Si detectas actividad inusual, comunícalo a privacidad@cobratelo.es
+
+Para cualquier consulta: privacidad@cobratelo.es
+
+Lamentamos los inconvenientes que esto pueda causarte.
+
+El equipo de Cóbratelo.es`}</div>
+
                 <div style={{ marginTop: 24, background: '#fff0e6', border: '1px solid #cc5500', borderRadius: 8, padding: 16 }}>
                   <p style={{ ...s.p, fontWeight: 700, color: '#cc5500', marginBottom: 4 }}>Contactos de emergencia</p>
                   <ul style={s.ul}>
@@ -269,7 +345,7 @@ export default function AdminRGPD() {
                     </thead>
                     <tbody>
                       {[
-                        ['Acceso', 'Art. 15', '1 mes (prorrogable 2 meses)', 'Identificar al solicitante. Localizar todos los datos que le conciernen en Supabase. Enviar copia en formato legible por email.', 'Solicitudes manifiestamente infundadas o excesivas.'],
+                        ['Acceso', 'Art. 15', '1 mes (prorrogable +2 si complejidad)', 'Identificar al solicitante. Localizar todos los datos que le conciernen en Supabase. Enviar copia en formato legible por email. Fecha límite = fecha solicitud + 30 días (informar al solicitante si se prorroga antes de que venza el primer mes).', 'Solicitudes manifiestamente infundadas o excesivas.'],
                         ['Rectificación', 'Art. 16', '1 mes', 'Verificar identidad. Localizar y corregir los datos inexactos. Notificar a destinatarios si se comunicaron datos.', 'Ninguna relevante.'],
                         ['Supresión ("derecho al olvido")', 'Art. 17', '1 mes', 'Verificar que no existe obligación legal de conservación. Eliminar cuenta y datos de Supabase. Solicitar eliminación a subencargados si procede.', 'Obligaciones legales de conservación (6 años para datos fiscales).'],
                         ['Oposición', 'Art. 21', '1 mes', 'Cesar el tratamiento basado en interés legítimo salvo que existan motivos imperiosos. Para comunicaciones comerciales: baja inmediata.', 'Tratamientos basados en contrato u obligación legal.'],
@@ -287,6 +363,27 @@ export default function AdminRGPD() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+
+                <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 8, padding: 16, marginBottom: 16 }}>
+                  <p style={{ ...s.p, fontWeight: 700, color: '#0369a1', marginBottom: 8 }}>🗓 Calculadora de plazo de respuesta</p>
+                  <p style={{ ...s.p, color: '#0369a1', marginBottom: 4 }}>Fecha de recepción de la solicitud:</p>
+                  <input type="date" id="fecha-solicitud"
+                    style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #bae6fd', marginRight: 8, fontSize: 13 }}
+                    onChange={e => {
+                      const d = new Date(e.target.value)
+                      if (!d || isNaN(d)) return
+                      const lim1 = new Date(d); lim1.setDate(lim1.getDate() + 30)
+                      const lim2 = new Date(d); lim2.setDate(lim2.getDate() + 90)
+                      const fmt = dt => dt.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'})
+                      document.getElementById('fecha-limite-1').textContent = fmt(lim1)
+                      document.getElementById('fecha-limite-2').textContent = fmt(lim2)
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: '#0369a1' }}>
+                    Plazo ordinario: <strong id="fecha-limite-1">—</strong> · 
+                    Con prórroga (casos complejos): <strong id="fecha-limite-2">—</strong>
+                  </span>
                 </div>
 
                 <h3 style={s.h3}>Pasos generales para toda solicitud</h3>
@@ -328,7 +425,7 @@ export default function AdminRGPD() {
                         ['Vercel Inc.', 'Infraestructura web, CDN, despliegue', 'EE.UU.', 'IPs, logs de acceso web', 'Cláusulas contractuales tipo (CCT)', 'vercel.com/legal/privacy-policy · vercel.com/dpa'],
                         ['Stripe Inc.', 'Procesamiento de pagos, suscripciones', 'EE.UU.', 'Email, ID cliente Stripe (no datos de tarjeta)', 'CCT + certificación PCI-DSS nivel 1', 'stripe.com/privacy · stripe.com/dpa'],
                         ['Forward Email', 'Envío de emails transaccionales', 'EE.UU.', 'Email destinatario, contenido del mensaje', 'Cláusulas contractuales tipo (CCT)', 'forwardemail.net/privacy'],
-                        ['Anthropic PBC', 'Procesamiento de texto para matching de ayudas', 'EE.UU.', 'Descripciones de ayudas (no datos personales directos)', 'CCT · API sin retención de datos por defecto', 'anthropic.com/privacy'],
+                        ['Anthropic PBC', 'Procesamiento de texto para análisis de ayudas (enriquecimiento)', 'EE.UU.', 'Solo descripciones y metadatos de convocatorias públicas — NO se envían datos personales de usuarios', 'CCT · API sin retención de datos', 'anthropic.com/privacy'],
                         ['GoDaddy', 'Registro de dominio cobratelo.es', 'EE.UU.', 'Datos de registro del dominio (titular)', 'CCT', 'godaddy.com/legal/agreements/privacy-policy'],
                         ['Hetzner Online GmbH', 'VPS para agente de actualización de ayudas', 'Alemania (UE)', 'Scripts de actualización, logs del agente', 'RGPD directamente aplicable (UE)', 'hetzner.com/legal/privacy-policy'],
                       ].map(([p, f, pais, datos, garantia, contacto]) => (
@@ -350,7 +447,7 @@ export default function AdminRGPD() {
                   <ol style={{ ...s.ul, listStyle: 'decimal' }}>
                     <li>Verificar si trata datos personales de usuarios o gestorías.</li>
                     <li>Revisar su política de privacidad y DPA disponibles.</li>
-                    <li>Confirmar garantías RGPD (CCT, Privacy Shield sucesor, país adecuado, etc.).</li>
+                    <li>Confirmar garantías RGPD (CCT, EU-US Data Privacy Framework, CCT, país adecuado, etc.).</li>
                     <li>Actualizar este inventario con toda la información.</li>
                     <li>Actualizar la sección de proveedores en la Política de Privacidad pública si el proveedor trata datos de usuarios.</li>
                   </ol>

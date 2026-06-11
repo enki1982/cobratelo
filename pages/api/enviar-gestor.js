@@ -150,6 +150,26 @@ export default async function handler(req, res) {
       })
     } catch {} // No bloquear si falla el guardado
 
+    // Registrar consentimiento con IP real del servidor
+    try {
+      const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+                 || req.socket?.remoteAddress
+                 || '0.0.0.0'
+      const { userId, emailUsuario: emailCiudadano } = req.body
+      if (userId || clienteId || emailCiudadano) {
+        await supabaseAdmin.from('consentimientos_gestor').insert({
+          ciudadano_id: userId || clienteId || null,
+          email_gestor: emailGestor,
+          ip: ip,
+          version_legal: 'v1-junio-2026',
+          texto_aceptado: 'Autorizo expresamente a Cóbratelo.es a comunicar mis datos personales y la información necesaria de mi expediente a la gestoría seleccionada, para que pueda contactarme y prestarme servicios profesionales relacionados con la gestión de ayudas y subvenciones.',
+          activo: true
+        })
+      }
+    } catch (e2) {
+      console.error('Error guardando consentimiento:', e2.message)
+    }
+
     res.status(200).json({ ok: true })
   } catch (e) {
     console.error('Error enviando email gestor:', e)

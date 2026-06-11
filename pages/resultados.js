@@ -713,21 +713,10 @@ export default function Resultados() {
     if (!emailGestor || !consentimientoAceptado) return
     setEnviandoGestor(true)
     try {
-      // Registrar consentimiento en BD
-      if (userId) {
-        await supabase.from('consentimientos_gestor').insert({
-          ciudadano_id: userId,
-          email_gestor: emailGestor,
-          ip: '0.0.0.0',
-          version_legal: 'v1-junio-2026',
-          texto_aceptado: TEXTO_CONSENTIMIENTO_V1,
-          activo: true
-        })
-      }
       const res = await fetch('/api/enviar-gestor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailGestor, nombreCliente, ayudas, perfil })
+        body: JSON.stringify({ emailGestor, nombreCliente, ayudas, perfil, userId })
       })
       if (res.ok) {
         setEnvioGestorOk(true)
