@@ -59,7 +59,7 @@ export default function Admin() {
       ACCIONES.forEach((a, i) => { m[a] = counts[i].count || 0 })
       // Usuarios totales y gestorías activas
       const { count: ciudadanos } = await supabase.from('usuarios').select('id', { count: 'exact', head: true }).eq('role', 'ciudadano')
-      const { count: gestoriasActivas } = await supabase.from('usuarios').select('id', { count: 'exact', head: true }).in('plan', ['starter', 'pro'])
+      const { count: gestoriasActivas } = await supabase.from('usuarios').select('id', { count: 'exact', head: true }).in('plan', ['starter', 'pro']).neq('email', 'mikinogueras@gmail.com')
       const { count: consentimientos } = await supabase.from('consentimientos_gestor').select('id', { count: 'exact', head: true }).eq('activo', true)
       m._ciudadanos = ciudadanos || 0
       m._gestoriasActivas = gestoriasActivas || 0
