@@ -103,7 +103,7 @@ export default function Terminos() {
 
           <section style={s.section}>
             <h2 style={s.h2}>12. Legislación y jurisdicción</h2>
-            <p style={s.p}>Estos términos se rigen por la legislación española. Las controversias se someten a los juzgados y tribunales de Barcelona.</p>
+            <p style={s.p}>Estos términos se rigen por la legislación española. Cuando la normativa aplicable lo permita, las partes se someten a los Juzgados y Tribunales de Barcelona.</p>
           </section>
         </div>
       </div>

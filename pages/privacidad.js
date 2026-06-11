@@ -69,7 +69,7 @@ export default function Privacidad() {
             <h2 style={s.h2}>7. Medidas de seguridad</h2>
             <p style={s.p}>Cóbratelo.es aplica las siguientes medidas técnicas y organizativas:</p>
             <ul style={s.ul}>
-              <li><strong>Cifrado:</strong> las comunicaciones se protegen mediante HTTPS/TLS. Los datos en reposo se almacenan cifrados en infraestructura certificada.</li>
+              <li><strong>Cifrado y seguridad:</strong> las comunicaciones se protegen mediante HTTPS/TLS. Los datos se almacenan aplicando medidas de seguridad adecuadas proporcionadas por proveedores especializados certificados.</li>
               <li><strong>Control de accesos:</strong> autenticación por email verificado, control de acceso por rol (ciudadano / gestoría / administrador).</li>
               <li><strong>Segregación entre gestorías:</strong> las políticas de seguridad a nivel de fila (Row Level Security) garantizan que cada gestoría solo accede a sus propios datos.</li>
               <li><strong>Copias de seguridad:</strong> backups automáticos diarios gestionados por el proveedor de base de datos (Supabase).</li>
@@ -96,11 +96,21 @@ export default function Privacidad() {
 
           <section style={s.section}>
             <h2 style={s.h2}>10. Derechos del usuario</h2>
-            <p style={s.p}>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a>. Responderemos en el plazo máximo de un mes. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+            <p style={s.p}>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:privacidad@cobratelo.es" style={{ color: '#cc5500' }}>privacidad@cobratelo.es</a>. Responderemos en el plazo máximo de un mes. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>11. Cookies</h2>
+            <h2 style={s.h2}>11. Menores de edad</h2>
+            <p style={s.p}>Los servicios de Cóbratelo.es están dirigidos a personas mayores de 18 años. Los menores no deberán registrarse ni facilitar datos personales sin la autorización previa de sus representantes legales. Si Cóbratelo.es detecta que ha recogido datos de un menor sin dicha autorización, los eliminará en el menor plazo posible.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>12. Categorías especiales de datos</h2>
+            <p style={s.p}>Con carácter general, Cóbratelo.es no trata categorías especiales de datos en el sentido del artículo 9 RGPD. No obstante, determinadas ayudas y subvenciones pueden estar vinculadas a situaciones de discapacidad, dependencia, estado de salud o vulnerabilidad. En caso de que el usuario facilite voluntariamente este tipo de información para acceder a ayudas específicas, el tratamiento se realizará únicamente con su consentimiento explícito y con las garantías reforzadas establecidas en el RGPD.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>13. Cookies</h2>
             <p style={s.p}>Utilizamos cookies estrictamente necesarias para el funcionamiento del servicio (sesión de usuario). Consulta nuestra <Link href="/cookies" style={{ color: '#cc5500' }}>Política de Cookies</Link> para más información.</p>
           </section>
         </div>

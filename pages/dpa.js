@@ -6,14 +6,14 @@ const s = { section: { marginBottom: 32 }, h2: { fontSize: 18, fontWeight: 700, 
 export default function DPA() {
   return (
     <>
-      <Head><title>Acuerdo de Comunicación de Datos — Cóbratelo.es</title><meta name="robots" content="noindex" /></Head>
+      <Head><title>Acuerdo de Colaboración y Comunicación de Datos para Gestorías — Cóbratelo.es</title><meta name="robots" content="noindex" /></Head>
       <div style={{ background: '#FFE2C4', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#1a0d00', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>cóbratelo<span style={{ color: '#FF8300' }}>.es</span></Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Acuerdo de Comunicación de Datos entre Responsables Independientes</h1>
-          <p style={{ color: '#666', marginBottom: 4, fontSize: 15 }}>Acuerdo de Colaboración entre Responsables del Tratamiento — Art. 6.1.a y Art. 26 RGPD</p>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Acuerdo de Colaboración y Comunicación de Datos para Gestorías</h1>
+          <p style={{ color: '#666', marginBottom: 4, fontSize: 15 }}>Condiciones de Acceso, Comunicación y Tratamiento de Datos entre Responsables Independientes — Art. 6.1.a y Art. 26 RGPD</p>
           <p style={{ color: '#888', marginBottom: 8 }}>Última actualización: junio 2026</p>
           <p style={{ color: '#cc5500', marginBottom: 40, fontStyle: 'italic', fontSize: 14 }}>Borrador pendiente de revisión legal. No tiene validez contractual hasta su aprobación definitiva.</p>
 
@@ -89,12 +89,23 @@ export default function DPA() {
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>9. Aceptación</h2>
+            <h2 style={s.h2}>9. Base legitimadora y garantía de indemnidad</h2>
+            <p style={s.p}>La gestoría garantiza que dispone de una base legitimadora válida bajo el RGPD para todos los tratamientos de datos personales que realiza en el ejercicio de su actividad profesional, incluyendo los datos recibidos a través de Cóbratelo.es.</p>
+            <p style={s.p}>La gestoría mantendrá indemne a Cóbratelo.es frente a cualquier reclamación, sanción, procedimiento o responsabilidad que derive del incumplimiento por parte de la gestoría de sus obligaciones legales o en materia de protección de datos, incluyendo las derivadas de su actuación como responsable independiente del tratamiento.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>10. Categorías especiales de datos</h2>
+            <p style={s.p}>Con carácter general, este acuerdo no contempla el tratamiento de categorías especiales de datos en el sentido del artículo 9 RGPD. No obstante, determinadas ayudas y subvenciones pueden requerir información relativa a discapacidad, dependencia, estado de salud o situación de vulnerabilidad. En estos casos, la gestoría deberá obtener el consentimiento explícito del ciudadano afectado y garantizar las medidas de seguridad reforzadas exigidas por el RGPD para este tipo de datos.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>11. Aceptación</h2>
             <p style={s.p}>La contratación de cualquier plan profesional de Cóbratelo.es implica la lectura, comprensión y aceptación íntegra del presente Acuerdo.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>10. Legislación aplicable</h2>
+            <h2 style={s.h2}>12. Legislación aplicable</h2>
             <p style={s.p}>RGPD (UE) 2016/679, LOPDGDD (LO 3/2018) y demás normativa española de protección de datos. Juzgados de Barcelona.</p>
           </section>
         </div>

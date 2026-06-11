@@ -112,8 +112,14 @@ export default function ContratoSaas() {
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>15. Legislación y jurisdicción</h2>
-            <p style={s.p}>Legislación española. Juzgados y tribunales de Barcelona.</p>
+            <h2 style={s.h2}>15. Cumplimiento normativo y garantía de indemnidad</h2>
+            <p style={s.p}>La gestoría garantiza que dispone de las autorizaciones, habilitaciones y bases legitimadoras necesarias para el tratamiento de los datos personales de sus clientes en el ejercicio de su actividad profesional, y que cumple con toda la normativa aplicable a dicha actividad.</p>
+            <p style={s.p}>La gestoría mantendrá indemne a Cóbratelo.es frente a cualquier reclamación, sanción, procedimiento administrativo o judicial, o responsabilidad de cualquier índole que derive del incumplimiento por parte de la gestoría de sus obligaciones legales, profesionales o en materia de protección de datos.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>16. Legislación y jurisdicción</h2>
+            <p style={s.p}>Legislación española. Cuando la normativa aplicable lo permita, las partes se someten a los Juzgados y Tribunales de Barcelona.</p>
           </section>
         </div>
       </div>

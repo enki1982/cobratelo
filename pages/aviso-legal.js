@@ -76,18 +76,30 @@ export default function AvisoLegal() {
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>6. Propiedad intelectual e industrial</h2>
-            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, base de datos de ayudas, algoritmos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+            <h2 style={s.h2}>6. Suspensión y cancelación de accesos</h2>
+            <p style={s.p}>Cóbratelo.es se reserva el derecho de suspender o cancelar el acceso de cualquier usuario, sin necesidad de preaviso, cuando se detecten:</p>
+            <ul style={s.ul}>
+              <li>Incumplimientos de las condiciones de uso o de la normativa aplicable.</li>
+              <li>Actividades fraudulentas, ilegales o contrarias a la buena fe.</li>
+              <li>Accesos automatizados no autorizados, scraping o extracción masiva de datos.</li>
+              <li>Conductas que comprometan la seguridad, integridad o funcionamiento de la plataforma.</li>
+              <li>Impago reiterado en el caso de servicios de pago.</li>
+            </ul>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>7. Limitación de responsabilidad</h2>
+            <h2 style={s.h2}>7. Propiedad intelectual e industrial</h2>
+            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, software, diseño, bases de datos, metodologías, contenidos, elementos gráficos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>8. Limitación de responsabilidad</h2>
             <p style={s.p}>Cóbratelo.es no se responsabiliza de las decisiones tomadas por el usuario basándose en la información proporcionada, de los resultados obtenidos en procesos de solicitud de ayudas, ni de la actuación de las gestorías o profesionales independientes que operen en la plataforma.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>8. Legislación aplicable y jurisdicción</h2>
-            <p style={s.p}>Este aviso legal se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales de Barcelona.</p>
+            <h2 style={s.h2}>9. Legislación aplicable y jurisdicción</h2>
+            <p style={s.p}>Este aviso legal se rige por la legislación española. Cuando la normativa aplicable lo permita, las partes se someten a los Juzgados y Tribunales de Barcelona.</p>
           </section>
         </div>
       </div>
