@@ -25,6 +25,8 @@ const TABS = [
   { id: 'derechos', label: 'Derechos' },
   { id: 'proveedores', label: 'Proveedores' },
   { id: 'consentimientos', label: 'Consentimientos' },
+  { id: 'access_logs', label: 'Logs Acceso' },
+  { id: 'retencion', label: 'Retención' },
 ]
 
 export default function AdminRGPD() {
