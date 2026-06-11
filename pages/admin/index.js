@@ -105,7 +105,7 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Tabs */}
           <div className="flex gap-1 bg-white border border-[#F5C89A] rounded-full p-1 mb-8 w-fit">
-            {[{id:'overview',label:'Resumen'},{id:'usuarios',label:`Usuarios (${usuarios.length})`},{id:'facturacion',label:'Facturación'}].map(t => (
+            {[{id:'overview',label:'Resumen'},{id:'usuarios',label:`Usuarios (${usuarios.length})`},{id:'facturacion',label:'Facturación'},{id:'rgpd',label:'RGPD'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#1a0d00] text-white' : 'text-[#7a4a1a] hover:text-[#1a0d00]'}`}>
                 {t.label}
@@ -255,6 +255,13 @@ export default function Admin() {
           )}
 
           {/* FACTURACIÓN */}
+          {tab === 'rgpd' && (
+            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+              <p style={{ color: '#888', marginBottom: 16 }}>Abriendo el centro de cumplimiento RGPD...</p>
+              <a href="/admin/rgpd" style={{ background: '#cc5500', color: '#fff', textDecoration: 'none', padding: '12px 24px', borderRadius: 99, fontWeight: 600 }}>Ir a RGPD →</a>
+            </div>
+          )}
+
           {tab === 'facturacion' && stats && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
