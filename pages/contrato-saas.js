@@ -6,136 +6,113 @@ const s = { section: { marginBottom: 32 }, h2: { fontSize: 18, fontWeight: 700, 
 export default function ContratoSaas() {
   return (
     <>
-      <Head>
-        <title>Contrato de Licencia SaaS — Cóbratelo.es</title>
-        <meta name="robots" content="noindex" />
-      </Head>
+      <Head><title>Contrato de Licencia SaaS — Cóbratelo.es</title><meta name="robots" content="noindex" /></Head>
       <div style={{ background: '#FFE2C4', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#1a0d00', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
-          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
-            cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
-          </Link>
+          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>cóbratelo<span style={{ color: '#FF8300' }}>.es</span></Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Contrato de Licencia SaaS para Gestorías</h1>
           <p style={{ color: '#888', marginBottom: 8 }}>Última actualización: junio 2026</p>
-          <p style={{ color: '#cc5500', marginBottom: 40, fontStyle: 'italic', fontSize: 14 }}>
-            Borrador pendiente de revisión legal. No tiene validez contractual hasta su aprobación y publicación definitiva.
-          </p>
+          <p style={{ color: '#cc5500', marginBottom: 40, fontStyle: 'italic', fontSize: 14 }}>Borrador pendiente de revisión legal. No tiene validez contractual hasta su aprobación definitiva.</p>
 
           <section style={s.section}>
             <h2 style={s.h2}>1. Partes</h2>
-            <p style={s.p}>
-              <strong>Proveedor:</strong> Miquel Nogueras Camero (NIF 77609795K), titular de Cóbratelo.es, con domicilio en Carrer del Roser, 21 — 08185 Lliçà de Vall (Barcelona). Email: hola@cobratelo.es.
-            </p>
-            <p style={s.p}>
-              <strong>Cliente:</strong> la persona física o jurídica que contrata un plan profesional (Starter o Pro) de Cóbratelo.es, identificada en el momento del alta. La contratación de cualquier plan de pago implica la aceptación íntegra de este contrato.
-            </p>
+            <p style={s.p}><strong>Proveedor:</strong> Miquel Nogueras Camero (NIF 77609795K), titular de Cóbratelo.es. Email: hola@cobratelo.es.</p>
+            <p style={s.p}><strong>Cliente:</strong> la gestoría o profesional que contrata un plan profesional (Starter o Pro). La contratación implica la aceptación íntegra de este contrato.</p>
           </section>
 
           <section style={s.section}>
             <h2 style={s.h2}>2. Objeto</h2>
-            <p style={s.p}>
-              El Proveedor concede al Cliente una licencia de uso no exclusiva, intransferible y limitada para acceder y utilizar la plataforma Cóbratelo.es en su modalidad profesional, durante el período de vigencia del plan contratado y para el uso interno de su actividad profesional.
-            </p>
+            <p style={s.p}>El Proveedor concede al Cliente una licencia de uso no exclusiva, intransferible y limitada para acceder y utilizar Cóbratelo.es en su modalidad profesional durante el período de vigencia del plan contratado.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>3. Licencia de uso</h2>
+            <h2 style={s.h2}>3. Exclusión de asesoramiento</h2>
+            <p style={s.p}><strong>Cóbratelo.es proporciona exclusivamente una herramienta tecnológica.</strong> El Proveedor no presta servicios de asesoramiento jurídico, fiscal, laboral, administrativo ni de ningún otro tipo.</p>
+            <p style={s.p}>La información sobre ayudas y subvenciones disponible en la plataforma tiene carácter meramente informativo y no constituye asesoramiento profesional. El Cliente es el único responsable del asesoramiento que preste a sus propios clientes y de la interpretación que realice de dicha información.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>4. Cambios normativos y actualización de convocatorias</h2>
+            <p style={s.p}>Las ayudas, subvenciones y prestaciones públicas están sujetas a cambios normativos constantes. Cóbratelo.es no garantiza la actualización inmediata de las convocatorias ni la exactitud de la información en todo momento.</p>
+            <p style={s.p}>El Cliente es responsable de verificar la vigencia y requisitos de cada convocatoria en las fuentes oficiales antes de iniciar cualquier tramitación. Cóbratelo.es no responde por denegaciones, sanciones, pérdidas de ayudas ni errores de tramitación derivados de información desactualizada o de decisiones del Cliente basadas en los datos de la plataforma.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>5. Responsabilidad por ayudas</h2>
+            <p style={s.p}>Cóbratelo.es no responde en ningún caso por:</p>
             <ul style={s.ul}>
-              <li>La licencia es personal e intransferible. No puede cederse a terceros ni sublicenciarse.</li>
-              <li>El número de usuarios y clientes gestionables depende del plan contratado (Starter: hasta 50 clientes activos; Pro: ilimitados).</li>
-              <li>El Cliente no puede usar la plataforma para prestar servicios a terceros bajo marca propia sin acuerdo expreso con el Proveedor.</li>
+              <li>La denegación de ayudas por parte de organismos públicos.</li>
+              <li>Errores o retrasos en la tramitación imputables al Cliente o a sus clientes.</li>
+              <li>La pérdida de ayudas por incumplimiento de plazos o requisitos.</li>
+              <li>Cambios en la normativa que afecten a convocatorias en curso.</li>
+              <li>Actuaciones u omisiones de organismos públicos.</li>
             </ul>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>4. Propiedad intelectual</h2>
-            <p style={s.p}>
-              Cóbratelo.es, su código fuente, diseño, base de datos de ayudas, algoritmos y metodología son propiedad exclusiva del Proveedor y están protegidos por la normativa de propiedad intelectual. La licencia de uso no otorga al Cliente ningún derecho de propiedad sobre la plataforma.
-            </p>
-            <p style={s.p}>
-              Los datos introducidos por el Cliente (información de sus clientes, expedientes, notas) son propiedad del Cliente. El Proveedor únicamente los trata según lo establecido en el Acuerdo de Encargo de Tratamiento.
-            </p>
-          </section>
-
-          <section style={s.section}>
-            <h2 style={s.h2}>5. Disponibilidad del servicio</h2>
-            <p style={s.p}>
-              El Proveedor se compromete a una disponibilidad objetivo del 99% mensual, excluidos mantenimientos programados notificados con antelación y causas de fuerza mayor. Las interrupciones no planificadas no darán derecho a compensación económica salvo acuerdo específico.
-            </p>
-            <p style={s.p}>
-              El Proveedor podrá realizar cambios en la plataforma para mejorar el servicio, sin que esto constituya incumplimiento contractual, siempre que no se eliminen funcionalidades esenciales del plan contratado.
-            </p>
-          </section>
-
-          <section style={s.section}>
-            <h2 style={s.h2}>6. Facturación, renovación y cancelación</h2>
-            <p style={s.p}>
-              El servicio se factura mensualmente de forma anticipada mediante pago recurrente a través de Stripe. La suscripción se renueva automáticamente cada mes salvo cancelación expresa del Cliente.
-            </p>
-            <p style={s.p}>
-              El Cliente puede cancelar en cualquier momento desde su panel de cuenta. La cancelación surte efecto al final del período facturado en curso, sin derecho a reembolso proporcional.
-            </p>
-            <p style={s.p}>
-              El Proveedor puede resolver el contrato con preaviso de 30 días, o de forma inmediata en caso de uso fraudulento, incumplimiento grave o impago reiterado.
-            </p>
-          </section>
-
-          <section style={s.section}>
-            <h2 style={s.h2}>7. Exportación de datos</h2>
-            <p style={s.p}>
-              El Cliente podrá solicitar la exportación de sus datos (clientes, expedientes) en formato estándar (CSV/JSON) en cualquier momento y durante los 30 días posteriores a la cancelación. Transcurrido ese plazo, los datos podrán ser eliminados de los servidores.
-            </p>
-          </section>
-
-          <section style={s.section}>
-            <h2 style={s.h2}>8. Uso prohibido</h2>
+            <h2 style={s.h2}>6. Licencia de uso</h2>
             <ul style={s.ul}>
-              <li>Ingeniería inversa, descompilación o intento de acceder al código fuente de la plataforma.</li>
-              <li>Uso automatizado masivo de la plataforma (scraping, bots) sin autorización expresa.</li>
-              <li>Reventa o sublicencia del acceso a la plataforma a terceros.</li>
-              <li>Uso para actividades ilícitas o contrarias a la normativa aplicable.</li>
-              <li>Acceso no autorizado a datos de otros usuarios o clientes de otras gestorías.</li>
+              <li>La licencia es personal e intransferible. No puede cederse ni sublicenciarse.</li>
+              <li>El número de clientes gestionables depende del plan (Starter: 50; Pro: ilimitados).</li>
+              <li>Está prohibida la ingeniería inversa, descompilación o acceso al código fuente.</li>
+              <li>Está prohibido el scraping, extracción masiva o uso automatizado no autorizado.</li>
+              <li>Está prohibida la reventa o sublicencia del acceso a terceros.</li>
             </ul>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>9. Limitación de responsabilidad</h2>
-            <p style={s.p}>
-              La responsabilidad máxima del Proveedor frente al Cliente por cualquier causa quedará limitada al importe abonado por el Cliente en los 3 meses anteriores al hecho causante. El Proveedor no será responsable de lucro cesante, pérdida de datos imputable al Cliente, ni daños indirectos.
-            </p>
-            <p style={s.p}>
-              El Cliente es el único responsable de los servicios profesionales que presta a sus propios clientes y de la exactitud de los datos que introduce en la plataforma.
-            </p>
+            <h2 style={s.h2}>7. Propiedad intelectual</h2>
+            <p style={s.p}>Cóbratelo.es, su código fuente, diseño, base de datos de ayudas, algoritmos y metodología son propiedad exclusiva del Proveedor. La licencia no otorga al Cliente ningún derecho de propiedad. Los datos introducidos por el Cliente son de su propiedad.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>10. Soporte técnico</h2>
-            <p style={s.p}>
-              El soporte técnico se presta por email a través de hola@cobratelo.es. El plan Pro incluye soporte prioritario con tiempo de respuesta objetivo de 24 horas en días laborables. El plan Starter tiene soporte estándar con tiempo de respuesta objetivo de 72 horas.
-            </p>
+            <h2 style={s.h2}>8. Disponibilidad y dependencia de terceros</h2>
+            <p style={s.p}>El Proveedor persigue una disponibilidad objetivo del 99% mensual. Sin embargo, el servicio depende de proveedores externos cuya disponibilidad está fuera del control del Proveedor:</p>
+            <ul style={s.ul}>
+              <li><strong>Supabase</strong> — base de datos e infraestructura</li>
+              <li><strong>Vercel</strong> — infraestructura web</li>
+              <li><strong>Stripe</strong> — procesamiento de pagos</li>
+              <li><strong>Forward Email</strong> — comunicaciones por email</li>
+            </ul>
+            <p style={s.p}>El Proveedor no será responsable de interrupciones causadas por fallos en estos proveedores. Las interrupciones no planificadas no darán derecho a compensación económica salvo acuerdo específico.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>11. Protección de datos</h2>
-            <p style={s.p}>
-              El tratamiento de datos personales en el marco de este contrato se rige por el Acuerdo de Encargo de Tratamiento (DPA) disponible en <Link href="/dpa" style={{ color: '#cc5500' }}>cobratelo.es/dpa</Link>, que forma parte integrante del presente contrato.
-            </p>
+            <h2 style={s.h2}>9. Facturación, renovación y cancelación</h2>
+            <p style={s.p}>Facturación mensual anticipada vía Stripe. Renovación automática salvo cancelación desde el panel de cuenta. La cancelación surte efecto al final del período facturado, sin reembolso proporcional.</p>
+            <p style={s.p}>El Proveedor puede resolver el contrato con preaviso de 30 días, o de forma inmediata por uso fraudulento, incumplimiento grave o impago.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>12. Modificaciones del contrato</h2>
-            <p style={s.p}>
-              El Proveedor podrá modificar este contrato con un preaviso de 30 días. Si el Cliente no acepta los nuevos términos, podrá resolver el contrato sin penalización antes de la entrada en vigor de los cambios.
-            </p>
+            <h2 style={s.h2}>10. Exportación de datos</h2>
+            <p style={s.p}>El Cliente puede exportar sus datos (clientes, expedientes) en formato estándar (CSV/JSON) en cualquier momento y durante los 30 días posteriores a la cancelación. Transcurrido ese plazo, los datos podrán eliminarse.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>13. Legislación y jurisdicción</h2>
-            <p style={s.p}>
-              Este contrato se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales de Barcelona, con renuncia expresa a cualquier otro fuero.
-            </p>
+            <h2 style={s.h2}>11. Limitación de responsabilidad</h2>
+            <p style={s.p}>La responsabilidad máxima del Proveedor se limita al importe abonado en los 3 meses anteriores al hecho causante. No se responde por lucro cesante, pérdida de datos imputable al Cliente ni daños indirectos.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>12. Soporte técnico</h2>
+            <p style={s.p}>Email: hola@cobratelo.es. Pro: respuesta objetivo 24 h laborables. Starter: 72 h laborables.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>13. Fuerza mayor</h2>
+            <p style={s.p}>Ninguna de las partes será responsable por incumplimientos debidos a causas fuera de su control razonable: fallos de infraestructura de terceros, ciberataques, decisiones administrativas, catástrofes u otras causas de fuerza mayor.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>14. Protección de datos</h2>
+            <p style={s.p}>El tratamiento de datos en el marco de este contrato se regula en las <Link href="/privacidad" style={{ color: '#cc5500' }}>Condiciones de acceso a datos para gestorías</Link> disponibles en cobratelo.es/dpa, que forman parte integrante de este contrato.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>15. Legislación y jurisdicción</h2>
+            <p style={s.p}>Legislación española. Juzgados y tribunales de Barcelona.</p>
           </section>
         </div>
       </div>

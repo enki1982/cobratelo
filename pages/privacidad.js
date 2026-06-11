@@ -6,15 +6,10 @@ const s = { section: { marginBottom: 32 }, h2: { fontSize: 18, fontWeight: 700, 
 export default function Privacidad() {
   return (
     <>
-      <Head>
-        <title>Política de Privacidad — Cóbratelo.es</title>
-        <meta name="robots" content="noindex" />
-      </Head>
+      <Head><title>Política de Privacidad — Cóbratelo.es</title><meta name="robots" content="noindex" /></Head>
       <div style={{ background: '#FFE2C4', minHeight: '100vh', padding: '0 0 64px' }}>
         <nav style={{ background: '#1a0d00', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center' }}>
-          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>
-            cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
-          </Link>
+          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 18 }}>cóbratelo<span style={{ color: '#FF8300' }}>.es</span></Link>
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Política de Privacidad</h1>
@@ -31,91 +26,82 @@ export default function Privacidad() {
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>2. Qué es Cóbratelo.es</h2>
-            <p style={s.p}>Cóbratelo.es es una plataforma SaaS española con dos modalidades de uso:</p>
-            <ul style={s.ul}>
-              <li><strong>Para ciudadanos:</strong> detección personalizada de ayudas, subvenciones y prestaciones públicas a partir del perfil del usuario.</li>
-              <li><strong>Para gestorías y profesionales:</strong> herramienta de gestión (CRM) que permite a profesionales del sector administrativo gestionar clientes, expedientes y tramitación de ayudas a través de un panel privado.</li>
-            </ul>
+            <h2 style={s.h2}>2. Naturaleza de la plataforma</h2>
+            <p style={s.p}>Cóbratelo.es es una plataforma SaaS con dos modalidades: detección de ayudas para ciudadanos, y herramienta de gestión profesional (CRM) para gestorías. Cóbratelo.es actúa como responsable del tratamiento de los datos que recoge directamente. Las gestorías que acceden a datos de ciudadanos con el consentimiento de estos actúan como responsables independientes del tratamiento de esos datos en el marco de su actividad profesional.</p>
           </section>
 
           <section style={s.section}>
             <h2 style={s.h2}>3. Datos que recogemos</h2>
             <ul style={s.ul}>
-              <li><strong>Datos de registro:</strong> dirección de email para crear y gestionar tu cuenta.</li>
-              <li><strong>Datos de perfil:</strong> información sobre tu situación personal y profesional que facilitas voluntariamente para recibir resultados personalizados (edad, situación laboral, comunidad autónoma, ingresos aproximados, etc.).</li>
-              <li><strong>Datos de uso:</strong> páginas visitadas, interacciones con el servicio, con fines de mejora y análisis agregado.</li>
-              <li><strong>Datos de facturación:</strong> en el caso de suscripciones de pago, gestionados exclusivamente a través de Stripe. Cóbratelo.es no almacena datos bancarios ni de tarjeta.</li>
+              <li><strong>Datos de registro:</strong> dirección de email para crear y gestionar la cuenta.</li>
+              <li><strong>Datos de perfil:</strong> situación personal y profesional que el usuario facilita voluntariamente (edad, situación laboral, comunidad autónoma, ingresos aproximados, composición familiar, etc.).</li>
+              <li><strong>Datos de uso:</strong> páginas visitadas e interacciones, con fines de mejora del servicio.</li>
+              <li><strong>Datos de facturación:</strong> en caso de suscripciones de pago, gestionados exclusivamente a través de Stripe. Cóbratelo.es no almacena datos bancarios ni de tarjeta.</li>
+              <li><strong>Registro de consentimientos:</strong> cuando el usuario autoriza a una gestoría a acceder a sus datos, se registran la fecha, hora, dirección IP, versión del texto legal aceptado y gestoría seleccionada.</li>
             </ul>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>4. Finalidad y base legal del tratamiento</h2>
+            <h2 style={s.h2}>4. Finalidad y base legal</h2>
             <ul style={s.ul}>
               <li><strong>Prestación del servicio</strong> — base legal: ejecución de contrato (Art. 6.1.b RGPD)</li>
-              <li><strong>Envío de alertas y comunicaciones sobre ayudas</strong> — base legal: consentimiento (Art. 6.1.a RGPD)</li>
-              <li><strong>Gestión de expedientes por profesionales autorizados</strong> — base legal: consentimiento expreso del ciudadano (Art. 6.1.a RGPD)</li>
+              <li><strong>Envío de alertas sobre ayudas</strong> — base legal: consentimiento (Art. 6.1.a RGPD)</li>
+              <li><strong>Cesión de datos a gestoría autorizada por el usuario</strong> — base legal: consentimiento expreso (Art. 6.1.a RGPD)</li>
               <li><strong>Mejora del servicio y análisis estadístico</strong> — base legal: interés legítimo (Art. 6.1.f RGPD)</li>
               <li><strong>Cumplimiento de obligaciones legales</strong> — base legal: obligación legal (Art. 6.1.c RGPD)</li>
             </ul>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>5. Comunicación de datos a gestorías</h2>
-            <p style={s.p}>
-              Cuando el usuario ciudadano solicite la intervención de una gestoría a través de la plataforma, podrá autorizar expresamente la comunicación de sus datos personales y perfil de ayudas a la gestoría seleccionada.
-            </p>
-            <p style={s.p}>
-              Esta autorización es voluntaria, revocable en cualquier momento y necesaria para que la gestoría pueda prestar sus servicios profesionales. Sin este consentimiento, Cóbratelo.es no comunicará ningún dato personal a terceros.
-            </p>
-            <p style={s.p}>
-              La gestoría receptora actúa como responsable del tratamiento respecto de los datos que recibe para la prestación de sus servicios profesionales al ciudadano, de conformidad con el Acuerdo de Encargo de Tratamiento suscrito con Cóbratelo.es.
-            </p>
-            <p style={s.p}>
-              Cóbratelo.es únicamente facilita la comunicación autorizada por el usuario y proporciona la infraestructura tecnológica necesaria para la gestión de expedientes. No interviene en la relación profesional entre la gestoría y el ciudadano.
-            </p>
+            <h2 style={s.h2}>5. Cesión de datos a gestorías</h2>
+            <p style={s.p}>Cuando el usuario ciudadano solicite los servicios de una gestoría a través de la plataforma, deberá otorgar consentimiento expreso, informado y revocable para la cesión de sus datos personales y perfil de ayudas a dicha gestoría.</p>
+            <p style={s.p}>La gestoría receptora pasa a actuar como responsable independiente del tratamiento de los datos que recibe para la prestación de sus servicios profesionales, de acuerdo con la normativa RGPD aplicable a su actividad y con las condiciones de acceso aceptadas al contratar Cóbratelo.es.</p>
+            <p style={s.p}>Cóbratelo.es facilita la infraestructura para esta cesión autorizada, pero no interviene en la relación profesional entre la gestoría y el ciudadano ni en el tratamiento posterior que la gestoría realice de esos datos.</p>
+            <p style={s.p}>El usuario puede revocar este consentimiento en cualquier momento desde su panel de cuenta. La revocación no afectará a los tratamientos ya realizados por la gestoría con anterioridad.</p>
           </section>
 
           <section style={s.section}>
             <h2 style={s.h2}>6. CRM para profesionales</h2>
-            <p style={s.p}>
-              Las gestorías que contraten un plan profesional tienen acceso a un panel de gestión (CRM) donde pueden gestionar clientes, crear expedientes, documentar actividad y realizar seguimiento de tramitaciones. Los datos almacenados en este entorno están protegidos por controles de acceso por rol y solo son accesibles por la gestoría titular de la cuenta.
-            </p>
-            <p style={s.p}>
-              Los datos de ciudadanos que aparecen en el CRM son únicamente los que el propio ciudadano ha autorizado expresamente compartir con esa gestoría.
-            </p>
+            <p style={s.p}>Las gestorías con plan profesional acceden a un CRM donde gestionan clientes, expedientes y actividad. Los datos de ciudadanos visibles en este entorno son exclusivamente los que el propio ciudadano ha autorizado ceder. El acceso está protegido por autenticación, control de acceso por rol y segregación entre gestorías — ninguna gestoría puede acceder a datos de clientes de otra.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>7. Conservación de datos</h2>
-            <p style={s.p}>
-              Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación de la cuenta, los datos se eliminan en un plazo máximo de 30 días, salvo aquellos que deban conservarse por obligación legal (hasta 6 años para datos fiscales).
-            </p>
-          </section>
-
-          <section style={s.section}>
-            <h2 style={s.h2}>8. Proveedores y subencargados</h2>
+            <h2 style={s.h2}>7. Medidas de seguridad</h2>
+            <p style={s.p}>Cóbratelo.es aplica las siguientes medidas técnicas y organizativas:</p>
             <ul style={s.ul}>
-              <li><strong>Supabase</strong> — base de datos y autenticación (servidores en UE)</li>
-              <li><strong>Stripe</strong> — procesamiento de pagos (certificado PCI-DSS)</li>
-              <li><strong>Vercel</strong> — infraestructura web</li>
-              <li><strong>Forward Email</strong> — envío de correos transaccionales</li>
+              <li><strong>Cifrado:</strong> las comunicaciones se protegen mediante HTTPS/TLS. Los datos en reposo se almacenan cifrados en infraestructura certificada.</li>
+              <li><strong>Control de accesos:</strong> autenticación por email verificado, control de acceso por rol (ciudadano / gestoría / administrador).</li>
+              <li><strong>Segregación entre gestorías:</strong> las políticas de seguridad a nivel de fila (Row Level Security) garantizan que cada gestoría solo accede a sus propios datos.</li>
+              <li><strong>Copias de seguridad:</strong> backups automáticos diarios gestionados por el proveedor de base de datos (Supabase).</li>
+              <li><strong>Auditoría:</strong> registro de eventos relevantes para detección de accesos no autorizados.</li>
             </ul>
-            <p style={s.p}>Todos los proveedores cuentan con garantías adecuadas de protección de datos conforme al RGPD.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>9. Derechos del usuario</h2>
-            <p style={s.p}>
-              Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a>. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).
-            </p>
+            <h2 style={s.h2}>8. Conservación de datos</h2>
+            <p style={s.p}>Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación, se eliminan en un plazo máximo de 30 días, salvo obligación legal (hasta 6 años para datos fiscales). Los registros de consentimiento se conservan durante el plazo de prescripción de acciones legales aplicable.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>10. Cookies</h2>
-            <p style={s.p}>
-              Utilizamos cookies estrictamente necesarias para el funcionamiento del servicio (sesión de usuario). No utilizamos cookies de publicidad ni de seguimiento de terceros sin consentimiento previo.
-            </p>
+            <h2 style={s.h2}>9. Proveedores, subencargados y transferencias internacionales</h2>
+            <p style={s.p}>Cóbratelo.es trabaja con los siguientes proveedores, todos con garantías RGPD adecuadas:</p>
+            <ul style={s.ul}>
+              <li><strong>Supabase Inc.</strong> (EE.UU.) — base de datos e infraestructura. Servidores ubicados en la UE. Cláusulas contractuales tipo UE.</li>
+              <li><strong>Vercel Inc.</strong> (EE.UU.) — infraestructura web. Cláusulas contractuales tipo UE.</li>
+              <li><strong>Stripe Inc.</strong> (EE.UU.) — procesamiento de pagos. Certificado PCI-DSS. Cláusulas contractuales tipo UE.</li>
+              <li><strong>Forward Email</strong> — envío de correos transaccionales. Servidores en EE.UU. con cláusulas contractuales tipo UE.</li>
+            </ul>
+            <p style={s.p}>Estas transferencias internacionales se realizan al amparo de las cláusulas contractuales tipo aprobadas por la Comisión Europea (Art. 46 RGPD).</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>10. Derechos del usuario</h2>
+            <p style={s.p}>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:hola@cobratelo.es" style={{ color: '#cc5500' }}>hola@cobratelo.es</a>. Responderemos en el plazo máximo de un mes. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>11. Cookies</h2>
+            <p style={s.p}>Utilizamos cookies estrictamente necesarias para el funcionamiento del servicio (sesión de usuario). Consulta nuestra <Link href="/cookies" style={{ color: '#cc5500' }}>Política de Cookies</Link> para más información.</p>
           </section>
         </div>
       </div>
