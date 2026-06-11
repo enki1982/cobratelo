@@ -1,1 +1,10 @@
-cd /root/ayuda-es-agent && source .env && python3 enricher.py --all >> /tmp/enricher.log 2>&1
+# Ver el crontab actual y añadir enricher incremental tras el agente de ayudas
+crontab -l 2>/dev/null
+echo "---"
+# El agente de ayudas corre el día 1 de cada mes. El enricher incremental corre el día 1 también, 2h después.
+# Añadimos: si ya existe la línea no duplicar
+crontab -l 2>/dev/null | grep -v "enricher_incremental" > /tmp/cron_tmp || true
+echo "0 2 1 * * cd /root/ayuda-es-agent && source .env && python3 enricher.py --all >> /tmp/enricher_incremental.log 2>&1 # enricher_incremental" >> /tmp/cron_tmp
+crontab /tmp/cron_tmp
+echo "Crontab actualizado:"
+crontab -l
