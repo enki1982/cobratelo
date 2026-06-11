@@ -14,7 +14,6 @@ export default function ContratoSaas() {
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Contrato de Licencia SaaS para Gestorías</h1>
           <p style={{ color: '#888', marginBottom: 8 }}>Última actualización: junio 2026</p>
-          <p style={{ color: '#cc5500', marginBottom: 40, fontStyle: 'italic', fontSize: 14 }}>Borrador pendiente de revisión legal. No tiene validez contractual hasta su aprobación definitiva.</p>
 
           <section style={s.section}>
             <h2 style={s.h2}>1. Partes</h2>
@@ -64,12 +63,12 @@ export default function ContratoSaas() {
 
           <section style={s.section}>
             <h2 style={s.h2}>7. Propiedad intelectual</h2>
-            <p style={s.p}>Cóbratelo.es, su código fuente, diseño, base de datos de ayudas, algoritmos y metodología son propiedad exclusiva del Proveedor. La licencia no otorga al Cliente ningún derecho de propiedad. Los datos introducidos por el Cliente son de su propiedad.</p>
+            <p style={s.p}>Cóbratelo.es, su código fuente, diseño, base de datos de ayudas, algoritmos y metodología son propiedad exclusiva del Proveedor. La licencia no otorga al Cliente ningún derecho de propiedad. El Cliente conserva la titularidad y responsabilidad sobre la información y documentación incorporada por él a la plataforma, sin perjuicio de los derechos que correspondan a los interesados sobre sus datos personales conforme a la normativa aplicable.</p>
           </section>
 
           <section style={s.section}>
             <h2 style={s.h2}>8. Disponibilidad y dependencia de terceros</h2>
-            <p style={s.p}>El Proveedor persigue una disponibilidad objetivo del 99% mensual. Sin embargo, el servicio depende de proveedores externos cuya disponibilidad está fuera del control del Proveedor:</p>
+            <p style={s.p}>El Proveedor persigue una disponibilidad objetivo del 99% mensual, que constituye un objetivo de servicio y no una garantía contractual. El servicio depende de proveedores externos cuya disponibilidad está fuera del control del Proveedor:</p>
             <ul style={s.ul}>
               <li><strong>Supabase</strong> — base de datos e infraestructura</li>
               <li><strong>Vercel</strong> — infraestructura web</li>
@@ -87,7 +86,7 @@ export default function ContratoSaas() {
 
           <section style={s.section}>
             <h2 style={s.h2}>10. Exportación de datos</h2>
-            <p style={s.p}>El Cliente puede exportar sus datos (clientes, expedientes) en formato estándar (CSV/JSON) en cualquier momento y durante los 30 días posteriores a la cancelación. Transcurrido ese plazo, los datos podrán eliminarse.</p>
+            <p style={s.p}>El Cliente puede exportar sus datos (clientes, expedientes) en formato estándar (CSV/JSON) en cualquier momento y durante los 30 días posteriores a la cancelación. Transcurrido dicho plazo, los datos podrán ser eliminados o anonimizados de forma irreversible.</p>
           </section>
 
           <section style={s.section}>

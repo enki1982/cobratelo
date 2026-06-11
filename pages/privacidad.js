@@ -79,7 +79,7 @@ export default function Privacidad() {
 
           <section style={s.section}>
             <h2 style={s.h2}>8. Conservación de datos</h2>
-            <p style={s.p}>Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación, se eliminan en un plazo máximo de 30 días, salvo obligación legal (hasta 6 años para datos fiscales). Los registros de consentimiento se conservan durante el plazo de prescripción de acciones legales aplicable.</p>
+            <p style={s.p}>Los datos se conservan mientras el usuario mantenga su cuenta activa. Tras la eliminación de la cuenta, se eliminan en un plazo máximo de 30 días, salvo obligación legal (hasta 6 años para datos fiscales). Los registros de consentimiento se conservan durante el plazo de prescripción de acciones legales aplicable. Una vez finalizado el plazo de conservación aplicable, los datos serán eliminados o anonimizados de forma segura e irreversible.</p>
           </section>
 
           <section style={s.section}>
@@ -96,7 +96,7 @@ export default function Privacidad() {
 
           <section style={s.section}>
             <h2 style={s.h2}>10. Derechos del usuario</h2>
-            <p style={s.p}>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:privacidad@cobratelo.es" style={{ color: '#cc5500' }}>privacidad@cobratelo.es</a>. Responderemos en el plazo máximo de un mes. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+            <p style={s.p}>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:privacidad@cobratelo.es" style={{ color: '#cc5500' }}>privacidad@cobratelo.es</a>. Responderemos en el plazo máximo de un mes. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es). El ejercicio de derechos respecto de tratamientos realizados directamente por una gestoría deberá dirigirse a la propia gestoría como responsable independiente del tratamiento.</p>
           </section>
 
           <section style={s.section}>

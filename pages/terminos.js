@@ -48,7 +48,8 @@ export default function Terminos() {
               <li>El uso de la plataforma no implica relación laboral, societaria ni de representación entre Cóbratelo.es y la gestoría.</li>
               <li>Cada gestoría es responsable de los servicios profesionales que presta a sus clientes y del cumplimiento normativo aplicable a su actividad.</li>
               <li>La gestoría accede únicamente a datos de ciudadanos que han otorgado consentimiento expreso.</li>
-              <li>La gestoría actúa como responsable independiente del tratamiento de los datos que recibe, de conformidad con el <Link href="/dpa" style={{ color: '#cc5500' }}>Acuerdo de Comunicación de Datos entre Responsables Independientes</Link>.</li>
+              <li>La gestoría actúa como responsable independiente del tratamiento de los datos que recibe, de conformidad con el <Link href="/dpa" style={{ color: '#cc5500' }}>Acuerdo de Colaboración y Comunicación de Datos para Gestorías</Link>.</li>
+              <li>La gestoría garantiza que dispone de las autorizaciones, habilitaciones y bases legitimadoras necesarias para el tratamiento de los datos personales de sus clientes y para la prestación de sus servicios profesionales.</li>
             </ul>
           </section>
 
@@ -81,7 +82,7 @@ export default function Terminos() {
 
           <section style={s.section}>
             <h2 style={s.h2}>9. Limitación de responsabilidad</h2>
-            <p style={s.p}>Cóbratelo.es no se responsabiliza de los resultados obtenidos en procesos de solicitud de ayudas, de la actuación de gestorías independientes, ni de la disponibilidad ininterrumpida del servicio. El servicio se presta sin garantía de resultados.</p>
+            <p style={s.p}>Cóbratelo.es no se responsabiliza de los resultados obtenidos en procesos de solicitud de ayudas, de la actuación de gestorías independientes, ni de la disponibilidad ininterrumpida del servicio. El servicio se presta sin garantía de resultados. Cóbratelo.es no garantiza la concesión de ninguna ayuda, subvención o prestación pública, ni la elegibilidad de ningún usuario para las mismas, ni la actualización inmediata de convocatorias, requisitos, importes o condiciones de ayudas públicas.</p>
           </section>
 
           <section style={s.section}>

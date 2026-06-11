@@ -13,9 +13,8 @@ export default function DPA() {
         </nav>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a0d00', marginBottom: 8 }}>Acuerdo de Colaboración y Comunicación de Datos para Gestorías</h1>
-          <p style={{ color: '#666', marginBottom: 4, fontSize: 15 }}>Condiciones de Acceso, Comunicación y Tratamiento de Datos entre Responsables Independientes — Art. 6.1.a y Art. 26 RGPD</p>
+          <p style={{ color: '#666', marginBottom: 4, fontSize: 15 }}>Condiciones de Acceso, Comunicación y Tratamiento de Datos entre Responsables Independientes — Art. 6.1.a RGPD</p>
           <p style={{ color: '#888', marginBottom: 8 }}>Última actualización: junio 2026</p>
-          <p style={{ color: '#cc5500', marginBottom: 40, fontStyle: 'italic', fontSize: 14 }}>Borrador pendiente de revisión legal. No tiene validez contractual hasta su aprobación definitiva.</p>
 
           <section style={s.section}>
             <h2 style={s.h2}>1. Arquitectura jurídica del tratamiento</h2>
@@ -96,7 +95,7 @@ export default function DPA() {
 
           <section style={s.section}>
             <h2 style={s.h2}>10. Categorías especiales de datos</h2>
-            <p style={s.p}>Con carácter general, este acuerdo no contempla el tratamiento de categorías especiales de datos en el sentido del artículo 9 RGPD. No obstante, determinadas ayudas y subvenciones pueden requerir información relativa a discapacidad, dependencia, estado de salud o situación de vulnerabilidad. En estos casos, la gestoría deberá obtener el consentimiento explícito del ciudadano afectado y garantizar las medidas de seguridad reforzadas exigidas por el RGPD para este tipo de datos.</p>
+            <p style={s.p}>Con carácter general, este acuerdo no contempla el tratamiento de categorías especiales de datos en el sentido del artículo 9 RGPD. No obstante, determinadas ayudas y subvenciones pueden requerir información relativa a discapacidad, dependencia, estado de salud o situación de vulnerabilidad. En estos casos, la gestoría deberá disponer de una base legitimadora válida conforme al artículo 9 del RGPD y aplicar las medidas de seguridad reforzadas exigidas por la normativa aplicable.</p>
           </section>
 
           <section style={s.section}>
@@ -106,7 +105,7 @@ export default function DPA() {
 
           <section style={s.section}>
             <h2 style={s.h2}>12. Legislación aplicable</h2>
-            <p style={s.p}>RGPD (UE) 2016/679, LOPDGDD (LO 3/2018) y demás normativa española de protección de datos. Juzgados de Barcelona.</p>
+            <p style={s.p}>RGPD (UE) 2016/679, LOPDGDD (LO 3/2018) y demás normativa española de protección de datos. Cuando la normativa aplicable lo permita, las partes se someten a los Juzgados y Tribunales de Barcelona.</p>
           </section>
         </div>
       </div>

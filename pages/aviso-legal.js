@@ -89,16 +89,21 @@ export default function AvisoLegal() {
 
           <section style={s.section}>
             <h2 style={s.h2}>7. Propiedad intelectual e industrial</h2>
-            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, software, diseño, bases de datos, metodologías, contenidos, elementos gráficos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, software, bases de datos, metodologías, contenidos, diseño, elementos gráficos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
           </section>
 
           <section style={s.section}>
             <h2 style={s.h2}>8. Limitación de responsabilidad</h2>
-            <p style={s.p}>Cóbratelo.es no se responsabiliza de las decisiones tomadas por el usuario basándose en la información proporcionada, de los resultados obtenidos en procesos de solicitud de ayudas, ni de la actuación de las gestorías o profesionales independientes que operen en la plataforma.</p>
+            <p style={s.p}>Cóbratelo.es no se responsabiliza de las decisiones tomadas por el usuario basándose en la información proporcionada, de los resultados obtenidos en procesos de solicitud de ayudas, ni de la actuación de las gestorías o profesionales independientes que operen en la plataforma. Asimismo, Cóbratelo.es no garantiza la concesión de ninguna ayuda, subvención o prestación pública, ni la elegibilidad de ningún usuario para las mismas.</p>
           </section>
 
           <section style={s.section}>
-            <h2 style={s.h2}>9. Legislación aplicable y jurisdicción</h2>
+            <h2 style={s.h2}>9. Modificación del aviso legal</h2>
+            <p style={s.p}>El titular podrá modificar el presente Aviso Legal en cualquier momento para adaptarlo a cambios normativos, técnicos o funcionales. La versión actualizada se publicará en esta misma URL con la fecha de última actualización. El uso continuado del sitio web tras la publicación de los cambios implicará su aceptación.</p>
+          </section>
+
+          <section style={s.section}>
+            <h2 style={s.h2}>10. Legislación aplicable y jurisdicción</h2>
             <p style={s.p}>Este aviso legal se rige por la legislación española. Cuando la normativa aplicable lo permita, las partes se someten a los Juzgados y Tribunales de Barcelona.</p>
           </section>
         </div>
