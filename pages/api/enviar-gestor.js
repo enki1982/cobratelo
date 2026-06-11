@@ -35,86 +35,84 @@ export default async function handler(req, res) {
   const nombre = nombreCliente || 'Su cliente'
   const nAyudas = ayudas.length
 
-  const ayudasHtml = ayudas.map((a, i) => `
+  const ayudasHtml = ayudas.slice(0, 8).map((a, i) => `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #f0ead0;">
-        <div style="font-weight:600;color:#1a0d00;font-size:14px;">${i + 1}. ${a.nombre}</div>
-        <div style="color:#7a4a1a;font-size:12px;margin-top:2px;">${a.organismo}</div>
-        ${a.importe_max > 0 ? `<div style="color:#cc5500;font-weight:700;font-size:13px;margin-top:3px;">Hasta ${a.importe_max.toLocaleString('es-ES')}€</div>` : ''}
-        ${a.descripcion ? `<div style="color:#666660;font-size:12px;margin-top:4px;">${a.descripcion}</div>` : ''}
-        ${a.url_oficial ? `<div style="margin-top:5px;"><a href="${a.url_oficial}" style="color:#cc5500;font-size:12px;">Ver convocatoria oficial →</a></div>` : ''}
+      <td style="padding:12px 0;border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:2px;">${a.nombre}</div>
+            <div style="font-size:12px;color:#888;">${a.organismo}</div>
+          </div>
+          ${a.importe_max > 0 ? `<div style="font-size:13px;font-weight:700;color:#cc5500;white-space:nowrap;flex-shrink:0;">Hasta ${a.importe_max.toLocaleString('es-ES')}€</div>` : ''}
+        </div>
       </td>
     </tr>
   `).join('')
+
+  const masAyudas = ayudas.length > 8 ? `<p style="margin:12px 0 0;font-size:12px;color:#888;">+ ${ayudas.length - 8} ayudas más disponibles en la plataforma.</p>` : ''
 
   const html = `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#FFE2C4;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #F5C89A;">
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<div style="max-width:580px;margin:32px auto;padding:0 16px;">
 
-    <!-- Header -->
-    <div style="background:#1a0d00;padding:32px 40px;">
-      <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">
-        cóbratelo<span style="color:#cc5500;">.es</span>
-      </div>
-      <div style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:4px;">Ayudas públicas personalizadas</div>
+  <!-- Card -->
+  <div style="background:#ffffff;border-radius:8px;border:1px solid #e8e8e8;overflow:hidden;">
+
+    <!-- Top bar -->
+    <div style="padding:20px 32px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:15px;font-weight:700;color:#111;letter-spacing:-0.3px;">cóbratelo<span style="color:#cc5500;">.es</span></span>
+      <span style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;">Notificación de nuevo cliente</span>
     </div>
 
-    <!-- Intro -->
-    <div style="padding:32px 40px 24px;">
-      <h2 style="margin:0 0 12px;color:#1a0d00;font-size:20px;font-weight:700;">
-        ${nombre} tiene ${nAyudas} ayudas pendientes de tramitar
-      </h2>
-      <p style="margin:0;color:#555550;font-size:15px;line-height:1.6;">
-        Hemos analizado su perfil y hemos identificado <strong>${nAyudas} ayudas públicas</strong> a las que tiene derecho.
-        Nos ha facilitado su contacto para que pueda ayudarle a tramitarlas.
+    <!-- Body -->
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 6px;font-size:13px;color:#888;">Ha recibido una solicitud de:</p>
+      <h1 style="margin:0 0 20px;font-size:22px;font-weight:700;color:#111;letter-spacing:-0.5px;">${nombre}</h1>
+
+      <p style="margin:0 0 20px;font-size:14px;color:#444;line-height:1.65;">
+        Este ciudadano ha completado su cuestionario en Cóbratelo.es y le ha autorizado expresamente
+        a acceder a su perfil para ayudarle a tramitar las siguientes ayudas públicas:
       </p>
-    </div>
 
-    <!-- Ayudas -->
-    <div style="padding:0 40px 24px;">
-      <div style="background:#FFE2C4;border-radius:12px;padding:20px 24px;">
-        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#7a4a1a;font-weight:600;margin-bottom:12px;">
-          Ayudas identificadas
-        </div>
+      <!-- Lista ayudas -->
+      <div style="background:#fafafa;border:1px solid #eee;border-radius:6px;padding:4px 16px;margin-bottom:20px;">
         <table style="width:100%;border-collapse:collapse;">
           ${ayudasHtml}
         </table>
+        ${masAyudas}
       </div>
-    </div>
 
-    <!-- Pitch -->
-    <div style="padding:0 40px 32px;">
-      <div style="border:1px solid #F5C89A;border-radius:12px;padding:24px;">
-        <h3 style="margin:0 0 10px;color:#1a0d00;font-size:16px;font-weight:700;">
-          ¿Conoce Cóbratelo.es?
-        </h3>
-        <p style="margin:0 0 12px;color:#555550;font-size:14px;line-height:1.6;">
-          Somos la plataforma que identifica automáticamente todas las ayudas, subvenciones y
-          prestaciones públicas a las que tiene derecho cada ciudadano. Analizamos el perfil
-          del usuario y cruzamos más de 200 convocatorias activas en tiempo real.
-        </p>
-        <p style="margin:0 0 16px;color:#555550;font-size:14px;line-height:1.6;">
-          Si trabaja con particulares o autónomos, Cóbratelo.es puede ser una herramienta
-          muy útil para detectar oportunidades para sus clientes antes de que caduquen.
-        </p>
-        <a href="https://cobratelo.es/precios" style="display:inline-block;background:#cc5500;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:50px;">
-          Ver planes para gestorías →
+      <!-- CTA -->
+      <div style="margin-bottom:24px;">
+        <a href="https://cobratelo.es/gestor/expedientes"
+           style="display:inline-block;background:#cc5500;color:#ffffff;text-decoration:none;
+                  font-weight:600;font-size:14px;padding:12px 24px;border-radius:6px;letter-spacing:-0.2px;">
+          Ver cliente en mi panel →
         </a>
       </div>
-    </div>
 
-    <!-- Footer -->
-    <div style="padding:20px 40px;border-top:1px solid #f0ead0;text-align:center;">
-      <p style="margin:0;color:#b0aaa0;font-size:12px;">
-        Cóbratelo.es · hola@cobratelo.es<br>
-        <a href="https://cobratelo.es" style="color:#7a4a1a;">cobratelo.es</a>
+      <p style="margin:0;font-size:13px;color:#888;line-height:1.6;">
+        Acceda a su panel para ver el perfil completo, gestionar el expediente y comunicarse con el cliente.
+        El consentimiento RGPD ha sido registrado automáticamente.
       </p>
     </div>
 
+    <!-- Footer -->
+    <div style="padding:16px 32px;border-top:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:11px;color:#bbb;">cóbratelo.es · hola@cobratelo.es</span>
+      <a href="https://cobratelo.es/gestores" style="font-size:11px;color:#bbb;text-decoration:none;">¿Qué es Cóbratelo.es?</a>
+    </div>
+
   </div>
+
+  <p style="text-align:center;font-size:11px;color:#bbb;margin:16px 0;">
+    Ha recibido este email porque un ciudadano le ha seleccionado como gestor en Cóbratelo.es.
+  </p>
+
+</div>
 </body>
 </html>`
 
