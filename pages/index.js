@@ -158,12 +158,42 @@ export default function Home() {
               "url": "https://www.cobratelo.es",
               "logo": "https://www.cobratelo.es/logo.png",
               "contactPoint": { "@type": "ContactPoint", "email": "hola@cobratelo.es", "contactType": "customer service" }
+            },
+            {
+              "@type": "SoftwareApplication",
+              "name": "Cóbratelo.es",
+              "applicationCategory": "FinanceApplication",
+              "operatingSystem": "Web",
+              "url": "https://www.cobratelo.es",
+              "description": "Plataforma que identifica automáticamente las ayudas públicas, subvenciones y prestaciones a las que tiene derecho cada ciudadano en España.",
+              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Gratuito para ciudadanos" }
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+                { "@type": "Question", "name": "¿Qué es Cóbratelo.es?", "acceptedAnswer": { "@type": "Answer", "text": "Cóbratelo.es es una plataforma gratuita que analiza tu situación personal y detecta automáticamente todas las ayudas públicas, subvenciones y prestaciones a las que tienes derecho en España: estatales, autonómicas y locales." } },
+                { "@type": "Question", "name": "¿Es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, completamente gratuito para ciudadanos. Sin registro previo necesario para ver tus ayudas." } },
+                { "@type": "Question", "name": "¿Qué ayudas detecta?", "acceptedAnswer": { "@type": "Answer", "text": "Detecta más de 11.000 convocatorias activas: prestaciones de desempleo, ayudas al alquiler, bonos de digitalización, subvenciones autonómicas, ayudas por maternidad, ayudas para autónomos y mucho más." } },
+                { "@type": "Question", "name": "¿Cómo funciona?", "acceptedAnswer": { "@type": "Answer", "text": "Completas un cuestionario de 2 minutos con tu situación laboral, ingresos, familia y municipio. El sistema cruza tu perfil con todas las convocatorias activas y te muestra las ayudas aplicables con sus importes e instrucciones." } }
+              ]
             }
           ]
         })}} />
         <meta name="description" content="Descubre en 2 minutos qué ayudas, subvenciones y prestaciones del Estado te corresponden. Gratis." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://www.cobratelo.es/" />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.cobratelo.es/" />
+        <meta property="og:title" content="Cóbratelo.es — Las ayudas públicas que te corresponden" />
+        <meta property="og:description" content="Descubre en 2 minutos qué ayudas, subvenciones y prestaciones del Estado te corresponden. Gratis." />
+        <meta property="og:image" content="https://www.cobratelo.es/og-image.png" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:site_name" content="Cóbratelo.es" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Cóbratelo.es — Las ayudas públicas que te corresponden" />
+        <meta name="twitter:description" content="Descubre en 2 minutos qué ayudas, subvenciones y prestaciones del Estado te corresponden. Gratis." />
+        <meta name="twitter:image" content="https://www.cobratelo.es/og-image.png" />
       </Head>
 
       <div style={{ background: C.bg, color: C.text, minHeight: '100vh', fontFamily: 'sans-serif',

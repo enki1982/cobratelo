@@ -61,6 +61,12 @@ export default function Gestores() {
         <meta property="og:title" content="Cóbratelo.es para Gestorías" />
         <meta property="og:description" content="Nuevo canal de clientes. El ciudadano llega ya sabiendo sus ayudas. Tú tramitas." />
         <meta property="og:url" content="https://cobratelo.es/gestores" />
+        <meta property="og:image" content="https://www.cobratelo.es/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Cóbratelo.es para Gestorías" />
+        <meta name="twitter:description" content="Convierte ayudas públicas en nuevos clientes. El ciudadano llega ya sabiendo sus ayudas — tú solo tienes que tramitarlas." />
+        <meta name="twitter:image" content="https://www.cobratelo.es/og-image.png" />
+        <link rel="canonical" href="https://www.cobratelo.es/gestores" />
       </Head>
 
       <div style={{ background: C.bg, minHeight: '100vh', color: C.text, fontFamily: "'Inter', sans-serif" }}>
