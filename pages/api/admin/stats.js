@@ -29,13 +29,17 @@ export default async function handler(req, res) {
     const hace30 = new Date(ahora - 30 * 86400000)
     const hoy = new Date(ahora.toDateString())
 
-    const total = usuarios?.length || 0
-    const hoy_ = usuarios?.filter(u => new Date(u.created_at) >= hoy).length || 0
-    const semana = usuarios?.filter(u => new Date(u.created_at) >= hace7).length || 0
-    const mes = usuarios?.filter(u => new Date(u.created_at) >= hace30).length || 0
+    // Excluir admin del conteo
+    const ADMIN_EMAIL = 'mikinogueras@gmail.com'
+    const usuariosSinAdmin = (usuarios || []).filter(u => u.email !== ADMIN_EMAIL)
+
+    const total = usuariosSinAdmin.length || 0
+    const hoy_ = usuariosSinAdmin.filter(u => new Date(u.created_at) >= hoy).length || 0
+    const semana = usuariosSinAdmin.filter(u => new Date(u.created_at) >= hace7).length || 0
+    const mes = usuariosSinAdmin.filter(u => new Date(u.created_at) >= hace30).length || 0
 
     const planes = { free: 0, alertas: 0, starter: 0, pro: 0 }
-    usuarios?.forEach(u => { if (planes[u.plan] !== undefined) planes[u.plan]++ })
+    usuariosSinAdmin.forEach(u => { if (planes[u.plan] !== undefined) planes[u.plan]++ })
 
     // Registros por día últimos 30 días
     const porDia = {}

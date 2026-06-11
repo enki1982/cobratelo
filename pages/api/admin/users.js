@@ -25,6 +25,7 @@ export default async function handler(req, res) {
   const { data: usuarios } = await supabaseAdmin
     .from('usuarios')
     .select('id, email, plan, perfil, created_at')
+    .neq('email', 'mikinogueras@gmail.com')
     .order('created_at', { ascending: false })
     .limit(200)
 

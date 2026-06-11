@@ -611,7 +611,7 @@ El equipo de Cóbratelo.es`}</div>
                 </table>
                 <div style={{ marginTop: 20, background: '#fff0e6', border: '1px solid #f0d0b0', borderRadius: 8, padding: 16 }}>
                   <p style={{ ...s.p, fontWeight: 700, marginBottom: 4, color: '#16a34a' }}>✅ Cron job activo en Hetzner</p>
-                  <p style={{ ...s.p, marginBottom: 4 }}>Se ejecuta automáticamente el <strong>día 1 de cada mes a las 3:00h</strong> vía cron en el VPS Hetzner.</p>
+                  <p style={{ ...s.p, marginBottom: 4 }}>Se ejecuta automáticamente el <strong>día 2 de cada mes a las 4:00h</strong> vía cron en el VPS Hetzner.</p>
                   <p style={{ ...s.p, marginBottom: 0, fontSize: 12, color: '#888' }}>Log: <code>/tmp/retention.log</code> · Función SQL: <code>retention_cleanup()</code> · Tablas: access_logs (&gt;5 años), consentimientos_gestor revocados (&gt;5 años)</p>
                 </div>
               </div>
