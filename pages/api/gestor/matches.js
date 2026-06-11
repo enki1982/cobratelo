@@ -38,7 +38,7 @@ export default async function handler(req, res) {
   // Ayudas activas
   const { data: ayudas } = await supabaseAdmin
     .from('ayudas')
-    .select('id, nombre, organismo, tipo, importe_max, importe_min, fecha_cierre, url_oficial, ambito, comunidad_autonoma')
+    .select('id, nombre, organismo, tipo, importe_max, importe_min, fecha_cierre, url_oficial, ambito, comunidad_autonoma, es_nominativa, entidades_geo, tipo_beneficiario, renta_max, edad_min, edad_max')
     .eq('activa', true)
 
   // Expedientes y descartes existentes, para no reproponer

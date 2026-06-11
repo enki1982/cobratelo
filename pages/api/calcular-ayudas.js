@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     // Fetch todas las ayudas activas con solo los campos necesarios
     const { data: ayudas } = await supabaseAdmin
       .from('ayudas')
-      .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
+      .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
       .in('estado', ['abierta', 'permanente', 'pendiente'])
 
     // Calcular relevancia server-side
