@@ -548,6 +548,7 @@ export default function Resultados() {
   const [nombreCliente, setNombreCliente] = useState('')
   const [envioGestorOk, setEnvioGestorOk] = useState(false)
   const [enviandoGestor, setEnviandoGestor] = useState(false)
+  const [consentimientoAceptado, setConsentimientoAceptado] = useState(false)
   const [emailGestorInput, setEmailGestorInput] = useState('')
   const [modalEmailGestor, setModalEmailGestor] = useState(false)
 
@@ -706,10 +707,23 @@ export default function Resultados() {
     }
   }
 
+  const TEXTO_CONSENTIMIENTO_V1 = "Autorizo expresamente a Cóbratelo.es a comunicar mis datos personales y la información necesaria de mi expediente a la gestoría seleccionada, para que pueda contactarme y prestarme servicios profesionales relacionados con la gestión de ayudas y subvenciones."
+
   const enviarAlGestor = async () => {
-    if (!emailGestor) return
+    if (!emailGestor || !consentimientoAceptado) return
     setEnviandoGestor(true)
     try {
+      // Registrar consentimiento en BD
+      if (userId) {
+        await supabase.from('consentimientos_gestor').insert({
+          ciudadano_id: userId,
+          email_gestor: emailGestor,
+          ip: '0.0.0.0',
+          version_legal: 'v1-junio-2026',
+          texto_aceptado: TEXTO_CONSENTIMIENTO_V1,
+          activo: true
+        })
+      }
       const res = await fetch('/api/enviar-gestor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -718,7 +732,7 @@ export default function Resultados() {
       if (res.ok) {
         setEnvioGestorOk(true)
         setModalGestor(false)
-        // Guardar el email en el perfil del usuario para próximas veces
+        setConsentimientoAceptado(false)
         if (userId && !perfil?.email_gestoria) {
           const nuevoPerfil = { ...perfil, email_gestoria: emailGestor }
           setPerfil(nuevoPerfil)
@@ -964,14 +978,27 @@ export default function Resultados() {
                 Le enviaremos el listado de tus {ayudas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.
               </p>
             </div>
-            <div className="px-6 pb-6 flex gap-3">
+            <div className="px-6 pb-2">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={consentimientoAceptado}
+                  onChange={e => setConsentimientoAceptado(e.target.checked)}
+                  className="mt-1 accent-[#cc5500] w-4 h-4 flex-shrink-0"
+                />
+                <span className="text-xs text-[rgba(240,240,245,0.6)] leading-relaxed">
+                  Autorizo expresamente a Cóbratelo.es a comunicar mis datos personales y la información de mi expediente a la gestoría seleccionada, para que pueda contactarme y prestarme servicios profesionales de gestión de ayudas y subvenciones.
+                </span>
+              </label>
+            </div>
+            <div className="px-6 pb-6 flex gap-3 mt-4">
               <button onClick={() => setModalGestor(false)}
                 className="flex-1 py-3 rounded-full border border-[rgba(255,255,255,0.08)] text-[rgba(240,240,245,0.5)] text-sm">
                 Cancelar
               </button>
-              <button onClick={enviarAlGestor} disabled={!emailGestor || enviandoGestor}
-                className="flex-1 py-3 rounded-full bg-[#2a1500] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#333330] transition-colors">
-                {enviandoGestor ? 'Enviando...' : 'Enviar →'}
+              <button onClick={enviarAlGestor} disabled={!emailGestor || !consentimientoAceptado || enviandoGestor}
+                className="flex-1 py-3 rounded-full bg-[#cc5500] text-white text-sm font-semibold disabled:opacity-40 hover:bg-[#aa4400] transition-colors">
+                {enviandoGestor ? 'Enviando...' : 'Autorizar y enviar →'}
               </button>
             </div>
           </div>

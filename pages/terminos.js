@@ -48,7 +48,7 @@ export default function Terminos() {
               <li>El uso de la plataforma no implica relación laboral, societaria ni de representación entre Cóbratelo.es y la gestoría.</li>
               <li>Cada gestoría es responsable de los servicios profesionales que presta a sus clientes y del cumplimiento normativo aplicable a su actividad.</li>
               <li>La gestoría accede únicamente a datos de ciudadanos que han otorgado consentimiento expreso.</li>
-              <li>La gestoría actúa como responsable independiente del tratamiento de los datos que recibe.</li>
+              <li>La gestoría actúa como responsable independiente del tratamiento de los datos que recibe, de conformidad con el <Link href="/dpa" style={{ color: '#cc5500' }}>Acuerdo de Comunicación de Datos entre Responsables Independientes</Link>.</li>
             </ul>
           </section>
 
