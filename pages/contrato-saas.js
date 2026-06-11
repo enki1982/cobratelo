@@ -107,7 +107,7 @@ export default function ContratoSaas() {
           <section style={s.section}>
             <h2 style={s.h2}>14. Independencia en el tratamiento de datos</h2>
             <p style={s.p}>Las partes reconocen expresamente que cada una actúa como <strong>responsable independiente</strong> respecto de los tratamientos de datos que realiza en el ámbito de sus respectivas actividades. La utilización de la plataforma no implica que Cóbratelo.es determine las finalidades ni los medios de los tratamientos realizados por la gestoría en la prestación de sus servicios profesionales.</p>
-            <p style={s.p}>La comunicación de datos de ciudadanos a la gestoría se rige por el <Link href="/dpa" style={{ color: '#cc5500' }}>Acuerdo de Comunicación de Datos entre Responsables Independientes</Link>, que forma parte integrante de este contrato.</p>
+            <p style={s.p}>La comunicación de datos de ciudadanos a la gestoría se rige por el <Link href="/dpa" style={{ color: '#cc5500' }}>Acuerdo de Colaboración y Comunicación de Datos para Gestorías</Link>, que forma parte integrante de este contrato.</p>
           </section>
 
           <section style={s.section}>

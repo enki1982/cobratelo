@@ -89,7 +89,7 @@ export default function AvisoLegal() {
 
           <section style={s.section}>
             <h2 style={s.h2}>7. Propiedad intelectual e industrial</h2>
-            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, software, bases de datos, metodologías, contenidos, diseño, elementos gráficos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+            <p style={s.p}>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseño, código fuente, software, bases de datos, metodologías, contenidos, elementos gráficos y logotipos propios, son propiedad de Miquel Nogueras Camero o de sus respectivos titulares, y están protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
           </section>
 
           <section style={s.section}>
