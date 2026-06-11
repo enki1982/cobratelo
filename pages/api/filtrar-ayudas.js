@@ -1,9 +1,17 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { createClient } from '@supabase/supabase-js'
 
 const client = new Anthropic()
+const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+
+  // Auth: solo usuarios autenticados pueden llamar a Anthropic
+  const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.['sb-access-token']
+  if (!token) return res.status(401).json({ error: 'No autenticado' })
+  const { data: { user } } = await supabaseAdmin.auth.getUser(token)
+  if (!user) return res.status(401).json({ error: 'Sesión inválida' })
 
   const { perfil, ayudas } = req.body
   if (!perfil || !ayudas?.length) return res.json({ ids: [] })

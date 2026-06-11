@@ -9,7 +9,7 @@ const supabaseAdmin = createClient(
 // VersiÃ³n del texto de consentimiento aceptado (para la traza legal).
 // IMPORTANTE: texto BORRADOR generado sin asesorÃ­a legal. Pendiente de validaciÃ³n
 // por abogado antes de captar clientes reales. Al cambiar el texto, subir la versiÃ³n.
-const CONSENTIMIENTO_VERSION = 'borrador-2026-06-01'
+const CONSENTIMIENTO_VERSION = 'v1-junio-2026'
 
 // Genera y envÃ­a el enlace de acceso (magic link) al cliente invitado.
 async function enviarInvitacion(email, nombre) {

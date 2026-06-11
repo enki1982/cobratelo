@@ -35,7 +35,11 @@ export default function Informe() {
     if (!token) return
     supabase.from('informes').select('*').eq('token', token).single()
       .then(({ data, error }) => {
-        if (error || !data) { setError(true) } else { setDatos(data) }
+        if (error || !data) { setError(true); setLoading(false); return }
+        // Expiración: 90 días desde la creación
+        const dias = (Date.now() - new Date(data.created_at)) / 86400000
+        if (dias > 90) { setError(true); setLoading(false); return }
+        setDatos(data)
         setLoading(false)
       })
   }, [token])

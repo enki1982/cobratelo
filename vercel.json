@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/alertas-vencimientos",
-      "schedule": "0 8 * * 1"
+      "schedule": "5 8 * * 1"
     }
   ]
 }

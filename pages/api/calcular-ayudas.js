@@ -13,6 +13,13 @@ export default async function handler(req, res) {
   const { userId, perfil } = req.body
   if (!userId || !perfil) return res.status(400).json({ error: 'userId y perfil requeridos' })
 
+  // Verificar que userId pertenece a la sesión activa
+  const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.['sb-access-token']
+  if (token) {
+    const { data: { user } } = await supabaseAdmin.auth.getUser(token)
+    if (user && user.id !== userId) return res.status(403).json({ error: 'userId no coincide con la sesión' })
+  }
+
   try {
     // Fetch todas las ayudas activas con solo los campos necesarios
     const { data: ayudas } = await supabaseAdmin
@@ -35,8 +42,6 @@ export default async function handler(req, res) {
 
     // Funnel events
     try {
-      const ip = (req.headers['x-forwarded-for']||'').split(',')[0].trim()||'0.0.0.0'
-      const { logAccess, ACTIONS } = await import('../../lib/access-log.js')
       await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: conScore.length } })
       if (conScore.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: conScore.length } })
     } catch {}
