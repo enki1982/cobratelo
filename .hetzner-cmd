@@ -1,5 +1,1 @@
-crontab -l 2>/dev/null | grep -v retention > /tmp/cron_tmp || true
-echo "0 4 2 * * cd /root/ayuda-es-agent && source .env && python3 /root/retention_cleanup.py >> /tmp/retention.log 2>&1" >> /tmp/cron_tmp
-crontab /tmp/cron_tmp
-echo "Cron actualizado:"
-crontab -l | grep retention
+cd /root/ayuda-es-agent && source .env && python3 enricher.py --all >> /tmp/enricher.log 2>&1
