@@ -1,5 +1,27 @@
 cd /root/ayuda-es-agent
 set -a; source .env 2>/dev/null; set +a
-curl -s "https://raw.githubusercontent.com/enki1982/cobratelo/main/scripts/enricher.py" -o enricher.py
-echo "Enricher listo. Iniciando proceso completo..."
-python3 -u enricher.py --all
+
+cat > /root/retention_cleanup.py << 'PYEOF'
+import os
+from supabase import create_client
+from datetime import datetime, timezone
+
+sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
+
+now = datetime.now(timezone.utc)
+print(f"[{now.isoformat()}] Iniciando retention cleanup...")
+
+five_years_ago = "NOW() - INTERVAL '5 years'"
+
+r1 = sb.rpc("retention_cleanup").execute()
+print(f"Cleanup ejecutado: {r1.data}")
+print("Retention cleanup completado.")
+PYEOF
+
+echo "Script creado en /root/retention_cleanup.py"
+
+crontab -l 2>/dev/null | grep -v retention > /tmp/cron_tmp || true
+echo "0 3 1 * * cd /root/ayuda-es-agent && source .env && python3 /root/retention_cleanup.py >> /tmp/retention.log 2>&1" >> /tmp/cron_tmp
+crontab /tmp/cron_tmp
+echo "Cron instalado:"
+crontab -l | grep retention
