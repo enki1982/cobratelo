@@ -28,14 +28,24 @@ sb     = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def send_email(subject, body):
+    if not SMTP_USER:
+        print(f"  ⚠️  Email omitido: FORWARD_EMAIL_API no configurado")
+        return
     try:
         msg = MIMEText(body, "plain", "utf-8")
         msg["Subject"] = subject
         msg["From"]    = FROM_EMAIL
         msg["To"]      = TO_EMAIL
-        with smtplib.SMTP_SSL("smtp.forwardemail.net", 465, timeout=15) as s:
-            s.login(FROM_EMAIL, SMTP_USER)
-            s.sendmail(FROM_EMAIL, TO_EMAIL, msg.as_string())
+        # Intentar SSL primero, luego STARTTLS como fallback
+        try:
+            with smtplib.SMTP_SSL("smtp.forwardemail.net", 465, timeout=30) as s:
+                s.login(FROM_EMAIL, SMTP_USER)
+                s.sendmail(FROM_EMAIL, TO_EMAIL, msg.as_string())
+        except Exception:
+            with smtplib.SMTP("smtp.forwardemail.net", 587, timeout=30) as s:
+                s.starttls()
+                s.login(FROM_EMAIL, SMTP_USER)
+                s.sendmail(FROM_EMAIL, TO_EMAIL, msg.as_string())
         print(f"  📧 Email enviado: {subject}")
     except Exception as e:
         print(f"  ⚠️  Email falló: {e}")
