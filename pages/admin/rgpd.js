@@ -34,13 +34,15 @@ export default function AdminRGPD() {
   const [loadingC, setLoadingC] = useState(false)
   const [authed, setAuthed] = useState(false)
 
+  const ADMIN_EMAIL = 'mikinogueras@gmail.com'
+
   useEffect(() => {
     const check = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) { router.push('/admin'); return }
-      // Verificar que es admin
-      const { data } = await supabase.from('usuarios').select('role,plan').eq('id', session.user.id).single()
-      if (!data || data.role !== 'admin') { router.push('/'); return }
+      if (!session || session.user.email !== ADMIN_EMAIL) {
+        router.push('/')
+        return
+      }
       setAuthed(true)
     }
     check()
