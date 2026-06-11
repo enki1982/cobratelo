@@ -150,20 +150,40 @@ export default async function handler(req, res) {
       })
     } catch {} // No bloquear si falla el guardado
 
-    // Registrar consentimiento con IP real del servidor
+    // Registrar consentimiento con IP real + lookup gestoria_id
     try {
       const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
-                 || req.socket?.remoteAddress
-                 || '0.0.0.0'
-      const { userId, emailUsuario: emailCiudadano } = req.body
-      if (userId || clienteId || emailCiudadano) {
+                 || req.socket?.remoteAddress || '0.0.0.0'
+      const { userId } = req.body
+      const ciudadanoId = userId || clienteId || null
+
+      // Buscar gestoria_id por email (si está registrada en la plataforma)
+      let gestoriaId = null
+      try {
+        const { data: gestor } = await supabaseAdmin
+          .from('usuarios').select('id').eq('email', emailGestor).single()
+        if (gestor) gestoriaId = gestor.id
+      } catch {}
+
+      if (ciudadanoId) {
+        const TEXTO = 'Autorizo expresamente a Cóbratelo.es a comunicar mis datos personales y la información necesaria de mi expediente a la gestoría seleccionada, para que pueda contactarme y prestarme servicios profesionales relacionados con la gestión de ayudas y subvenciones.'
         await supabaseAdmin.from('consentimientos_gestor').insert({
-          ciudadano_id: userId || clienteId || null,
+          ciudadano_id: ciudadanoId,
+          gestor_id: gestoriaId,
           email_gestor: emailGestor,
           ip: ip,
           version_legal: 'v1-junio-2026',
-          texto_aceptado: 'Autorizo expresamente a Cóbratelo.es a comunicar mis datos personales y la información necesaria de mi expediente a la gestoría seleccionada, para que pueda contactarme y prestarme servicios profesionales relacionados con la gestión de ayudas y subvenciones.',
+          texto_aceptado: TEXTO,
           activo: true
+        })
+
+        // Log de acceso: CREATE_CONSENT
+        await supabaseAdmin.from('access_logs').insert({
+          gestoria_id: gestoriaId,
+          ciudadano_id: ciudadanoId,
+          action: 'CREATE_CONSENT',
+          ip: ip,
+          metadata: { email_gestor: emailGestor, version_legal: 'v1-junio-2026' }
         })
       }
     } catch (e2) {

@@ -32,6 +32,8 @@ export default function AdminRGPD() {
   const [tab, setTab] = useState('rat')
   const [consentimientos, setConsentimientos] = useState([])
   const [loadingC, setLoadingC] = useState(false)
+  const [accessLogs, setAccessLogs] = useState([])
+  const [loadingL, setLoadingL] = useState(false)
   const [authed, setAuthed] = useState(false)
 
   const ADMIN_EMAIL = 'mikinogueras@gmail.com'
@@ -56,6 +58,14 @@ export default function AdminRGPD() {
         .order('fecha', { ascending: false })
         .limit(100)
         .then(({ data }) => { setConsentimientos(data || []); setLoadingC(false) })
+    }
+    if (tab === 'access_logs' && authed) {
+      setLoadingL(true)
+      supabase.from('access_logs')
+        .select('id,gestoria_id,ciudadano_id,action,ip,metadata,created_at')
+        .order('created_at', { ascending: false })
+        .limit(200)
+        .then(({ data }) => { setAccessLogs(data || []); setLoadingL(false) })
     }
   }, [tab, authed])
 
@@ -451,6 +461,86 @@ El equipo de Cóbratelo.es`}</div>
                     <li>Actualizar este inventario con toda la información.</li>
                     <li>Actualizar la sección de proveedores en la Política de Privacidad pública si el proveedor trata datos de usuarios.</li>
                   </ol>
+                </div>
+              </div>
+            )}
+
+            {/* ===== ACCESS LOGS ===== */}
+            {tab === 'access_logs' && (
+              <div>
+                <h2 style={s.h2}>Logs de Acceso de Gestorías</h2>
+                <p style={s.p}>Registro de todas las acciones de las gestorías sobre datos de ciudadanos. Conservación: 5 años.</p>
+                {loadingL ? <p style={{ color: '#888', fontSize: 14 }}>Cargando...</p> :
+                accessLogs.length === 0 ? <p style={{ color: '#888', fontSize: 14 }}>No hay logs todavía. Se registrarán cuando las gestorías accedan a datos.</p> : (
+                  <div style={{ overflowX: 'auto' }}>
+                    <p style={{ ...s.p, color: '#888' }}>{accessLogs.length} registros (últimos 200)</p>
+                    <table style={s.table}>
+                      <thead><tr>
+                        <th style={s.th}>Fecha</th>
+                        <th style={s.th}>Acción</th>
+                        <th style={s.th}>Gestoría ID</th>
+                        <th style={s.th}>Ciudadano ID</th>
+                        <th style={s.th}>IP</th>
+                        <th style={s.th}>Metadata</th>
+                      </tr></thead>
+                      <tbody>
+                        {accessLogs.map(l => (
+                          <tr key={l.id}>
+                            <td style={{ ...s.td, fontSize: 11 }}>{new Date(l.created_at).toLocaleString('es-ES')}</td>
+                            <td style={s.td}><span style={s.badge(
+                              l.action.includes('DELETE') ? '#ef4444' :
+                              l.action.includes('REVOKE') ? '#f97316' :
+                              l.action.includes('EXPORT') ? '#8b5cf6' :
+                              l.action.includes('CREATE') ? '#22c55e' : '#3b82f6'
+                            )}>{l.action}</span></td>
+                            <td style={{ ...s.td, fontSize: 11, fontFamily: 'monospace' }}>{l.gestoria_id?.substring(0,8) || '—'}...</td>
+                            <td style={{ ...s.td, fontSize: 11, fontFamily: 'monospace' }}>{l.ciudadano_id?.substring(0,8) || '—'}...</td>
+                            <td style={{ ...s.td, fontSize: 11, fontFamily: 'monospace' }}>{String(l.ip)}</td>
+                            <td style={{ ...s.td, fontSize: 11, color: '#888' }}>{JSON.stringify(l.metadata || {})}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ===== RETENCIÓN ===== */}
+            {tab === 'retencion' && (
+              <div>
+                <h2 style={s.h2}>Política de Retención de Datos</h2>
+                <p style={s.p}>Plazos de conservación aplicables a cada categoría de datos. Base legal: Art. 5.1.e RGPD (limitación del plazo de conservación).</p>
+                <table style={s.table}>
+                  <thead><tr>
+                    <th style={s.th}>Tipo de dato</th>
+                    <th style={s.th}>Conservación</th>
+                    <th style={s.th}>Base legal</th>
+                    <th style={s.th}>Acción al vencer</th>
+                  </tr></thead>
+                  <tbody>
+                    {[
+                      ['Consentimientos de cesión de datos', '5 años', 'Prescripción acciones contractuales (Art. 1964 CC)', 'Eliminación o anonimización irreversible'],
+                      ['Logs de acceso de gestorías', '5 años', 'Interés legítimo — defensa ante reclamaciones', 'Eliminación automática'],
+                      ['Logs de seguridad (eventos sistema)', '12 meses', 'Interés legítimo — seguridad (Art. 6.1.f RGPD)', 'Eliminación automática'],
+                      ['Registros de incidentes de seguridad', '5 años', 'Obligación RGPD de documentar brechas (Art. 33.5)', 'Archivo + eliminación'],
+                      ['Datos de facturación y suscripciones', '6 años', 'Obligación legal fiscal (Ley 58/2003 LGT)', 'Eliminación tras plazo fiscal'],
+                      ['Datos de cuenta de usuario', 'Duración cuenta + 30 días', 'Ejecución de contrato (Art. 6.1.b RGPD)', 'Eliminación al dar de baja'],
+                      ['Expedientes del CRM (gestoría)', 'Responsabilidad de la gestoría', 'Gestoría es responsable independiente', 'Exportación disponible 30 días post-baja'],
+                      ['Datos fiscales del titular', '10 años', 'Obligación legal mercantil (CCom)', 'Archivo seguro'],
+                    ].map(([tipo, plazo, base, accion]) => (
+                      <tr key={tipo}>
+                        <td style={{ ...s.td, fontWeight: 600 }}>{tipo}</td>
+                        <td style={{ ...s.td, color: '#cc5500', fontWeight: 700 }}>{plazo}</td>
+                        <td style={{ ...s.td, fontSize: 12, color: '#666' }}>{base}</td>
+                        <td style={{ ...s.td, fontSize: 12 }}>{accion}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ marginTop: 20, background: '#fff0e6', border: '1px solid #f0d0b0', borderRadius: 8, padding: 16 }}>
+                  <p style={{ ...s.p, fontWeight: 700, marginBottom: 4 }}>⚙️ Implementación técnica pendiente</p>
+                  <p style={{ ...s.p, marginBottom: 0 }}>Los plazos están documentados y declarados. Para automatizar la eliminación, implementar un cron job mensual que ejecute DELETE sobre registros que superen el plazo de conservación definido para cada tabla.</p>
                 </div>
               </div>
             )}

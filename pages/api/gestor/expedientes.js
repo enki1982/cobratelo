@@ -1,3 +1,4 @@
+import { logAccess, ACTIONS } from '../../../lib/access-log'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseAdmin = createClient(
