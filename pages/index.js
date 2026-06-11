@@ -130,7 +130,7 @@ export default function Home() {
     : (tienePerfil && perfilGuardado
         ? `/resultados?perfil=${encodeURIComponent(JSON.stringify(perfilGuardado))}`
         : '/perfil')
-  const ctaLabelCorto = esGestor ? 'Mi panel' : (tienePerfil ? 'Mis ayudas' : 'Empezar gratis')
+  const ctaLabelCorto = esGestor ? 'Mi panel' : (tienePerfil ? 'Mis ayudas' : 'Acceder')
   const ctaLabelLargo = esGestor ? 'Ir a mi panel →' : (tienePerfil ? 'Ver mis ayudas →' : 'Analizar mi caso gratis →')
   const ctaLabelFinal = esGestor ? 'Ir a mi panel →' : (tienePerfil ? 'Ver mis ayudas →' : 'Ver qué ayudas me corresponden →')
 
