@@ -30,6 +30,56 @@ const TABS = [
   { id: 'funnel', label: 'Funnel' },
 ]
 
+
+const ETAPAS_FUNNEL = [
+  { key: 'QUESTIONNAIRE_COMPLETED', label: 'Cuestionario completado', color: '#3b82f6' },
+  { key: 'MATCH_FOUND',             label: 'Ayudas encontradas',      color: '#06b6d4' },
+  { key: 'GESTORIA_REQUESTED',      label: 'Gestoría solicitada',     color: '#f59e0b' },
+  { key: 'CREATE_CONSENT',          label: 'Consentimiento otorgado', color: '#f97316' },
+  { key: 'GESTORIA_ACCEPTED',       label: 'Gestoría acepta cliente', color: '#10b981' },
+  { key: 'EXPEDIENT_CREATED',       label: 'Expediente creado',       color: '#22c55e' },
+  { key: 'HELP_GRANTED',            label: 'Ayuda concedida',         color: '#16a34a' },
+  { key: 'REVOKE_CONSENT',          label: 'Revocaciones',            color: '#ef4444' },
+]
+
+function FunnelTab({ funnelData, loadingF, s }) {
+  if (loadingF) return <p style={{ color: '#888', fontSize: 14 }}>Cargando...</p>
+  if (!funnelData) return null
+  const vals = ETAPAS_FUNNEL.map(e => funnelData[e.key] || 0)
+  const maxVal = Math.max(...vals, 1)
+  return (
+    <div>
+      <h2 style={s.h2}>Funnel de Conversión</h2>
+      <p style={s.p}>Eventos registrados en <code>access_logs</code>. Actualización en tiempo real.</p>
+      {ETAPAS_FUNNEL.map((e, i) => {
+        const v = funnelData[e.key] || 0
+        const w = Math.max(4, Math.round((v / maxVal) * 100))
+        const prev = i > 0 ? (funnelData[ETAPAS_FUNNEL[i-1].key] || 0) : 0
+        const conv = i > 0 && prev > 0 ? Math.round(100 * v / prev) + '%' : null
+        return (
+          <div key={e.key} style={{ marginBottom: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <span style={{ fontSize: 13, color: '#444', fontWeight: 500 }}>
+                {e.label}
+                {conv && <span style={{ marginLeft: 8, fontSize: 11, color: '#888' }}>↳ {conv}</span>}
+              </span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: e.color }}>{v.toLocaleString('es-ES')}</span>
+            </div>
+            <div style={{ background: '#f0e8dc', borderRadius: 99, height: 10, overflow: 'hidden' }}>
+              <div style={{ width: w + '%', background: e.color, height: '100%', borderRadius: 99 }} />
+            </div>
+          </div>
+        )
+      })}
+      <div style={{ marginTop: 20, background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 8, padding: 12 }}>
+        <p style={{ fontSize: 12, color: '#0369a1', margin: 0 }}>
+          Conectar eventos: llamar a <code>logAccess(req, action)</code> con las constantes de <code>lib/access-log.js</code> en cada punto del flujo.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminRGPD() {
   const router = useRouter()
   const [tab, setTab] = useState('rat')
@@ -524,58 +574,10 @@ El equipo de Cóbratelo.es`}</div>
             )}
 
             {/* ===== FUNNEL ===== */}
-            {tab === 'funnel' && (
-              <div>
-                <h2 style={s.h2}>Funnel de Conversión</h2>
-                <p style={s.p}>Eventos registrados en <code>access_logs</code>. Actualización en tiempo real.</p>
-                {loadingF ? <p style={{ color: '#888', fontSize: 14 }}>Cargando...</p> : !funnelData ? null : (() => {
-                  const etapas = [
-                    { key: 'QUESTIONNAIRE_COMPLETED', label: 'Cuestionario completado', color: '#3b82f6', tipo: 'ciudadano' },
-                    { key: 'MATCH_FOUND',             label: 'Ayudas encontradas',      color: '#06b6d4', tipo: 'ciudadano' },
-                    { key: 'GESTORIA_REQUESTED',      label: 'Gestoría solicitada',      color: '#f59e0b', tipo: 'ciudadano' },
-                    { key: 'CREATE_CONSENT',          label: 'Consentimiento otorgado',  color: '#f97316', tipo: 'ciudadano' },
-                    { key: 'GESTORIA_ACCEPTED',       label: 'Gestoría acepta cliente',  color: '#10b981', tipo: 'gestor' },
-                    { key: 'EXPEDIENT_CREATED',       label: 'Expediente creado',        color: '#22c55e', tipo: 'gestor' },
-                    { key: 'HELP_GRANTED',            label: 'Ayuda concedida',          color: '#16a34a', tipo: 'gestor' },
-                    { key: 'REVOKE_CONSENT',          label: 'Consentimientos revocados',color: '#ef4444', tipo: 'alerta' },
-                  ]
-                  const maxVal = Math.max(...etapas.map(e => funnelData[e.key] || 0), 1)
-                  return (
-                    <div>
-                      {etapas.map((e, i) => {
-                        const v = funnelData[e.key] || 0
-                        const w = Math.max(4, Math.round((v / maxVal) * 100))
-                        const conv = i > 0 && funnelData[etapas[i-1].key] > 0
-                          ? Math.round(100 * v / funnelData[etapas[i-1].key]) + '%'
-                          : null
-                        return (
-                          <div key={e.key} style={{ marginBottom: 12 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                              <span style={{ fontSize: 13, color: '#444', fontWeight: 500 }}>
-                                {e.label}
-                                {conv && <span style={{ marginLeft: 8, fontSize: 11, color: '#888' }}>↳ {conv} del paso anterior</span>}
-                              </span>
-                              <span style={{ fontSize: 15, fontWeight: 700, color: e.color }}>{v.toLocaleString('es-ES')}</span>
-                            </div>
-                            <div style={{ background: '#f0e8dc', borderRadius: 99, height: 10, overflow: 'hidden' }}>
-                              <div style={{ width: w + '%', background: e.color, height: '100%', borderRadius: 99, transition: 'width 0.5s ease' }} />
-                            </div>
-                          </div>
-                        )
-                      })}
-                      <div style={{ marginTop: 20, background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 8, padding: 12 }}>
-                        <p style={{ ...s.p, color: '#0369a1', marginBottom: 0, fontSize: 12 }}>
-                          Los eventos se registran automáticamente llamando a <code>logAccess(req, action)</code> en cada punto del flujo. Ver <code>lib/access-log.js</code> para las constantes disponibles.
-                        </p>
-                      </div>
-                    </div>
-                  )
-                })()}
-              </div>
-            )}
+            {tab === 'funnel' && <FunnelTab funnelData={funnelData} loadingF={loadingF} s={s} />}
 
 
-            {/* ===== RETENCIÓN ===== */
+            {/* ===== RETENCIÓN ===== */}
             {tab === 'retencion' && (
               <div>
                 <h2 style={s.h2}>Política de Retención de Datos</h2>
