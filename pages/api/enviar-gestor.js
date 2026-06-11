@@ -177,6 +177,14 @@ export default async function handler(req, res) {
           activo: true
         })
 
+        // Log funnel: gestoría solicitada
+        await supabaseAdmin.from('access_logs').insert({
+          gestoria_id: gestoriaId,
+          ciudadano_id: ciudadanoId,
+          action: 'GESTORIA_REQUESTED',
+          ip: ip,
+          metadata: { email_gestor: emailGestor }
+        })
         // Log de acceso: CREATE_CONSENT
         await supabaseAdmin.from('access_logs').insert({
           gestoria_id: gestoriaId,

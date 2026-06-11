@@ -45,7 +45,29 @@ export default function Admin() {
   const [usuarios, setUsuarios] = useState([])
   const [tab, setTab] = useState('overview')
   const [busqueda, setBusqueda] = useState('')
+  const [metricas, setMetricas] = useState(null)
   const [filtroPlan, setFiltroPlan] = useState('')
+
+  useEffect(() => {
+    if (tab !== 'metricas' || metricas) return
+    const fetchMetricas = async () => {
+      const ACCIONES = ['QUESTIONNAIRE_COMPLETED','MATCH_FOUND','GESTORIA_REQUESTED','CREATE_CONSENT','GESTORIA_ACCEPTED','EXPEDIENT_CREATED','HELP_GRANTED','REVOKE_CONSENT']
+      const counts = await Promise.all(ACCIONES.map(a =>
+        supabase.from('access_logs').select('id', { count: 'exact', head: true }).eq('action', a)
+      ))
+      const m = {}
+      ACCIONES.forEach((a, i) => { m[a] = counts[i].count || 0 })
+      // Usuarios totales y gestorías activas
+      const { count: ciudadanos } = await supabase.from('usuarios').select('id', { count: 'exact', head: true }).eq('role', 'ciudadano')
+      const { count: gestoriasActivas } = await supabase.from('usuarios').select('id', { count: 'exact', head: true }).in('plan', ['starter', 'pro'])
+      const { count: consentimientos } = await supabase.from('consentimientos_gestor').select('id', { count: 'exact', head: true }).eq('activo', true)
+      m._ciudadanos = ciudadanos || 0
+      m._gestoriasActivas = gestoriasActivas || 0
+      m._consentimientos = consentimientos || 0
+      setMetricas(m)
+    }
+    fetchMetricas()
+  }, [tab])
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -105,7 +127,7 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Tabs */}
           <div className="flex gap-1 bg-white border border-[#F5C89A] rounded-full p-1 mb-8 w-fit">
-            {[{id:'overview',label:'Resumen'},{id:'usuarios',label:`Usuarios (${usuarios.length})`},{id:'facturacion',label:'Facturación'},{id:'rgpd',label:'RGPD'}].map(t => (
+            {[{id:'overview',label:'Resumen'},{id:'metricas',label:'Métricas'},{id:'usuarios',label:`Usuarios (${usuarios.length})`},{id:'facturacion',label:'Facturación'},{id:'rgpd',label:'RGPD'}].map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${tab === t.id ? 'bg-[#1a0d00] text-white' : 'text-[#7a4a1a] hover:text-[#1a0d00]'}`}>
                 {t.label}
@@ -187,6 +209,54 @@ export default function Admin() {
           )}
 
           {/* USUARIOS */}
+          {tab === 'metricas' && (
+            <div>
+              <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4, color: '#1a0d00' }}>Métricas del negocio</h2>
+              <p style={{ fontSize: 13, color: '#888', marginBottom: 24 }}>Datos en tiempo real. Actualiza al cambiar de tab.</p>
+              {!metricas ? <p style={{ color: '#888' }}>Cargando...</p> : (() => {
+                const OBJETIVOS = [
+                  { key: '_ciudadanos', label: 'Ciudadanos registrados', objetivo: 'Crecimiento semanal', valor: metricas._ciudadanos, color: '#3b82f6' },
+                  { key: 'QUESTIONNAIRE_COMPLETED', label: 'Cuestionarios completados', objetivo: '>70% de registrados', valor: metricas.QUESTIONNAIRE_COMPLETED, color: '#06b6d4', pct: metricas._ciudadanos > 0 ? Math.round(100*metricas.QUESTIONNAIRE_COMPLETED/metricas._ciudadanos) : 0 },
+                  { key: 'MATCH_FOUND', label: 'Con matches generados', objetivo: '>80% de cuestionarios', valor: metricas.MATCH_FOUND, color: '#8b5cf6', pct: metricas.QUESTIONNAIRE_COMPLETED > 0 ? Math.round(100*metricas.MATCH_FOUND/metricas.QUESTIONNAIRE_COMPLETED) : 0 },
+                  { key: 'GESTORIA_REQUESTED', label: 'Solicitudes a gestoría', objetivo: '>20% de matches', valor: metricas.GESTORIA_REQUESTED, color: '#f59e0b', pct: metricas.MATCH_FOUND > 0 ? Math.round(100*metricas.GESTORIA_REQUESTED/metricas.MATCH_FOUND) : 0 },
+                  { key: '_consentimientos', label: 'Consentimientos activos', objetivo: '>15% de registrados', valor: metricas._consentimientos, color: '#f97316', pct: metricas._ciudadanos > 0 ? Math.round(100*metricas._consentimientos/metricas._ciudadanos) : 0 },
+                  { key: 'EXPEDIENT_CREATED', label: 'Expedientes creados', objetivo: '>10% de solicitudes', valor: metricas.EXPEDIENT_CREATED, color: '#22c55e', pct: metricas.GESTORIA_REQUESTED > 0 ? Math.round(100*metricas.EXPEDIENT_CREATED/metricas.GESTORIA_REQUESTED) : 0 },
+                  { key: '_gestoriasActivas', label: 'Gestorías activas (pago)', objetivo: 'Crecimiento continuo', valor: metricas._gestoriasActivas, color: '#10b981' },
+                  { key: 'HELP_GRANTED', label: 'Ayudas concedidas', objetivo: 'Métrica de éxito final', valor: metricas.HELP_GRANTED, color: '#16a34a' },
+                ]
+                const maxVal = Math.max(...OBJETIVOS.map(m => m.valor), 1)
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {OBJETIVOS.map(m => (
+                      <div key={m.key} style={{ background: '#fff', border: '1px solid #f0e8dc', borderRadius: 12, padding: '14px 18px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                          <div>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: '#1a0d00' }}>{m.label}</span>
+                            <span style={{ fontSize: 12, color: '#aaa', marginLeft: 10 }}>Objetivo: {m.objetivo}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                            {m.pct !== undefined && <span style={{ fontSize: 13, color: m.pct >= parseInt(m.objetivo) ? '#22c55e' : '#f59e0b', fontWeight: 600 }}>{m.pct}%</span>}
+                            <span style={{ fontSize: 22, fontWeight: 800, color: m.color }}>{m.valor.toLocaleString('es-ES')}</span>
+                          </div>
+                        </div>
+                        <div style={{ background: '#f0e8dc', borderRadius: 99, height: 8, overflow: 'hidden' }}>
+                          <div style={{ width: Math.max(2, Math.round(m.valor/maxVal*100))+'%', background: m.color, height: '100%', borderRadius: 99, transition: 'width 0.6s ease' }} />
+                        </div>
+                      </div>
+                    ))}
+                    {metricas.REVOKE_CONSENT > 0 && (
+                      <div style={{ background: '#fff5f5', border: '1px solid #fecaca', borderRadius: 12, padding: '12px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: 13, color: '#dc2626' }}>⚠️ Consentimientos revocados</span>
+                        <span style={{ fontSize: 18, fontWeight: 700, color: '#dc2626' }}>{metricas.REVOKE_CONSENT}</span>
+                      </div>
+                    )}
+                    <p style={{ fontSize: 11, color: '#bbb', textAlign: 'center' }}>Los % se calculan respecto al paso anterior del funnel</p>
+                  </div>
+                )
+              })()}
+            </div>
+          )}
+
           {tab === 'usuarios' && (
             <div className="space-y-4">
               {/* Filtros */}

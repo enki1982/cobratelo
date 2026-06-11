@@ -1,3 +1,4 @@
+import { logAccess, ACTIONS } from '../../lib/access-log'
 import { createClient } from '@supabase/supabase-js'
 import { calcularRelevancia } from '../../lib/relevancia'
 
@@ -32,6 +33,13 @@ export default async function handler(req, res) {
       .update({ ayudas_calculadas: conScore.map(a => a.id) })
       .eq('id', userId)
 
+    // Funnel events
+    try {
+      const ip = (req.headers['x-forwarded-for']||'').split(',')[0].trim()||'0.0.0.0'
+      const { logAccess, ACTIONS } = await import('../../lib/access-log.js')
+      await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: conScore.length } })
+      if (conScore.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: conScore.length } })
+    } catch {}
     return res.json({ ok: true, ayudas: conScore })
   } catch (e) {
     console.error('Error calcular-ayudas:', e)

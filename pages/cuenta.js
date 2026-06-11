@@ -374,6 +374,8 @@ export default function Cuenta() {
   const [numAyudas, setNumAyudas] = useState(null)
   const [emailGestor, setEmailGestor] = useState('')
   const [enviandoGestor, setEnviandoGestor] = useState(false)
+  const [revocando, setRevocando] = useState(false)
+  const [revocado, setRevocado] = useState(false)
   const [envioGestorOk, setEnvioGestorOk] = useState(false)
 
   useEffect(() => {
@@ -399,6 +401,22 @@ export default function Cuenta() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => { if (!s) router.push('/login') })
     return () => subscription.unsubscribe()
   }, [router.isReady])
+
+  const revocarConsentimiento = async () => {
+    if (!confirm('¿Seguro que quieres revocar el consentimiento? La gestoría dejará de tener acceso a tus datos.')) return
+    setRevocando(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/ciudadano/revocar-consentimiento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ emailGestor })
+      })
+      if (res.ok) { setRevocado(true); setEnvioGestorOk(false) }
+      else alert('Error al revocar. Inténtalo de nuevo.')
+    } catch { alert('Error al revocar.') }
+    finally { setRevocando(false) }
+  }
 
   const handleEnviarGestor = async () => {
     if (!emailGestor || enviandoGestor) return
@@ -695,6 +713,14 @@ export default function Cuenta() {
                     <p style={{ fontSize: 14, fontWeight: 600, color: '#4DB62A' }}>¡Enviado correctamente!</p>
                     <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', marginTop: 4 }}>Hemos enviado una copia también a tu email.</p>
                     <button onClick={() => setEnvioGestorOk(false)} style={{ marginTop: 12, fontSize: 12, color: 'rgba(255,245,235,0.4)', background: 'none', border: 'none', cursor: 'pointer' }}>Enviar de nuevo</button>
+                    {!revocado ? (
+                      <button onClick={revocarConsentimiento} disabled={revocando}
+                        style={{ marginTop: 4, fontSize: 12, color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer' }}>
+                        {revocando ? 'Revocando...' : '🚫 Revocar acceso de la gestoría'}
+                      </button>
+                    ) : (
+                      <p style={{ fontSize: 12, color: '#ef4444', marginTop: 4 }}>✓ Consentimiento revocado. La gestoría ya no puede acceder a tus datos.</p>
+                    )}
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
