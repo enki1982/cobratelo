@@ -649,14 +649,22 @@ export default function Resultados() {
         setAyudas(ayudasFinal)
       } else {
         // Sin caché: calcular en el servidor (incluye filtro IA)
-        const resp = await fetch('/api/calcular-ayudas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, perfil }),
-        })
-        if (resp.ok) {
-          const { ayudas: ayudasServidor } = await resp.json()
-          setAyudas(ayudasServidor || [])
+        try {
+          const resp = await fetch('/api/calcular-ayudas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, perfil }),
+          })
+          if (resp.ok) {
+            const data = await resp.json()
+            console.log('[calcular-ayudas] ok, ayudas:', data?.ayudas?.length)
+            setAyudas(data?.ayudas || [])
+          } else {
+            const err = await resp.text()
+            console.error('[calcular-ayudas] error HTTP', resp.status, err)
+          }
+        } catch (eServ) {
+          console.error('[calcular-ayudas] fetch error:', eServ.message)
         }
       }
 
