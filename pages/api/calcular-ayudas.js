@@ -47,10 +47,15 @@ export default async function handler(req, res) {
       if (conScore.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: conScore.length } })
     } catch {}
     // ── DEDUPLICACIÓN server-side ──────────────────────────────────
-    const normKey = s => (s||'').toLowerCase()
-      .replace(/20\d\d/g,'').replace(/[^a-záéíóúüñ0-9\s]/gi,' ')
-      .replace(/\b(programa|plan|convocatoria|subvencion|subvenciones|ayuda|ayudas|para|del?|las?|los?|una?|por|en|y|e)\b/gi,'')
-      .replace(/\s+/g,' ').trim().split(' ').filter(w=>w.length>3).slice(0,5).join(' ')
+    const normKey = s => {
+      let n = (s||'').toLowerCase()
+        .replace(/tu\+1/gi,'tuplus1').replace(/industria\s*4\.0/gi,'industria40')
+      n = n.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/20\d\d/g,'').replace(/[^a-z0-9\s]/g,' ')
+        .replace(/\b(programa|plan|convocatoria|subvenciones?|digitaliz\w*|ayudas?|pymes?|autonomos?|empresas?|catalun\w*|para|del?|las?|los?|una?|por|en|y|e|nuevos?|cuota|reducida|impulso|incentivo|contratacion)\b/gi,'')
+        .replace(/\s+/g,' ').trim()
+      return n.split(' ').filter(w=>w.length>=3).slice(0,2).join(' ')
+    }
 
     const deduped = new Map()
     const conScoreDedup = conScore.filter(a => {
