@@ -8,9 +8,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.['sb-access-token']
-  if (!token) return res.status(401).json({ error: 'No autenticado' })
-  const { data: { user } } = await supabaseAdmin.auth.getUser(token)
-  if (!user) return res.status(401).json({ error: 'Sesión inválida' })
+  console.log('[filtrar-ayudas] token presente:', !!token)
+  if (!token) { console.log('[filtrar-ayudas] BLOQUEADO: sin token'); return res.status(401).json({ error: 'No autenticado' }) }
+  const { data: { user }, error: authErr } = await supabaseAdmin.auth.getUser(token)
+  console.log('[filtrar-ayudas] user:', user?.email, 'authErr:', authErr?.message)
+  if (!user) { console.log('[filtrar-ayudas] BLOQUEADO: sesión inválida'); return res.status(401).json({ error: 'Sesión inválida' }) }
 
   const { perfil, ayudas } = req.body
   if (!perfil || !ayudas?.length) return res.json({ ids: [] })
@@ -68,10 +70,11 @@ Devuelve SOLO este JSON con los IDs de las ayudas que SÍ le corresponden:
     const match = texto.match(/\{[\s\S]*\}/)
     if (!match) return res.json({ ids: ayudas.slice(0, 20).map(a => a.id) })
 
-    const { ids } = JSON.parse(match[0])
-    return res.json({ ids: Array.isArray(ids) ? ids : [] })
+    const parsed = JSON.parse(match[0])
+    console.log('[filtrar-ayudas] input:', ayudas.length, 'ayudas → output:', parsed.ids?.length, 'ids')
+    return res.json({ ids: Array.isArray(parsed.ids) ? parsed.ids : [] })
   } catch (e) {
-    console.error('filtrar-ayudas error:', e)
+    console.error('[filtrar-ayudas] ERROR:', e.message)
     return res.json({ ids: ayudas.slice(0, 20).map(a => a.id) })
   }
 }
