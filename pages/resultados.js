@@ -644,14 +644,14 @@ export default function Resultados() {
               supabase.from('usuarios').update({ ayudas_calculadas: ayudasFinal.map(a => a.id) }).eq('id', userId).then(() => {})
             }
           }
-        } catch {}
+        } catch (eFiltro) { console.error('[filtrar-ayudas] falló:', eFiltro) }
 
         setAyudas(ayudasFinal)
       } else {
         // Sin caché: cargar todas y calcular en el cliente
         const { data } = await supabase
           .from('ayudas')
-          .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at')
+          .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
           .in('estado', ['abierta', 'permanente', 'pendiente'])
 
         // Pre-filtro inline en resultados.js para Consell Comarcal de otra comarca
@@ -691,7 +691,7 @@ export default function Resultados() {
               ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
             }
           }
-        } catch {}
+        } catch (eFiltro) { console.error('[filtrar-ayudas] falló:', eFiltro) }
 
         setAyudas(ayudasFinal)
 
