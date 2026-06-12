@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       const _edad = perfil.nacimiento?.[0] ? new Date().getFullYear() - new Date(perfil.nacimiento[0]).getFullYear() : null
       const _muni = (() => { try { const p = perfil.pueblo?.[0]; return typeof p === 'string' ? JSON.parse(p)?.nombre || p : p?.nombre || 'nd' } catch { return 'nd' } })()
       const LABEL_SIT = {empleado:'empleado por cuenta ajena',autonomo:'autonomo',desempleado:'desempleado/en paro',pensionista:'pensionista/jubilado',estudiante:'estudiante',emprendedor:'quiere emprender'}
-      const LABEL_FAM = {soltero:'soltero/a SIN hijos',pareja:'en pareja SIN hijos',hijos_menores:'con hijos menores a cargo',hijos_mayores:'con hijos mayores de edad',monoparental:'familia monoparental con hijos',viudo:'viudo/a',dependiente_cargo:'tiene dependiente a cargo'}
+      const LABEL_FAM = {soltero:'soltero/a SIN hijos',pareja:'en pareja SIN hijos',divorciado:'divorciado/a SIN hijos',hijos_menores:'con hijos menores a cargo',hijos_mayores:'con hijos mayores de edad',monoparental:'familia monoparental con hijos',viudo:'viudo/a',dependiente_cargo:'tiene dependiente a cargo'}
       const perfilTexto = [
         'Situacion laboral: ' + _sit.map(s => LABEL_SIT[s] || s).join(', '),
         'Edad: ' + (_edad ? _edad + ' anos' : 'nd'),
