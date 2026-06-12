@@ -829,9 +829,25 @@ export default function Resultados() {
     )
   }
 
-  // Agrupar ayudas por estado
+  // Clasificar laboral vs personal
+  const esLaboral = a => {
+    const tb = a.tipo_beneficiario || []
+    if (tb.some(t => ['autonomo','empresa','pyme','emprendedor'].includes(t))) return true
+    const n = (a.nombre + ' ' + (a.organismo||'')).toLowerCase()
+    return /autono|pyme|empresa|contrataci|emprendedor|startup|industri|digitaliz.*empresa|kit digital|tarifa plana|pluriactividad|activa.*pyme|acelera.*pyme|soc |inaem|sepe|ere |erte /.test(n)
+  }
+
+  // Agrupar por estado Y categoría
   const ayudasAbiertas = ayudas.filter(a => a.estado === 'abierta')
   const ayudasOtras = ayudas.filter(a => a.estado !== 'abierta')
+
+  const laboralesAbiertas = ayudasAbiertas.filter(esLaboral)
+  const personalesAbiertas = ayudasAbiertas.filter(a => !esLaboral(a))
+  const laboralesOtras = ayudasOtras.filter(esLaboral)
+  const personalesOtras = ayudasOtras.filter(a => !esLaboral(a))
+
+  const hayDosCategoriasAbiertas = laboralesAbiertas.length > 0 && personalesAbiertas.length > 0
+  const hayDosCategoriasOtras = laboralesOtras.length > 0 && personalesOtras.length > 0
   const importeTotal = ayudas.reduce((acc, a) => acc + (a.importe_max || a.importe_min || 0), 0)
 
   return (
@@ -908,18 +924,68 @@ export default function Resultados() {
           {ayudasAbiertas.length > 0 && (
             <div style={{ marginBottom: 32 }}>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Abiertas ahora</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
-              </div>
+              {hayDosCategoriasAbiertas ? (
+                <>
+                  {laboralesAbiertas.length > 0 && (
+                    <div style={{ marginBottom: 24 }}>
+                      <p style={{ fontSize: 11, color: '#FF8300', letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>💼</span> Laborales ({laboralesAbiertas.length})
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {laboralesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                      </div>
+                    </div>
+                  )}
+                  {personalesAbiertas.length > 0 && (
+                    <div>
+                      <p style={{ fontSize: 11, color: '#FF8300', letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>🏠</span> Personales ({personalesAbiertas.length})
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {personalesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                </div>
+              )}
             </div>
           )}
 
           {ayudasOtras.length > 0 && (
             <div>
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Otras convocatorias</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
-              </div>
+              {hayDosCategoriasOtras ? (
+                <>
+                  {laboralesOtras.length > 0 && (
+                    <div style={{ marginBottom: 24 }}>
+                      <p style={{ fontSize: 11, color: '#FF8300', letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>💼</span> Laborales ({laboralesOtras.length})
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {laboralesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                      </div>
+                    </div>
+                  )}
+                  {personalesOtras.length > 0 && (
+                    <div>
+                      <p style={{ fontSize: 11, color: '#FF8300', letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>🏠</span> Personales ({personalesOtras.length})
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {personalesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                </div>
+              )}
             </div>
           )}
 
