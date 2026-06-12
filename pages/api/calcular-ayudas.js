@@ -58,11 +58,9 @@ export default async function handler(req, res) {
         `Ingresos: ${perfil.ingresos?.[0] || 'nd'}`,
         `CCAA: ${perfil.ccaa?.[0] || 'nd'} | Provincia: ${perfil.provincia?.[0] || 'nd'} | Municipio: ${(() => { try { const p = perfil.pueblo?.[0]; return typeof p === 'string' ? JSON.parse(p)?.nombre || p : p?.nombre || 'nd' } catch { return 'nd' } })()}`,
         `Situaciones especiales: ${(perfil.especial || []).join(', ') || 'ninguna'}`,
-      ].join('
-')
+      ].join('\n')
 
-      const lista = conScore.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('
-')
+      const lista = conScore.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('\n')
 
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
