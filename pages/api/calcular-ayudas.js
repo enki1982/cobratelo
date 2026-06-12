@@ -50,14 +50,26 @@ export default async function handler(req, res) {
     let ayudasFinal = conScore.slice(0, 20)
     try {
       const anthropic = new Anthropic()
+      const _sit = perfil.situacion || []
+      const _fam = perfil.familia || []
+      const _esp = perfil.especial || []
+      const _edad = perfil.nacimiento?.[0] ? new Date().getFullYear() - new Date(perfil.nacimiento[0]).getFullYear() : null
+      const _muni = (() => { try { const p = perfil.pueblo?.[0]; return typeof p === 'string' ? JSON.parse(p)?.nombre || p : p?.nombre || 'nd' } catch { return 'nd' } })()
+      const LABEL_SIT = {empleado:'empleado por cuenta ajena',autonomo:'autonomo',desempleado:'desempleado/en paro',pensionista:'pensionista/jubilado',estudiante:'estudiante',emprendedor:'quiere emprender'}
+      const LABEL_FAM = {soltero:'soltero/a SIN hijos',pareja:'en pareja SIN hijos',hijos_menores:'con hijos menores a cargo',hijos_mayores:'con hijos mayores de edad',monoparental:'familia monoparental con hijos',viudo:'viudo/a',dependiente_cargo:'tiene dependiente a cargo'}
       const perfilTexto = [
-        `Situación laboral: ${(perfil.situacion || []).join(', ')}`,
-        `Edad: ${perfil.nacimiento?.[0] ? new Date().getFullYear() - new Date(perfil.nacimiento[0]).getFullYear() + ' anos' : 'nd'}`,
-        `Género: ${perfil.genero?.[0] || 'nd'}`,
-        `Situación familiar: ${(perfil.familia || []).join(', ') || 'nd'}`,
-        `Ingresos: ${perfil.ingresos?.[0] || 'nd'}`,
-        `CCAA: ${perfil.ccaa?.[0] || 'nd'} | Provincia: ${perfil.provincia?.[0] || 'nd'} | Municipio: ${(() => { try { const p = perfil.pueblo?.[0]; return typeof p === 'string' ? JSON.parse(p)?.nombre || p : p?.nombre || 'nd' } catch { return 'nd' } })()}`,
-        `Situaciones especiales: ${(perfil.especial || []).join(', ') || 'ninguna'}`,
+        'Situacion laboral: ' + _sit.map(s => LABEL_SIT[s] || s).join(', '),
+        'Edad: ' + (_edad ? _edad + ' anos' : 'nd'),
+        'Genero: ' + (perfil.genero?.[0] || 'nd'),
+        'Situacion familiar: ' + (_fam.map(f => LABEL_FAM[f] || f).join(', ') || 'nd'),
+        'Tiene hijos: ' + (_fam.some(f => f.includes('hijo') || f === 'monoparental') ? 'SI' : 'NO'),
+        'Tiene dependiente a cargo: ' + (_fam.includes('dependiente_cargo') || _esp.includes('dependencia') ? 'SI' : 'NO'),
+        'ES autonomo: ' + (_sit.includes('autonomo') ? 'SI' : 'NO'),
+        'ES pensionista: ' + (_sit.includes('pensionista') ? 'SI' : 'NO'),
+        'ES desempleado: ' + (_sit.includes('desempleado') ? 'SI' : 'NO'),
+        'Ingresos: ' + (perfil.ingresos?.[0] || 'nd'),
+        'Municipio: ' + _muni + ' | Provincia: ' + (perfil.provincia?.[0] || 'nd') + ' | CCAA: ' + (perfil.ccaa?.[0] || 'nd'),
+        'Especial: ' + (_esp.join(', ') || 'ninguna'),
       ].join('\n')
 
       const lista = conScore.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('\n')
