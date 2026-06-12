@@ -648,59 +648,15 @@ export default function Resultados() {
 
         setAyudas(ayudasFinal)
       } else {
-        // Sin caché: cargar todas y calcular en el cliente
-        const { data } = await supabase
-          .from('ayudas')
-          .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
-          .in('estado', ['abierta', 'permanente', 'pendiente'])
-
-        // Pre-filtro inline en resultados.js para Consell Comarcal de otra comarca
-        const _normStr = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').trim()
-        const _provUser = _normStr((perfil?.provincia||[])[0] || '')
-        const _EXCL = {
-          'barcelona':['girones','tarragones','tarragona','girona','lleida'],
-          'girona':['barcelona','maresme','valles','tarragona','lleida'],
-          'tarragona':['barcelona','girona','lleida'],
-          'lleida':['barcelona','girona','tarragona'],
-        }
-        const _excluirProv = _EXCL[_provUser] || []
-        const _preFilter = (data || []).filter(a => {
-          const _t = _normStr(`${a.nombre} ${a.organismo}`)
-          if (_excluirProv.some(p => _t.includes(p))) return false
-          return true
+        // Sin caché: calcular en el servidor (incluye filtro IA)
+        const resp = await fetch('/api/calcular-ayudas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, perfil }),
         })
-
-        const conScore = _preFilter
-          .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
-          .filter(a => a._score >= 40)
-          .sort((a, b) => b._score - a._score)
-          .slice(0, 40)
-
-        // Filtro de sentido común con Claude
-        let ayudasFinal = conScore.slice(0, 20)
-        try {
-          const r = await fetch('/api/filtrar-ayudas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ perfil, ayudas: conScore }),
-          })
-          if (r.ok) {
-            const { ids } = await r.json()
-            if (ids?.length > 0) {
-              const mapa = Object.fromEntries(conScore.map(a => [a.id, a]))
-              ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
-            }
-          }
-        } catch (eFiltro) { console.error('[filtrar-ayudas] falló:', eFiltro) }
-
-        setAyudas(ayudasFinal)
-
-        // Guardar IDs en caché para próximas visitas (en background, sin bloquear)
-        if (ayudasFinal.length > 0) {
-          supabase.from('usuarios')
-            .update({ ayudas_calculadas: ayudasFinal.map(a => a.id) })
-            .eq('id', userId)
-            .then(() => {})
+        if (resp.ok) {
+          const { ayudas: ayudasServidor } = await resp.json()
+          setAyudas(ayudasServidor || [])
         }
       }
 
