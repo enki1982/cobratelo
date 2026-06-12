@@ -46,8 +46,23 @@ export default async function handler(req, res) {
       await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: conScore.length } })
       if (conScore.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: conScore.length } })
     } catch {}
+    // ── DEDUPLICACIÓN server-side ──────────────────────────────────
+    const normKey = s => (s||'').toLowerCase()
+      .replace(/20\d\d/g,'').replace(/[^a-záéíóúüñ0-9\s]/gi,' ')
+      .replace(/\b(programa|plan|convocatoria|subvencion|subvenciones|ayuda|ayudas|para|del?|las?|los?|una?|por|en|y|e)\b/gi,'')
+      .replace(/\s+/g,' ').trim().split(' ').filter(w=>w.length>3).slice(0,5).join(' ')
+
+    const deduped = new Map()
+    const conScoreDedup = conScore.filter(a => {
+      const k = normKey(a.nombre)
+      if (!k) return true
+      if (!deduped.has(k)) { deduped.set(k, a._score); return true }
+      if (a._score > deduped.get(k)) { deduped.set(k, a._score); return true }
+      return false
+    })
+
     // Filtro de sentido común en el servidor (sin depender de sesión del cliente)
-    let ayudasFinal = conScore.slice(0, 20)
+    let ayudasFinal = conScoreDedup.slice(0, 20)
     try {
       const anthropic = new Anthropic()
       const _sit = perfil.situacion || []
@@ -72,7 +87,7 @@ export default async function handler(req, res) {
         'Especial: ' + (_esp.join(', ') || 'ninguna'),
       ].join('\n')
 
-      const lista = conScore.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('\n')
+      const lista = conScoreDedup.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('\n')
 
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -95,7 +110,7 @@ Devuelve SOLO este JSON:
       if (match) {
         const { ids } = JSON.parse(match[0])
         if (Array.isArray(ids) && ids.length > 0) {
-          const mapa = Object.fromEntries(conScore.map(a => [a.id, a]))
+          const mapa = Object.fromEntries(conScoreDedup.map(a => [a.id, a]))
           const filtradas = ids.map(id => mapa[id]).filter(Boolean)
           if (filtradas.length > 0) ayudasFinal = filtradas
         }
