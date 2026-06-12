@@ -7,12 +7,7 @@ const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.['sb-access-token']
-  console.log('[filtrar-ayudas] token presente:', !!token)
-  if (!token) { console.log('[filtrar-ayudas] BLOQUEADO: sin token'); return res.status(401).json({ error: 'No autenticado' }) }
-  const { data: { user }, error: authErr } = await supabaseAdmin.auth.getUser(token)
-  console.log('[filtrar-ayudas] user:', user?.email, 'authErr:', authErr?.message)
-  if (!user) { console.log('[filtrar-ayudas] BLOQUEADO: sesión inválida'); return res.status(401).json({ error: 'Sesión inválida' }) }
+  // Sin auth — solo recibe texto de perfil + nombres de ayudas, no expone datos personales
 
   const { perfil, ayudas } = req.body
   if (!perfil || !ayudas?.length) return res.json({ ids: [] })

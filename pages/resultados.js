@@ -631,21 +631,17 @@ export default function Resultados() {
         // Aplicar filtro de sentido común también en cache hit
         let ayudasFinal = ordenadas
         try {
-          const { data: { session: sess } } = await supabase.auth.getSession()
-          if (sess?.access_token && ordenadas.length > 0) {
-            const r = await fetch('/api/filtrar-ayudas', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sess.access_token}` },
-              body: JSON.stringify({ perfil, ayudas: ordenadas }),
-            })
-            if (r.ok) {
-              const { ids } = await r.json()
-              if (ids?.length > 0) {
-                const mapa = Object.fromEntries(ordenadas.map(a => [a.id, a]))
-                ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
-                // Actualizar caché con resultado filtrado
-                supabase.from('usuarios').update({ ayudas_calculadas: ayudasFinal.map(a => a.id) }).eq('id', userId).then(() => {})
-              }
+          const r = await fetch('/api/filtrar-ayudas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ perfil, ayudas: ordenadas }),
+          })
+          if (r.ok) {
+            const { ids } = await r.json()
+            if (ids?.length > 0) {
+              const mapa = Object.fromEntries(ordenadas.map(a => [a.id, a]))
+              ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
+              supabase.from('usuarios').update({ ayudas_calculadas: ayudasFinal.map(a => a.id) }).eq('id', userId).then(() => {})
             }
           }
         } catch {}
@@ -683,13 +679,9 @@ export default function Resultados() {
         // Filtro de sentido común con Claude
         let ayudasFinal = conScore.slice(0, 20)
         try {
-          const { data: { session: sess } } = await supabase.auth.getSession()
           const r = await fetch('/api/filtrar-ayudas', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              ...(sess?.access_token ? { 'Authorization': `Bearer ${sess.access_token}` } : {})
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ perfil, ayudas: conScore }),
           })
           if (r.ok) {
