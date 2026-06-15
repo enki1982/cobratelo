@@ -96,7 +96,7 @@ export default async function handler(req, res) {
 
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1500,
+        max_tokens: 2500,
         temperature: 0,
         messages: [{ role: 'user', content: `Eres un asesor experto en ayudas públicas españolas. Tienes el perfil de una persona y una lista de ayudas pre-seleccionadas. Quédate SOLO con las que realmente le corresponden, aplicando sentido común estricto.
 
@@ -120,10 +120,24 @@ Devuelve SOLO este JSON:
 {"ayudas": [{"id": "id1", "razon": "..."}, {"id": "id2", "razon": "..."}]}` }],
       })
       const texto = msg.content.find(b => b.type === 'text')?.text || ''
-      const match = texto.match(/\{[\s\S]*\}/)
-      if (match) {
-        const parsed = JSON.parse(match[0])
-        const items = Array.isArray(parsed.ayudas) ? parsed.ayudas : (Array.isArray(parsed.ids) ? parsed.ids.map(id => ({ id, razon: null })) : [])
+      let items = []
+      try {
+        const match = texto.match(/\{[\s\S]*\}/)
+        if (match) {
+          const parsed = JSON.parse(match[0])
+          items = Array.isArray(parsed.ayudas) ? parsed.ayudas : (Array.isArray(parsed.ids) ? parsed.ids.map(id => ({ id, razon: null })) : [])
+        }
+      } catch (eParse) {
+        // JSON truncado o malformado: rescatar pares id+razon individualmente
+        const pares = [...texto.matchAll(/"id"\s*:\s*"([^"]+)"\s*,\s*"razon"\s*:\s*"([^"]*)"/g)]
+        items = pares.map(m => ({ id: m[1], razon: m[2] }))
+        if (items.length === 0) {
+          const soloIds = [...texto.matchAll(/"id"\s*:\s*"([^"]+)"/g)]
+          items = soloIds.map(m => ({ id: m[1], razon: null }))
+        }
+        console.error('filtro IA: JSON recuperado de respuesta truncada, items:', items.length)
+      }
+      {
         if (items.length > 0) {
           const mapa = Object.fromEntries(conScoreDedup.map(a => [a.id, a]))
           const filtradas = items.map(it => {
