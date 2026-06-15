@@ -486,16 +486,30 @@ function AyudaCard({ ayuda, esNueva, userId, perfil }) {
   const [errorForm, setErrorForm] = useState('')
   const importe = ayuda.importe_max || ayuda.importe_min
 
-  // Validacion basica de DNI/NIE espanol
+  // Validacion de DNI/NIE espanol con el algoritmo oficial de la letra de control.
+  // La letra se obtiene del resto de dividir el numero entre 23, segun la tabla
+  // TRWAGMYFPDXBNJZSQVHLCKE (excluye I, N(ene), O, U para evitar confusiones).
   const dniValido = (valor) => {
-    const v = (valor || '').toUpperCase().trim()
-    return /^[0-9XYZ][0-9]{7}[A-Z]$/.test(v)
+    const v = (valor || '').toUpperCase().trim().replace(/[\s-]/g, '')
+    // Formato: 8 caracteres + letra. DNI empieza por digito; NIE por X, Y o Z.
+    if (!/^[0-9XYZ][0-9]{7}[A-Z]$/.test(v)) return false
+    const TABLA = 'TRWAGMYFPDXBNJZSQVHLCKE'
+    // Para NIE, sustituir la letra inicial: X->0, Y->1, Z->2
+    let numeroStr = v.slice(0, 8)
+    const primera = numeroStr[0]
+    if (primera === 'X') numeroStr = '0' + numeroStr.slice(1)
+    else if (primera === 'Y') numeroStr = '1' + numeroStr.slice(1)
+    else if (primera === 'Z') numeroStr = '2' + numeroStr.slice(1)
+    const numero = parseInt(numeroStr, 10)
+    if (Number.isNaN(numero)) return false
+    const letraEsperada = TABLA[numero % 23]
+    return v[8] === letraEsperada
   }
 
   const solicitarTramitacion = async () => {
     setErrorForm('')
     if (!dniValido(dni)) {
-      setErrorForm('Introduce un DNI o NIE válido (8 números y una letra).')
+      setErrorForm('El DNI o NIE no es válido. Revisa que el número y la letra sean correctos.')
       return
     }
     setSolicitando(true)
@@ -503,7 +517,7 @@ function AyudaCard({ ayuda, esNueva, userId, perfil }) {
       const res = await fetch('/api/solicitar-tramitacion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ciudadanoId: userId, perfil, ayuda, dni: dni.toUpperCase().trim(), telefono: telefono.trim() }),
+        body: JSON.stringify({ ciudadanoId: userId, perfil, ayuda, dni: dni.toUpperCase().trim().replace(/[\s-]/g, ''), telefono: telefono.trim() }),
       })
       if (res.ok) setSolicitada(true)
       else { const j = await res.json().catch(() => ({})); setErrorForm(j.error || 'No se pudo enviar la solicitud. Inténtalo de nuevo.') }
