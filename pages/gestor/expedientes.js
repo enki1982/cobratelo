@@ -90,6 +90,7 @@ export default function ExpedientesKanban() {
   const [manualAbierto, setManualAbierto] = useState(false)
   const [panelBandeja, setPanelBandeja] = useState(false)
   const [matches, setMatches] = useState(null)
+  const [solicitudes, setSolicitudes] = useState(null)
   const [vencimientos, setVencimientos] = useState(null)
   const [alertaEmails, setAlertaEmails] = useState([])
   const [nuevoEmail, setNuevoEmail] = useState('')
@@ -129,12 +130,25 @@ export default function ExpedientesKanban() {
   }
 
   const abrirBandeja = async () => {
-    setPanelBandeja(true); setMatches(null);
+    setPanelBandeja(true); setMatches(null); setSolicitudes(null);
     try {
       const res = await fetch('/api/gestor/matches', { headers: { Authorization: `Bearer ${token}` } });
       const j = await res.json();
       setMatches(j.matches || []);
     } catch (e) { setMatches([]); }
+    try {
+      const rs = await fetch('/api/gestor/solicitudes', { headers: { Authorization: `Bearer ${token}` } });
+      const js = await rs.json();
+      setSolicitudes([...(js.propias || []), ...(js.pool || [])]);
+    } catch (e) { setSolicitudes([]); }
+  };
+  const recogerSolicitud = async (s) => {
+    const res = await fetch('/api/gestor/solicitudes', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ solicitud_id: s.id, accion: 'recoger' }) });
+    if (res.ok) { setSolicitudes(ss => ss.filter(x => x.id !== s.id)); setAviso('Solicitud recogida. El cliente está ahora en tu cartera.'); }
+  };
+  const descartarSolicitud = async (s) => {
+    const res = await fetch('/api/gestor/solicitudes', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ solicitud_id: s.id, accion: 'descartar' }) });
+    if (res.ok) setSolicitudes(ss => ss.filter(x => x.id !== s.id));
   };
   const aceptarMatch = async (m) => {
     const res = await fetch('/api/gestor/expedientes', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ cliente_id: m.cliente_id, ayuda_id: m.ayuda_id, importe_estimado: m.importe_max, fecha_plazo_maximo: m.fecha_cierre, origen: 'match' }) });
@@ -538,6 +552,31 @@ export default function ExpedientesKanban() {
                 <button onClick={() => setPanelBandeja(false)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 22 }}>✕</button>
               </div>
               <div style={{ padding: '16px 24px', overflowY: 'auto' }}>
+                {/* SOLICITUDES ENTRANTES — el ciudadano pidio activamente que le tramiten */}
+                {solicitudes && solicitudes.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span>📩</span> Solicitudes de clientes ({solicitudes.length})
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {solicitudes.map((s) => (
+                        <div key={s.id} style={{ border: `1.5px solid ${C.green}`, background: 'rgba(74,222,128,0.04)', borderRadius: 10, padding: '12px 14px' }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>{s.ciudadano_nombre || s.ciudadano_email || 'Solicitud entrante'}</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.3 }}>{s.ayuda_nombre}</div>
+                          <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{s.ayuda_organismo}{s.ayuda_importe ? ' · hasta ' + new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(s.ayuda_importe) : ''}</div>
+                          <div style={{ fontSize: 11, color: C.green, marginTop: 6, fontStyle: 'italic' }}>✓ Este cliente ha pedido que le tramiten esta ayuda</div>
+                          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                            <button onClick={() => recogerSolicitud(s)} style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff', background: C.green, border: 'none', borderRadius: 8, padding: '8px', cursor: 'pointer' }}>Atender solicitud</button>
+                            <button onClick={() => descartarSolicitud(s)} style={{ fontSize: 12, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 14px', cursor: 'pointer' }}>Descartar</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(solicitudes && solicitudes.length > 0) && (
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>Otras ayudas detectadas</div>
+                )}
                 {matches === null ? (
                   <div style={{ color: C.muted, fontSize: 13, textAlign: 'center', padding: '30px 0' }}>Buscando matches…</div>
                 ) : matches.length === 0 ? (

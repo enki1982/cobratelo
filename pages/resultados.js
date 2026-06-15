@@ -476,9 +476,28 @@ function calcularRelevancia(ayuda, perfil) {
 
 const FREE_LIMIT = 3 // usado solo como fallback
 
-function AyudaCard({ ayuda, esNueva }) {
+function AyudaCard({ ayuda, esNueva, userId, perfil }) {
   const [expandida, setExpandida] = useState(false)
+  const [solicitando, setSolicitando] = useState(false)
+  const [solicitada, setSolicitada] = useState(false)
   const importe = ayuda.importe_max || ayuda.importe_min
+
+  const solicitarTramitacion = async () => {
+    setSolicitando(true)
+    try {
+      const res = await fetch('/api/solicitar-tramitacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ciudadanoId: userId, perfil, ayuda }),
+      })
+      if (res.ok) setSolicitada(true)
+      else alert('No se pudo enviar la solicitud. Inténtalo de nuevo.')
+    } catch {
+      alert('Error de conexión. Inténtalo de nuevo.')
+    } finally {
+      setSolicitando(false)
+    }
+  }
   const estadoColor = { abierta: '#4ade80', permanente: '#60a5fa', pendiente: '#f59e0b', cerrada: 'rgba(255,245,235,0.3)' }[ayuda.estado] || 'rgba(255,245,235,0.3)'
 
   return (
@@ -559,6 +578,29 @@ function AyudaCard({ ayuda, esNueva }) {
               <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.35)', margin: '8px 0 0', fontStyle: 'italic' }}>Localiza esta ayuda en la sede del organismo con estos datos.</p>
             </div>
           )}
+
+          {/* CTA de tramitacion por gestoria — la conversion del producto */}
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,200,120,0.08)' }}>
+            {solicitada ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 10, padding: '12px 14px' }}>
+                <span style={{ fontSize: 15 }}>✓</span>
+                <div>
+                  <p style={{ fontSize: 13, color: '#86efac', fontWeight: 600, margin: 0 }}>Solicitud enviada</p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', margin: '2px 0 0' }}>Una gestoría revisará tu caso y te contactará para tramitar esta ayuda.</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={solicitarTramitacion}
+                  disabled={solicitando}
+                  style={{ width: '100%', background: '#FF8300', border: 'none', color: '#321A00', fontWeight: 700, fontSize: 14, padding: '12px 20px', borderRadius: 100, cursor: solicitando ? 'default' : 'pointer', opacity: solicitando ? 0.6 : 1 }}>
+                  {solicitando ? 'Enviando...' : 'Quiero que me tramiten esta ayuda →'}
+                </button>
+                <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', textAlign: 'center', margin: '8px 0 0' }}>Una gestoría profesional se encarga del papeleo por ti</p>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -967,7 +1009,7 @@ export default function Resultados() {
                         <span>🏠</span> Personales ({personalesAbiertas.length})
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {personalesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                        {personalesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                       </div>
                     </div>
                   )}
@@ -977,14 +1019,14 @@ export default function Resultados() {
                         <span>💼</span> Laborales ({laboralesAbiertas.length})
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {laboralesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                        {laboralesAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                       </div>
                     </div>
                   )}
                 </>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                  {ayudasAbiertas.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                 </div>
               )}
             </div>
@@ -1001,7 +1043,7 @@ export default function Resultados() {
                         <span>🏠</span> Personales ({personalesOtras.length})
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {personalesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                        {personalesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                       </div>
                     </div>
                   )}
@@ -1011,14 +1053,14 @@ export default function Resultados() {
                         <span>💼</span> Laborales ({laboralesOtras.length})
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {laboralesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                        {laboralesOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                       </div>
                     </div>
                   )}
                 </>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} />)}
+                  {ayudasOtras.map(a => <AyudaCard key={a.id} ayuda={a} esNueva={ayudasNuevas.has(a.id)} userId={userId} perfil={perfil} />)}
                 </div>
               )}
             </div>
