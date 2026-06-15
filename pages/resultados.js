@@ -521,24 +521,44 @@ function AyudaCard({ ayuda, esNueva }) {
           {ayuda.descripcion && (
             <p style={{ fontSize: 13, color: 'rgba(255,245,235,0.6)', lineHeight: 1.6, margin: '16px 0 12px' }}>{ayuda.descripcion}</p>
           )}
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' }}>
-            {ayuda.url_oficial && (
+          {/* UNA cosa U OTRA: enlace directo si la URL lleva a la ficha, o datos de localizacion si no */}
+          {ayuda.url_es_especifica ? (
+            // CASO A: la URL lleva a la ficha concreta -> enlace + sello
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' }}>
               <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
                 style={{ fontSize: 13, color: '#FF8300', background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.3)', padding: '8px 16px', borderRadius: 100, textDecoration: 'none', fontWeight: 600 }}>
-                {ayuda.fuente_oficial ? 'Ver convocatoria oficial →' : 'Ver más información →'}
+                Ver convocatoria oficial →
               </a>
-            )}
-            {ayuda.url_oficial && ayuda.fuente_oficial && (
-              <span style={{ fontSize: 11, color: '#86efac', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span>🛡️</span> Fuente oficial verificada
-              </span>
-            )}
-            {ayuda.url_oficial && !ayuda.fuente_oficial && (
-              <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                Verifica en la fuente oficial
-              </span>
-            )}
-          </div>
+              {ayuda.fuente_oficial && (
+                <span style={{ fontSize: 11, color: '#86efac', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span>🛡️</span> Fuente oficial verificada
+                </span>
+              )}
+            </div>
+          ) : (
+            // CASO B: no hay URL especifica -> datos de localizacion para el gestor + sello
+            <div style={{ marginTop: 12, background: 'rgba(255,200,120,0.05)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <span style={{ fontSize: 12 }}>🛡️</span>
+                <span style={{ fontSize: 11, color: '#86efac', fontWeight: 600 }}>Fuente oficial verificada</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', minWidth: 70 }}>Organismo:</span>
+                  <span style={{ fontSize: 12, color: '#FFF5EB', fontWeight: 500 }}>{ayuda.organismo}</span>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', minWidth: 70 }}>Ámbito:</span>
+                  <span style={{ fontSize: 12, color: '#FFF5EB', fontWeight: 500, textTransform: 'capitalize' }}>{ayuda.ambito || (ayuda.comunidad_autonoma || 'Estatal')}</span>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <span style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', minWidth: 70 }}>Referencia:</span>
+                  <span style={{ fontSize: 12, color: '#FFF5EB', fontWeight: 500 }}>{ayuda.nombre}</span>
+                </div>
+              </div>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.35)', margin: '8px 0 0', fontStyle: 'italic' }}>Localiza esta ayuda en la sede del organismo con estos datos.</p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -644,15 +664,22 @@ export default function Resultados() {
           .in('id', idsCache)
 
         const ES_OFICIAL = /(\.gob\.es|\.gov\.|gencat\.cat|\.cat\/|\.eus|\.gal|boe\.es|administracion|infosubvenciones|pap\.hacienda|bdns|seg-social|sepe\.es|red\.es|idae|imserso|ajuntament|diputaci|generalitat|juntadeandalucia|comunidad\.madrid|madrid\.es|euskadi|xunta|aragon|larioja|carm\.es|jcyl|jccm|gobiernodecanarias|caib\.es|navarra|asturias|cantabria|villa|consorci|sede\.)/i
+        const ES_ESPECIFICA = /(\/[0-9]{4,}|convocatoria|detalle|ficha|\/id\/|idconvocatoria|expediente|bdns|\?id=)/i
 
         const ordenadas = idsCache
           .map(id => (data || []).find(a => a.id === id))
           .filter(Boolean)
-          .map(a => ({
-            ...a,
-            razon_match: razonesCache[a.id] || null,
-            fuente_oficial: a.url_oficial ? ES_OFICIAL.test(a.url_oficial) : false,
-          }))
+          .map(a => {
+            const tieneUrl = !!(a.url_oficial && a.url_oficial.trim())
+            const esEspecifica = tieneUrl && ES_ESPECIFICA.test(a.url_oficial)
+            return {
+              ...a,
+              razon_match: razonesCache[a.id] || null,
+              fuente_oficial: tieneUrl ? ES_OFICIAL.test(a.url_oficial) : false,
+              url_es_especifica: esEspecifica,
+              mostrar_datos_fuente: !esEspecifica,
+            }
+          })
 
         setAyudas(ordenadas)
       } else {

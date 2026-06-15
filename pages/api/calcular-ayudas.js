@@ -166,10 +166,19 @@ Devuelve SOLO este JSON:
 
     // Marcar fuente oficial vs no oficial (sello de confianza)
     const ES_OFICIAL = /(\.gob\.es|\.gov\.|gencat\.cat|\.cat\/|\.eus|\.gal|boe\.es|administracion|infosubvenciones|pap\.hacienda|bdns|seg-social|sepe\.es|red\.es|idae|imserso|ajuntament|diputaci|generalitat|juntadeandalucia|comunidad\.madrid|madrid\.es|euskadi|xunta|aragon|larioja|carm\.es|jcyl|jccm|gobiernodecanarias|caib\.es|navarra|asturias|cantabria|villa|consorci|sede\.)/i
-    const ayudasConSello = ayudasFinal.map(a => ({
-      ...a,
-      fuente_oficial: a.url_oficial ? ES_OFICIAL.test(a.url_oficial) : false,
-    }))
+    // URL especifica = lleva a la ficha de la ayuda (numero largo o palabras de detalle). URL generica = home del organismo.
+    const ES_ESPECIFICA = /(\/[0-9]{4,}|convocatoria|detalle|ficha|\/id\/|idconvocatoria|expediente|bdns|\?id=)/i
+    const ayudasConSello = ayudasFinal.map(a => {
+      const tieneUrl = !!(a.url_oficial && a.url_oficial.trim())
+      const esEspecifica = tieneUrl && ES_ESPECIFICA.test(a.url_oficial)
+      return {
+        ...a,
+        fuente_oficial: tieneUrl ? ES_OFICIAL.test(a.url_oficial) : false,
+        url_es_especifica: esEspecifica,
+        // Si la URL es generica o no hay, mostramos datos de localizacion en vez de enlace
+        mostrar_datos_fuente: !esEspecifica,
+      }
+    })
 
     return res.json({ ok: true, ayudas: ayudasConSello })
   } catch (e) {
