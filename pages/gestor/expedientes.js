@@ -91,6 +91,8 @@ export default function ExpedientesKanban() {
   const [panelBandeja, setPanelBandeja] = useState(false)
   const [matches, setMatches] = useState(null)
   const [solicitudes, setSolicitudes] = useState(null)
+  const [numSolicitudes, setNumSolicitudes] = useState(0)
+  const [solicitudesVistas, setSolicitudesVistas] = useState(0)
   const [vencimientos, setVencimientos] = useState(null)
   const [alertaEmails, setAlertaEmails] = useState([])
   const [nuevoEmail, setNuevoEmail] = useState('')
@@ -114,6 +116,33 @@ export default function ExpedientesKanban() {
       cargar(session.access_token)
     })
   }, [])
+
+  // Polling del muro de solicitudes: badge + globo cuando entra una nueva
+  useEffect(() => {
+    if (!token) return
+    let activo = true
+    const consultar = async () => {
+      try {
+        const res = await fetch('/api/gestor/solicitudes', { headers: { Authorization: `Bearer ${token}` } })
+        if (!res.ok) return
+        const j = await res.json()
+        if (!activo) return
+        const total = (j.propias?.length || 0) + (j.pool?.length || 0)
+        setNumSolicitudes(prev => {
+          // Si hay mas que antes y ya habiamos cargado una vez, avisar
+          if (prev !== null && total > prev && prev !== 0) {
+            mostrarAviso(`📩 Nueva solicitud de tramitación (${total} pendientes)`)
+          } else if (prev === 0 && total > 0) {
+            mostrarAviso(`📩 Tienes ${total} solicitud${total > 1 ? 'es' : ''} de tramitación`)
+          }
+          return total
+        })
+      } catch {}
+    }
+    consultar()
+    const id = setInterval(consultar, 30000)
+    return () => { activo = false; clearInterval(id) }
+  }, [token])
 
   const cargar = async (tok) => {
     try {
@@ -357,9 +386,12 @@ export default function ExpedientesKanban() {
               style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: `1px solid ${soloUrgentes ? C.red : C.border}`, background: soloUrgentes ? C.redBg : 'transparent', color: soloUrgentes ? C.red : C.muted, cursor: 'pointer', fontWeight: soloUrgentes ? 600 : 400, whiteSpace: 'nowrap', flexShrink: 0 }}>
               Solo urgentes
             </button>
-            <button onClick={abrirBandeja}
-              style={{ fontSize: 12, padding: '7px 14px', borderRadius: 8, border: '1px solid #FDDCC4', background: '#FFF5F0', color: '#cc5500', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
+            <button onClick={() => { abrirBandeja(); setSolicitudesVistas(numSolicitudes); }}
+              style={{ position: 'relative', fontSize: 12, padding: '7px 14px', borderRadius: 8, border: '1px solid #FDDCC4', background: '#FFF5F0', color: '#cc5500', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
               Bandeja de matches
+              {numSolicitudes > 0 && (
+                <span style={{ position: 'absolute', top: -7, right: -7, background: '#16a34a', color: '#fff', fontSize: 11, fontWeight: 700, minWidth: 18, height: 18, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 5px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>{numSolicitudes}</span>
+              )}
             </button>
             <button onClick={() => setManualAbierto(true)} title="Ayuda"
               style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, marginRight: 8 }}>
@@ -552,26 +584,39 @@ export default function ExpedientesKanban() {
                 <button onClick={() => setPanelBandeja(false)} style={{ background: 'none', border: 'none', color: C.light, cursor: 'pointer', fontSize: 22 }}>✕</button>
               </div>
               <div style={{ padding: '16px 24px', overflowY: 'auto' }}>
-                {/* SOLICITUDES ENTRANTES — el ciudadano pidio activamente que le tramiten */}
+                {/* MURO DE SOLICITUDES por region — el ciudadano pidio activamente que le tramiten */}
                 {solicitudes && solicitudes.length > 0 && (
                   <div style={{ marginBottom: 20 }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span>📩</span> Solicitudes de clientes ({solicitudes.length})
+                      <span>📩</span> Muro de solicitudes ({solicitudes.length})
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {solicitudes.map((s) => (
-                        <div key={s.id} style={{ border: `1.5px solid ${C.green}`, background: 'rgba(74,222,128,0.04)', borderRadius: 10, padding: '12px 14px' }}>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>{s.ciudadano_nombre || s.ciudadano_email || 'Solicitud entrante'}</div>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.3 }}>{s.ayuda_nombre}</div>
-                          <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{s.ayuda_organismo}{s.ayuda_importe ? ' · hasta ' + new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(s.ayuda_importe) : ''}</div>
-                          <div style={{ fontSize: 11, color: C.green, marginTop: 6, fontStyle: 'italic' }}>✓ Este cliente ha pedido que le tramiten esta ayuda</div>
-                          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-                            <button onClick={() => recogerSolicitud(s)} style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff', background: C.green, border: 'none', borderRadius: 8, padding: '8px', cursor: 'pointer' }}>Atender solicitud</button>
-                            <button onClick={() => descartarSolicitud(s)} style={{ fontSize: 12, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 14px', cursor: 'pointer' }}>Descartar</button>
-                          </div>
+                    {Object.entries(
+                      solicitudes.reduce((acc, s) => {
+                        const region = [s.provincia, s.ccaa].filter(Boolean).join(' · ') || 'Sin región'
+                        ;(acc[region] = acc[region] || []).push(s)
+                        return acc
+                      }, {})
+                    ).map(([region, lista]) => (
+                      <div key={region} style={{ marginBottom: 16 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6, paddingBottom: 4, borderBottom: `1px solid ${C.border}` }}>
+                          <span>📍</span> {region} <span style={{ color: C.muted, fontWeight: 400 }}>({lista.length})</span>
                         </div>
-                      ))}
-                    </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {lista.map((s) => (
+                            <div key={s.id} style={{ border: `1.5px solid ${C.green}`, background: 'rgba(74,222,128,0.04)', borderRadius: 10, padding: '12px 14px' }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>{s.ciudadano_nombre || s.ciudadano_email || 'Solicitud entrante'}</div>
+                              <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.3 }}>{s.ayuda_nombre}</div>
+                              <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{s.ayuda_organismo}{s.ayuda_importe ? ' · hasta ' + new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(s.ayuda_importe) : ''}</div>
+                              <div style={{ fontSize: 11, color: C.green, marginTop: 6, fontStyle: 'italic' }}>✓ Este cliente ha pedido que le tramiten esta ayuda</div>
+                              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                                <button onClick={() => recogerSolicitud(s)} style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff', background: C.green, border: 'none', borderRadius: 8, padding: '8px', cursor: 'pointer' }}>Atender solicitud</button>
+                                <button onClick={() => descartarSolicitud(s)} style={{ fontSize: 12, fontWeight: 600, color: C.muted, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 14px', cursor: 'pointer' }}>Descartar</button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
                 {(solicitudes && solicitudes.length > 0) && (
