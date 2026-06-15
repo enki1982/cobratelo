@@ -160,6 +160,18 @@ const PASOS = [
     ],
   },
   {
+    id: 'viudedad_pension',
+    titulo: '¿Cobras ya la pensión de viudedad?',
+    subtitulo: 'Si ya la percibes, no te mostraremos esta prestación como ayuda pendiente',
+    multi: false,
+    condicion: (perfil) => (perfil.familia || []).includes('viudo'),
+    opciones: [
+      { value: 'viudedad_cobra',    label: 'Sí, ya la cobro',            emoji: '' },
+      { value: 'viudedad_no_cobra', label: 'No, aún no la cobro',        emoji: '' },
+      { value: 'viudedad_no_se',    label: 'No lo sé / No estoy seguro/a', emoji: '' },
+    ],
+  },
+  {
     id: 'vivienda',
     titulo: '¿Cuál es tu situación de vivienda?',
     subtitulo: 'Selecciona todas las que apliquen',

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { enviarEmail } from '../../../lib/email'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -63,6 +64,8 @@ export default async function handler(req, res) {
             cliente_email: sol.ciudadano_email || null,
             cliente_nombre: sol.ciudadano_nombre || sol.ciudadano_email || 'Cliente de Cóbratelo',
             perfil: sol.perfil || {},
+            dni: sol.dni || null,
+            telefono: sol.telefono || null,
           })
           .select()
           .single()
@@ -103,6 +106,41 @@ export default async function handler(req, res) {
             })
           }
         }
+      }
+
+      // Notificar al ciudadano que una gestoria ha recogido su solicitud
+      try {
+        if (sol.ciudadano_email) {
+          // Datos de la gestoria: perfil extendido (tabla gestoria) + datos de cuenta (usuarios)
+          const { data: perfilGestoria } = await supabaseAdmin
+            .from('gestoria').select('nombre, email, telefono').eq('id', gestorId).maybeSingle()
+          const { data: cuentaGestor } = await supabaseAdmin
+            .from('usuarios').select('email, nombre').eq('id', gestorId).single()
+          const nombreGestoria = perfilGestoria?.nombre || cuentaGestor?.nombre || 'Una gestoría colaboradora'
+          const emailGestoria = perfilGestoria?.email || cuentaGestor?.email || null
+          const telGestoria = perfilGestoria?.telefono || null
+
+          const contacto = []
+          if (emailGestoria) contacto.push(`<p style="margin:2px 0;font-size:13px;color:#333"><strong>Email:</strong> ${emailGestoria}</p>`)
+          if (telGestoria) contacto.push(`<p style="margin:2px 0;font-size:13px;color:#333"><strong>Teléfono:</strong> ${telGestoria}</p>`)
+
+          const html = `
+            <div style="font-family:-apple-system,Segoe UI,sans-serif;max-width:520px;margin:0 auto">
+              <h2 style="color:#cc5500;font-size:18px">Una gestoría se encargará de tu ayuda</h2>
+              <p style="color:#333;font-size:14px;line-height:1.6">Hola${sol.ciudadano_nombre ? ' ' + sol.ciudadano_nombre : ''},</p>
+              <p style="color:#333;font-size:14px;line-height:1.6">Buenas noticias: <strong>${nombreGestoria}</strong> ha recogido tu solicitud para tramitar la ayuda <strong>${sol.ayuda_nombre}</strong> y se pondrá en contacto contigo en breve.</p>
+              <div style="background:#f7f4ef;border-radius:10px;padding:16px;margin:16px 0">
+                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#222">${nombreGestoria}</p>
+                ${contacto.join('') || '<p style="margin:2px 0;font-size:13px;color:#666">La gestoría te contactará con sus datos.</p>'}
+              </div>
+              <p style="color:#333;font-size:14px;line-height:1.6">No necesitas hacer nada más por ahora. Ellos se encargan del papeleo y te pedirán la documentación necesaria.</p>
+              <p style="color:#999;font-size:12px;line-height:1.5">Recibiste este correo porque solicitaste tramitar una ayuda en Cóbratelo.es.</p>
+            </div>`
+          await enviarEmail({ to: sol.ciudadano_email, subject: `${nombreGestoria} tramitará tu ayuda`, html })
+        }
+      } catch (eMail) {
+        console.error('Error notificando al ciudadano:', eMail.message)
+        // No bloquea: la solicitud ya esta recogida aunque el email falle
       }
 
       return res.json({ ok: true, clienteId: clienteGestoriaId })

@@ -93,6 +93,7 @@ export default async function handler(req, res) {
         'Tiene dependiente a cargo: ' + (_fam.includes('dependiente_cargo') || _esp.includes('dependencia') ? 'SI' : 'NO'),
         'ES autonomo: ' + (_sit.includes('autonomo') ? 'SI' : 'NO'),
         'ES pensionista: ' + (_sit.includes('pensionista') ? 'SI' : 'NO'),
+        ...((_fam.includes('viudo') && (perfil.viudedad_pension?.[0] === 'viudedad_cobra')) ? ['YA COBRA la pension de viudedad: SI (excluir prestaciones de pension de viudedad, ya las percibe)'] : []),
         'ES desempleado: ' + (_sit.includes('desempleado') ? 'SI' : 'NO'),
         ...(_esAutonomo && _sector ? ['Sector de actividad del autonomo: ' + (LABEL_SECTOR[_sector] || _sector)] : []),
         ...(_esAutonomo && _empleados ? ['Empleados a cargo: ' + (LABEL_EMPLEADOS[_empleados] || _empleados)] : []),
@@ -121,6 +122,7 @@ REGLAS (aplícalas con rigor):
 - Si NO tiene hijos ni menores a cargo, EXCLUYE ayudas para familias con hijos, infancia, maternidad o paternidad.
 - Si tiene ingresos medios o altos, EXCLUYE ayudas de emergencia social, exclusión residencial, renta mínima, ingreso mínimo vital o renta garantizada (son solo para ingresos muy bajos).
 - Si es pensionista/jubilada, EXCLUYE inserción laboral, empleo y emprendimiento.
+- Si la persona YA COBRA la pension de viudedad, EXCLUYE cualquier prestacion o ayuda de pension de viudedad (ya la percibe, no es una ayuda pendiente para ella).
 - Si la persona es autónomo y se indica su SECTOR de actividad, EXCLUYE ayudas claramente destinadas a un sector distinto (ej: un autónomo de servicios o tecnología NO debe ver ayudas exclusivas de industria/fabricación, agricultura, pesca, transporte o construcción que no sean su sector).
 - Si se indica el numero de EMPLEADOS, EXCLUYE ayudas o tramos para un tamaño de plantilla que no corresponde (ej: si trabaja solo o tiene pocos empleados, EXCLUYE segmentos/programas exigen mas empleados; el Kit Digital Segmento I es para 10-49 empleados, el Segmento II para 3-9, el Segmento III para 0-2).
 - Si se indica la ANTIGUEDAD como autónomo, EXCLUYE ayudas exclusivas de nuevos autónomos (como la tarifa plana) cuando la persona lleva mas de 1-2 años dado de alta.

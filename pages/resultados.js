@@ -480,20 +480,35 @@ function AyudaCard({ ayuda, esNueva, userId, perfil }) {
   const [expandida, setExpandida] = useState(false)
   const [solicitando, setSolicitando] = useState(false)
   const [solicitada, setSolicitada] = useState(false)
+  const [mostrarForm, setMostrarForm] = useState(false)
+  const [dni, setDni] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [errorForm, setErrorForm] = useState('')
   const importe = ayuda.importe_max || ayuda.importe_min
 
+  // Validacion basica de DNI/NIE espanol
+  const dniValido = (valor) => {
+    const v = (valor || '').toUpperCase().trim()
+    return /^[0-9XYZ][0-9]{7}[A-Z]$/.test(v)
+  }
+
   const solicitarTramitacion = async () => {
+    setErrorForm('')
+    if (!dniValido(dni)) {
+      setErrorForm('Introduce un DNI o NIE válido (8 números y una letra).')
+      return
+    }
     setSolicitando(true)
     try {
       const res = await fetch('/api/solicitar-tramitacion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ciudadanoId: userId, perfil, ayuda }),
+        body: JSON.stringify({ ciudadanoId: userId, perfil, ayuda, dni: dni.toUpperCase().trim(), telefono: telefono.trim() }),
       })
       if (res.ok) setSolicitada(true)
-      else alert('No se pudo enviar la solicitud. Inténtalo de nuevo.')
+      else { const j = await res.json().catch(() => ({})); setErrorForm(j.error || 'No se pudo enviar la solicitud. Inténtalo de nuevo.') }
     } catch {
-      alert('Error de conexión. Inténtalo de nuevo.')
+      setErrorForm('Error de conexión. Inténtalo de nuevo.')
     } finally {
       setSolicitando(false)
     }
@@ -589,13 +604,32 @@ function AyudaCard({ ayuda, esNueva, userId, perfil }) {
                   <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.5)', margin: '2px 0 0' }}>Una gestoría revisará tu caso y te contactará para tramitar esta ayuda.</p>
                 </div>
               </div>
+            ) : mostrarForm ? (
+              <div style={{ background: 'rgba(255,200,120,0.05)', border: '1px solid rgba(255,131,0,0.2)', borderRadius: 10, padding: '14px' }}>
+                <p style={{ fontSize: 13, color: '#FFF5EB', fontWeight: 600, margin: '0 0 4px' }}>Para que una gestoría pueda tramitarla</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', margin: '0 0 12px' }}>Necesitamos tu DNI para que puedan iniciar el trámite en tu nombre.</p>
+                <label style={{ fontSize: 11, color: 'rgba(255,245,235,0.5)', display: 'block', marginBottom: 4 }}>DNI o NIE *</label>
+                <input value={dni} onChange={e => setDni(e.target.value)} placeholder="12345678Z"
+                  style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,200,120,0.2)', borderRadius: 8, padding: '10px 12px', color: '#FFF5EB', fontSize: 14, marginBottom: 10, outline: 'none' }} />
+                <label style={{ fontSize: 11, color: 'rgba(255,245,235,0.5)', display: 'block', marginBottom: 4 }}>Teléfono (opcional)</label>
+                <input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="600 000 000" inputMode="tel"
+                  style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,200,120,0.2)', borderRadius: 8, padding: '10px 12px', color: '#FFF5EB', fontSize: 14, marginBottom: 10, outline: 'none' }} />
+                {errorForm && <p style={{ fontSize: 12, color: '#fca5a5', margin: '0 0 10px' }}>{errorForm}</p>}
+                <button onClick={solicitarTramitacion} disabled={solicitando}
+                  style={{ width: '100%', background: '#FF8300', border: 'none', color: '#321A00', fontWeight: 700, fontSize: 14, padding: '12px 20px', borderRadius: 100, cursor: solicitando ? 'default' : 'pointer', opacity: solicitando ? 0.6 : 1 }}>
+                  {solicitando ? 'Enviando...' : 'Enviar solicitud →'}
+                </button>
+                <button onClick={() => { setMostrarForm(false); setErrorForm(''); }}
+                  style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,245,235,0.4)', fontSize: 12, padding: '8px', marginTop: 4, cursor: 'pointer' }}>
+                  Cancelar
+                </button>
+              </div>
             ) : (
               <>
                 <button
-                  onClick={solicitarTramitacion}
-                  disabled={solicitando}
-                  style={{ width: '100%', background: '#FF8300', border: 'none', color: '#321A00', fontWeight: 700, fontSize: 14, padding: '12px 20px', borderRadius: 100, cursor: solicitando ? 'default' : 'pointer', opacity: solicitando ? 0.6 : 1 }}>
-                  {solicitando ? 'Enviando...' : 'Quiero que me tramiten esta ayuda →'}
+                  onClick={() => setMostrarForm(true)}
+                  style={{ width: '100%', background: '#FF8300', border: 'none', color: '#321A00', fontWeight: 700, fontSize: 14, padding: '12px 20px', borderRadius: 100, cursor: 'pointer' }}>
+                  Quiero que me tramiten esta ayuda →
                 </button>
                 <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', textAlign: 'center', margin: '8px 0 0' }}>Una gestoría profesional se encarga del papeleo por ti</p>
               </>

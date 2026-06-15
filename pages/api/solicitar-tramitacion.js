@@ -19,7 +19,7 @@ function regionDelPerfil(perfil) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { ciudadanoId, perfil, ayuda } = req.body
+  const { ciudadanoId, perfil, ayuda, dni, telefono } = req.body
   if (!ayuda?.id || !ayuda?.nombre) {
     return res.status(400).json({ error: 'Falta la ayuda' })
   }
@@ -80,6 +80,8 @@ export default async function handler(req, res) {
         gestor_id: gestorId,
         ccaa,
         provincia,
+        dni: dni || null,
+        telefono: telefono || null,
         estado: 'pendiente',
       })
       .select()
