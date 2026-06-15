@@ -97,6 +97,7 @@ export default async function handler(req, res) {
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
+        temperature: 0,
         messages: [{ role: 'user', content: `Eres un asesor experto en ayudas públicas españolas. Tienes el perfil de una persona y una lista de ayudas pre-seleccionadas. Quédate SOLO con las que realmente le corresponden, aplicando sentido común estricto.
 
 PERFIL DE LA PERSONA:
