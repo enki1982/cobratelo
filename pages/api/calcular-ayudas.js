@@ -114,16 +114,23 @@ REGLAS (aplícalas con rigor):
 - EXCLUYE ayudas de otra zona geográfica distinta a donde vive.
 - EXCLUYE ayudas nominativas (a una persona o entidad con nombre propio).
 
-Devuelve SOLO este JSON con los IDs que SÍ corresponden:
-{"ids": ["id1", "id2", ...]}` }],
+Para cada ayuda que SÍ corresponde, añade una razón breve (máximo 12 palabras) explicando por qué encaja con ESTA persona (su situación, edad, zona o condición), escrita en segunda persona ("Te corresponde por ser autónomo", "Al residir en Cataluña", etc).
+
+Devuelve SOLO este JSON:
+{"ayudas": [{"id": "id1", "razon": "..."}, {"id": "id2", "razon": "..."}]}` }],
       })
       const texto = msg.content.find(b => b.type === 'text')?.text || ''
       const match = texto.match(/\{[\s\S]*\}/)
       if (match) {
-        const { ids } = JSON.parse(match[0])
-        if (Array.isArray(ids) && ids.length > 0) {
+        const parsed = JSON.parse(match[0])
+        const items = Array.isArray(parsed.ayudas) ? parsed.ayudas : (Array.isArray(parsed.ids) ? parsed.ids.map(id => ({ id, razon: null })) : [])
+        if (items.length > 0) {
           const mapa = Object.fromEntries(conScoreDedup.map(a => [a.id, a]))
-          const filtradas = ids.map(id => mapa[id]).filter(Boolean)
+          const filtradas = items.map(it => {
+            const ayuda = mapa[it.id]
+            if (!ayuda) return null
+            return { ...ayuda, razon_match: it.razon || null }
+          }).filter(Boolean)
           if (filtradas.length > 0) ayudasFinal = filtradas
         }
       }
@@ -131,14 +138,26 @@ Devuelve SOLO este JSON con los IDs que SÍ corresponden:
       console.error('filtro IA error:', ef.message)
     }
 
-    // Guardar en caché solo el resultado filtrado
+    // Guardar en caché: IDs + razones de match (para no recalcular)
     if (userId && ayudasFinal.length > 0) {
       try {
-        await supabaseAdmin.from('usuarios').update({ ayudas_calculadas: ayudasFinal.map(a => a.id) }).eq('id', userId)
+        const razonesMap = {}
+        ayudasFinal.forEach(a => { if (a.razon_match) razonesMap[a.id] = a.razon_match })
+        await supabaseAdmin.from('usuarios').update({
+          ayudas_calculadas: ayudasFinal.map(a => a.id),
+          ayudas_razones: razonesMap,
+        }).eq('id', userId)
       } catch {}
     }
 
-    return res.json({ ok: true, ayudas: ayudasFinal })
+    // Marcar fuente oficial vs no oficial (sello de confianza)
+    const ES_OFICIAL = /(\.gob\.es|\.gov\.|gencat\.cat|\.cat\/|\.eus|\.gal|boe\.es|administracion|infosubvenciones|pap\.hacienda|bdns|seg-social|sepe\.es|red\.es|idae|imserso|ajuntament|diputaci|generalitat|juntadeandalucia|comunidad\.madrid|madrid\.es|euskadi|xunta|aragon|larioja|carm\.es|jcyl|jccm|gobiernodecanarias|caib\.es|navarra|asturias|cantabria|villa|consorci|sede\.)/i
+    const ayudasConSello = ayudasFinal.map(a => ({
+      ...a,
+      fuente_oficial: a.url_oficial ? ES_OFICIAL.test(a.url_oficial) : false,
+    }))
+
+    return res.json({ ok: true, ayudas: ayudasConSello })
   } catch (e) {
     console.error('Error calcular-ayudas:', e)
     return res.status(500).json({ error: e.message })

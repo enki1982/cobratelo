@@ -497,6 +497,12 @@ function AyudaCard({ ayuda, esNueva }) {
           </div>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: '#FFF5EB', margin: 0, lineHeight: 1.3, marginBottom: 4 }}>{ayuda.nombre}</h3>
           <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.45)', margin: 0 }}>{ayuda.organismo}</p>
+          {ayuda.razon_match && (
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, marginTop: 8, background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.2)', borderRadius: 8, padding: '6px 10px' }}>
+              <span style={{ fontSize: 12, flexShrink: 0 }}>✓</span>
+              <span style={{ fontSize: 12, color: '#86efac', lineHeight: 1.4 }}>{ayuda.razon_match}</span>
+            </div>
+          )}
           {ayuda.importe_descripcion && !importe && (
             <p style={{ fontSize: 11, color: 'rgba(255,131,0,0.7)', margin: '4px 0 0', fontStyle: 'italic' }}>{ayuda.importe_descripcion}</p>
           )}
@@ -515,12 +521,22 @@ function AyudaCard({ ayuda, esNueva }) {
           {ayuda.descripcion && (
             <p style={{ fontSize: 13, color: 'rgba(255,245,235,0.6)', lineHeight: 1.6, margin: '16px 0 12px' }}>{ayuda.descripcion}</p>
           )}
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' }}>
             {ayuda.url_oficial && (
               <a href={ayuda.url_oficial} target="_blank" rel="noopener noreferrer"
                 style={{ fontSize: 13, color: '#FF8300', background: 'rgba(255,131,0,0.1)', border: '1px solid rgba(255,131,0,0.3)', padding: '8px 16px', borderRadius: 100, textDecoration: 'none', fontWeight: 600 }}>
-                Ver convocatoria oficial →
+                {ayuda.fuente_oficial ? 'Ver convocatoria oficial →' : 'Ver más información →'}
               </a>
+            )}
+            {ayuda.url_oficial && ayuda.fuente_oficial && (
+              <span style={{ fontSize: 11, color: '#86efac', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span>🛡️</span> Fuente oficial verificada
+              </span>
+            )}
+            {ayuda.url_oficial && !ayuda.fuente_oficial && (
+              <span style={{ fontSize: 11, color: 'rgba(255,245,235,0.4)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                Verifica en la fuente oficial
+              </span>
             )}
           </div>
         </div>
@@ -613,40 +629,32 @@ export default function Resultados() {
       // 1. Comprobar caché en Supabase
       const { data: usuario } = await supabase
         .from('usuarios')
-        .select('ayudas_calculadas')
+        .select('ayudas_calculadas, ayudas_razones')
         .eq('id', userId)
         .single()
 
       const idsCache = usuario?.ayudas_calculadas
+      const razonesCache = usuario?.ayudas_razones || {}
 
       if (idsCache && idsCache.length > 0) {
-        // Caché hit: cargar ayudas por ID incluyendo columnas IA
+        // Caché hit: cargar ayudas ya filtradas, con razón y sello de fuente
         const { data } = await supabase
           .from('ayudas')
           .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
           .in('id', idsCache)
 
-        const ordenadas = idsCache.map(id => (data || []).find(a => a.id === id)).filter(Boolean)
+        const ES_OFICIAL = /(\.gob\.es|\.gov\.|gencat\.cat|\.cat\/|\.eus|\.gal|boe\.es|administracion|infosubvenciones|pap\.hacienda|bdns|seg-social|sepe\.es|red\.es|idae|imserso|ajuntament|diputaci|generalitat|juntadeandalucia|comunidad\.madrid|madrid\.es|euskadi|xunta|aragon|larioja|carm\.es|jcyl|jccm|gobiernodecanarias|caib\.es|navarra|asturias|cantabria|villa|consorci|sede\.)/i
 
-        // Aplicar filtro de sentido común también en cache hit
-        let ayudasFinal = ordenadas
-        try {
-          const r = await fetch('/api/filtrar-ayudas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ perfil, ayudas: ordenadas }),
-          })
-          if (r.ok) {
-            const { ids } = await r.json()
-            if (ids?.length > 0) {
-              const mapa = Object.fromEntries(ordenadas.map(a => [a.id, a]))
-              ayudasFinal = ids.map(id => mapa[id]).filter(Boolean)
-              supabase.from('usuarios').update({ ayudas_calculadas: ayudasFinal.map(a => a.id) }).eq('id', userId).then(() => {})
-            }
-          }
-        } catch (eFiltro) { console.error('[filtrar-ayudas] falló:', eFiltro) }
+        const ordenadas = idsCache
+          .map(id => (data || []).find(a => a.id === id))
+          .filter(Boolean)
+          .map(a => ({
+            ...a,
+            razon_match: razonesCache[a.id] || null,
+            fuente_oficial: a.url_oficial ? ES_OFICIAL.test(a.url_oficial) : false,
+          }))
 
-        setAyudas(ayudasFinal)
+        setAyudas(ordenadas)
       } else {
         // Sin caché: calcular en el servidor (incluye filtro IA)
         try {
