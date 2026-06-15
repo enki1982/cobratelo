@@ -31,11 +31,12 @@ export default async function handler(req, res) {
     if (!solicitud_id) return res.status(400).json({ error: 'solicitud_id requerido' })
 
     if (accion === 'recoger') {
+      // Recoger del pool (gestor_id null) o confirmar uno ya pre-asignado a este gestor
       const { error } = await supabaseAdmin
         .from('solicitudes_tramitacion')
         .update({ gestor_id: gestorId, estado: 'en_gestion' })
         .eq('id', solicitud_id)
-        .is('gestor_id', null)
+        .or(`gestor_id.is.null,gestor_id.eq.${gestorId}`)
       if (error) return res.status(500).json({ error: error.message })
       return res.json({ ok: true })
     }
