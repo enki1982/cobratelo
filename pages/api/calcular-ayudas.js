@@ -92,22 +92,28 @@ export default async function handler(req, res) {
         'Especial: ' + (_esp.join(', ') || 'ninguna'),
       ].join('\n')
 
-      const lista = conScoreDedup.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}`).join('\n')
+      const lista = conScoreDedup.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}${a.descripcion ? ' | ' + a.descripcion.substring(0,120) : ''}`).join('\n')
 
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
-        messages: [{ role: 'user', content: `Eres un experto en ayudas públicas españolas. Revisa esta lista con sentido común y devuelve solo las ayudas que genuinamente le corresponden a esta persona.
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: `Eres un asesor experto en ayudas públicas españolas. Tienes el perfil de una persona y una lista de ayudas pre-seleccionadas. Quédate SOLO con las que realmente le corresponden, aplicando sentido común estricto.
 
-PERFIL:
+PERFIL DE LA PERSONA:
 ${perfilTexto}
 
-AYUDAS:
+AYUDAS A REVISAR:
 ${lista}
 
-Excluye las que claramente no aplican: porque van a otra persona específica (nombre propio), porque requieren una situación que esta persona no tiene, porque son de otra zona geográfica, o por cualquier razón de sentido común.
+REGLAS (aplícalas con rigor):
+- Si la persona NO es autónomo ni tiene empresa, EXCLUYE toda ayuda para autónomos, pymes, empresas, contratación de trabajadores, digitalización empresarial, movilidad de empresa o emprendimiento.
+- Si NO tiene hijos ni menores a cargo, EXCLUYE ayudas para familias con hijos, infancia, maternidad o paternidad.
+- Si tiene ingresos medios o altos, EXCLUYE ayudas de emergencia social, exclusión residencial, renta mínima, ingreso mínimo vital o renta garantizada (son solo para ingresos muy bajos).
+- Si es pensionista/jubilada, EXCLUYE inserción laboral, empleo y emprendimiento.
+- EXCLUYE ayudas de otra zona geográfica distinta a donde vive.
+- EXCLUYE ayudas nominativas (a una persona o entidad con nombre propio).
 
-Devuelve SOLO este JSON:
+Devuelve SOLO este JSON con los IDs que SÍ corresponden:
 {"ids": ["id1", "id2", ...]}` }],
       })
       const texto = msg.content.find(b => b.type === 'text')?.text || ''
