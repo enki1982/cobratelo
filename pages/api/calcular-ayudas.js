@@ -77,6 +77,13 @@ export default async function handler(req, res) {
       const _muni = (() => { try { const p = perfil.pueblo?.[0]; return typeof p === 'string' ? JSON.parse(p)?.nombre || p : p?.nombre || 'nd' } catch { return 'nd' } })()
       const LABEL_SIT = {empleado:'empleado por cuenta ajena',autonomo:'autonomo',desempleado:'desempleado/en paro',pensionista:'pensionista/jubilado',estudiante:'estudiante',emprendedor:'quiere emprender'}
       const LABEL_FAM = {soltero:'soltero/a SIN hijos',pareja:'en pareja SIN hijos',divorciado:'divorciado/a SIN hijos',hijos_menores:'con hijos menores a cargo',hijos_mayores:'con hijos mayores de edad',monoparental:'familia monoparental con hijos',viudo:'viudo/a',dependiente_cargo:'tiene dependiente a cargo'}
+      const LABEL_SECTOR = {sector_comercio:'comercio y venta minorista',sector_hosteleria:'hosteleria y restauracion',sector_servicios:'servicios profesionales y consultoria',sector_tecnologia:'tecnologia, software o digital',sector_construccion:'construccion, reformas e instalacion',sector_industria:'industria y fabricacion',sector_transporte:'transporte y logistica',sector_agricultura:'agricultura, ganaderia o pesca',sector_salud:'salud, bienestar y cuidados',sector_creativo:'creativo, arte y comunicacion',sector_educacion:'educacion y formacion',sector_otro:'otro sector'}
+      const LABEL_EMPLEADOS = {empleados_0:'trabaja solo, SIN empleados',empleados_1_2:'1-2 empleados',empleados_3_9:'3-9 empleados',empleados_10_49:'10-49 empleados',empleados_50mas:'50 o mas empleados'}
+      const LABEL_ANTIG = {antiguedad_nuevo:'aun no dado de alta (nuevo autonomo)',antiguedad_menos1:'menos de 1 ano de alta',antiguedad_1_3:'entre 1 y 3 anos de alta',antiguedad_mas3:'mas de 3 anos de alta (autonomo veterano)'}
+      const _esAutonomo = _sit.includes('autonomo') || _sit.includes('emprendedor')
+      const _sector = perfil.autonomo_sector?.[0]
+      const _empleados = perfil.autonomo_empleados?.[0]
+      const _antiguedad = perfil.autonomo_antiguedad?.[0]
       const perfilTexto = [
         'Situacion laboral: ' + _sit.map(s => LABEL_SIT[s] || s).join(', '),
         'Edad: ' + (_edad ? _edad + ' anos' : 'nd'),
@@ -87,6 +94,9 @@ export default async function handler(req, res) {
         'ES autonomo: ' + (_sit.includes('autonomo') ? 'SI' : 'NO'),
         'ES pensionista: ' + (_sit.includes('pensionista') ? 'SI' : 'NO'),
         'ES desempleado: ' + (_sit.includes('desempleado') ? 'SI' : 'NO'),
+        ...(_esAutonomo && _sector ? ['Sector de actividad del autonomo: ' + (LABEL_SECTOR[_sector] || _sector)] : []),
+        ...(_esAutonomo && _empleados ? ['Empleados a cargo: ' + (LABEL_EMPLEADOS[_empleados] || _empleados)] : []),
+        ...(_esAutonomo && _antiguedad ? ['Antiguedad como autonomo: ' + (LABEL_ANTIG[_antiguedad] || _antiguedad)] : []),
         'Ingresos: ' + (perfil.ingresos?.[0] || 'nd'),
         'Municipio: ' + _muni + ' | Provincia: ' + (perfil.provincia?.[0] || 'nd') + ' | CCAA: ' + (perfil.ccaa?.[0] || 'nd'),
         'Especial: ' + (_esp.join(', ') || 'ninguna'),
@@ -111,6 +121,9 @@ REGLAS (aplícalas con rigor):
 - Si NO tiene hijos ni menores a cargo, EXCLUYE ayudas para familias con hijos, infancia, maternidad o paternidad.
 - Si tiene ingresos medios o altos, EXCLUYE ayudas de emergencia social, exclusión residencial, renta mínima, ingreso mínimo vital o renta garantizada (son solo para ingresos muy bajos).
 - Si es pensionista/jubilada, EXCLUYE inserción laboral, empleo y emprendimiento.
+- Si la persona es autónomo y se indica su SECTOR de actividad, EXCLUYE ayudas claramente destinadas a un sector distinto (ej: un autónomo de servicios o tecnología NO debe ver ayudas exclusivas de industria/fabricación, agricultura, pesca, transporte o construcción que no sean su sector).
+- Si se indica el numero de EMPLEADOS, EXCLUYE ayudas o tramos para un tamaño de plantilla que no corresponde (ej: si trabaja solo o tiene pocos empleados, EXCLUYE segmentos/programas exigen mas empleados; el Kit Digital Segmento I es para 10-49 empleados, el Segmento II para 3-9, el Segmento III para 0-2).
+- Si se indica la ANTIGUEDAD como autónomo, EXCLUYE ayudas exclusivas de nuevos autónomos (como la tarifa plana) cuando la persona lleva mas de 1-2 años dado de alta.
 - EXCLUYE ayudas de otra zona geográfica distinta a donde vive.
 - EXCLUYE ayudas nominativas (a una persona o entidad con nombre propio).
 
