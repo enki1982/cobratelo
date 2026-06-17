@@ -95,7 +95,6 @@ export default function Home() {
   const [esGestor, setEsGestor] = useState(false)
   const [haySesion, setHaySesion] = useState(false)
   const [totalAyudas, setTotalAyudas] = useState(66)
-  const [personas, setPersonas] = useState(8400)
   const [testis, setTestis] = useState(TESTIMONIOS.slice(0, 3))
 
   useEffect(() => {
@@ -117,8 +116,6 @@ export default function Home() {
     supabase.from('ayudas').select('*', { count: 'exact', head: true })
       .in('estado', ['abierta', 'permanente', 'pendiente'])
       .then(({ count }) => { if (count) setTotalAyudas(count) })
-    supabase.from('usuarios').select('*', { count: 'exact', head: true })
-      .then(({ count }) => { if (count) setPersonas(8400 + count) })
   }, [])
 
   // CTA principal según el tipo de usuario:
@@ -223,12 +220,6 @@ export default function Home() {
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '80px 24px 64px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}
           className="!grid-cols-1 md:!grid-cols-2">
           <div>
-            {/* Hito — contador de personas (visible en todas las pantallas) */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.greenDim, border: '1px solid rgba(255,131,0,0.3)', color: C.green, fontSize: 13, fontWeight: 700, padding: '7px 16px', borderRadius: 100, marginBottom: 16, letterSpacing: '-0.2px' }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}` }} />
-              {String(personas).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} comprobaciones de ayudas realizadas
-            </div>
-
             {/* Badge */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid rgba(255,245,235,0.15)', color: 'rgba(255,245,235,0.5)', fontSize: 11, fontWeight: 500, padding: '5px 14px', borderRadius: 100, marginBottom: 28, letterSpacing: '1px', width: 'fit-content' }}>
               {totalAyudas}+ convocatorias activas en España
