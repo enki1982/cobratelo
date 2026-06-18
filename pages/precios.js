@@ -57,7 +57,7 @@ borderRadius: 20, padding: 28, display: 'flex', flexDirection: 'column', positio
 <p style={{ color: C.muted, fontSize: 13, marginBottom: 20 }}>{plan.desc}</p>
 <div style={{ marginBottom: 24 }}>
 {plan.precio
-? <><span className="font-display font-bold" style={{ fontSize: 40, color: C.text, letterSpacing: '-2px' }}>{plan.precio}</span><span style={{ color: C.muted, fontSize: 13, marginLeft: 4 }}>/{plan.periodo} + IVA</span></>
+? <><span className="font-display font-bold" style={{ fontSize: 40, color: C.text, letterSpacing: '-2px' }}>{plan.precio}</span><span style={{ color: C.muted, fontSize: 13, marginLeft: 4 }}>/{plan.periodo}{plan.precio !== '0€' ? ' + IVA' : ''}</span></>
 : <span className="font-display font-bold" style={{ fontSize: 28, color: C.text }}>A consultar</span>}
 </div>
 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
