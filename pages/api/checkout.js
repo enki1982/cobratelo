@@ -51,6 +51,7 @@ export default async function handler(req, res) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/gracias?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/precios`,
       locale: 'es',
+      automatic_tax: { enabled: true },
       customer_email: userEmail || undefined,
       metadata: {
         supabase_user_id: userId || '',
