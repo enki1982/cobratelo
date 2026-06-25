@@ -35,6 +35,21 @@ export default async function handler(req, res) {
   const nombre = nombreCliente || 'Su cliente'
   const nAyudas = ayudas.length
 
+  // Montante total estimado (suma de importes máximos, lenguaje prudente "hasta")
+  const montanteTotal = ayudas.reduce((sum, a) => sum + (Number(a.importe_max) || 0), 0)
+  const montanteTxt = montanteTotal > 0
+    ? `hasta ${montanteTotal.toLocaleString('es-ES')}€`
+    : null
+
+  // ¿El gestor está afiliado (plan de pago) o no? Decide qué email recibe.
+  let planGestor = 'free'
+  try {
+    const { data: gestorRow } = await supabaseAdmin
+      .from('usuarios').select('plan').eq('email', emailGestor).single()
+    if (gestorRow?.plan) planGestor = gestorRow.plan
+  } catch {}
+  const esAfiliado = ['starter', 'pro'].includes(planGestor)
+
   const ayudasHtml = ayudas.slice(0, 8).map((a, i) => `
     <tr>
       <td style="padding:12px 0;border-bottom:1px solid #f0f0f0;">
@@ -51,7 +66,8 @@ export default async function handler(req, res) {
 
   const masAyudas = ayudas.length > 8 ? `<p style="margin:12px 0 0;font-size:12px;color:#888;">+ ${ayudas.length - 8} ayudas más disponibles en la plataforma.</p>` : ''
 
-  const html = `
+  // === EMAIL COMPLETO (solo afiliados: starter/pro) ===
+  const htmlAfiliado = `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -116,11 +132,79 @@ export default async function handler(req, res) {
 </body>
 </html>`
 
+  // === EMAIL GANCHO (no afiliados: free / no registrados) ===
+  // Solo identifica al cliente + nº de ayudas + montante. Sin detalle accionable.
+  const htmlGancho = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<div style="max-width:580px;margin:32px auto;padding:0 16px;">
+
+  <div style="background:#ffffff;border-radius:8px;border:1px solid #e8e8e8;overflow:hidden;">
+
+    <div style="padding:20px 32px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:15px;font-weight:700;color:#111;letter-spacing:-0.3px;">cóbratelo<span style="color:#cc5500;">.es</span></span>
+      <span style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;">Nuevo cliente potencial</span>
+    </div>
+
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 6px;font-size:13px;color:#888;">Uno de sus clientes le ha seleccionado:</p>
+      <h1 style="margin:0 0 20px;font-size:22px;font-weight:700;color:#111;letter-spacing:-0.5px;">${nombre}</h1>
+
+      <div style="background:#fafafa;border:1px solid #eee;border-radius:6px;padding:20px;margin-bottom:22px;text-align:center;">
+        <div style="font-size:13px;color:#888;margin-bottom:6px;">Le hemos detectado</div>
+        <div style="font-size:30px;font-weight:800;color:#cc5500;letter-spacing:-1px;line-height:1.1;">${nAyudas} ${nAyudas === 1 ? 'ayuda' : 'ayudas'}</div>
+        ${montanteTxt ? `<div style="font-size:14px;color:#444;margin-top:6px;">por un importe estimado de <strong>${montanteTxt}</strong></div>` : ''}
+      </div>
+
+      <p style="margin:0 0 20px;font-size:14px;color:#444;line-height:1.65;">
+        Este ciudadano ha completado su cuestionario en Cóbratelo.es y le ha seleccionado como su gestoría de confianza para tramitar estas ayudas.
+      </p>
+
+      <p style="margin:0 0 22px;font-size:14px;color:#444;line-height:1.65;">
+        <strong>Cóbratelo.es</strong> conecta a ciudadanos, autónomos y empresas con las ayudas y subvenciones públicas a las que tienen derecho, y se las presenta a su gestoría ya cualificadas. Para ver el detalle de estas ayudas, acceder a los datos del cliente y gestionar el expediente, únase a la plataforma.
+      </p>
+
+      <div style="margin-bottom:24px;">
+        <a href="https://cobratelo.es/gestores"
+           style="display:inline-block;background:#cc5500;color:#ffffff;text-decoration:none;
+                  font-weight:600;font-size:14px;padding:12px 24px;border-radius:6px;letter-spacing:-0.2px;">
+          Unirme y ver las ayudas →
+        </a>
+      </div>
+
+      <p style="margin:0;font-size:13px;color:#888;line-height:1.6;">
+        Al unirse, podrá ver el detalle completo de las ayudas detectadas, integrar al cliente en su CRM y gestionar todo el expediente desde un único lugar.
+      </p>
+    </div>
+
+    <div style="padding:16px 32px;border-top:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:11px;color:#bbb;">cóbratelo.es · hola@cobratelo.es</span>
+      <a href="https://cobratelo.es/gestores" style="font-size:11px;color:#bbb;text-decoration:none;">¿Qué es Cóbratelo.es?</a>
+    </div>
+
+  </div>
+
+  <p style="text-align:center;font-size:11px;color:#bbb;margin:16px 0;">
+    Ha recibido este email porque un ciudadano le ha seleccionado como gestor en Cóbratelo.es.
+  </p>
+
+</div>
+</body>
+</html>`
+
+  // Elegir email según afiliación
+  const html = esAfiliado ? htmlAfiliado : htmlGancho
+  const subjectGestor = esAfiliado
+    ? `${nombre} tiene ${nAyudas} ayudas públicas pendientes de tramitar`
+    : `${nombre} tiene ${nAyudas} ${nAyudas === 1 ? 'ayuda' : 'ayudas'} esperándole en Cóbratelo.es`
+
   try {
     await transporter.sendMail({
       from: '"Cóbratelo.es" <hola@cobratelo.es>',
       to: emailGestor,
-      subject: `${nombre} tiene ${nAyudas} ayudas públicas pendientes de tramitar`,
+      subject: subjectGestor,
       html,
     })
 
@@ -129,11 +213,8 @@ export default async function handler(req, res) {
       await transporter.sendMail({
         from: '"Cóbratelo.es" <hola@cobratelo.es>',
         to: emailUsuario,
-        subject: `Copia: hemos enviado tus ${nAyudas} ayudas a tu gestoría`,
-        html: html.replace(
-          `${nombre} tiene ${nAyudas} ayudas pendientes de tramitar`,
-          `Confirmación: hemos enviado tus ${nAyudas} ayudas a ${emailGestor}`
-        ),
+        subject: `Hemos enviado tus ${nAyudas} ayudas a tu gestoría`,
+        html: htmlAfiliado,
       })
     }
 

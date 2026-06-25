@@ -58,7 +58,6 @@ export default async function handler(req, res) {
         plan,
       },
       subscription_data: {
-        trial_period_days: isGestorPlan ? 14 : undefined,
         metadata: {
           supabase_user_id: userId || '',
           plan,

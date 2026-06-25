@@ -96,7 +96,7 @@ export default function Gestores() {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>
-              Probar gratis 14 días
+              Empezar ahora
             </Link>
             <Link href="/precios" style={{ color: C.muted, textDecoration: 'none', padding: '14px 24px', borderRadius: 99, fontWeight: 600, fontSize: 15, border: `1px solid ${C.border}` }}>
               Ver planes y precios
@@ -177,7 +177,7 @@ export default function Gestores() {
         <section style={{ background: C.card, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
           <div style={{ maxWidth: 640, margin: '0 auto', padding: '64px 24px' }}>
             <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>Precios sin sorpresas</h2>
-            <p style={{ color: C.muted, textAlign: 'center', marginBottom: 40, fontSize: 15 }}>Prueba 14 días gratis. Sin tarjeta. Cancela cuando quieras.</p>
+            <p style={{ color: C.muted, textAlign: 'center', marginBottom: 40, fontSize: 15 }}>Sin permanencia. Cancela cuando quieras.</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
               {PLANES.map(plan => (
                 <div key={plan.nombre} style={{ border: `1px solid ${plan.destacado ? C.orange : C.border}`, borderRadius: 20, padding: '28px 24px', background: plan.destacado ? 'rgba(255,131,0,0.06)' : C.bg, position: 'relative' }}>
@@ -215,7 +215,7 @@ export default function Gestores() {
         {/* CTA FINAL */}
         <section style={{ borderTop: `1px solid ${C.border}`, padding: '64px 24px', textAlign: 'center' }}>
           <h2 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 16px' }}>Empieza gratis hoy</h2>
-          <p style={{ color: C.muted, fontSize: 16, margin: '0 0 36px' }}>14 días de prueba. Sin tarjeta. Sin compromiso.</p>
+          <p style={{ color: C.muted, fontSize: 16, margin: '0 0 36px' }}>Sin permanencia. Cancela cuando quieras.</p>
           <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: 99, fontWeight: 700, fontSize: 17 }}>
             Crear cuenta gratis →
           </Link>
