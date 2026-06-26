@@ -95,14 +95,14 @@ export default function Gestores() {
             El ciudadano llega ya sabiendo sus ayudas — tú solo tienes que tramitarlas.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>
+            <Link href="/precios" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>
               Empezar ahora
             </Link>
             <Link href="/precios" style={{ color: C.muted, textDecoration: 'none', padding: '14px 24px', borderRadius: 99, fontWeight: 600, fontSize: 15, border: `1px solid ${C.border}` }}>
               Ver planes y precios
             </Link>
           </div>
-          <p style={{ fontSize: 12, color: C.light, marginTop: 14 }}>Sin tarjeta de crédito. Sin permanencia.</p>
+          <p style={{ fontSize: 12, color: C.light, marginTop: 14 }}>Sin permanencia. Cancela cuando quieras.</p>
         </section>
 
         {/* NÚMEROS */}
@@ -214,10 +214,10 @@ export default function Gestores() {
 
         {/* CTA FINAL */}
         <section style={{ borderTop: `1px solid ${C.border}`, padding: '64px 24px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 16px' }}>Empieza gratis hoy</h2>
+          <h2 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 16px' }}>Empieza hoy</h2>
           <p style={{ color: C.muted, fontSize: 16, margin: '0 0 36px' }}>Sin permanencia. Cancela cuando quieras.</p>
-          <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: 99, fontWeight: 700, fontSize: 17 }}>
-            Crear cuenta gratis →
+          <Link href="/precios" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: 99, fontWeight: 700, fontSize: 17 }}>
+            Ver planes →
           </Link>
           <p style={{ color: C.light, fontSize: 13, marginTop: 16 }}>
             ¿Tienes dudas? Escríbenos a <a href="mailto:hola@cobratelo.es" style={{ color: C.muted }}>hola@cobratelo.es</a>
