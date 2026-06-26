@@ -962,9 +962,13 @@ export default function Resultados() {
     return /autono|pyme|empresa|contrataci|emprendedor|startup|industri|digitaliz.*empresa|kit digital|tarifa plana|pluriactividad|activa.*pyme|acelera.*pyme|soc |inaem|sepe|ere |erte /.test(n)
   }
 
-  // Agrupar por estado Y categoría
-  const ayudasAbiertas = ayudas.filter(a => a.estado === 'abierta')
-  const ayudasOtras = ayudas.filter(a => a.estado !== 'abierta')
+  // Agrupar por VIGENCIA (calculada por fecha, no solo por el campo estado) Y categoría.
+  // Una ayuda es vigente si no está cerrada y su fecha_fin no ha pasado (o no tiene fecha_fin).
+  const hoyISO = new Date().toISOString().slice(0, 10)
+  const esVigente = (a) => a.estado !== 'cerrada' && (!a.fecha_fin || a.fecha_fin >= hoyISO)
+
+  const ayudasAbiertas = ayudas.filter(esVigente)
+  const ayudasOtras = ayudas.filter(a => !esVigente(a))
 
   const laboralesAbiertas = ayudasAbiertas.filter(esLaboral)
   const personalesAbiertas = ayudasAbiertas.filter(a => !esLaboral(a))
@@ -973,7 +977,8 @@ export default function Resultados() {
 
   const hayDosCategoriasAbiertas = laboralesAbiertas.length > 0 && personalesAbiertas.length > 0
   const hayDosCategoriasOtras = laboralesOtras.length > 0 && personalesOtras.length > 0
-  const importeTotal = ayudas.reduce((acc, a) => acc + (a.importe_max || a.importe_min || 0), 0)
+  // El importe total cuenta SOLO las vigentes (lo accionable hoy), no las caducadas.
+  const importeTotal = ayudasAbiertas.reduce((acc, a) => acc + (a.importe_max || a.importe_min || 0), 0)
 
   return (
     <>
@@ -1002,13 +1007,13 @@ export default function Resultados() {
           {/* ── KPI HEADER ── */}
           <div className="crm-kpis" style={{ marginBottom: 24 }}>
             <div style={{ background: 'rgba(255,131,0,0.12)', border: '1px solid rgba(255,131,0,0.2)', borderRadius: 16, padding: '20px 24px' }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Ayudas detectadas</p>
-              <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudas.length}</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Ayudas disponibles</p>
+              <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudasAbiertas.length}</p>
             </div>
 
             <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Abiertas ahora</p>
-              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>{ayudasAbiertas.length}</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Importe estimado</p>
+              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>{importeTotal > 0 ? `${importeTotal.toLocaleString('es-ES')}€` : '—'}</p>
             </div>
             {ayudasNuevas.size > 0 && (
               <div style={{ background: 'rgba(255,131,0,0.18)', border: '1px solid rgba(255,131,0,0.35)', borderRadius: 16, padding: '20px 24px' }}>
@@ -1138,7 +1143,7 @@ export default function Resultados() {
                   className="w-full px-4 py-3 rounded-2xl border-2 border-[rgba(255,255,255,0.08)] focus:outline-none focus:border-[#cc5500] text-[#f0f0f5] transition-colors" />
               </div>
               <p className="text-xs text-[rgba(240,240,245,0.5)]">
-                Le enviaremos el listado de tus {ayudas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.
+                Le enviaremos el listado de tus {ayudasAbiertas.length} ayudas con los enlaces oficiales y le presentaremos Cóbratelo.es.
               </p>
             </div>
             <div className="px-6 pb-2">
