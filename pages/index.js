@@ -238,7 +238,7 @@ que te corresponden
               <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 15, padding: '14px 28px', borderRadius: 100, textDecoration: 'none' }}>
                 {ctaLabelLargo}
               </Link>
-              <Link href="/precios" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
+              <Link href="/precios?tab=gestoria" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
                 Para gestorías →
               </Link>
             </div>
@@ -477,7 +477,7 @@ y para gestorías que quieren crecer sin trabajar más.
               </div>
               <div>
                 <p style={{ color: 'rgba(255,245,235,0.35)', fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>PRODUCTO</p>
-                {[['Cómo funciona', '/'], ['Para gestorías', '/precios'], ['Precios', '/precios'], ['Sobre nosotros', '/sobre-nosotros'], ['Ayudas en España', '/ayudas']].map(([l,h]) => (
+                {[['Cómo funciona', '/'], ['Para gestorías', '/precios?tab=gestoria'], ['Precios', '/precios'], ['Sobre nosotros', '/sobre-nosotros'], ['Ayudas en España', '/ayudas']].map(([l,h]) => (
                   <Link key={l} href={h} style={{ color: 'rgba(255,245,235,0.55)', fontSize: 13, textDecoration: 'none', display: 'block', marginBottom: 10 }}>{l}</Link>
                 ))}
               </div>

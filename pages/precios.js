@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { C, bgMesh, navStyle } from '../lib/theme'
 
 const PLANES_CIUDADANO = [{
@@ -77,6 +78,13 @@ style={{ background: plan.destacado ? C.green : 'rgba(255,255,255,0.08)', color:
 
 export default function Precios() {
 const [tab, setTab] = useState('ciudadano')
+const router = useRouter()
+useEffect(() => {
+  if (!router.isReady) return
+  const t = router.query.tab
+  if (t === 'gestoria' || t === 'gestorias' || t === 'gestor') setTab('gestoria')
+  else if (t === 'ciudadano' || t === 'ciudadanos') setTab('ciudadano')
+}, [router.isReady, router.query.tab])
 return (
 <>
 <Head><title>Precios — Cóbratelo.es</title><meta name="viewport" content="width=device-width,initial-scale=1" /></Head>
