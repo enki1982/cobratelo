@@ -24,10 +24,12 @@ SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY = os.environ.get('SUPABASE_SERVICE_KEY', '')
 
 BDNS_SEARCH  = 'https://www.infosubvenciones.es/bdnstrans/api/convocatorias/busqueda'
+BDNS_DETALLE = 'https://www.infosubvenciones.es/bdnstrans/api/convocatorias'
 BDNS_DETAIL  = 'https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria?id={id}'
 PAGE_SIZE    = 50
 SLEEP_PAGES  = 2
-MAX_PAGES    = 600   # ~30.000 por ejecución semanal; el cron acumula semana a semana
+SLEEP_DETALLE = 0.4   # cortesía entre llamadas al detalle
+MAX_PAGES    = 60    # ~3.000 convocatorias más recientes por pasada; corte temprano si ya están
 
 HEADERS = {
     'Accept': 'application/json',
@@ -53,6 +55,17 @@ def bdns_get(page):
             return json.loads(r.read().decode('utf-8'))
     except Exception as e:
         log.error(f'  Error BDNS página {page}: {e}')
+        return None
+
+def bdns_detalle(num_conv):
+    """Consulta el detalle de una convocatoria: trae tipoConvocatoria, fechas, beneficiarios, etc."""
+    url = f'{BDNS_DETALLE}?vpd=GE&numConv={num_conv}'
+    req = urllib.request.Request(url, headers=HEADERS)
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.loads(r.read().decode('utf-8'))
+    except Exception as e:
+        log.warning(f'  Sin detalle para {num_conv}: {e}')
         return None
 
 def nivel_to_ambito(nivel1):
@@ -97,6 +110,39 @@ def mapear(conv):
     if not titulo or len(titulo) < 5:
         return None
 
+    num_conv = conv.get('numeroConvocatoria') or conv.get('id')
+    if not num_conv:
+        return None
+
+    # --- Consultar el DETALLE para filtrar por solicitabilidad (clave de calidad) ---
+    det = bdns_detalle(num_conv)
+    if not det:
+        return None  # sin detalle no podemos validar calidad; mejor descartar
+
+    tipo_conv = (det.get('tipoConvocatoria') or '')
+    # SOLO nos quedamos con concurrencia competitiva (abiertas a solicitud pública).
+    # Descartamos "Concesión directa" (instrumental/canónica): convenios, nominativas,
+    # transferencias a entes concretos... no son solicitables por el ciudadano.
+    if 'Concurrencia competitiva' not in tipo_conv:
+        return None
+
+    # Fecha de fin real de solicitud (resuelve el "permanente" a ciegas)
+    fecha_fin = det.get('fechaFinSolicitud')  # 'YYYY-MM-DD' o None
+    # Estado: si tiene fecha de fin futura o está marcada abierta -> abierta; si no, permanente/cerrada
+    hoy = datetime.now().strftime('%Y-%m-%d')
+    if fecha_fin:
+        estado = 'abierta' if fecha_fin >= hoy else 'cerrada'
+    else:
+        estado = 'permanente'  # sin fecha de fin: convocatoria de plazo abierto/permanente
+
+    # Importe (presupuesto total de la convocatoria)
+    presupuesto = det.get('presupuestoTotal')
+    importe_max = presupuesto if isinstance(presupuesto, (int, float)) and presupuesto > 0 else None
+
+    # Beneficiarios y finalidad (enriquecen el matching)
+    beneficiarios = ', '.join(b.get('descripcion','') for b in (det.get('tiposBeneficiarios') or []) if b.get('descripcion'))
+    finalidad = (det.get('descripcionFinalidad') or '').strip()
+
     nivel1 = conv.get('nivel1', '')
     nivel2 = conv.get('nivel2', '')
     ambito = nivel_to_ambito(nivel1)
@@ -107,35 +153,48 @@ def mapear(conv):
     else:
         ccaa = nivel2_a_ccaa(nivel2) or nivel2 or 'Estatal'
 
-    bdns_id     = conv.get('id') or conv.get('numeroConvocatoria')
+    bdns_id     = conv.get('id') or num_conv
     url_oficial = BDNS_DETAIL.format(id=bdns_id) if bdns_id else None
+
+    descripcion_completa = titulo
+    if finalidad and finalidad.lower() not in titulo.lower():
+        descripcion_completa = f'{titulo} — {finalidad}'
 
     return {
         'nombre':              titulo[:200],
-        'descripcion':         titulo,
+        'descripcion':         descripcion_completa[:1000],
         'organismo':           organismo[:200],
         'ambito':              ambito,
         'comunidad_autonoma':  ccaa[:100],
         'slug':                slugify(f'{titulo[:80]}-{organismo[:40]}'),
         'tipo':                'subvencion',
-        'estado':              'permanente',
-        'importe_max':         None,
+        'estado':              estado,
+        'importe_max':         importe_max,
         'importe_min':         None,
-        'importe_descripcion': '',
+        'importe_descripcion': beneficiarios[:200],
         'url_oficial':         url_oficial,
-        'fecha_fin':           None,
+        'fecha_fin':           fecha_fin,
         'palabras_clave':      [],
         'fuente':              'bdns',
         'updated_at':          datetime.now().isoformat(),
     }
 
 def upsert(sb, ayuda):
+    """Inserta/actualiza la ayuda. Devuelve (ok, era_nueva)."""
     try:
+        # ¿Ya existe? (para el corte temprano y métricas)
+        era_nueva = True
+        try:
+            existing = sb.table('ayudas').select('id').eq('nombre', ayuda['nombre']).eq('organismo', ayuda['organismo']).limit(1).execute()
+            if existing.data:
+                era_nueva = False
+        except Exception:
+            pass
         sb.table('ayudas').upsert(ayuda, on_conflict='nombre,organismo').execute()
-        return True
+        return True, era_nueva
     except Exception as e:
         log.error(f"  Upsert error '{ayuda.get('nombre','?')[:60]}': {e}")
-        return False
+        return False, False
 
 def main():
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -149,6 +208,9 @@ def main():
 
     total_proc = 0
     total_ok   = 0
+    total_descartadas = 0
+    ya_existentes_seguidas = 0
+    CORTE_EXISTENTES = 100   # si encuentra 100 seguidas ya guardadas, asume que llegó a lo viejo y para
 
     for page in range(MAX_PAGES):
         data = bdns_get(page)
@@ -169,13 +231,28 @@ def main():
         for conv in content:
             total_proc += 1
             ayuda = mapear(conv)
-            if ayuda and upsert(sb, ayuda):
+            if ayuda is None:
+                total_descartadas += 1
+                continue
+            ok, era_nueva = upsert(sb, ayuda)
+            if ok:
                 total_ok += 1
+                if era_nueva:
+                    ya_existentes_seguidas = 0
+                else:
+                    ya_existentes_seguidas += 1
+            time.sleep(SLEEP_DETALLE)
+
+        if ya_existentes_seguidas >= CORTE_EXISTENTES:
+            log.info(f'Corte temprano: {ya_existentes_seguidas} convocatorias ya existentes seguidas. Parando.')
+            break
 
         if page >= total_pages - 1:
             break
 
         time.sleep(SLEEP_PAGES)
+
+    log.info(f'Descartadas (no solicitables): {total_descartadas}')
 
     log.info('=' * 60)
     log.info(f'FIN — procesadas: {total_proc} | guardadas: {total_ok}')
