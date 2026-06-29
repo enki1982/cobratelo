@@ -166,7 +166,7 @@ def mapear(conv):
         'organismo':           organismo[:200],
         'ambito':              ambito,
         'comunidad_autonoma':  ccaa[:100],
-        'slug':                slugify(f'{titulo[:80]}-{organismo[:40]}'),
+        'slug':                f'{slugify(f"{titulo[:70]}-{organismo[:30]}")}-{num_conv}',
         'tipo':                'subvencion',
         'estado':              estado,
         'importe_max':         importe_max,
