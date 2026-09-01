@@ -33,16 +33,16 @@ for tanda in $(seq 1 $MAX_TANDAS); do
     echo ">>> TANDA $tanda/$MAX_TANDAS — inicio $(date)" >> "$LOG"
 
     # Ejecutar una tanda. Sin corte temprano (reprocesa y reactiva vigentes),
-    # con tope de páginas por tanda.
-    TMPLOG=$(mktemp)
-    BDNS_MAX_PAGES=$PAGES_POR_TANDA BDNS_SIN_CORTE=1 python3 bdns_agent.py > "$TMPLOG" 2>&1
+    # con tope de páginas por tanda. El log de la tanda va a un archivo visible
+    # (tanda_actual.log) para poder seguir el progreso en tiempo real con:
+    #   tail -f tanda_actual.log
+    BDNS_MAX_PAGES=$PAGES_POR_TANDA BDNS_SIN_CORTE=1 python3 bdns_agent.py > tanda_actual.log 2>&1
 
     # Volcar el log de la tanda al log general
-    cat "$TMPLOG" >> "$LOG"
+    cat tanda_actual.log >> "$LOG"
 
     # Contar cuántas "201 Created" (inserts nuevos) hubo en esta tanda
-    NUEVAS=$(grep -c "201 Created" "$TMPLOG")
-    rm -f "$TMPLOG"
+    NUEVAS=$(grep -c "201 Created" tanda_actual.log)
 
     echo ">>> TANDA $tanda terminada $(date) — nuevas (201 Created): $NUEVAS" >> "$LOG"
 
