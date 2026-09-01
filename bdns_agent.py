@@ -39,6 +39,18 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (compatible; cobratelo.es/1.0; +https://cobratelo.es)',
 }
 
+def parse_json(raw_bytes):
+    """Decodifica de forma tolerante: intenta utf-8 y, si falla (BDNS a veces
+    devuelve bytes en latin-1, p.ej. una 'ó' 0xf3), cae a latin-1 para no
+    reventar el barrido por una sola convocatoria mal codificada."""
+    for enc in ('utf-8', 'latin-1'):
+        try:
+            return json.loads(raw_bytes.decode(enc))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+    # último recurso: ignorar bytes inválidos
+    return json.loads(raw_bytes.decode('utf-8', errors='ignore'))
+
 def slugify(text):
     text = unicodedata.normalize('NFD', text.lower())
     text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')
@@ -55,7 +67,7 @@ def bdns_get(page):
     req = urllib.request.Request(url, headers=HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
-            return json.loads(r.read().decode('utf-8'))
+            return parse_json(r.read())
     except Exception as e:
         log.error(f'  Error BDNS página {page}: {e}')
         return None
@@ -66,7 +78,7 @@ def bdns_detalle(num_conv):
     req = urllib.request.Request(url, headers=HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
-            return json.loads(r.read().decode('utf-8'))
+            return parse_json(r.read())
     except Exception as e:
         log.warning(f'  Sin detalle para {num_conv}: {e}')
         return None
