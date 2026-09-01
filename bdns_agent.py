@@ -7,7 +7,7 @@ Cron: lunes 4am (tras agent.py a las 3am)
 """
 
 import os, time, json, logging, unicodedata, re, urllib.request, urllib.error
-from datetime import datetime
+from datetime import datetime, timedelta
 from supabase import create_client
 
 logging.basicConfig(
@@ -33,6 +33,10 @@ SLEEP_DETALLE = 0.4   # cortesía entre llamadas al detalle
 # un "barrido amplio" puntual (repoblado) sin cambiar el comportamiento del cron.
 # Uso normal (cron): valores por defecto. Barrido amplio: BDNS_MAX_PAGES=2000 BDNS_SIN_CORTE=1
 MAX_PAGES    = int(os.environ.get('BDNS_MAX_PAGES', '60'))    # ~3.000 conv./pasada por defecto
+# Corte por fecha de recepción: solo procesa convocatorias recibidas en los últimos
+# N meses (las que pueden seguir vigentes). Por defecto 8 meses. 0 = sin corte (todo el histórico).
+MESES_ATRAS  = int(os.environ.get('BDNS_MESES_ATRAS', '8'))
+FECHA_CORTE  = (datetime.now() - timedelta(days=MESES_ATRAS * 30)).strftime('%Y-%m-%d') if MESES_ATRAS > 0 else ''
 
 HEADERS = {
     'Accept': 'application/json',
@@ -247,6 +251,16 @@ def main():
             break
 
         log.info(f'Página {page+1}/{total_pages} ({total_el} total) — {len(content)} registros')
+
+        # Corte por fecha: las convocatorias vienen ordenadas de más nueva a más vieja.
+        # Si la fecha de recepción ya es anterior al corte (por defecto 8 meses atrás),
+        # todo lo que sigue es aún más viejo y no puede estar vigente: paramos.
+        # Configurable con BDNS_MESES_ATRAS (0 = sin corte, recorre todo el histórico).
+        if MESES_ATRAS > 0 and content:
+            fechas = [c.get('fechaRecepcion', '') for c in content if c.get('fechaRecepcion')]
+            if fechas and max(fechas) < FECHA_CORTE:
+                log.info(f'Corte por fecha: página {page+1} ya trae convocatorias anteriores a {FECHA_CORTE}. Parando (resto es más antiguo).')
+                break
 
         for conv in content:
             total_proc += 1
