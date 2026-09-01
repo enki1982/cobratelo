@@ -169,6 +169,9 @@ def mapear(conv):
         'slug':                f'{slugify(f"{titulo[:70]}-{organismo[:30]}")}-{num_conv}',
         'tipo':                'subvencion',
         'estado':              estado,
+        # activa=true solo si tiene fecha de fin real y futura (criterio riguroso).
+        # Esto reactiva automáticamente convocatorias que estaban retiradas y reaparecen vigentes.
+        'activa':              bool(fecha_fin and fecha_fin >= hoy),
         'importe_max':         importe_max,
         'importe_min':         None,
         'importe_descripcion': beneficiarios[:200],

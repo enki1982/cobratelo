@@ -22,13 +22,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch ayudas activas Y vigentes por fecha (excluye las caducadas aunque su estado siga 'abierta')
+    // Fetch solo ayudas ACTIVAS y VIGENTES (verificadas: activa=true + fecha_fin real futura)
     const hoyISO = new Date().toISOString().slice(0, 10)
     const { data: ayudas } = await supabaseAdmin
       .from('ayudas')
       .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
-      .in('estado', ['abierta', 'permanente', 'pendiente'])
-      .or(`fecha_fin.is.null,fecha_fin.gte.${hoyISO}`)
+      .eq('activa', true)
+      .gte('fecha_fin', hoyISO)
 
     // Calcular relevancia server-side
     const conScore = (ayudas || [])

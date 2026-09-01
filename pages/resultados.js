@@ -752,6 +752,7 @@ export default function Resultados() {
           .from('ayudas')
           .select('id,nombre,descripcion,palabras_clave,organismo,ambito,comunidad_autonoma,slug,tipo,estado,importe_min,importe_max,importe_descripcion,url_oficial,fecha_fin,created_at,es_nominativa,entidades_geo,tipo_beneficiario,sectores,renta_max,edad_min,edad_max')
           .in('id', idsCache)
+          .eq('activa', true)
 
         const ES_OFICIAL = /(\.gob\.es|\.gov\.|gencat\.cat|\.cat\/|\.eus|\.gal|boe\.es|administracion|infosubvenciones|pap\.hacienda|bdns|seg-social|sepe\.es|red\.es|idae|imserso|ajuntament|diputaci|generalitat|juntadeandalucia|comunidad\.madrid|madrid\.es|euskadi|xunta|aragon|larioja|carm\.es|jcyl|jccm|gobiernodecanarias|caib\.es|navarra|asturias|cantabria|villa|consorci|sede\.)/i
         const ES_ESPECIFICA = /(\/[0-9]{4,}|convocatoria|detalle|ficha|\/id\/|idconvocatoria|expediente|bdns|\?id=)/i
