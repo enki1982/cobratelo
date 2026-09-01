@@ -112,6 +112,7 @@ export default function AyudasIndex({ ayudas, total }) {
 }
 
 export async function getStaticProps() {
-  const { data, count } = await supabase.from('ayudas').select('id,nombre,slug,organismo,tipo,estado,importe_min,importe_max,comunidad_autonoma', { count: 'exact' }).not('slug','is',null).order('created_at', { ascending: false }).limit(30)
+  const hoyISO = new Date().toISOString().slice(0, 10)
+  const { data, count } = await supabase.from('ayudas').select('id,nombre,slug,organismo,tipo,estado,importe_min,importe_max,comunidad_autonoma', { count: 'exact' }).not('slug','is',null).eq('activa', true).gte('fecha_fin', hoyISO).order('fecha_fin', { ascending: true }).limit(30)
   return { props: { ayudas: data||[], total: count||0 }, revalidate: 3600 }
 }

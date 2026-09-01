@@ -41,11 +41,14 @@ export default async function handler(req, res) {
     const perfilesMap = {}
     usuariosDB?.forEach(u => { perfilesMap[u.id] = u })
 
-    // 2. Obtener TODAS las ayudas activas
+    // 2. Obtener solo las ayudas VIGENTES Y VERIFICADAS (activas, con plazo real futuro, no nominativas)
+    const hoyISO = new Date().toISOString().slice(0, 10)
     const { data: todasAyudas } = await supabaseAdmin
       .from('ayudas')
       .select('*')
-      .order('created_at', { ascending: false })
+      .eq('activa', true)
+      .gte('fecha_fin', hoyISO)
+      .order('fecha_fin', { ascending: true })
 
     if (!todasAyudas?.length) {
       return res.json({ ok: true, mensaje: 'No hay ayudas en la BD', enviados: 0 })

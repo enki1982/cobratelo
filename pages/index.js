@@ -114,7 +114,8 @@ export default function Home() {
       if (['starter', 'pro'].includes(data?.plan)) setEsGestor(true)
     })
     supabase.from('ayudas').select('*', { count: 'exact', head: true })
-      .in('estado', ['abierta', 'permanente', 'pendiente'])
+      .eq('activa', true)
+      .gte('fecha_fin', new Date().toISOString().slice(0, 10))
       .then(({ count }) => { if (count) setTotalAyudas(count) })
   }, [])
 
@@ -170,7 +171,7 @@ export default function Home() {
               "mainEntity": [
                 { "@type": "Question", "name": "¿Qué es Cóbratelo.es?", "acceptedAnswer": { "@type": "Answer", "text": "Cóbratelo.es es una plataforma gratuita que analiza tu situación personal y detecta automáticamente todas las ayudas públicas, subvenciones y prestaciones a las que tienes derecho en España: estatales, autonómicas y locales." } },
                 { "@type": "Question", "name": "¿Es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, completamente gratuito para ciudadanos. Sin registro previo necesario para ver tus ayudas." } },
-                { "@type": "Question", "name": "¿Qué ayudas detecta?", "acceptedAnswer": { "@type": "Answer", "text": "Detecta más de 11.000 convocatorias activas: prestaciones de desempleo, ayudas al alquiler, bonos de digitalización, subvenciones autonómicas, ayudas por maternidad, ayudas para autónomos y mucho más." } },
+                { "@type": "Question", "name": "¿Qué ayudas detecta?", "acceptedAnswer": { "@type": "Answer", "text": "Detecta miles de convocatorias activas verificadas: prestaciones de desempleo, ayudas al alquiler, bonos de digitalización, subvenciones autonómicas, ayudas por maternidad, ayudas para autónomos y mucho más." } },
                 { "@type": "Question", "name": "¿Cómo funciona?", "acceptedAnswer": { "@type": "Answer", "text": "Completas un cuestionario de 2 minutos con tu situación laboral, ingresos, familia y municipio. El sistema cruza tu perfil con todas las convocatorias activas y te muestra las ayudas aplicables con sus importes e instrucciones." } }
               ]
             }

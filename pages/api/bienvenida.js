@@ -43,7 +43,7 @@ export default async function handler(req, res) {
                 Ya tienes acceso a tus ayudas
               </h1>
               <p style="margin:0 0 24px;font-size:15px;color:#555550;line-height:1.6">
-                Hemos identificado más de <strong>11.000 convocatorias activas</strong> en España. Ahora es el momento de descubrir cuáles te corresponden a ti.
+                Hemos identificado <strong>miles de convocatorias activas verificadas</strong> en España. Ahora es el momento de descubrir cuáles te corresponden a ti.
               </p>
 
               <!-- CTA -->

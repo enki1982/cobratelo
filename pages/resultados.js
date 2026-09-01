@@ -962,10 +962,12 @@ export default function Resultados() {
     return /autono|pyme|empresa|contrataci|emprendedor|startup|industri|digitaliz.*empresa|kit digital|tarifa plana|pluriactividad|activa.*pyme|acelera.*pyme|soc |inaem|sepe|ere |erte /.test(n)
   }
 
-  // Agrupar por VIGENCIA (calculada por fecha, no solo por el campo estado) Y categoría.
-  // Una ayuda es vigente si no está cerrada y su fecha_fin no ha pasado (o no tiene fecha_fin).
+  // Agrupar por VIGENCIA (calculada por fecha real) Y categoría.
+  // Criterio riguroso: solo es vigente una convocatoria SOLICITABLE con plazo verificado.
+  // Debe tener fecha_fin real y futura, no ser nominativa y no estar cerrada.
+  // Las convocatorias sin fecha_fin NO se muestran como vigentes: su plazo no está verificado.
   const hoyISO = new Date().toISOString().slice(0, 10)
-  const esVigente = (a) => a.estado !== 'cerrada' && (!a.fecha_fin || a.fecha_fin >= hoyISO)
+  const esVigente = (a) => a.estado !== 'cerrada' && !a.es_nominativa && !!a.fecha_fin && a.fecha_fin >= hoyISO
 
   const ayudasAbiertas = ayudas.filter(esVigente)
   const ayudasOtras = ayudas.filter(a => !esVigente(a))
