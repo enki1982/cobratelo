@@ -29,7 +29,10 @@ BDNS_DETAIL  = 'https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria?id=
 PAGE_SIZE    = 50
 SLEEP_PAGES  = 2
 SLEEP_DETALLE = 0.4   # cortesía entre llamadas al detalle
-MAX_PAGES    = 60    # ~3.000 convocatorias más recientes por pasada; corte temprano si ya están
+# MAX_PAGES y el corte temprano son parametrizables por entorno para permitir
+# un "barrido amplio" puntual (repoblado) sin cambiar el comportamiento del cron.
+# Uso normal (cron): valores por defecto. Barrido amplio: BDNS_MAX_PAGES=2000 BDNS_SIN_CORTE=1
+MAX_PAGES    = int(os.environ.get('BDNS_MAX_PAGES', '60'))    # ~3.000 conv./pasada por defecto
 
 HEADERS = {
     'Accept': 'application/json',
@@ -213,7 +216,9 @@ def main():
     total_ok   = 0
     total_descartadas = 0
     ya_existentes_seguidas = 0
-    CORTE_EXISTENTES = 100   # si encuentra 100 seguidas ya guardadas, asume que llegó a lo viejo y para
+    # Corte temprano: para el cron normal evita re-recorrer lo viejo. En barrido amplio
+    # (BDNS_SIN_CORTE=1) se desactiva para reprocesar y reactivar las retiradas vigentes.
+    CORTE_EXISTENTES = 10**9 if os.environ.get('BDNS_SIN_CORTE') == '1' else 100
 
     for page in range(MAX_PAGES):
         data = bdns_get(page)
