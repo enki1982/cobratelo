@@ -1011,7 +1011,6 @@ export default function Resultados() {
               cóbratelo<span style={{ color: '#FF8300' }}>.es</span>
             </Link>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Link href="/perfil" style={{ fontSize: 13, color: 'rgba(255,245,235,0.5)', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, border: '1px solid rgba(255,200,120,0.12)' }}>Editar perfil</Link>
               <Link href="/cuenta" style={{ fontSize: 13, color: '#FFF5EB', textDecoration: 'none', padding: '6px 14px', borderRadius: 100, background: 'rgba(255,131,0,0.15)' }}>Mi cuenta</Link>
             </div>
           </div>
@@ -1034,6 +1033,8 @@ export default function Resultados() {
             )}
           <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.25)', textAlign: 'center', marginTop: 32, lineHeight: 1.6 }}>
             Los resultados son orientativos. Verifica siempre los requisitos en la fuente oficial.
+            <br />
+            <Link href="/perfil" style={{ fontSize: 12, color: 'rgba(255,200,120,0.7)', textDecoration: 'none', borderBottom: '1px solid rgba(255,200,120,0.3)', display: 'inline-block', marginTop: 8 }}>Editar mi perfil</Link>
           </p>
 
           {/* ── BOTÓN GESTORÍA ── */}
