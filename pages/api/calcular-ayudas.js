@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { logAccess, ACTIONS } from '../../lib/access-log'
 import { createClient } from '@supabase/supabase-js'
-import { calcularRelevancia } from '../../lib/relevancia'
+import { corresponde } from '../../lib/matching'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -30,23 +30,21 @@ export default async function handler(req, res) {
       .eq('activa', true)
       .gte('fecha_fin', hoyISO)
 
-    // Calcular relevancia server-side
-    const conScore = (ayudas || [])
-      .map(a => ({ ...a, _score: calcularRelevancia(a, perfil) }))
-      .filter(a => a._score >= 40)
-      .sort((a, b) => b._score - a._score)
-      .slice(0, 20)
+    // Matching por EXCLUSIÓN (no scoring): mostrar todo lo que no se pueda descartar.
+    // La relevancia la decide el usuario; el sistema solo quita lo que NO le corresponde.
+    const corresponden = (ayudas || [])
+      .filter(a => corresponde(a, perfil))
 
     // Guardar IDs en Supabase para cache
     await supabaseAdmin
       .from('usuarios')
-      .update({ ayudas_calculadas: conScore.map(a => a.id) })
+      .update({ ayudas_calculadas: corresponden.map(a => a.id) })
       .eq('id', userId)
 
     // Funnel events
     try {
-      await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: conScore.length } })
-      if (conScore.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: conScore.length } })
+      await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: corresponden.length } })
+      if (corresponden.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: corresponden.length } })
     } catch {}
     // ── DEDUPLICACIÓN server-side ──────────────────────────────────
     const normKey = s => {
@@ -60,16 +58,15 @@ export default async function handler(req, res) {
     }
 
     const deduped = new Map()
-    const conScoreDedup = conScore.filter(a => {
+    const conScoreDedup = corresponden.filter(a => {
       const k = normKey(a.nombre)
       if (!k) return true
-      if (!deduped.has(k)) { deduped.set(k, a._score); return true }
-      if (a._score > deduped.get(k)) { deduped.set(k, a._score); return true }
+      if (!deduped.has(k)) { deduped.set(k, true); return true }
       return false
     })
 
     // Filtro de sentido común en el servidor (sin depender de sesión del cliente)
-    let ayudasFinal = conScoreDedup.slice(0, 20)
+    let ayudasFinal = conScoreDedup.slice(0, 100)
     try {
       const anthropic = new Anthropic()
       const _sit = perfil.situacion || []
