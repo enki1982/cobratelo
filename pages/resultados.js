@@ -993,8 +993,7 @@ export default function Resultados() {
 
   const hayDosCategoriasAbiertas = laboralesAbiertas.length > 0 && personalesAbiertas.length > 0
   const hayDosCategoriasOtras = laboralesOtras.length > 0 && personalesOtras.length > 0
-  // El importe total cuenta SOLO las vigentes (lo accionable hoy), no las caducadas.
-  const importeTotal = ayudasAbiertas.reduce((acc, a) => acc + (a.importe_max || a.importe_min || 0), 0)
+
 
   return (
     <>
@@ -1027,10 +1026,6 @@ export default function Resultados() {
               <p style={{ fontSize: 36, fontWeight: 800, color: '#FF8300', lineHeight: 1 }}>{ayudasAbiertas.length}</p>
             </div>
 
-            <div style={{ background: 'rgba(255,200,120,0.06)', border: '1px solid rgba(255,200,120,0.12)', borderRadius: 16, padding: '20px 24px' }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Importe estimado</p>
-              <p style={{ fontSize: 36, fontWeight: 800, color: '#FFF5EB', lineHeight: 1 }}>{importeTotal > 0 ? `${importeTotal.toLocaleString('es-ES')}€` : '—'}</p>
-            </div>
             {ayudasNuevas.size > 0 && (
               <div style={{ background: 'rgba(255,131,0,0.18)', border: '1px solid rgba(255,131,0,0.35)', borderRadius: 16, padding: '20px 24px' }}>
                 <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.45)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>Nuevas esta semana</p>
