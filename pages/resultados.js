@@ -746,6 +746,29 @@ export default function Resultados() {
       const idsCache = usuario?.ayudas_calculadas
       const razonesCache = usuario?.ayudas_razones || {}
 
+      // Función para calcular en el servidor (motor de exclusión + IA)
+      const calcularEnServidor = async () => {
+        try {
+          const resp = await fetch('/api/calcular-ayudas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, perfil }),
+          })
+          if (resp.ok) {
+            const data = await resp.json()
+            console.log('[calcular-ayudas] ok, ayudas:', data?.ayudas?.length)
+            setAyudas(data?.ayudas || [])
+            return data?.ayudas?.length || 0
+          } else {
+            const err = await resp.text()
+            console.error('[calcular-ayudas] error HTTP', resp.status, err)
+          }
+        } catch (eServ) {
+          console.error('[calcular-ayudas] fetch error:', eServ.message)
+        }
+        return 0
+      }
+
       if (idsCache && idsCache.length > 0) {
         // Caché hit: cargar ayudas ya filtradas, con razón y sello de fuente
         const { data } = await supabase
@@ -772,26 +795,16 @@ export default function Resultados() {
             }
           })
 
-        setAyudas(ordenadas)
+        // Si el caché está OBSOLETO (apunta a ayudas que ya no están vigentes y
+        // apenas queda nada), recalcular con el motor nuevo en vez de mostrar 0.
+        if (ordenadas.length === 0) {
+          await calcularEnServidor()
+        } else {
+          setAyudas(ordenadas)
+        }
       } else {
         // Sin caché: calcular en el servidor (incluye filtro IA)
-        try {
-          const resp = await fetch('/api/calcular-ayudas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, perfil }),
-          })
-          if (resp.ok) {
-            const data = await resp.json()
-            console.log('[calcular-ayudas] ok, ayudas:', data?.ayudas?.length)
-            setAyudas(data?.ayudas || [])
-          } else {
-            const err = await resp.text()
-            console.error('[calcular-ayudas] error HTTP', resp.status, err)
-          }
-        } catch (eServ) {
-          console.error('[calcular-ayudas] fetch error:', eServ.message)
-        }
+        await calcularEnServidor()
       }
 
       // Detectar ayudas nuevas vs las ya vistas
