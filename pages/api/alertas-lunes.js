@@ -36,7 +36,7 @@ export default async function handler(req, res) {
     const { data: { users } } = await supabaseAdmin.auth.admin.listUsers()
     const { data: usuariosDB } = await supabaseAdmin
       .from('usuarios')
-      .select('id, perfil, alertas_enviadas')
+      .select('id, perfil, alertas_enviadas, alertas_activas')
 
     const perfilesMap = {}
     usuariosDB?.forEach(u => { perfilesMap[u.id] = u })
@@ -63,6 +63,9 @@ export default async function handler(req, res) {
       if (!user.email) continue
       const dbUser = perfilesMap[user.id]
       if (!dbUser?.perfil || Object.keys(dbUser.perfil).length === 0) continue
+
+      // Respetar la preferencia del usuario: si desactivó las alertas, no enviar.
+      if (dbUser.alertas_activas === false) continue
 
       // IDs que el usuario ya recibió en alertas anteriores
       const yaVistos = new Set(dbUser.ayudas_alertadas || [])

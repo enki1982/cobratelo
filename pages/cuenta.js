@@ -360,6 +360,8 @@ export default function Cuenta() {
   const [loading, setLoading] = useState(true)
   const [perfilData, setPerfilData] = useState(null)
   const [plan, setPlan] = useState('free')
+  const [alertasActivas, setAlertasActivas] = useState(true)
+  const [guardandoAlertas, setGuardandoAlertas] = useState(false)
   const [tab, setTab] = useState('perfil')
   const [editando, setEditando] = useState(null) // id de sección editando
   const [editandoFecha, setEditandoFecha] = useState(false)
@@ -386,6 +388,7 @@ export default function Cuenta() {
       if (userData) {
         setPerfilData(userData.perfil)
         setPlan(userData.plan || 'free')
+        setAlertasActivas(userData.alertas_activas !== false)
         setNumAyudas(userData.ayudas_calculadas?.length ?? null)
         setEmailGestor(userData.perfil?.email_gestoria?.[0] || '')
       }
@@ -765,7 +768,34 @@ export default function Cuenta() {
                     <p style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB' }}>Alertas semanales</p>
                     <p style={{ fontSize: 12, color: 'rgba(255,245,235,0.4)', marginTop: 2 }}>Aviso cuando aparecen nuevas ayudas para tu perfil</p>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: '#4ade80', background: 'rgba(34,197,94,0.1)', padding: '4px 12px', borderRadius: 100 }}>Activas</span>
+                  <button
+                    onClick={async () => {
+                      if (guardandoAlertas) return
+                      const nuevo = !alertasActivas
+                      setAlertasActivas(nuevo)
+                      setGuardandoAlertas(true)
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession()
+                        await supabase.from('usuarios').update({ alertas_activas: nuevo }).eq('id', session.user.id)
+                      } catch (e) {
+                        setAlertasActivas(!nuevo) // revertir si falla
+                      }
+                      setGuardandoAlertas(false)
+                    }}
+                    aria-label={alertasActivas ? 'Desactivar alertas' : 'Activar alertas'}
+                    style={{
+                      position: 'relative', width: 46, height: 26, borderRadius: 100, border: 'none', cursor: 'pointer',
+                      background: alertasActivas ? 'rgba(34,197,94,0.9)' : 'rgba(255,245,235,0.15)',
+                      transition: 'background 0.2s ease', padding: 0, flexShrink: 0,
+                      opacity: guardandoAlertas ? 0.6 : 1,
+                    }}
+                  >
+                    <span style={{
+                      position: 'absolute', top: 3, left: alertasActivas ? 23 : 3, width: 20, height: 20,
+                      borderRadius: '50%', background: '#fff', transition: 'left 0.2s ease',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                    }} />
+                  </button>
                 </div>
                 <div style={{ height: 1, background: 'rgba(255,200,120,0.06)' }} />
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
