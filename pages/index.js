@@ -95,12 +95,6 @@ export default function Home() {
   const [esGestor, setEsGestor] = useState(false)
   const [haySesion, setHaySesion] = useState(false)
   const [totalAyudas, setTotalAyudas] = useState(66)
-  const [testis, setTestis] = useState(TESTIMONIOS.slice(0, 3))
-
-  useEffect(() => {
-    const barajados = [...TESTIMONIOS].sort(() => Math.random() - 0.5).slice(0, 3)
-    setTestis(barajados)
-  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -377,28 +371,6 @@ que te corresponden
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </section>
-
-                {/* ── TESTIMONIOS ── */}
-        <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
-            <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Lo que dicen quienes ya lo han usado</p>
-            <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 48 }}>
-              Importes reales. Sin promesas infladas.
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
-              {testis.map((t, i) => (
-                <div key={i} style={{ background: '#ffffff', border: '1px solid #F5C89A', borderRadius: 16, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ color: '#FF8300', fontSize: 14, marginBottom: 12, letterSpacing: 2 }}>★★★★★</div>
-                  <p style={{ fontSize: 14, color: '#3a2a18', lineHeight: 1.65, marginBottom: 20, flex: 1 }}>“{t.texto}”</p>
-                  <div style={{ borderTop: '1px solid #F5E0C4', paddingTop: 14 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1a0d00' }}>{t.nombre}</div>
-                    <div style={{ fontSize: 11, color: '#7a4a1a', marginTop: 2 }}>{t.perfil}</div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </section>
