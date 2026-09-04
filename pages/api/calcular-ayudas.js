@@ -105,7 +105,22 @@ export default async function handler(req, res) {
         'Especial: ' + (_esp.join(', ') || 'ninguna'),
       ].join('\n')
 
-      const lista = conScoreDedup.slice(0, 40).map(a => `[${a.id}] ${a.nombre} | ${a.organismo} | ${a.comunidad_autonoma || 'Estatal'}${a.descripcion ? ' | ' + a.descripcion.substring(0,120) : ''}`).join('\n')
+      const lista = conScoreDedup.slice(0, 40).map(a => {
+        // Geografía honesta para la IA: nunca decir "Estatal" cuando no lo sabemos.
+        // Preferir entidades_geo (municipios/provincias concretas del enricher),
+        // luego comunidad_autonoma, y si no hay nada, avisar de que NO está confirmada.
+        let zona
+        if (Array.isArray(a.entidades_geo) && a.entidades_geo.length > 0) {
+          zona = 'Zona: ' + a.entidades_geo.join(', ')
+        } else if (a.comunidad_autonoma && a.comunidad_autonoma !== 'Estatal') {
+          zona = 'CCAA: ' + a.comunidad_autonoma
+        } else if (a.ambito === 'estatal') {
+          zona = 'Ambito estatal (toda Espana)'
+        } else {
+          zona = 'ZONA NO CONFIRMADA (verificar en nombre/organismo si es de la zona del usuario)'
+        }
+        return `[${a.id}] ${a.nombre} | ${a.organismo} | ${zona}${a.descripcion ? ' | ' + a.descripcion.substring(0,120) : ''}`
+      }).join('\n')
 
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -128,7 +143,7 @@ REGLAS (aplícalas con rigor):
 - Si la persona es autónomo y se indica su SECTOR de actividad, EXCLUYE ayudas claramente destinadas a un sector distinto (ej: un autónomo de servicios o tecnología NO debe ver ayudas exclusivas de industria/fabricación, agricultura, pesca, transporte o construcción que no sean su sector).
 - Si se indica el numero de EMPLEADOS, EXCLUYE ayudas o tramos para un tamaño de plantilla que no corresponde (ej: si trabaja solo o tiene pocos empleados, EXCLUYE segmentos/programas exigen mas empleados; el Kit Digital Segmento I es para 10-49 empleados, el Segmento II para 3-9, el Segmento III para 0-2).
 - Si se indica la ANTIGUEDAD como autónomo, EXCLUYE ayudas exclusivas de nuevos autónomos (como la tarifa plana) cuando la persona lleva mas de 1-2 años dado de alta.
-- EXCLUYE ayudas de otra zona geográfica distinta a donde vive.
+- EXCLUYE ayudas de otra zona geográfica distinta a donde vive. IMPORTANTE sobre la geografía: la persona vive en el municipio/provincia/CCAA indicados en su perfil. Una ayuda AUTONÓMICA o LOCAL solo le corresponde si es de SU zona. Si una ayuda indica "ZONA NO CONFIRMADA", NO la incluyas salvo que su nombre u organismo dejen CLARO que es estatal o de la zona del usuario; ante la duda geográfica, EXCLÚYELA. Nunca incluyas una ayuda de un municipio, provincia o comunidad distintos a los del usuario.
 - EXCLUYE ayudas nominativas (a una persona o entidad con nombre propio).
 
 Para cada ayuda que SÍ corresponde, añade una razón breve (máximo 12 palabras) explicando por qué encaja con ESTA persona (su situación, edad, zona o condición), escrita en segunda persona ("Te corresponde por ser autónomo", "Al residir en Cataluña", etc).
