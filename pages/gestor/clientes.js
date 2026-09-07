@@ -462,6 +462,9 @@ export default function GestorDashboard() {
 function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onDelete, C, ESTADOS }) {
   const [ayudas, setAyudas] = useState([])
   const [loadingAyudas, setLoadingAyudas] = useState(false)
+  const [ayudasDetectadas, setAyudasDetectadas] = useState([])
+  const [seleccionadas, setSeleccionadas] = useState(new Set())
+  const [importando, setImportando] = useState(false)
   const [editando, setEditando] = useState(false)
   const [guardando, setGuardando] = useState(false)
   const [form, setForm] = useState({ cliente_nombre: '', dni: '', telefono: '', notas: '' })
@@ -481,6 +484,7 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
     setAyudasEstado(cliente.ayudas_estado || {})
     if (cliente.ayudas_ids?.length) cargarAyudas()
     else setAyudas([])
+    cargarDetectadas()
   }, [cliente.id])
 
   const cargarAyudas = async () => {
@@ -489,6 +493,45 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
       const { data } = await supabase.from('ayudas').select('id,nombre,organismo,tipo,estado,url_oficial,importe_max').in('id', cliente.ayudas_ids)
       setAyudas(data || [])
     } finally { setLoadingAyudas(false) }
+  }
+
+  // Ayudas detectadas automáticamente por el sistema (según el perfil del cliente),
+  // que aún NO ha añadido el gestor. Se muestran para seleccionar e importar en lote.
+  const cargarDetectadas = async () => {
+    const detectadas = cliente.ayudas_detectadas || []
+    const yaAnadidas = new Set(cliente.ayudas_ids || [])
+    const pendientes = detectadas.filter(id => !yaAnadidas.has(id))
+    if (pendientes.length === 0) { setAyudasDetectadas([]); setSeleccionadas(new Set()); return }
+    const { data } = await supabase
+      .from('ayudas')
+      .select('id,nombre,organismo,tipo,estado,url_oficial,importe_max,comunidad_autonoma')
+      .in('id', pendientes)
+    setAyudasDetectadas(data || [])
+    // Por defecto, todas preseleccionadas (el gestor puede desmarcar)
+    setSeleccionadas(new Set((data || []).map(a => a.id)))
+  }
+
+  const toggleSeleccion = (id) => {
+    setSeleccionadas(prev => {
+      const n = new Set(prev)
+      if (n.has(id)) n.delete(id); else n.add(id)
+      return n
+    })
+  }
+
+  const importarSeleccionadas = async () => {
+    if (seleccionadas.size === 0) return
+    setImportando(true)
+    try {
+      const idsActuales = cliente.ayudas_ids || []
+      const nuevosIds = [...new Set([...idsActuales, ...seleccionadas])]
+      await onUpdate(cliente.id, { ayudas_ids: nuevosIds })
+      // Mover las importadas de "detectadas" a "añadidas" en la vista
+      const importadas = ayudasDetectadas.filter(a => seleccionadas.has(a.id))
+      setAyudas(prev => [...prev, ...importadas])
+      setAyudasDetectadas(prev => prev.filter(a => !seleccionadas.has(a.id)))
+      setSeleccionadas(new Set())
+    } finally { setImportando(false) }
   }
 
   const guardar = async () => {
@@ -623,6 +666,38 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
             + Añadir ayuda
           </button>
         </div>
+
+        {/* Ayudas detectadas automáticamente — seleccionar e importar en lote */}
+        {ayudasDetectadas.length > 0 && (
+          <div style={{ background: C.orangeLight, border: `1px solid ${C.orangeBorder}`, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.orange }}>
+                ✨ {ayudasDetectadas.length} ayuda{ayudasDetectadas.length > 1 ? 's' : ''} detectada{ayudasDetectadas.length > 1 ? 's' : ''} para este cliente
+              </div>
+              <button
+                onClick={importarSeleccionadas}
+                disabled={seleccionadas.size === 0 || importando}
+                style={{ fontSize: 12, fontWeight: 700, color: C.white, background: seleccionadas.size === 0 ? C.light : C.orange, border: 'none', padding: '6px 14px', borderRadius: 6, cursor: seleccionadas.size === 0 ? 'default' : 'pointer' }}>
+                {importando ? 'Importando...' : `Importar ${seleccionadas.size > 0 ? seleccionadas.size : ''} seleccionada${seleccionadas.size !== 1 ? 's' : ''}`}
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {ayudasDetectadas.map(a => (
+                <label key={a.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '8px 10px', background: C.white, borderRadius: 6, cursor: 'pointer', border: `1px solid ${seleccionadas.has(a.id) ? C.orangeBorder : C.border}` }}>
+                  <input type="checkbox" checked={seleccionadas.has(a.id)} onChange={() => toggleSeleccion(a.id)} style={{ marginTop: 2, accentColor: C.orange, cursor: 'pointer' }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{a.nombre}</div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 1 }}>{a.organismo}</div>
+                    <div style={{ display: 'flex', gap: 8, marginTop: 3 }}>
+                      {a.comunidad_autonoma && <span style={{ fontSize: 10, color: C.blue, background: C.blueBg, padding: '2px 6px', borderRadius: 100 }}>{a.comunidad_autonoma}</span>}
+                      {a.importe_max > 0 && a.importe_max <= 30000 && <span style={{ fontSize: 10, color: C.orange }}>Hasta {a.importe_max.toLocaleString('es-ES')}€</span>}
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Modal buscador de ayudas */}
         {modalBuscar && (
