@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
-import { corresponde } from '../../lib/matching'
 
 // Este endpoint lo llama Vercel Cron cada lunes a las 9:00
 // También puede llamarse manualmente con ?secret=xxx
@@ -55,10 +54,11 @@ export default async function handler(req, res) {
       return res.json({ ok: true, mensaje: 'No hay ayudas en la BD', enviados: 0 })
     }
 
-    // 3. Para cada usuario, comparar con los IDs que ya ha recibido
+    // 3. Para cada usuario: recalcular sus ayudas (filtro + IA, vía calcular-ayudas)
+    //    y enviarle un email simple con el NÚMERO de ayudas nuevas. El detalle lo ve en la web.
     let enviados = 0
-    let ayudasNuevas = []
     const errores = []
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.cobratelo.es'
 
     for (const user of users) {
       if (!user.email) continue
@@ -68,27 +68,34 @@ export default async function handler(req, res) {
       // Respetar la preferencia del usuario: si desactivó las alertas, no enviar.
       if (dbUser.alertas_activas === false) continue
 
-      // IDs que el usuario ya recibió en alertas anteriores
-      const yaVistos = new Set(dbUser.ayudas_alertadas || [])
-
-      // Ayudas que aplican al usuario (mismo motor de exclusión que la web) y que NO ha recibido antes
-      const nuevasParaEste = todasAyudas.filter(a =>
-        !yaVistos.has(a.id) && corresponde(a, dbUser.perfil)
-      )
-
-      if (!nuevasParaEste.length) continue
-
       try {
-        await enviarAlerta(user.email, nuevasParaEste)
+        // Recalcular con el MISMO motor que la web (filtro de código + IA de sentido común).
+        // calcular-ayudas guarda el resultado en ayudas_calculadas del usuario.
+        const resp = await fetch(`${BASE_URL}/api/calcular-ayudas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, perfil: dbUser.perfil }),
+        })
+        if (!resp.ok) continue
+        const data = await resp.json()
+        const idsActuales = (data.ayudas || []).map(a => a.id)
+
+        // Cuántas son NUEVAS respecto a las ya notificadas
+        const yaVistos = new Set(dbUser.ayudas_alertadas || [])
+        const nuevas = idsActuales.filter(id => !yaVistos.has(id))
+
+        if (nuevas.length === 0) continue // nada nuevo que anunciar
+
+        // Enviar email SIMPLE: solo el número, invitando a entrar a la web
+        await enviarAlerta(user.email, nuevas.length, idsActuales.length)
         enviados++
 
-        // Guardar los IDs enviados para no repetirlos
-        const todosIds = [...yaVistos, ...nuevasParaEste.map(a => a.id)]
+        // Marcar como notificadas todas las actuales (para no repetir)
         await supabaseAdmin
           .from('usuarios')
           .update({
             alertas_enviadas: new Date().toISOString(),
-            ayudas_alertadas: todosIds,
+            ayudas_alertadas: idsActuales,
           })
           .eq('id', user.id)
 
@@ -100,7 +107,6 @@ export default async function handler(req, res) {
 
     return res.json({
       ok: true,
-      ayudasNuevas: ayudasNuevas.length,
       usuariosNotificados: enviados,
       errores,
     })
@@ -139,33 +145,16 @@ function calcEdad(fechaNac) {
   return e
 }
 
-async function enviarAlerta(email, ayudas) {
-  const ayudasHTML = ayudas.slice(0, 5).map(a => `
-    <div style="border:1px solid #F5C89A;border-radius:12px;padding:16px;margin-bottom:12px;background:#fff">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-        <div>
-          <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1a0d00">${a.nombre}</p>
-          <p style="margin:0 0 8px;font-size:12px;color:#7a4a1a">${a.organismo || ''}</p>
-          <p style="margin:0;font-size:13px;color:#555550;line-height:1.5">${(a.descripcion || '').substring(0, 120)}${a.descripcion?.length > 120 ? '...' : ''}</p>
-        </div>
-        ${(a.importe_max && a.importe_max > 0 && a.importe_max <= 30000) ? `<span style="background:#f0faf5;color:#cc5500;font-weight:800;font-size:14px;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0">${a.importe_max.toLocaleString('es-ES')}€</span>` : ''}
-      </div>
-      ${a.url ? `<a href="${a.url}" style="display:inline-block;margin-top:10px;font-size:12px;color:#cc5500;text-decoration:none;font-weight:600">Ver convocatoria oficial →</a>` : ''}
-    </div>
-  `).join('')
-
-  const restantes = ayudas.length - 5
-  const masAyudas = restantes > 0
-    ? `<p style="text-align:center;font-size:13px;color:#7a4a1a">${restantes > 15 ? 'Tienes más ayudas' : `Y ${restantes} ayuda${restantes > 1 ? 's' : ''} más`} disponibles en tu panel.</p>` : ''
-
-  // Número honesto: no presumir de cientos (sonaría a ruido/inflado).
-  const n = ayudas.length
-  const nTexto = n === 1 ? '1 ayuda nueva' : n <= 12 ? `${n} ayudas nuevas` : 'Nuevas ayudas'
+async function enviarAlerta(email, nuevas, total) {
+  // Email SIMPLE: solo el número de ayudas nuevas, invitando a entrar a la web
+  // (donde ya están filtradas por el sentido común / IA). No se listan ayudas aquí.
+  const nTexto = nuevas === 1 ? '1 ayuda nueva' : `${nuevas} ayudas nuevas`
+  const totalTexto = total === 1 ? '1 ayuda disponible' : `${total} ayudas disponibles`
 
   await transporter.sendMail({
     from: `"Cóbratelo.es" <${process.env.SMTP_USER}>`,
     to: email,
-    subject: `${nTexto} que te pueden interesar`,
+    subject: `Tienes ${nTexto} que te pueden interesar`,
     html: `
       <!DOCTYPE html>
       <html><head><meta charset="utf-8"></head>
@@ -177,19 +166,24 @@ async function enviarAlerta(email, ayudas) {
             <span style="background:rgba(255,131,0,0.15);color:#FF8300;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid rgba(255,131,0,0.3)">NOVEDADES DE LA SEMANA</span>
           </div>
 
-          <div style="padding:28px 32px">
-            <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a0d00;letter-spacing:-0.5px">
-              ${nTexto} esta semana
+          <div style="padding:36px 32px;text-align:center">
+            <div style="font-size:52px;font-weight:800;color:#FF8300;line-height:1;margin-bottom:8px">${nuevas}</div>
+            <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#1a0d00;letter-spacing:-0.5px">
+              ${nuevas === 1 ? 'ayuda nueva para ti' : 'ayudas nuevas para ti'}
             </h1>
-            <p style="margin:0 0 24px;font-size:14px;color:#7a4a1a">Solo las novedades — sin repetir lo que ya conoces.</p>
-
-            ${ayudasHTML}
-            ${masAyudas}
+            <p style="margin:0 0 28px;font-size:15px;color:#7a4a1a;line-height:1.6">
+              Hemos detectado ${nTexto} que encajan con tu perfil.<br>
+              Entra para verlas en detalle.
+            </p>
 
             <a href="https://cobratelo.es/resultados"
-              style="display:block;text-align:center;background:#1a0d00;color:#fff;font-weight:700;font-size:15px;padding:14px 0;border-radius:100px;text-decoration:none;margin-top:8px">
-              Ver todas mis ayudas →
+              style="display:inline-block;background:#1a0d00;color:#fff;font-weight:700;font-size:15px;padding:14px 32px;border-radius:100px;text-decoration:none">
+              Ver mis ayudas →
             </a>
+
+            <p style="margin:24px 0 0;font-size:12px;color:#b0aaa0">
+              En total tienes ${totalTexto} en tu panel.
+            </p>
           </div>
 
           <div style="background:#FFE2C4;padding:16px 32px;border-top:1px solid #F5C89A">
