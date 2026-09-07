@@ -11,12 +11,13 @@ const supabaseAdmin = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { userId, perfil } = req.body
-  if (!userId || !perfil) return res.status(400).json({ error: 'userId y perfil requeridos' })
+  const { userId, perfil, soloCalcular } = req.body
+  if (!perfil) return res.status(400).json({ error: 'perfil requerido' })
+  if (!soloCalcular && !userId) return res.status(400).json({ error: 'userId requerido' })
 
-  // Verificar que userId pertenece a la sesión activa
+  // Verificar que userId pertenece a la sesión activa (salvo modo soloCalcular)
   const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.['sb-access-token']
-  if (token) {
+  if (token && userId) {
     const { data: { user } } = await supabaseAdmin.auth.getUser(token)
     if (user && user.id !== userId) return res.status(403).json({ error: 'userId no coincide con la sesión' })
   }
@@ -35,14 +36,16 @@ export default async function handler(req, res) {
     const corresponden = (ayudas || [])
       .filter(a => corresponde(a, perfil))
 
-    // Guardar IDs en Supabase para cache
-    await supabaseAdmin
-      .from('usuarios')
-      .update({ ayudas_calculadas: corresponden.map(a => a.id) })
-      .eq('id', userId)
+    // Guardar IDs en Supabase para cache (solo si hay userId; en modo soloCalcular no)
+    if (userId) {
+      await supabaseAdmin
+        .from('usuarios')
+        .update({ ayudas_calculadas: corresponden.map(a => a.id) })
+        .eq('id', userId)
+    }
 
-    // Funnel events
-    try {
+    // Funnel events (solo con userId real)
+    if (userId) try {
       await logAccess(req, { ciudadanoId: userId, action: ACTIONS.QUESTIONNAIRE_COMPLETED, metadata: { total: corresponden.length } })
       if (corresponden.length > 0) await logAccess(req, { ciudadanoId: userId, action: ACTIONS.MATCH_FOUND, metadata: { matches: corresponden.length } })
     } catch {}

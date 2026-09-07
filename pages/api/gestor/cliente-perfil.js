@@ -36,5 +36,28 @@ export default async function handler(req, res) {
     await supabaseAdmin.from('usuarios').update({ perfil }).eq('id', cli.cliente_id)
   }
 
-  return res.json({ ok: true })
+  // Detectar automáticamente las ayudas que le corresponden al cliente
+  // (mismo motor que el lado ciudadano: filtro + IA), sin guardar en usuarios.
+  let ayudasDetectadas = []
+  try {
+    const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.cobratelo.es'
+    const r = await fetch(`${base}/api/calcular-ayudas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ perfil, soloCalcular: true }),
+    })
+    if (r.ok) {
+      const d = await r.json()
+      ayudasDetectadas = (d.ayudas || []).map(a => a.id)
+      // Guardar los IDs detectados en el cliente de gestoría
+      await supabaseAdmin.from('gestoria_clientes')
+        .update({ ayudas_detectadas: ayudasDetectadas })
+        .eq('id', cliente_id)
+    }
+  } catch (e) {
+    // Si la detección falla, el perfil ya se guardó; el gestor puede añadir ayudas a mano
+    console.error('deteccion ayudas cliente error:', e.message)
+  }
+
+  return res.json({ ok: true, ayudas_detectadas: ayudasDetectadas.length })
 }
