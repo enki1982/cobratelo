@@ -576,6 +576,32 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
     setAyudas(prev => prev.filter(a => a.id !== ayudaId))
   }
 
+  // Crear un expediente en el Kanban a partir de una ayuda del cliente.
+  // Conecta "ayuda a gestionar" con "expediente en tramitación" (antes desconectados).
+  const [tramitando, setTramitando] = useState(null)
+  const tramitarAyuda = async (ayuda) => {
+    setTramitando(ayuda.id)
+    try {
+      const res = await fetch('/api/gestor/expedientes', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente_id: cliente.id, ayuda_id: ayuda.id, importe_estimado: ayuda.importe_max, origen: 'manual' }),
+      })
+      const d = await res.json()
+      if (res.ok) {
+        alert('Expediente creado. Ya puedes tramitarlo en la pestaña Expedientes.')
+      } else if (res.status === 409) {
+        alert('Ya existe un expediente para esta ayuda de este cliente.')
+      } else {
+        alert('No se pudo crear el expediente: ' + (d.error || 'error'))
+      }
+    } catch (e) {
+      alert('Error al crear el expediente: ' + e.message)
+    } finally {
+      setTramitando(null)
+    }
+  }
+
   const toggleAyudaEstado = async (ayudaId, nuevoEstado) => {
     const nuevo = { ...ayudasEstado, [ayudaId]: { estado: nuevoEstado, fecha: new Date().toISOString() } }
     setAyudasEstado(nuevo)
@@ -784,6 +810,12 @@ function ClienteDetalle({ cliente, token, onClose, onUpdateEstado, onUpdate, onD
                     <span style={{ fontSize: 11, fontWeight: 600, color: colorAyuda, background: colorAyuda + '18', padding: '3px 8px', borderRadius: 100 }}>
                       {ESTADOS_AYUDA_LABEL[estAyuda]}
                     </span>
+                    <button onClick={e => { e.stopPropagation(); tramitarAyuda(ayuda) }}
+                      title="Crear expediente en el Kanban para tramitar esta ayuda"
+                      disabled={tramitando === ayuda.id}
+                      style={{ fontSize: 11, fontWeight: 700, color: C.white, background: C.orange, border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', flexShrink: 0 }}>
+                      {tramitando === ayuda.id ? '...' : 'Tramitar →'}
+                    </button>
                     <span style={{ color: C.light, fontSize: 12, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>{expanded ? '▲' : '▼'}</span>
                     <button onClick={e => { e.stopPropagation(); quitarAyuda(ayuda.id) }}
                       title="Quitar ayuda"
