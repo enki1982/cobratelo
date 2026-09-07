@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
+import { corresponde } from '../../lib/matching'
 
 // Este endpoint lo llama Vercel Cron cada lunes a las 9:00
 // También puede llamarse manualmente con ?secret=xxx
@@ -70,9 +71,9 @@ export default async function handler(req, res) {
       // IDs que el usuario ya recibió en alertas anteriores
       const yaVistos = new Set(dbUser.ayudas_alertadas || [])
 
-      // Ayudas que aplican al usuario y que NO ha recibido antes
+      // Ayudas que aplican al usuario (mismo motor de exclusión que la web) y que NO ha recibido antes
       const nuevasParaEste = todasAyudas.filter(a =>
-        !yaVistos.has(a.id) && aplicaAlUsuario(a, dbUser.perfil)
+        !yaVistos.has(a.id) && corresponde(a, dbUser.perfil)
       )
 
       if (!nuevasParaEste.length) continue
@@ -147,19 +148,24 @@ async function enviarAlerta(email, ayudas) {
           <p style="margin:0 0 8px;font-size:12px;color:#7a4a1a">${a.organismo || ''}</p>
           <p style="margin:0;font-size:13px;color:#555550;line-height:1.5">${(a.descripcion || '').substring(0, 120)}${a.descripcion?.length > 120 ? '...' : ''}</p>
         </div>
-        ${a.importe_max ? `<span style="background:#f0faf5;color:#cc5500;font-weight:800;font-size:14px;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0">${a.importe_max.toLocaleString('es-ES')}€</span>` : ''}
+        ${(a.importe_max && a.importe_max > 0 && a.importe_max <= 30000) ? `<span style="background:#f0faf5;color:#cc5500;font-weight:800;font-size:14px;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0">${a.importe_max.toLocaleString('es-ES')}€</span>` : ''}
       </div>
       ${a.url ? `<a href="${a.url}" style="display:inline-block;margin-top:10px;font-size:12px;color:#cc5500;text-decoration:none;font-weight:600">Ver convocatoria oficial →</a>` : ''}
     </div>
   `).join('')
 
-  const masAyudas = ayudas.length > 5
-    ? `<p style="text-align:center;font-size:13px;color:#7a4a1a">Y ${ayudas.length - 5} ayudas más disponibles en tu panel.</p>` : ''
+  const restantes = ayudas.length - 5
+  const masAyudas = restantes > 0
+    ? `<p style="text-align:center;font-size:13px;color:#7a4a1a">${restantes > 15 ? 'Tienes más ayudas' : `Y ${restantes} ayuda${restantes > 1 ? 's' : ''} más`} disponibles en tu panel.</p>` : ''
+
+  // Número honesto: no presumir de cientos (sonaría a ruido/inflado).
+  const n = ayudas.length
+  const nTexto = n === 1 ? '1 ayuda nueva' : n <= 12 ? `${n} ayudas nuevas` : 'Nuevas ayudas'
 
   await transporter.sendMail({
     from: `"Cóbratelo.es" <${process.env.SMTP_USER}>`,
     to: email,
-    subject: `${ayudas.length} ayuda${ayudas.length > 1 ? 's nuevas' : ' nueva'} que te puede interesar`,
+    subject: `${nTexto} que te pueden interesar`,
     html: `
       <!DOCTYPE html>
       <html><head><meta charset="utf-8"></head>
@@ -173,7 +179,7 @@ async function enviarAlerta(email, ayudas) {
 
           <div style="padding:28px 32px">
             <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a0d00;letter-spacing:-0.5px">
-              ${ayudas.length} ayuda${ayudas.length > 1 ? 's nuevas' : ' nueva'} esta semana
+              ${nTexto} esta semana
             </h1>
             <p style="margin:0 0 24px;font-size:14px;color:#7a4a1a">Solo las novedades — sin repetir lo que ya conoces.</p>
 
