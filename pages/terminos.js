@@ -29,8 +29,7 @@ export default function Terminos() {
             <h2 style={s.h2}>3. Planes y precios</h2>
             <ul style={s.ul}>
               <li><strong>Plan Particular (gratuito):</strong> detección de ayudas personalizadas, alertas semanales y cuestionario de perfil.</li>
-              <li><strong>Plan Gestoría Starter (149 €/mes + IVA):</strong> hasta 50 clientes activos, CRM, informes y alertas por cliente.</li>
-              <li><strong>Plan Gestoría Pro (399 €/mes + IVA):</strong> clientes ilimitados, todas las funcionalidades Starter y soporte prioritario.</li>
+              <li><strong>Plan Gestoría Standard (149 €/mes + IVA):</strong> clientes y expedientes ilimitados, CRM, informes, exportación masiva, alertas personalizadas, histórico y soporte prioritario.</li>
             </ul>
             <p style={s.p}>Los precios pueden modificarse con preaviso mínimo de 30 días a suscriptores activos.</p>
           </section>
