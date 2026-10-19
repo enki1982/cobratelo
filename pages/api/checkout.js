@@ -6,13 +6,11 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
-const PRICE_TO_PLAN = {
-  [process.env.NEXT_PUBLIC_STRIPE_PRICE_ALERTAS]: 'alertas',
-  [process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER]: 'starter',
-  [process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO]: 'pro',
-  'price_1TatI9RcjgMq3SnyPhsdIxYC': 'starter',
-  'price_1TatJ8RcjgMq3Sny71IyZJGr': 'pro',
-}
+const STANDARD_PRICES = [
+  process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER,
+  'price_1TatI9RcjgMq3SnyPhsdIxYC',
+  'price_1Tjc6XRcjgMq3SnyqcVw1PE7',
+].filter(Boolean)
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
@@ -34,15 +32,9 @@ export default async function handler(req, res) {
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-    const plan = PRICE_TO_PLAN[priceId] || 'unknown'
+    if (!STANDARD_PRICES.includes(priceId)) return res.status(400).json({ error: 'Tarifa no disponible' })
+    const plan = 'starter' // identificador interno compatible con la base de datos
 
-    const GESTOR_PRICES = [
-      process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER,
-      process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO,
-      'price_1TatI9RcjgMq3SnyPhsdIxYC',
-      'price_1TatJ8RcjgMq3Sny71IyZJGr',
-    ]
-    const isGestorPlan = GESTOR_PRICES.includes(priceId)
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
