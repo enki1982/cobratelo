@@ -80,14 +80,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Debes declarar que cuentas con el consentimiento del cliente' })
     }
 
-    // LÃ­mite de clientes para plan starter
-    if (usuario.plan === 'starter') {
-      const { count } = await supabaseAdmin
-        .from('gestoria_clientes')
-        .select('id', { count: 'exact', head: true })
-        .eq('gestor_id', gestorId)
-      if (count >= 50) return res.status(403).json({ error: 'LÃ­mite de 50 clientes alcanzado' })
-    }
 
     // Buscar si el cliente ya tiene cuenta; si no, crearla (usuario real).
     const { data: existingRow } = await supabaseAdmin.from('usuarios').select('id, email').eq('email', cliente_email).maybeSingle()
