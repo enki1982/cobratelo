@@ -380,50 +380,7 @@ que podrían corresponderte
           </div>
         </section>
 
-                {/* ── BIFURCACIÓN B2B — ELEGANTE ── */}
-        <section style={{ background: '#fff', width: '100%', borderTop: '1px solid #F5C89A' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '48px 24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 32 }}>
-              {/* Left — contexto */}
-              <div style={{ maxWidth: 480 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#FF8300', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>PARA GESTORÍAS Y ASESORES</p>
-                <h2 className="font-display font-bold" style={{ fontSize: 'clamp(22px,3vw,30px)', color: '#1a0d00', letterSpacing: '-0.8px', marginBottom: 12, lineHeight: 1.2 }}>
-                  También ayudamos a gestorías y asesores
-                </h2>
-                <p style={{ fontSize: 15, color: '#7a4a1a', lineHeight: 1.7, marginBottom: 24 }}>
-                  Centraliza solicitudes, recibe nuevos clientes y automatiza la detección de ayudas para todos tus clientes. Sin trabajo extra.
-                </p>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-                  <Link href="/precios" style={{ background: '#321A00', color: '#FFE2C4', fontWeight: 700, fontSize: 14, padding: '12px 24px', borderRadius: 100, textDecoration: 'none' }}>
-                    Soy gestoría →
-                  </Link>
-                  <Link href="/precios" style={{ fontSize: 13, color: '#7a4a1a', textDecoration: 'none', fontWeight: 500 }}>
-                    Ver planes de gestoría
-                  </Link>
-                </div>
-              </div>
-              {/* Right — mini panel gestoría */}
-              <div style={{ background: '#321A00', borderRadius: 20, padding: '24px', minWidth: 280, boxShadow: '0 8px 32px rgba(50,26,0,0.15)' }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,245,235,0.35)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>PANEL GESTORÍA</p>
-                {[
-                  { nombre: 'García Martínez, J.', ayudas: 8, importe: '12.400€', estado: 'Pendiente', color: '#FF8300' },
-                  { nombre: 'López Sánchez, M.', ayudas: 5, importe: '7.200€', estado: 'Tramitado', color: '#4ade80' },
-                  { nombre: 'Fernández García, A.', ayudas: 11, importe: '18.600€', estado: 'Pendiente', color: '#FF8300' },
-                ].map((c, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < 2 ? '1px solid rgba(255,200,120,0.08)' : 'none' }}>
-                    <div>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: '#FFF5EB', marginBottom: 2 }}>{c.nombre}</p>
-                      <p style={{ fontSize: 11, color: 'rgba(255,245,235,0.35)' }}>{c.ayudas} ayudas · {c.importe}</p>
-                    </div>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: c.color, background: c.color + '18', padding: '3px 9px', borderRadius: 100 }}>{c.estado}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── CTA FINAL ── */}
+                {/* ── CTA FINAL ── */}
         <section style={{ maxWidth: 1024, margin: '0 auto', padding: '0 24px 48px' }}>
           <div style={{ background: '#321A00', border: 'none', borderRadius: 24, padding: '72px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '60%', height: 1, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />
@@ -438,6 +395,11 @@ y para gestorías que quieren crecer sin trabajar más.
             <Link href={ctaHref} style={{ background: C.green, color: '#000', fontWeight: 700, fontSize: 16, padding: '16px 36px', borderRadius: 100, textDecoration: 'none', display: 'inline-block' }}>
               {ctaLabelFinal}
             </Link>
+            <div style={{ marginTop: 22 }}>
+              <Link href="/gestores" style={{ color: '#FFB46B', fontSize: 15, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 5 }}>
+                ¿Tienes una gestoría? Conoce Standard por 149 €/mes + IVA →
+              </Link>
+            </div>
           </div>
         </section>
 
