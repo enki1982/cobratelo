@@ -358,7 +358,7 @@ export default function ExpedientesKanban() {
               <a href="/gestor/clientes" style={{ fontSize: 13, fontWeight: 600, color: C.muted, textDecoration: 'none', padding: '6px 12px', borderRadius: 8 }}>Clientes</a>
             </div>
             <span style={{ fontSize: 11, fontWeight: 700, color: C.green, background: C.greenBg, padding: '3px 10px', borderRadius: 100, border: `1px solid ${C.border}` }}>
-              {plan === 'pro' ? 'Pro' : 'Básico'}
+              Standard
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
