@@ -18,7 +18,7 @@ function Check() {
 
 const PASOS = [
   { n: '01', titulo: 'Ciudadano se registra gratis', desc: 'Rellena un cuestionario de 2 minutos con su situación laboral, ingresos, familia y municipio.' },
-  { n: '02', titulo: 'El sistema detecta sus ayudas', desc: 'Cruzamos más de 11.000 convocatorias activas (estatales, autonómicas y locales) y le mostramos las que le corresponden.' },
+  { n: '02', titulo: 'El sistema detecta sus ayudas', desc: 'Analizamos convocatorias disponibles de distintas administraciones y mostramos las que podrían encajar con su perfil.' },
   { n: '03', titulo: 'Te lo envía a ti', desc: 'Si quiere ayuda para tramitarlas, te autoriza con un consentimiento RGPD y te llega todo: perfil, ayudas y datos de contacto.' },
   { n: '04', titulo: 'Tú gestionas desde tu panel', desc: 'Expediente abierto, Kanban, tareas, documentos, alertas de vencimiento y honorarios. Todo en un sitio.' },
 ]
@@ -42,15 +42,15 @@ export default function Gestores() {
     <>
       <Head>
         <title>Cóbratelo.es para Gestorías — Nuevo canal de clientes + CRM de ayudas</title>
-        <meta name="description" content="Tu gestoría recibe clientes que ya saben las ayudas que les corresponden. Tú solo tienes que tramitarlas. Panel CRM incluido." />
+        <meta name="description" content="CRM para gestorías: clientes y expedientes ilimitados, alertas e informes por 149 € al mes más IVA." />
         <meta name="robots" content="index, follow" />
         <meta property="og:title" content="Cóbratelo.es para Gestorías" />
-        <meta property="og:description" content="Nuevo canal de clientes. El ciudadano llega ya sabiendo sus ayudas. Tú tramitas." />
+        <meta property="og:description" content="CRM para gestionar clientes, expedientes y convocatorias de ayudas públicas." />
         <meta property="og:url" content="https://cobratelo.es/gestores" />
         <meta property="og:image" content="https://www.cobratelo.es/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Cóbratelo.es para Gestorías" />
-        <meta name="twitter:description" content="Convierte ayudas públicas en nuevos clientes. El ciudadano llega ya sabiendo sus ayudas — tú solo tienes que tramitarlas." />
+        <meta name="twitter:description" content="Gestiona clientes y expedientes de ayudas públicas desde un CRM profesional." />
         <meta name="twitter:image" content="https://www.cobratelo.es/og-image.png" />
         <link rel="canonical" href="https://www.cobratelo.es/gestores" />
       </Head>
@@ -63,7 +63,7 @@ export default function Gestores() {
             cóbratelo<span style={{ color: C.orange }}>.es</span>
           </Link>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            <Link href="/precios" style={{ color: C.muted, textDecoration: 'none', fontSize: 14 }}>Precios</Link>
+            <Link href="/precios?tab=gestoria" style={{ color: C.muted, textDecoration: 'none', fontSize: 14 }}>Precios</Link>
             <Link href="/gestor/expedientes" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '8px 18px', borderRadius: 99, fontWeight: 600, fontSize: 14 }}>Entrar</Link>
           </div>
         </nav>
@@ -74,28 +74,27 @@ export default function Gestores() {
             Para gestorías y asesores
           </div>
           <h1 style={{ fontSize: 'clamp(32px, 5vw, 54px)', fontWeight: 800, lineHeight: 1.15, margin: '0 0 20px', letterSpacing: '-0.02em' }}>
-            Tu próximo cliente ya sabe<br />las ayudas que le corresponden
+            Tu gestoría, preparada para<br />gestionar más oportunidades
           </h1>
           <p style={{ fontSize: 18, color: C.muted, lineHeight: 1.7, margin: '0 0 40px', maxWidth: 580, marginLeft: 'auto', marginRight: 'auto' }}>
-            Convierte ayudas públicas en nuevos clientes para tu despacho.
-            El ciudadano llega ya sabiendo sus ayudas — tú solo tienes que tramitarlas.
+            Organiza expedientes, clientes y alertas desde un mismo panel. Tus clientes pueden consultar convocatorias y compartir contigo las oportunidades detectadas.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/precios" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>
+            <Link href="/precios?tab=gestoria" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 99, fontWeight: 700, fontSize: 16 }}>
               Empezar ahora
             </Link>
-            <Link href="/precios" style={{ color: C.muted, textDecoration: 'none', padding: '14px 24px', borderRadius: 99, fontWeight: 600, fontSize: 15, border: `1px solid ${C.border}` }}>
+            <Link href="/precios?tab=gestoria" style={{ color: C.muted, textDecoration: 'none', padding: '14px 24px', borderRadius: 99, fontWeight: 600, fontSize: 15, border: `1px solid ${C.border}` }}>
               Ver precio y funcionalidades
             </Link>
           </div>
-          <p style={{ fontSize: 12, color: C.light, marginTop: 14 }}>Sin permanencia. Cancela cuando quieras.</p>
+          <p style={{ fontSize: 12, color: C.light, marginTop: 14 }}>Standard: 149 €/mes + IVA · Clientes y expedientes ilimitados.</p>
         </section>
 
         {/* NÚMEROS */}
         <section style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
           <div style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
             {[
-              { n: '+11.000', l: 'convocatorias activas' },
+              { n: 'Ayudas', l: 'convocatorias de distintas administraciones' },
               { n: 'España', l: 'estatal, autonómica y local' },
               { n: '2 min', l: 'para que un ciudadano vea sus ayudas' },
             ].map((s, i) => (
@@ -110,7 +109,7 @@ export default function Gestores() {
         {/* EL PROBLEMA */}
         <section style={{ maxWidth: 760, margin: '0 auto', padding: '64px 24px' }}>
           <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>El problema que resolvemos juntos</h2>
-          <p style={{ color: C.muted, marginBottom: 32, fontSize: 15 }}>El 80% de los ciudadanos no tramita las ayudas a las que tiene derecho. No porque no quieran, sino porque no saben que existen.</p>
+          <p style={{ color: C.muted, marginBottom: 32, fontSize: 15 }}>Muchas personas desconocen qué ayudas pueden solicitar o dónde consultar sus requisitos.</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {PROBLEMAS.map((p, i) => (
               <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -202,7 +201,7 @@ export default function Gestores() {
         <section style={{ borderTop: `1px solid ${C.border}`, padding: '64px 24px', textAlign: 'center' }}>
           <h2 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 16px' }}>Empieza hoy</h2>
           <p style={{ color: C.muted, fontSize: 16, margin: '0 0 36px' }}>Sin permanencia. Cancela cuando quieras.</p>
-          <Link href="/precios" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: 99, fontWeight: 700, fontSize: 17 }}>
+          <Link href="/precios?tab=gestoria" style={{ background: C.orange, color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: 99, fontWeight: 700, fontSize: 17 }}>
             Ver planes →
           </Link>
           <p style={{ color: C.light, fontSize: 13, marginTop: 16 }}>
