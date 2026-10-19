@@ -18,7 +18,7 @@ export default function ContratoSaas() {
           <section style={s.section}>
             <h2 style={s.h2}>1. Partes</h2>
             <p style={s.p}><strong>Proveedor:</strong> Miquel Nogueras Camero (NIF 77609795K), titular de Cóbratelo.es. Email: hola@cobratelo.es.</p>
-            <p style={s.p}><strong>Cliente:</strong> la gestoría o profesional que contrata un plan profesional (Starter o Pro). La contratación implica la aceptación íntegra de este contrato.</p>
+            <p style={s.p}><strong>Cliente:</strong> la gestoría o profesional que contrata el plan profesional Standard. La contratación implica la aceptación íntegra de este contrato.</p>
           </section>
 
           <section style={s.section}>
@@ -54,7 +54,7 @@ export default function ContratoSaas() {
             <h2 style={s.h2}>6. Licencia de uso</h2>
             <ul style={s.ul}>
               <li>La licencia es personal e intransferible. No puede cederse ni sublicenciarse.</li>
-              <li>El número de clientes gestionables depende del plan (Starter: 50; Pro: ilimitados).</li>
+              <li>El plan Standard permite gestionar clientes y expedientes ilimitados.</li>
               <li>Está prohibida la ingeniería inversa, descompilación o acceso al código fuente.</li>
               <li>Está prohibido el scraping, extracción masiva o uso automatizado no autorizado.</li>
               <li>Está prohibida la reventa o sublicencia del acceso a terceros.</li>
@@ -96,7 +96,7 @@ export default function ContratoSaas() {
 
           <section style={s.section}>
             <h2 style={s.h2}>12. Soporte técnico</h2>
-            <p style={s.p}>Email: hola@cobratelo.es. Pro: respuesta objetivo 24 h laborables. Starter: 72 h laborables.</p>
+            <p style={s.p}>Email: hola@cobratelo.es. Standard: respuesta objetivo 24 h laborables.</p>
           </section>
 
           <section style={s.section}>
