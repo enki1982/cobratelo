@@ -23,7 +23,7 @@ const C = {
 const STEPS = [
   { n: '01', title: 'Cuéntanos tu situación', desc: 'Solo checkboxes. Sin formularios. 2 minutos para completar tu perfil.' },
   { n: '02', title: 'Analizamos tu perfil', desc: 'Cruzamos tu situación con todas las ayudas vigentes en España.' },
-  { n: '03', title: 'Cobra lo tuyo', desc: 'Lista con importes, requisitos y enlace oficial de cada ayuda.' },
+  { n: '03', title: 'Consulta las convocatorias', desc: 'Revisa importes, requisitos y enlaces oficiales antes de solicitar cada ayuda.' },
 ]
 
 const AYUDAS_DEMO = [
@@ -33,23 +33,7 @@ const AYUDAS_DEMO = [
   { icon: 'P', nombre: 'Prestació desocupació', org: 'SEPE', importe: '1.200€/mes', bg: 'rgba(245,158,11,0.12)' },
 ]
 
-const TESTIMONIOS = [
-  { nombre: 'Marta R.', perfil: 'Autónoma · Valencia', texto: 'Me detectó dos bonificaciones de la cuota de autónomo que sumaban 1.840€ al año. Ni mi gestor las había visto. Se las pasé y las tramitó en una semana.' },
-  { nombre: 'Javier M.', perfil: 'Empleado con familia · Sevilla', texto: 'Fui a la cita con la gestoría con la lista ya hecha. En total, ayudas por unos 2.300€ al año que no sabía que existían. La reunión duró diez minutos.' },
-  { nombre: 'Núria P.', perfil: 'Alquiler joven · Barcelona', texto: 'El bono de alquiler joven, 2.400€, llevaba un año disponible y yo sin saberlo. Mi gestora lo confirmó y lo presentamos antes de que cerrara el plazo.' },
-  { nombre: 'Carlos D.', perfil: 'Administrador de pyme · Madrid', texto: 'Lo que me convenció fue el enlace a la convocatoria oficial en cada ayuda. Se lo enseñé a mi asesor con los deberes hechos: 3.000€ en ayudas localizadas.' },
-  { nombre: 'Ana L.', perfil: 'Maternidad reciente · Zaragoza', texto: 'No sabía que la deducción por maternidad, 1.200€ al año, se puede pedir de forma mensual anticipada. Mi gestor lo tramitó esa misma semana.' },
-  { nombre: 'Pedro S.', perfil: 'Autónomo · Bilbao', texto: 'Me salieron 980€ al año reales, sin exagerar. Lo consulté con mi gestoría y cuadraba. Prefiero esto a herramientas que te prometen fortunas y no entregan nada.' },
-  { nombre: 'Lucía F.', perfil: 'Rehabilitación de vivienda · Málaga', texto: 'Detectó las ayudas de eficiencia energética para cambiar ventanas: hasta 4.100€. Mi asesor las revisó, dijo que estaban bien y entramos en el plazo justo.' },
-  { nombre: 'Miguel A.', perfil: 'Familia numerosa · Murcia', texto: 'Mi gestor tardaba una hora en revisar esto a mano. Aquí estaba en dos minutos con 2.650€ al año cruzando toda mi situación a la vez.' },
-  { nombre: 'Elena G.', perfil: 'En búsqueda de empleo · Vigo', texto: 'Me apareció una prestación autonómica de 1.500€ que ni conocía. Antes de pedirla lo verifiqué con mi gestora — estaba todo en orden.' },
-  { nombre: 'Roberto T.', perfil: 'Autoconsumo solar · Toledo', texto: 'La ayuda al autoconsumo fotovoltaico, 3.400€, con el enlace oficial incluido. Se lo mandé al gestor y la solicitud fue directa, sin ir a buscar más.' },
-  { nombre: 'Cristina V.', perfil: 'Autónoma · Alicante', texto: 'Me salieron 1.120€ al año. Puede parecer poco, pero son reales, comprobables y estaban en la convocatoria oficial. Mi asesor lo agradeció.' },
-  { nombre: 'David N.', perfil: 'Comprador de vehículo eléctrico · Girona', texto: 'Lo usé antes de comprar el coche. El Plan MOVES salió con 4.500€ de ayuda. Mi gestoría confirmó que cumplía los requisitos y reservamos la subvención.' },
-  { nombre: 'Patricia M.', perfil: 'Madre con dos hijos · Valladolid', texto: 'Me llegó un aviso de una ayuda nueva de 1.900€ que encajaba con nosotros. Se lo mandé al gestor por email y la presentó a tiempo. Sin eso, no nos habríamos enterado.' },
-  { nombre: 'Sergio B.', perfil: 'Gerente de pyme · Las Palmas', texto: 'Lo uso como primer filtro antes de hablar con la asesoría. Nos salieron 2.000€ y ahorramos toda la parte de investigar qué existe. La gestoría ejecuta, no busca.' },
-  { nombre: 'Laura C.', perfil: 'Alquiler · Pamplona', texto: 'Gratis, sin formularios largos ni pedir datos bancarios. Me detectó 1.680€ al año y fui a la gestoría con el trabajo hecho. Eso sí que tiene valor.' },
-]
+// Testimonios retirados hasta disponer de reseñas verificables.
 
 const FUENTES_ADMIN = [
   { nombre: 'A·E·A·T', sub: 'Agencia Tributaria', color: '#003087', src: '/AgenciaTributaria.png' },
@@ -94,7 +78,7 @@ export default function Home() {
   const [perfilGuardado, setPerfilGuardado] = useState(null)
   const [esGestor, setEsGestor] = useState(false)
   const [haySesion, setHaySesion] = useState(false)
-  const [totalAyudas, setTotalAyudas] = useState(66)
+  const [totalAyudas, setTotalAyudas] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -110,7 +94,7 @@ export default function Home() {
     supabase.from('ayudas').select('*', { count: 'exact', head: true })
       .eq('activa', true)
       .gte('fecha_fin', new Date().toISOString().slice(0, 10))
-      .then(({ count }) => { if (count) setTotalAyudas(count) })
+      .then(({ count }) => { if (typeof count === 'number') setTotalAyudas(count) })
   }, [])
 
   // CTA principal según el tipo de usuario:
@@ -217,16 +201,16 @@ export default function Home() {
           <div>
             {/* Badge */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid rgba(255,245,235,0.15)', color: 'rgba(255,245,235,0.5)', fontSize: 11, fontWeight: 500, padding: '5px 14px', borderRadius: 100, marginBottom: 28, letterSpacing: '1px', width: 'fit-content' }}>
-              {totalAyudas}+ convocatorias activas en España
+              {totalAyudas === null ? 'Buscador de ayudas públicas en España' : `${totalAyudas} convocatorias activas en la plataforma`}
             </div>
 
             <h1 className="font-display font-bold" style={{ fontSize: 'clamp(32px,4.5vw,54px)', lineHeight: 1.1, letterSpacing: '-1.2px', marginBottom: 24, color: C.text }}>
-              Descubre las ayudas públicas
-que te corresponden
+              Encuentra ayudas públicas
+que podrían corresponderte
             </h1>
 
             <p style={{ color: 'rgba(255,245,235,0.65)', fontSize: 16, lineHeight: 1.75, marginBottom: 40, maxWidth: 440 }}>
-              Analizamos tu situación y detectamos automáticamente subvenciones, prestaciones y ayudas disponibles para ti. Sin buscar. Sin burocracia. En solo 2 minutos.
+              Analiza tu situación en unos minutos y encuentra convocatorias que podrían encajar contigo. Consulta requisitos, importes y fuentes oficiales antes de solicitarlas.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -234,7 +218,7 @@ que te corresponden
                 {ctaLabelLargo}
               </Link>
               <Link href="/precios?tab=gestoria" style={{ color: C.muted, fontSize: 14, textDecoration: 'none' }}>
-                Para gestorías →
+                Descubre el CRM para gestorías →
               </Link>
             </div>
 
@@ -250,7 +234,7 @@ que te corresponden
 
             {/* Stats */}
             <div style={{ display: 'flex', gap: 32, marginTop: 0, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
-              {[{ num: `${totalAyudas}+`, lbl: 'Ayudas analizadas' }, { num: '3.250€', lbl: 'Media detectada al año' }, { num: '0€', lbl: 'Siempre gratis' }].map((s, i) => (
+              {[{ num: totalAyudas === null ? '—' : totalAyudas, lbl: 'Convocatorias activas' }, { num: '0€', lbl: 'Para ciudadanos' }, { num: '149€', lbl: 'Standard gestorías / mes + IVA' }].map((s, i) => (
                 <div key={i}>
                   <div className="font-display font-bold" style={{ fontSize: 26, letterSpacing: '-1px', color: C.text }}>{s.num}</div>
                   <div style={{ fontSize: 11, color: 'rgba(255,245,235,0.65)', marginTop: 2 }}>{s.lbl}</div>
@@ -259,11 +243,11 @@ que te corresponden
             </div>
 
             {/* Banner gestorías — versión móvil (en desktop va en el dashboard) */}
-            <Link href="/precios" className="block md:hidden" style={{ textDecoration: 'none', marginTop: 32 }}>
+            <Link href="/gestores" className="block md:hidden" style={{ textDecoration: 'none', marginTop: 32 }}>
               <div style={{ background: 'linear-gradient(135deg, rgba(255,131,0,0.10), rgba(255,131,0,0.02))', border: '1px solid rgba(255,131,0,0.28)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 4 }}>¿Eres gestoría o asesoría?</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.4 }}>Tienes un espacio propio para tus clientes</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.4 }}>CRM de ayudas · clientes ilimitados · 149€/mes + IVA</div>
                 </div>
                 <span style={{ flexShrink: 0, background: C.green, color: '#000', fontWeight: 700, fontSize: 13, padding: '9px 18px', borderRadius: 100, whiteSpace: 'nowrap' }}>Entrar →</span>
               </div>
@@ -276,11 +260,11 @@ que te corresponden
             <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 60% 40%, rgba(255,131,0,0.12) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
             {/* Banner gestorías — capta al profesional al entrar */}
-            <Link href="/precios" style={{ textDecoration: 'none', display: 'block', marginBottom: 48, position: 'relative', zIndex: 1 }}>
+            <Link href="/gestores" style={{ textDecoration: 'none', display: 'block', marginBottom: 48, position: 'relative', zIndex: 1 }}>
               <HoverCard hoverBorder="rgba(255,131,0,0.55)" style={{ background: 'linear-gradient(135deg, rgba(255,131,0,0.10), rgba(255,131,0,0.02))', border: '1px solid rgba(255,131,0,0.28)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, transition: 'border-color 0.2s', backdropFilter: 'blur(8px)' }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 4 }}>¿Eres gestoría o asesoría?</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.4 }}>Tienes un espacio propio para tus clientes</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.4 }}>CRM de ayudas · clientes ilimitados · 149€/mes + IVA</div>
                 </div>
                 <span style={{ flexShrink: 0, background: C.green, color: '#000', fontWeight: 700, fontSize: 13, padding: '9px 18px', borderRadius: 100, whiteSpace: 'nowrap' }}>Entrar →</span>
               </HoverCard>
@@ -323,12 +307,33 @@ que te corresponden
 
         </div>{/* FIN BLOQUE OSCURO */}
 
+        {/* Plan profesional Standard */}
+        <section style={{ background: '#FFF5EB', color: '#321A00', padding: '64px 24px' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap: 32, alignItems: 'center' }}>
+            <div>
+              <p style={{ color: '#AD4F00', fontSize: 12, fontWeight: 800, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Para gestorías y asesorías</p>
+              <h2 className="font-display font-bold" style={{ fontSize: 'clamp(27px,3.4vw,42px)', lineHeight: 1.15, marginBottom: 16 }}>Todos tus clientes. Un solo plan.</h2>
+              <p style={{ lineHeight: 1.7, color: '#63472F', marginBottom: 20 }}>Organiza clientes y expedientes, consulta ayudas, gestiona alertas y exporta información desde un único CRM profesional.</p>
+              <Link href="/gestores" style={{ display: 'inline-block', background: '#FF8300', color: '#201000', padding: '14px 24px', fontWeight: 800, borderRadius: 100, textDecoration: 'none' }}>Descubre el CRM para gestorías →</Link>
+            </div>
+            <div style={{ background: '#321A00', borderRadius: 22, padding: 28, color: '#FFF5EB', border: '1px solid rgba(255,131,0,.3)' }}>
+              <p style={{ color: '#FFB46B', fontSize: 12, fontWeight: 800, letterSpacing: 1, marginBottom: 12 }}>STANDARD</p>
+              <div style={{ fontSize: 42, fontWeight: 800 }}>149 €<span style={{ fontSize: 15, fontWeight: 400 }}> / mes + IVA</span></div>
+              <p style={{ color: '#E9CCB0', fontSize: 13, margin: '10px 0 22px' }}>Sin límite de clientes ni expedientes</p>
+              {['CRM y seguimiento de expedientes', 'Alertas personalizadas', 'Exportación masiva e historial', 'Soporte prioritario'].map(item => (
+                <p key={item} style={{ margin: '10px 0', fontSize: 14 }}><span style={{ color: '#FF8300', marginRight: 10 }}>✓</span>{item}</p>
+              ))}
+              <Link href="/precios?tab=gestoria" style={{ display: 'block', textAlign: 'center', marginTop: 24, background: '#FF8300', color: '#201000', padding: 13, borderRadius: 100, textDecoration: 'none', fontWeight: 800 }}>Ver el plan Standard →</Link>
+            </div>
+          </div>
+        </section>
+
         {/* CÓMO FUNCIONA */}
         <section style={{ background: '#FFE2C4', color: '#1a0d00', borderTop: '1px solid #F5C89A', width: '100%' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '64px 24px' }}>
           <p style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', color: '#cc5500', marginBottom: 12 }}>Cómo funciona</p>
           <h2 className="font-display font-bold" style={{ textAlign: 'center', fontSize: 'clamp(26px,3vw,40px)', letterSpacing: '-1.5px', color: '#1a0d00', marginBottom: 48 }}>
-            Sin buscar. Sin perderse. Sin burocracia.
+            Descubre oportunidades y consulta los requisitos oficiales.
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
             {STEPS.map((s, i) => (
