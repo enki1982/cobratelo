@@ -11,32 +11,18 @@ features: ['Cuestionario de perfil completo','Todas las ayudas sin límite','Ale
 cta: 'Empezar gratis', href: '/perfil', destacado: true,
 }]
 
-const PLANES_GESTORIA = [
-{
-id: 'basico', nombre: 'Básico', precio: '149€', periodo: 'mes',
-desc: 'Para despachos que gestionan hasta 50 clientes',
-features: ['Hasta 50 clientes activos','Identificación automática por cliente','Informe detallado por cliente','Alertas de nuevas convocatorias','Soporte por email'],
-cta: 'Empezar Básico', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER, destacado: false,
-},
-{
-id: 'pro', nombre: 'Pro', precio: '399€', periodo: 'mes',
-desc: 'Para gestorías medianas y grandes sin límite de clientes',
-features: ['Clientes ilimitados','Expedientes y Kanban sin límite','Exportación masiva de informes','Alertas personalizadas por cliente','Histórico completo de actividad','Soporte prioritario'],
-cta: 'Empezar Pro', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO, destacado: true,
-},
-{
-id: 'enterprise', nombre: 'Enterprise', precio: null, periodo: null,
-desc: 'Para grandes despachos con integración completa',
-features: ['Todo lo del plan Pro','Integración sede electrónica','Formularios pre-rellenados','API acceso a datos','Marca blanca','Account manager'],
-cta: 'Contactar', href: 'mailto:hola@cobratelo.es', destacado: false, badge: 'Próximamente',
-},
-]
+const PLANES_GESTORIA = [{
+id: 'standard', nombre: 'Standard', precio: '149€', periodo: 'mes',
+desc: 'Todo incluido para gestorías y asesorías, sin límites',
+features: ['Clientes ilimitados','Expedientes y Kanban ilimitados','Identificación automática por cliente','Informes y exportación masiva','Alertas personalizadas por cliente','Histórico completo de actividad','Soporte prioritario'],
+cta: 'Empezar Standard', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER, destacado: true,
+}]
 
 const FAQ = [
 { q: '¿De verdad es gratis para ciudadanos?', a: 'Sí, completamente. Accedes a todas las ayudas, alertas y el informe para tu gestoría sin pagar nada.' },
 { q: '¿Puedo cancelar cuando quiera?', a: 'Sí. Sin permanencia ni penalizaciones. Cancelas desde tu cuenta en cualquier momento.' },
-{ q: '¿Qué diferencia hay entre Básico y Pro?', a: 'El plan Básico gestiona hasta 50 clientes activos. El Pro es ilimitado, añade exportación masiva de informes, alertas personalizadas por cliente y soporte prioritario.' },
-{ q: '¿Cuándo estará disponible Enterprise?', a: 'La integración con sede electrónica está en desarrollo. Escríbenos a hola@cobratelo.es para la lista de espera.' },
+{ q: '¿Hay límite de clientes o expedientes?', a: 'No. Standard incluye clientes y expedientes ilimitados por 149 € al mes más IVA.' },
+{ q: '¿Qué incluye Standard?', a: 'CRM, Kanban, informes, exportación masiva, alertas personalizadas, histórico y soporte prioritario.' },
 { q: '¿Los datos de mis clientes son seguros?', a: 'Sí. No vendemos datos a terceros. Cumplimos RGPD y normativa española de protección de datos.' },
 ]
 
@@ -131,7 +117,7 @@ style={{ padding: '9px 20px', borderRadius: 100, border: 'none', cursor: 'pointe
 
 {tab === 'gestoria' && (
 <>
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="!grid-cols-1 md:!grid-cols-3">
+<div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 420px)', justifyContent: 'center', gap: 16 }} >
 {PLANES_GESTORIA.map(p => <PlanCard key={p.id} plan={p} />)}
 </div>
 <p style={{ textAlign: 'center', fontSize: 13, color: C.muted, marginTop: 20 }}>Sin permanencia. Precios sin IVA.</p>
