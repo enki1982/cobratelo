@@ -30,26 +30,12 @@ const PROBLEMAS = [
   'Los ciudadanos que necesitan gestor no saben cómo encontrarte.',
 ]
 
-const PLANES = [
-  {
-    nombre: 'Básico',
-    precio: '149€',
-    desc: 'Para despachos de hasta 50 clientes',
-    features: ['Hasta 50 clientes activos', 'Panel de expedientes y Kanban', 'Informe detallado por cliente', 'Alertas de nuevas convocatorias', 'Soporte por email'],
-    cta: 'Empezar Básico',
-    href: '/precios',
-    destacado: false,
-  },
-  {
-    nombre: 'Pro',
-    precio: '399€',
-    desc: 'Para gestorías sin límite de clientes',
-    features: ['Clientes ilimitados', 'Expedientes y Kanban sin límite', 'Exportación masiva de informes', 'Alertas personalizadas por cliente', 'Histórico completo de actividad', 'Soporte prioritario'],
-    cta: 'Empezar Pro',
-    href: '/precios',
-    destacado: true,
-  },
-]
+const PLANES = [{
+  nombre: 'Standard', precio: '149€',
+  desc: 'Todas las herramientas para tu gestoría, sin límites',
+  features: ['Clientes ilimitados', 'Expedientes y Kanban ilimitados', 'Informes y exportación masiva', 'Alertas personalizadas por cliente', 'Histórico completo de actividad', 'Soporte prioritario'],
+  cta: 'Empezar Standard', href: '/precios?tab=gestoria', destacado: true,
+}]
 
 export default function Gestores() {
   return (
@@ -99,7 +85,7 @@ export default function Gestores() {
               Empezar ahora
             </Link>
             <Link href="/precios" style={{ color: C.muted, textDecoration: 'none', padding: '14px 24px', borderRadius: 99, fontWeight: 600, fontSize: 15, border: `1px solid ${C.border}` }}>
-              Ver planes y precios
+              Ver precio y funcionalidades
             </Link>
           </div>
           <p style={{ fontSize: 12, color: C.light, marginTop: 14 }}>Sin permanencia. Cancela cuando quieras.</p>
