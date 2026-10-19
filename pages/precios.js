@@ -12,8 +12,8 @@ cta: 'Empezar gratis', href: '/perfil', destacado: true,
 }]
 
 const PLANES_GESTORIA = [{
-id: 'standard', nombre: 'Standard', precio: '149€', periodo: 'mes',
-desc: 'Todo incluido para gestorías y asesorías, sin límites',
+id: 'standard', nombre: 'Standard', precio: '149€', periodo: 'mes + IVA',
+desc: 'CRM profesional para gestorías y asesorías, con clientes y expedientes ilimitados',
 features: ['Clientes ilimitados','Expedientes y Kanban ilimitados','Identificación automática por cliente','Informes y exportación masiva','Alertas personalizadas por cliente','Histórico completo de actividad','Soporte prioritario'],
 cta: 'Empezar Standard', priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER, destacado: true,
 }]
@@ -39,7 +39,7 @@ borderRadius: 20, padding: 28, display: 'flex', flexDirection: 'column', positio
 }}>
 {plan.destacado && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${C.green},transparent)` }} />}
 {plan.badge && <span style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 100, width: 'fit-content', marginBottom: 12 }}>{plan.badge}</span>}
-{plan.destacado && <span style={{ background: C.greenDim, color: C.green, fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 100, width: 'fit-content', marginBottom: 12 }}>Más popular</span>}
+{plan.destacado && <span style={{ background: C.greenDim, color: C.green, fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 100, width: 'fit-content', marginBottom: 12 }}>Plan disponible</span>}
 <h3 className="font-display font-bold" style={{ fontSize: 20, color: C.text, marginBottom: 4, letterSpacing: '-0.5px' }}>{plan.nombre}</h3>
 <p style={{ color: C.muted, fontSize: 13, marginBottom: 20 }}>{plan.desc}</p>
 <div style={{ marginBottom: 24 }}>
