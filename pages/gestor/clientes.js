@@ -273,7 +273,7 @@ export default function GestorDashboard() {
               <span style={{ fontSize: 13, fontWeight: 600, color: C.orange, textDecoration: 'none', padding: '6px 12px', borderRadius: 8, background: C.orangeLight }}>Clientes</span>
             </div>
             <span style={{ fontSize: 11, fontWeight: 700, color: C.green, background: C.greenBg, padding: '3px 10px', borderRadius: 100, border: `1px solid ${C.border}` }}>
-              {plan === 'pro' ? 'Pro' : 'Básico'}
+              Standard
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -297,7 +297,7 @@ export default function GestorDashboard() {
             {/* Stats */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
               {[
-                { label: 'Total clientes', value: stats.total, suffix: plan === 'starter' ? '/ 50' : '', color: C.text },
+                { label: 'Total clientes', value: stats.total, suffix: '', color: C.text },
                 { label: 'Activos', value: stats.activos, color: C.green },
                 { label: 'Gestionados', value: stats.gestionados, color: C.blue },
                 { label: 'Pendientes', value: stats.pendientes, color: C.yellow },
