@@ -531,7 +531,7 @@ export default function Cuenta() {
   // Helper: iniciales del email
   const initials = session?.user?.email?.[0]?.toUpperCase() || '?'
   const emailShort = session?.user?.email || ''
-  const planLabel = plan === 'pro' ? 'Gestoría Pro' : plan === 'starter' ? 'Gestoría Starter' : plan === 'alertas' ? 'Alertas' : 'Particular'
+  const planLabel = ['starter', 'pro'].includes(plan) ? 'Gestoría Standard' : plan === 'alertas' ? 'Alertas' : 'Particular'
   const planColor = plan === 'pro' ? '#FF8300' : plan === 'starter' ? '#FF8300' : 'rgba(255,245,235,0.4)'
 
   return (
@@ -674,7 +674,7 @@ export default function Cuenta() {
                   <div>
                     <p style={{ fontSize: 20, fontWeight: 800, color: '#FFF5EB' }}>{planLabel}</p>
                     <p style={{ fontSize: 13, color: 'rgba(255,245,235,0.4)', marginTop: 3 }}>
-                      {plan === 'free' ? 'Gratuito · siempre' : plan === 'starter' ? '149€/mes' : plan === 'pro' ? '399€/mes' : '—'}
+                      {plan === 'free' ? 'Gratuito · siempre' : ['starter', 'pro'].includes(plan) ? '149€/mes' : '—'}
                     </p>
                   </div>
                   {plan === 'free' ? (
