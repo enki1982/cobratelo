@@ -5,6 +5,11 @@ Busca ayudas con URL específica de convocatoria + backfill de existentes
 Cron: 0 3 * * 1  (lunes 3am)
 """
 
+# Cóbratelo cerrado: impedir llamadas facturables a Anthropic por defecto.
+if __import__('os').environ.get('COBRATELO_ANTHROPIC_ENABLED') != '1':
+    raise SystemExit('Cóbratelo: llamadas Anthropic desactivadas')
+
+
 import os
 import json
 import logging
