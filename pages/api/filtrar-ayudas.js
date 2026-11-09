@@ -5,6 +5,11 @@ const client = new Anthropic()
 const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
 
 export default async function handler(req, res) {
+  // Proyecto cerrado: no efectuar peticiones facturables a Anthropic.
+  if (process.env.COBRATELO_ANTHROPIC_ENABLED !== '1') {
+    return res.status(503).json({ error: 'Servicio de IA desactivado' })
+  }
+
   if (req.method !== 'POST') return res.status(405).end()
 
   // Sin auth — solo recibe texto de perfil + nombres de ayudas, no expone datos personales
