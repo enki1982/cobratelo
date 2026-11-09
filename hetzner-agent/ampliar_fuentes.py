@@ -1,6 +1,11 @@
 """
 Ampliar fuentes de ayudas — inserta directamente en Supabase
 """
+# Cóbratelo cerrado: impedir llamadas facturables a Anthropic por defecto.
+if __import__('os').environ.get('COBRATELO_ANTHROPIC_ENABLED') != '1':
+    raise SystemExit('Cóbratelo: llamadas Anthropic desactivadas')
+
+
 import os, json, re, datetime, urllib.request
 import anthropic
 from supabase import create_client
