@@ -9,6 +9,11 @@ const supabaseAdmin = createClient(
 )
 
 export default async function handler(req, res) {
+  // Proyecto cerrado: no efectuar peticiones facturables a Anthropic.
+  if (process.env.COBRATELO_ANTHROPIC_ENABLED !== '1') {
+    return res.status(503).json({ error: 'Servicio de IA desactivado' })
+  }
+
   if (req.method !== 'POST') return res.status(405).end()
 
   const { userId, perfil, soloCalcular } = req.body
