@@ -7,6 +7,11 @@ Modos:
   --dry-run       Sin escribir en BD
   --reset         Reprocesar todo
 """
+# Cóbratelo cerrado: impedir llamadas facturables a Anthropic por defecto.
+if __import__('os').environ.get('COBRATELO_ANTHROPIC_ENABLED') != '1':
+    raise SystemExit('Cóbratelo: llamadas Anthropic desactivadas')
+
+
 import os, json, time, argparse, smtplib
 from email.mime.text import MIMEText
 from anthropic import Anthropic
